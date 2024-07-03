@@ -6,6 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 
 export function StakingOptions() {
   const { pool } = usePool()
@@ -53,8 +54,10 @@ export function StakingOptions() {
           <VStack align="left" spacing="md">
             <Text color="grayText">Aura</Text>
             <HStack>
-              <Text fontWeight="bold" color="font.primary" fontSize="md" opacity={0.2}>
-                Coming soon
+              <Text fontWeight="bold" color="font.primary" fontSize="md">
+                {pool.staking?.aura
+                  ? fNum('apr', bn(pool.staking.aura.apr).div(100))
+                  : 'Not available'}
               </Text>
             </HStack>
 
