@@ -23,7 +23,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   const { toCurrency } = useCurrency()
 
   const numberFormatter = useCallback(
-    (value: string) => bn(bn(value).times(totalUsdValue).dividedBy(52)),
+    (value: string) => bn(value).times(totalUsdValue).dividedBy(52),
     [totalUsdValue]
   )
 
