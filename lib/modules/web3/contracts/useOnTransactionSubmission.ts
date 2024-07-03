@@ -6,8 +6,8 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 type NewTrackedTransactionRequest = {
   labels: TransactionLabels
+  chain: GqlChain
   hash?: Address
-  chain?: GqlChain
 }
 
 export function useOnTransactionSubmission({ labels, hash, chain }: NewTrackedTransactionRequest) {
