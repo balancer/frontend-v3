@@ -7,6 +7,9 @@ import { isProd } from '@/lib/config/app.config'
 
 export enum AnalyticsEvent {
   ClickAddLiquidity = 'click: Add liquidity',
+  TransactionSubmitted = 'transaction: Submitted',
+  TransactionConfirmed = 'transaction: Confirmed',
+  TransactionReverted = 'transaction: Reverted',
 }
 
 /**
@@ -18,7 +21,11 @@ export enum AnalyticsEvent {
  */
 export function trackEvent(event: AnalyticsEvent, value?: number) {
   if (!window.fathom) return
-  window.fathom.trackEvent(event, { _value: value })
+  try {
+    window.fathom.trackEvent(event, { _value: value })
+  } catch (error) {
+    console.error('Failed to track event', event, error)
+  }
 }
 
 function TrackPageView() {
