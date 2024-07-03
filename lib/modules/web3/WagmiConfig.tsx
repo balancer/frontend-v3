@@ -19,11 +19,10 @@ import {
 import { chains, rpcOverrides } from './ChainConfig'
 
 function getTransports(chain: Chain) {
-  const overridenRpcUrl = rpcOverrides[getGqlChain(chain.id as SupportedChainId)]
-  return fallback([
-    http(overridenRpcUrl),
-    http(), // Public transport as first option
-  ])
+  const gqlChain = getGqlChain(chain.id as SupportedChainId)
+  const overridenRpcUrl = rpcOverrides[gqlChain]
+  const fallbackRpcUrl = rpcOverrides[gqlChain]
+  return fallback([http(overridenRpcUrl), http(), http(fallbackRpcUrl)])
 }
 
 const transports = Object.fromEntries(

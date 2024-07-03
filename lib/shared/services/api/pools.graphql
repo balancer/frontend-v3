@@ -117,6 +117,7 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
   featuredPools: poolGetFeaturedPools(chains: $chains) {
     poolId
     primary
+    description
     pool {
       id
       name

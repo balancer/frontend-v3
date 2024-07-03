@@ -8,7 +8,7 @@ export async function setup() {
   for (const chain of Object.values(testChains)) {
     console.log('Starting proxy ', {
       port: chain.port,
-      forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], true),
+      forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], false),
       forkBlockNumber: ANVIL_NETWORKS[chain.name].forkBlockNumber,
     })
     promises.push(
@@ -17,7 +17,7 @@ export async function setup() {
         host: '::',
         options: {
           chainId: chain.id,
-          forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], true),
+          forkUrl: getForkUrl(ANVIL_NETWORKS[chain.name], false),
           forkBlockNumber: ANVIL_NETWORKS[chain.name].forkBlockNumber,
           noMining: false,
         },
