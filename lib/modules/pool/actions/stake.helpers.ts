@@ -35,7 +35,7 @@ export function getUnstakeQuote(pool: Pool): UnstakeQuote {
 
   return {
     gaugeAddress: pool.staking?.gauge?.id as Address,
-    amountOut: getStakedBalance(pool, GqlPoolStakingType.Gauge).balance as HumanAmount,
+    amountOut: getStakedBalance(pool, GqlPoolStakingType.Gauge).balance,
   }
 }
 

@@ -86,11 +86,15 @@ export function calcNonOnChainFetchedStakedBalance(pool: Pool): string {
   return safeSum(nonOnChainFetchedStakedBalances)
 }
 
-type StakedBalance = Omit<GqlUserStakedBalance, '__typename' | 'stakingType' | 'stakingId'>
+type StakedBalance = {
+  balance: HumanAmount
+  balanceUsd: number
+}
 
 export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): StakedBalance {
+  console.log({ pool })
   const zeroStakedBalance = {
-    balance: '0',
+    balance: '0' as HumanAmount,
     balanceUsd: 0,
   }
 
@@ -107,11 +111,14 @@ export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): S
     return zeroStakedBalance
   }
 
-  return stakedBalance
+  return {
+    balance: stakedBalance.balance as HumanAmount,
+    balanceUsd: stakedBalance.balanceUsd,
+  }
 }
 
 export function calcStakedBalanceInt(pool: Pool, stakingType: GqlPoolStakingType) {
-  return parseUnits(getStakedBalance(pool, stakingType).balance as HumanAmount, BPT_DECIMALS)
+  return parseUnits(getStakedBalance(pool, stakingType).balance, BPT_DECIMALS)
 }
 
 export function calcStakedBalanceUsd(pool: Pool, stakingType: GqlPoolStakingType): number {
