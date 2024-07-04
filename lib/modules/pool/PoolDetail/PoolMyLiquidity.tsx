@@ -41,7 +41,6 @@ import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../ac
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
-import { useGetAuraPid } from '../../staking/aura/useGetAuraPid'
 import { getChainId } from '@/lib/config/app.config'
 
 const TABS = [
@@ -67,11 +66,6 @@ export default function PoolMyLiquidity() {
   const router = useRouter()
   const pathname = usePathname()
   const [height, setHeight] = useState(0)
-
-  const { data: pid } = useGetAuraPid(
-    getChainId(chain),
-    pool.staking?.aura?.auraPoolAddress as Address
-  )
 
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
@@ -239,18 +233,22 @@ export default function PoolMyLiquidity() {
           </HStack>
           <Divider />
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
-            {activeTab.value === 'aura' && !totalBalanceUsd && pid ? (
+            {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
                 <Text color="white">
                   Aura APR:{' '}
                   {
-                    fNum('apr', pool.staking?.aura ? bn(pool.staking.aura.apr).div(100) : '0') // TODO: remove div(100) after API is updated
+                    fNum('apr', bn(pool.staking.aura.apr).div(100)) // TODO: remove div(100) after API is updated
                   }
                 </Text>
                 <Text color="white" ml="auto">
                   Learn more
                 </Text>
-                <Link href={getAuraPoolLink(chainId, pid)} target="_blank" color="white">
+                <Link
+                  href={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
+                  target="_blank"
+                  color="white"
+                >
                   <ArrowUpRight size={16} />
                 </Link>
               </HStack>
