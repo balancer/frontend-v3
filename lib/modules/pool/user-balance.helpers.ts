@@ -4,10 +4,8 @@ import { PoolListItem } from './pool.types'
 import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { HumanAmount } from '@balancer/sdk'
-import {
-  GqlPoolStakingType,
-  GqlUserStakedBalance,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { hasNonPreferentialStakedBalance, hasPreferentialGauge } from './actions/stake.helpers'
 
 export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   const userBalance = pool.userBalance
@@ -153,4 +151,9 @@ export function hasTinyBalance(pool: Pool | PoolListItem, minUsdBalance = 0.01):
   const userBalance = pool.userBalance
   if (!userBalance) return false
   return bn(getUserTotalBalanceUsd(pool)).lt(minUsdBalance)
+}
+
+export function shouldMigrateStake(pool: Pool): boolean {
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
+  return hasPreferentialGauge(pool) && hasNonPreferentialBalance
 }

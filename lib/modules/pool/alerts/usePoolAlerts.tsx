@@ -1,13 +1,18 @@
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { AlertStatus, HStack, Tooltip } from '@chakra-ui/react'
+import { isNil } from 'lodash'
+import { usePathname, useRouter } from 'next/navigation'
+import { ReactNode, useEffect, useState } from 'react'
 import { zeroAddress } from 'viem'
 import { Pool } from '../PoolProvider'
-import { ReactNode, useEffect, useState } from 'react'
-import { getNetworkConfig } from '@/lib/config/app.config'
-import { AlertStatus } from '@chakra-ui/react'
-import { PoolIssue } from './pool-issues/PoolIssue.type'
-import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
-import { isNil } from 'lodash'
+import { migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { hasUnreviewedRateProvider } from '../pool.helpers'
-import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
+import { shouldMigrateStake } from '../user-balance.helpers'
+import { PoolAlertButton } from './PoolAlertButton'
+import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
+import { PoolIssue } from './pool-issues/PoolIssue.type'
 
 export type PoolAlert = {
   identifier: string
@@ -18,6 +23,8 @@ export type PoolAlert = {
 }
 
 export function usePoolAlerts(pool: Pool) {
+  const pathname = usePathname()
+  const router = useRouter()
   const [poolAlerts, setPoolAlerts] = useState<PoolAlert[]>([])
 
   const getNetworkPoolAlerts = (pool: Pool): PoolAlert[] => {
@@ -105,11 +112,43 @@ export function usePoolAlerts(pool: Pool) {
     return alerts
   }
 
+  const getUserAlerts = (pool: Pool): PoolAlert[] => {
+    const alerts: PoolAlert[] = []
+
+    function MigrateStakeTitle() {
+      return (
+        <HStack justify="space-between" w="full">
+          <HStack>
+            <div>Migrate to the new veBAL staking gauge for future BAL liquidity incentives </div>
+            <Tooltip label={migrateStakeTooltipLabel}>
+              <InfoOutlineIcon fontSize="sm" />
+            </Tooltip>
+          </HStack>
+          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
+            Migrate
+          </PoolAlertButton>
+        </HStack>
+      )
+    }
+
+    if (shouldMigrateStake(pool)) {
+      alerts.push({
+        identifier: 'shouldMigrateStake',
+        title: MigrateStakeTitle(),
+        status: 'warning',
+        isSoftWarning: false,
+      })
+    }
+    return alerts
+  }
+
   useEffect(() => {
     const networkPoolAlerts = getNetworkPoolAlerts(pool)
     const tokenPoolAlerts = getTokenPoolAlerts(pool)
+    const userAlerts = getUserAlerts(pool)
 
-    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts])
+    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts, ...userAlerts])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
 
   return {
