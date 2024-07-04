@@ -90,7 +90,6 @@ type StakedBalance = {
 }
 
 export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): StakedBalance {
-  console.log({ pool })
   const zeroStakedBalance = {
     balance: '0' as HumanAmount,
     balanceUsd: 0,
