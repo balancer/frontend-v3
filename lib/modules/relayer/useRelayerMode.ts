@@ -14,7 +14,7 @@ export function useRelayerMode(): RelayerMode {
 
   if (enableSignatures === 'no') return 'approveRelayer'
   if (connector?.id === 'walletConnect') return 'approveRelayer'
-  //TODO: confirm gnosis safe connector ID
-  if (connector?.id === 'gnosisSafe') return 'approveRelayer'
+  if (connector?.id === 'gnosis') return 'approveRelayer'
+  if (connector?.id === 'safe') return 'approveRelayer'
   return 'signRelayer'
 }

@@ -3,7 +3,12 @@ import {
   GqlChain,
   GqlSorSwapType,
 } from '@/lib/shared/services/api/generated/graphql'
-import { ExactInQueryOutput, ExactOutQueryOutput, Swap } from '@balancer/sdk'
+import {
+  AuraBalSwapQueryOutput,
+  ExactInQueryOutput,
+  ExactOutQueryOutput,
+  Swap,
+} from '@balancer/sdk'
 import { Address } from 'viem'
 
 export type SwapTokenInput = {
@@ -31,12 +36,16 @@ type ApiSwapQuery = GetSorSwapsQuery['swaps']
 
 export type SimulateSwapResponse = Pick<
   ApiSwapQuery,
-  'effectivePrice' | 'effectivePriceReversed' | 'returnAmount' | 'priceImpact' | 'swapType'
+  'effectivePrice' | 'effectivePriceReversed' | 'returnAmount' | 'swapType'
 >
 
 export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQuery {
   swap: Swap
   queryOutput: ExactInQueryOutput | ExactOutQueryOutput
+}
+
+export interface AuraBalSimulateSwapResponse extends SimulateSwapResponse {
+  queryOutput: AuraBalSwapQueryOutput
 }
 
 export interface BuildSwapInputs extends SwapState {
@@ -48,6 +57,10 @@ export interface BuildSwapInputs extends SwapState {
 
 export interface SdkBuildSwapInputs extends BuildSwapInputs {
   simulateResponse: SdkSimulateSwapResponse
+}
+
+export interface AuraBalBuildSwapInputs extends BuildSwapInputs {
+  simulateResponse: AuraBalSimulateSwapResponse
 }
 
 export enum SupportedWrapHandler {
