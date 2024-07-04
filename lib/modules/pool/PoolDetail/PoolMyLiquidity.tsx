@@ -76,7 +76,11 @@ export default function PoolMyLiquidity() {
   }, [])
 
   useEffect(() => {
-    if (pool.staking?.aura && TABS.findIndex(tab => tab.value === 'aura') === -1) {
+    if (
+      pool.staking?.aura &&
+      !pool.staking.aura.isShutdown &&
+      TABS.findIndex(tab => tab.value === 'aura') === -1
+    ) {
       TABS.push({
         value: 'aura',
         label: 'Aura',
