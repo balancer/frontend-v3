@@ -69,7 +69,7 @@ test('User balance helpers', () => {
   expect(getUserWalletBalanceUsd(pool)).toBe(200)
   expect(getUserWalletBalanceInt(pool)).toBe(100000000000000000000n)
 
-  expect(calcNonOnChainFetchedStakedBalance(pool)).toBe(0)
+  expect(calcNonOnChainFetchedStakedBalance(pool)).toBe('0')
 
   expect(hasAuraStakedBalance(pool)).toBeTruthy()
   expect(hasBalancerStakedBalance(pool)).toBeTruthy()

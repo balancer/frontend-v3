@@ -125,7 +125,7 @@ describe('fetches onchain and overrides user balances', async () => {
           stakingType: 'GAUGE',
         },
       ],
-      totalBalance: '52.364668984347890',
+      totalBalance: '52.364668984347889717',
       totalBalanceUsd: expect.any(Number),
       walletBalance: '0',
       walletBalanceUsd: 0,

@@ -108,6 +108,7 @@ function overwriteOnchainPoolBalanceData(
     if (!Object.keys(ocUnstakedBalances).length || !Object.keys(stakedBalancesByPoolId).length) {
       return pool
     }
+
     const bptPrice = calcBptPriceFor(pool)
 
     // Unstaked balances
@@ -117,13 +118,17 @@ function overwriteOnchainPoolBalanceData(
 
     // Staked balances
     const onchainStakedBalances = stakedBalancesByPoolId[pool.id]
-    const onchainTotalStakedBalance = Number(
-      safeSum(onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance)))
+    const onchainTotalStakedBalance = safeSum(
+      onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance))
     )
 
     // Total balances
-    const totalBalance =
-      calcNonOnChainFetchedStakedBalance(pool) + onchainTotalStakedBalance + onchainUnstakedBalance
+    const totalBalance = safeSum([
+      calcNonOnChainFetchedStakedBalance(pool),
+      onchainTotalStakedBalance,
+      onchainUnstakedBalance,
+    ])
+
     const totalBalanceUsd = Number(bn(totalBalance).times(bptPrice))
 
     const userBalance: GqlPoolUserBalance = {

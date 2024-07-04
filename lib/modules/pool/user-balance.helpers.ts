@@ -71,9 +71,9 @@ export function getUserTotalBalanceInt(pool: Pool): bigint {
    The api provides staked balances that, for now, we don't fetch onchain (FARMING, etc.)
    We need this "non onChain fetched staked balance" in the totalBalance calculation
 */
-export function calcNonOnChainFetchedStakedBalance(pool: Pool): number {
+export function calcNonOnChainFetchedStakedBalance(pool: Pool): string {
   const userBalance = pool.userBalance
-  if (!userBalance) return 0
+  if (!userBalance) return '0'
 
   const nonOnChainFetchedStakedBalances = userBalance.stakedBalances
     .filter(
@@ -83,7 +83,7 @@ export function calcNonOnChainFetchedStakedBalance(pool: Pool): number {
     )
     .map(stakedBalance => stakedBalance.balance)
 
-  return Number(safeSum(nonOnChainFetchedStakedBalances))
+  return safeSum(nonOnChainFetchedStakedBalances)
 }
 
 type StakedBalance = Omit<GqlUserStakedBalance, '__typename' | 'stakingType' | 'stakingId'>
