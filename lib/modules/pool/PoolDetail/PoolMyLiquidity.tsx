@@ -239,12 +239,7 @@ export default function PoolMyLiquidity() {
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
             {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
-                <Text color="white">
-                  Aura APR:{' '}
-                  {
-                    fNum('apr', bn(pool.staking.aura.apr).div(100)) // TODO: remove div(100) after API is updated
-                  }
-                </Text>
+                <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
                 <Text color="white" ml="auto">
                   Learn more
                 </Text>
