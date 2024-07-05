@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
-import { bn, fNum } from '@/lib/shared/utils/numbers'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export function StakingOptions() {
   const { pool } = usePool()
@@ -32,11 +32,9 @@ export function StakingOptions() {
               </Text>
               <Icon as={StarsIcon} width="20px" height="20px" />
             </HStack>
-
             <Flex position="absolute" top={3} right={2}>
               <Image src="/images/protocols/balancer.svg" width={30} height={30} alt="balancer" />
             </Flex>
-
             <Button
               as={Link}
               href={stakePath}
@@ -49,22 +47,17 @@ export function StakingOptions() {
             </Button>
           </VStack>
         </Card>
-
         <Card variant="modalSubSection" position="relative">
           <VStack align="left" spacing="md">
             <Text color="grayText">Aura</Text>
             <HStack>
               <Text fontWeight="bold" color="font.primary" fontSize="md">
-                {pool.staking?.aura
-                  ? fNum('apr', bn(pool.staking.aura.apr).div(100)) // TODO: remove div(100) when API is updated
-                  : 'Not available'}
+                {pool.staking?.aura ? fNum('apr', pool.staking.aura.apr) : 'Not available'}
               </Text>
             </HStack>
-
             <Flex position="absolute" top={3} right={2}>
               <Image src="/images/protocols/aura.svg" width={30} height={30} alt="balancer" />
             </Flex>
-
             <Button
               as={Link}
               target="_blank"
