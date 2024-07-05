@@ -9,6 +9,7 @@
     "dev-bal": "PROTOCOL=bal pnpm dev",
     "dev-beets": "PROTOCOL=beets pnpm dev",
     "build": "PROTOCOL=bal pnpm gen:graphql:prod && next build",
+    "build:dev": "PROTOCOL=bal pnpm gen:graphql:dev && next build",
     "build-beets": "PROTOCOL=beets pnpm gen:graphql:prod && next build",
     "start": "next start",
     "lint": "next lint",

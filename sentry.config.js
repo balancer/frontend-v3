@@ -1,16 +1,10 @@
-/** @type {import('@sentry/nextjs').SentryWebpackPluginOptions} */
-const sentryWebpackPluginOptions = {
-  // For all available options, see:
-  // https://github.com/getsentry/sentry-webpack-plugin#options
-
+/** @type {import('@sentry/nextjs/build/types/config/types').SentryBuildOptions} */
+const sentryOptions = {
   // Suppresses source map uploading logs during build
   silent: true,
   org: 'balancer-labs',
   project: 'frontend-v3',
-}
 
-/** @type {import('@sentry/nextjs/types/config/types').UserSentryOptions} */
-const sentryOptions = {
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
@@ -44,7 +38,6 @@ const developmentSentryDSN =
 const sentryDSN = isProd ? productionSentryDSN : developmentSentryDSN
 
 module.exports = {
-  sentryWebpackPluginOptions,
   sentryOptions,
   sentryDSN,
 }
