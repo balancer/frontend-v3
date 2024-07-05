@@ -3,7 +3,7 @@ import { usePortfolio } from '../PortfolioProvider'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
-import { Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
+import { Center, Checkbox, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
@@ -18,6 +18,8 @@ import {
 } from '../../pool/user-balance.helpers'
 import { bn } from '@/lib/shared/utils/numbers'
 import { getTotalApr } from '../../pool/pool.utils'
+import { useUserAccount } from '../../web3/UserAccountProvider'
+import { ConnectWallet } from '../../web3/ConnectWallet'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -69,6 +71,7 @@ const generateStakingWeightForSort = (pool: Pool) => {
 export function PortfolioTable() {
   const [shouldFilterTinyBalances, setShouldFilterTinyBalances] = useState(true)
   const { portfolioData, isLoadingPortfolio } = usePortfolio()
+  const { isConnected } = useUserAccount()
 
   // Filter out pools with tiny balances (<0.01 USD)
   const minUsdBalance = 0.01
@@ -137,33 +140,39 @@ export function PortfolioTable() {
         <HStack>
           <Heading size="lg">Balancer portfolio</Heading>
         </HStack>
-        <PaginatedTable
-          items={sortedPools}
-          loading={isLoadingPortfolio}
-          renderTableHeader={() => (
-            <PortfolioTableHeader
-              currentSortingObj={currentSortingObj}
-              setCurrentSortingObj={setCurrentSortingObj}
-              {...rowProps}
-            />
-          )}
-          renderTableRow={(item: PoolListItem, index) => {
-            return (
-              <PortfolioTableRow
-                keyValue={index}
-                pool={item}
-                veBalBoostMap={veBalBoostMap}
+        {isConnected ? (
+          <PaginatedTable
+            items={sortedPools}
+            loading={isLoadingPortfolio}
+            renderTableHeader={() => (
+              <PortfolioTableHeader
+                currentSortingObj={currentSortingObj}
+                setCurrentSortingObj={setCurrentSortingObj}
                 {...rowProps}
               />
-            )
-          }}
-          showPagination={false}
-          paginationProps={null}
-          w={{ base: '100vw', lg: 'full' }}
-          alignItems="flex-start"
-          position="relative"
-          left={{ base: '-4px', sm: '0' }}
-        />
+            )}
+            renderTableRow={(item: PoolListItem, index) => {
+              return (
+                <PortfolioTableRow
+                  keyValue={index}
+                  pool={item}
+                  veBalBoostMap={veBalBoostMap}
+                  {...rowProps}
+                />
+              )
+            }}
+            showPagination={false}
+            paginationProps={null}
+            w={{ base: '100vw', lg: 'full' }}
+            alignItems="flex-start"
+            position="relative"
+            left={{ base: '-4px', sm: '0' }}
+          />
+        ) : (
+          <Center h="400px" border="1px dashed" borderColor="border.base" rounded="lg">
+            <ConnectWallet variant="primary" size="lg" />
+          </Center>
+        )}
         {hasTinyBalances && (
           <Checkbox
             size="lg"
