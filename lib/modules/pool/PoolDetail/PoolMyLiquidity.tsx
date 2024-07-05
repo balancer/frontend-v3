@@ -28,13 +28,13 @@ import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
   getUserTotalBalanceInt,
   getUserWalletBalanceInt,
-  calcTotalStakedBalance,
   getUserTotalBalanceUsd,
   getUserWalletBalance,
   getUserWalletBalanceUsd,
   calcStakedBalanceInt,
   calcStakedBalanceUsd,
   shouldMigrateStake,
+  calcGaugeStakedBalance,
 } from '../user-balance.helpers'
 import { calcUserShareOfPool, hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
 import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
@@ -178,7 +178,7 @@ export default function PoolMyLiquidity() {
   const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
   const canStake = pool.staking && !hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
-  const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
+  const hasGaugeStakedBalance = bn(calcGaugeStakedBalance(pool)).gt(0)
   const shareOfPool = calcUserShareOfPool(pool)
   const shareofPoolLabel = bn(shareOfPool).gt(0) ? fNum('sharePercent', shareOfPool) : <>&mdash;</>
   const chainId = getChainId(chain)
@@ -306,8 +306,8 @@ export default function PoolMyLiquidity() {
             ) : (
               <Button
                 onClick={() => router.push(`${pathname}/unstake`)}
-                variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-                isDisabled={!hasStakedBalance}
+                variant={hasGaugeStakedBalance ? 'tertiary' : 'disabled'}
+                isDisabled={!hasGaugeStakedBalance}
                 flex="1"
               >
                 Unstake

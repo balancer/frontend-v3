@@ -16,6 +16,17 @@ export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   ) as HumanAmount
 }
 
+export function calcGaugeStakedBalance(pool: Pool | PoolListItem): HumanAmount {
+  const userBalance = pool.userBalance
+  if (!userBalance) return '0'
+
+  return safeSum(
+    userBalance.stakedBalances
+      .filter(stakedBalance => stakedBalance.stakingType === GqlPoolStakingType.Gauge)
+      .map(stakedBalance => bn(stakedBalance.balance))
+  ) as HumanAmount
+}
+
 export function calcTotalStakedBalanceUsd(pool: Pool): number {
   const userBalance = pool.userBalance
   if (!userBalance) return 0
