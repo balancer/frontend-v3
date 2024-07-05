@@ -7,6 +7,7 @@ import { SwapHandler } from '../handlers/Swap.handler'
 import { SimulateSwapResponse, SwapState } from '../swap.types'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SwapSimulationQueryResult } from './useSimulateSwapQuery'
+import { useRelayerSignature } from '../../relayer/RelayerSignatureProvider'
 
 export type BuildSwapQueryResponse = ReturnType<typeof useBuildSwapQuery>
 
@@ -29,6 +30,7 @@ export function useBuildSwapQuery({
 }) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
+  const { relayerApprovalSignature } = useRelayerSignature()
 
   const { selectedChain, tokenIn, tokenOut, swapType } = swapState
 
@@ -51,6 +53,7 @@ export function useBuildSwapQuery({
       selectedChain,
       simulateResponse,
       wethIsEth,
+      relayerApprovalSignature,
     })
     console.log('Swap callData built:', response)
 

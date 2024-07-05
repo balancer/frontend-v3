@@ -73,6 +73,8 @@ export class AuraBalSwapHandler implements SwapHandler {
     slippagePercent,
     account,
     selectedChain,
+    relayerApprovalSignature,
+    wethIsEth,
   }: AuraBalBuildSwapInputs): TransactionConfig {
     const rpcUrl = getDefaultRpcUrl(getChainId(selectedChain))
 
@@ -81,8 +83,9 @@ export class AuraBalSwapHandler implements SwapHandler {
     const tx = auraBalSwap.buildCall({
       slippage: Slippage.fromPercentage(slippagePercent as HumanAmount),
       user: account,
-      wethIsEth: false,
+      wethIsEth,
       queryOutput,
+      relayerApprovalSignature,
     })
 
     return {

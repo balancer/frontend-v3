@@ -9,7 +9,7 @@ import {
   ExactOutQueryOutput,
   Swap,
 } from '@balancer/sdk'
-import { Address } from 'viem'
+import { Address, Hex } from 'viem'
 
 export type SwapTokenInput = {
   address: Address
@@ -53,6 +53,7 @@ export interface BuildSwapInputs extends SwapState {
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
   wethIsEth: boolean
+  relayerApprovalSignature?: Hex
 }
 
 export interface SdkBuildSwapInputs extends BuildSwapInputs {

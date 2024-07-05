@@ -7,13 +7,19 @@ import { Alert, Button, VStack } from '@chakra-ui/react'
 import { TransactionStep } from './lib'
 import { SignRelayerState } from '../../relayer/RelayerSignatureProvider'
 import { useMemo } from 'react'
+import { useChainSwitch } from '../../web3/useChainSwitch'
+import { getChainId } from '@/lib/config/app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
-export function useSignRelayerStep(): TransactionStep {
+export function useSignRelayerStep(chain: GqlChain): TransactionStep {
+  const chainId = getChainId(chain)
   const { isConnected } = useUserAccount()
   const { signRelayer, signRelayerState, isLoading, isDisabled, buttonLabel, error } =
     useSignRelayerApproval()
+  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
+    useChainSwitch(chainId)
 
   const SignRelayerButton = () => (
     <VStack width="full">
@@ -22,8 +28,9 @@ export function useSignRelayerStep(): TransactionStep {
           {error}
         </Alert>
       )}
-      {!isConnected && <ConnectWallet />}
-      {isConnected && (
+      {!isConnected && <ConnectWallet width="full" />}
+      {shouldChangeNetwork && isConnected && <NetworkSwitchButton {...networkSwitchButtonProps} />}
+      {!shouldChangeNetwork && isConnected && (
         <Button
           width="full"
           w="full"
@@ -54,36 +61,7 @@ export function useSignRelayerStep(): TransactionStep {
       isComplete,
       renderAction: () => <SignRelayerButton />,
     }),
-    [signRelayerState]
-  )
-}
-
-export function SignRelayerButton() {
-  const { isConnected } = useUserAccount()
-  const { signRelayer, isLoading, isDisabled, buttonLabel, error } = useSignRelayerApproval()
-
-  return (
-    <VStack width="full">
-      {error && (
-        <Alert rounded="md" status="error">
-          {error}
-        </Alert>
-      )}
-      {!isConnected && <ConnectWallet />}
-      {isConnected && (
-        <Button
-          width="full"
-          w="full"
-          size="lg"
-          variant="primary"
-          isDisabled={isDisabled}
-          isLoading={isLoading}
-          onClick={signRelayer}
-          loadingText={buttonLabel}
-        >
-          {buttonLabel}
-        </Button>
-      )}
-    </VStack>
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [signRelayerState, isLoading, isConnected]
   )
 }

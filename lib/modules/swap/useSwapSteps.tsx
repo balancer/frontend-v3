@@ -9,7 +9,7 @@ import { useRelayerMode } from '../relayer/useRelayerMode'
 import { useShouldSignRelayerApproval } from '../relayer/signRelayerApproval.hooks'
 import { getChainId } from '@/lib/config/app.config'
 import { useApproveRelayerStep } from '../relayer/useApproveRelayerStep'
-import { useSignRelayerStep } from '../transactions/transaction-steps/SignRelayerButton'
+import { useSignRelayerStep } from '../transactions/transaction-steps/useSignRelayerStep'
 
 type Params = SwapStepParams & {
   vaultAddress: Address
@@ -31,7 +31,7 @@ export function useSwapSteps({
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
-  const signRelayerStep = useSignRelayerStep()
+  const signRelayerStep = useSignRelayerStep(swapState.selectedChain)
 
   const swapRequiresRelayer = handler.constructor.name === 'AuraBalSwapHandler'
 
