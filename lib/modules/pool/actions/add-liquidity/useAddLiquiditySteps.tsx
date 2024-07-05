@@ -21,8 +21,8 @@ export function useAddLiquiditySteps({
 }: AddLiquidityStepsParams) {
   const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId } = usePool()
-  const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const relayerMode = useRelayerMode(pool)
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep()

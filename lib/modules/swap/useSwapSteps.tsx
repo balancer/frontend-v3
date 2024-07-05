@@ -28,7 +28,7 @@ export function useSwapSteps({
   const chainId = getChainId(swapState.selectedChain)
 
   const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep()

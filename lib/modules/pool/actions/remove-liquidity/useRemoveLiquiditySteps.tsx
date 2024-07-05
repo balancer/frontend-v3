@@ -10,9 +10,9 @@ import { shouldUseRecoveryRemoveLiquidity } from '../LiquidityActionHelpers'
 import { RemoveLiquidityStepParams, useRemoveLiquidityStep } from './useRemoveLiquidityStep'
 
 export function useRemoveLiquiditySteps(params: RemoveLiquidityStepParams): TransactionStep[] {
-  const relayerMode = useRelayerMode()
   const { chainId, pool } = usePool()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const relayerMode = useRelayerMode(pool)
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
   const signRelayerStep = useSignRelayerStep()
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
