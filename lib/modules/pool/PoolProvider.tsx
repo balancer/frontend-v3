@@ -31,7 +31,7 @@ export function _usePool({
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
   const { userAddress } = useUserAccount()
-  const queryVariables = { id, chain, userAddress }
+  const queryVariables = { id, chain, userAddress: userAddress.toLowerCase() }
   const skipQuery = useSkipInitialQuery(queryVariables)
   const myLiquiditySectionRef = useRef<HTMLDivElement | null>(null)
 

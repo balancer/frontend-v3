@@ -126,7 +126,9 @@ function overwriteOnchainPoolBalanceData(
 
     // Total balances
     const totalBalance =
-      calcNonVeBalStakedBalance(pool) + onchainTotalGaugeStakedBalance + onchainUnstakedBalance
+      calcNonVeBalStakedBalance(pool) +
+      onchainTotalGaugeStakedBalance +
+      Number(onchainUnstakedBalance)
     const totalBalanceUsd = Number(bn(totalBalance).times(bptPrice))
 
     const userBalance: GqlPoolUserBalance = {
@@ -135,7 +137,7 @@ function overwriteOnchainPoolBalanceData(
       stakedBalances: overrideStakedBalances(pool, gaugeStakedBalancesByPoolId[pool.id]),
       walletBalance: onchainUnstakedBalance,
       walletBalanceUsd: onchainUnstakedBalanceUsd,
-      totalBalance,
+      totalBalance: totalBalance.toString(),
       totalBalanceUsd,
     }
 

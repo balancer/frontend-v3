@@ -108,6 +108,10 @@ export function hasBalancerStakedBalance(pool: Pool | PoolListItem): boolean {
   return hasStakedBalanceFor(pool, GqlPoolStakingType.Gauge)
 }
 
+export function hasVeBalStaking(pool: Pool | PoolListItem): boolean {
+  return hasStakingType(pool, GqlPoolStakingType.Vebal)
+}
+
 export function hasStakedBalanceFor(
   pool: Pool | PoolListItem,
   stakingType: GqlPoolStakingType
@@ -118,6 +122,16 @@ export function hasStakedBalanceFor(
   return userBalance.stakedBalances.some(
     balance => balance.stakingType === stakingType && bn(balance.balance).gt(0)
   )
+}
+
+export function hasStakingType(
+  pool: Pool | PoolListItem,
+  stakingType: GqlPoolStakingType
+): boolean {
+  const userBalance = pool.userBalance
+  if (!userBalance) return false
+
+  return userBalance.stakedBalances.some(balance => balance.stakingType === stakingType)
 }
 
 export function hasTinyBalance(pool: Pool | PoolListItem, minUsdBalance = 0.01): boolean {
