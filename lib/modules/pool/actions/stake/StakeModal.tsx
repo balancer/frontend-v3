@@ -21,6 +21,7 @@ import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { usePoolRedirect } from '../../pool.hooks'
+import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -41,6 +42,8 @@ export function StakeModal({
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { isMobile } = useBreakpoints()
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   return (
     <Modal
