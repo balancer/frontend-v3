@@ -236,8 +236,12 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   return addresses
 }
 
-export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
-  return !!token.priceRateProvider && !token.priceRateProviderData
+export function hasReviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return (
+    !!token.priceRateProvider &&
+    !!token.priceRateProviderData &&
+    token.priceRateProviderData.reviewed
+  )
 }
 
 /**
@@ -258,7 +262,7 @@ export function shouldBlockAddLiquidity(pool: Pool) {
     if (token.priceRateProvider === token.nestedPool?.address) return false
 
     // if price rate provider is set but is not reviewed - we should block adding liquidity
-    if (hasUnreviewedRateProvider(token)) return true
+    if (!hasReviewedRateProvider(token)) return true
 
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
