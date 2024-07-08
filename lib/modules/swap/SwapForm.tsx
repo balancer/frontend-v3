@@ -72,6 +72,8 @@ export function SwapForm() {
   const { isConnected } = useUserAccount()
 
   const isLoadingSwaps = simulationQuery.isLoading
+  const isLoading = isLoadingSwaps || !isMounted
+  const loadingText = isLoading ? 'Fetching swap...' : undefined
 
   function copyDeepLink() {
     navigator.clipboard.writeText(window.location.href)
@@ -208,15 +210,21 @@ export function SwapForm() {
                   w="full"
                   size="lg"
                   isDisabled={isDisabled || !isMounted}
-                  isLoading={isLoadingSwaps || !isMounted}
-                  loadingText={isLoadingSwaps || !isMounted ? 'Fetching swap...' : undefined}
+                  isLoading={isLoading}
+                  loadingText={loadingText}
                   onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
                 >
                   Next
                 </Button>
               </Tooltip>
             ) : (
-              <ConnectWallet variant="primary" w="full" size="lg" />
+              <ConnectWallet
+                variant="primary"
+                w="full"
+                size="lg"
+                isLoading={isLoading}
+                loadingText={loadingText}
+              />
             )}
           </CardFooter>
         </Card>
