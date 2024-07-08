@@ -48,6 +48,7 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
 import { getChainId } from '@/lib/config/app.config'
+import { VeBalLink } from '../../vebal/VebalRedirectModal'
 
 function getTabs(isVeBalPool: boolean) {
   return [
@@ -299,16 +300,14 @@ export default function PoolMyLiquidity() {
               Remove
             </Button>
             {isVeBal ? (
-              <Button
-                variant="secondary"
+              <VeBalLink
                 flex="1"
-                mr="25%"
-                as="a"
-                href="https://app.balancer.fi/#/ethereum/vebal"
-                target="_blank"
-              >
-                Lock
-              </Button>
+                triggerEl={
+                  <Button w="100%" variant="secondary">
+                    Lock
+                  </Button>
+                }
+              />
             ) : (
               <>
                 <Button
