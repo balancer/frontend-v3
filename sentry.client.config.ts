@@ -58,40 +58,38 @@ Sentry.init({
         Sentry integrations:
           https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/integrations/
     */
-    const poolActionUrlSegments = [
+    const criticalFlowPaths = [
       'add-liquidity',
       'remove-liquidity',
       'stake',
       'unstake',
       'migrate-stake',
+      'swap',
     ]
-    const poolAction = poolActionUrlSegments.find(segment => event.request?.url?.includes(segment))
-    if (!poolAction) return event
-    return enrichPoolActionFatalError(event, poolAction)
+    const criticalFlowPath = criticalFlowPaths.find(path => event.request?.url?.includes(path))
+    if (!criticalFlowPath) return event
+    return handleFatalError(event, criticalFlowPath)
   },
 })
 
-function enrichPoolActionFatalError(
-  event: Sentry.ErrorEvent,
-  poolAction: string
-): Sentry.ErrorEvent {
+function handleFatalError(event: Sentry.ErrorEvent, criticalFlowPath: string): Sentry.ErrorEvent {
   event.level = 'fatal'
 
   if (event?.exception?.values?.length) {
     const firstValue = event.exception.values[0]
-    const poolActionType = uppercasePoolAction(poolAction)
-    firstValue.value = `Unexpected error in ${poolActionType} flow.
+    const flowType = uppercaseSegment(criticalFlowPath)
+    firstValue.value = `Unexpected error in ${flowType} flow.
 Cause: ${firstValue.type}: ${firstValue.value}`
 
-    firstValue.type = poolActionType + 'Error'
+    firstValue.type = flowType + 'Error'
     event.exception.values[0] = firstValue
   }
 
   return event
 }
 
-function uppercasePoolAction(segment: string): string {
-  return segment
+function uppercaseSegment(path: string): string {
+  return path
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join('')
