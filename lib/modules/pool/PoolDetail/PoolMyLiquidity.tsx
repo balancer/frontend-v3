@@ -166,6 +166,12 @@ export default function PoolMyLiquidity() {
     }
   }
 
+  const stakedBalance = calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
+  const unstakedBalance = getUserWalletBalanceUsd(pool)
+
+  const lockBtnText =
+    bn(stakedBalance).gt(0) && bn(unstakedBalance).isEqualTo(0) ? 'Extend lock' : 'Lock'
+
   function getTotalBalanceUsd() {
     if (!isConnected || isConnecting) return 0
 
@@ -174,9 +180,9 @@ export default function PoolMyLiquidity() {
         return getUserTotalBalanceUsd(pool)
       case 'gauge':
       case 'aura':
-        return calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
+        return stakedBalance
       case 'unstaked':
-        return getUserWalletBalanceUsd(pool)
+        return unstakedBalance
       default:
         return getUserTotalBalanceUsd(pool)
     }
@@ -305,7 +311,7 @@ export default function PoolMyLiquidity() {
                 flex="1"
                 triggerEl={
                   <Button w="100%" variant="secondary">
-                    Lock
+                    {lockBtnText}
                   </Button>
                 }
               />
