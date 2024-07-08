@@ -7,7 +7,7 @@ import { sentryDSN } from './sentry.config'
 import { isProd } from './lib/config/app.config'
 
 Sentry.init({
-  // Allow development only for debugging
+  // Change this value only if you need to debug in development (we have a custom developmentSentryDSN for that)
   enabled: isProd,
   dsn: sentryDSN,
 
