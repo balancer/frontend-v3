@@ -63,9 +63,8 @@ function getRateProviderIcon(data: GqlPriceRateProviderData, token: GqlToken) {
 export function PoolContracts({ ...props }: CardProps) {
   const { pool, chain, poolExplorerLink, hasGaugeAddress, gaugeAddress, gaugeExplorerLink } =
     usePool()
-  const { getToken } = useTokens()
 
-  console.log({ pool })
+  const { getToken } = useTokens()
 
   const contracts = useMemo(() => {
     const contracts = [
@@ -103,22 +102,22 @@ export function PoolContracts({ ...props }: CardProps) {
         <Heading variant="h4" fontSize="xl">
           Pool contracts
         </Heading>
+        {contracts.map((contract, index) => (
+          <Grid key={index} templateColumns="repeat(2, 1fr)" gap="sm">
+            <GridItem>
+              <Text variant="secondary">{contract.label}</Text>
+            </GridItem>
+            <GridItem>
+              <Link target="_blank" href={contract.explorerLink} variant="link">
+                <HStack>
+                  <Text color="link">{abbreviateAddress(contract.address)}</Text>
+                  <ArrowUpRight size={12} />
+                </HStack>
+              </Link>
+            </GridItem>
+          </Grid>
+        ))}
         <Grid templateColumns="repeat(2, 1fr)" gap="sm">
-          {contracts.map(contract => (
-            <>
-              <GridItem>
-                <Text variant="secondary">{contract.label}</Text>
-              </GridItem>
-              <GridItem>
-                <Link target="_blank" href={contract.explorerLink} variant="link">
-                  <HStack>
-                    <Text color="link">{abbreviateAddress(contract.address)}</Text>
-                    <ArrowUpRight size={12} />
-                  </HStack>
-                </Link>
-              </GridItem>
-            </>
-          ))}
           <GridItem>
             <Tooltip
               // eslint-disable-next-line max-len
@@ -143,7 +142,6 @@ export function PoolContracts({ ...props }: CardProps) {
                           alt={token.address}
                         />
                       </Tooltip>
-
                       <Link
                         key={provider.priceRateProviderData.address}
                         target="_blank"
