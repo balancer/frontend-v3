@@ -112,7 +112,9 @@ export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): S
   const stakingAddress =
     stakingType === GqlPoolStakingType.Gauge ? pool.staking?.gauge?.id : pool.staking?.aura?.id
   const stakedBalance = userBalance.stakedBalances.find(
-    balance => balance.stakingType === stakingType && balance.stakingId === stakingAddress
+    balance =>
+      balance.stakingType === stakingType &&
+      (balance.stakingId === stakingAddress || stakingType === GqlPoolStakingType.Vebal)
   )
 
   if (!stakedBalance) {

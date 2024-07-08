@@ -115,6 +115,7 @@ export default function PoolMyLiquidity() {
   function getStakingType(tabsValue: string) {
     switch (tabsValue) {
       case 'gauge':
+        if (isVeBal) return GqlPoolStakingType.Vebal
         return GqlPoolStakingType.Gauge
       case 'aura':
         return GqlPoolStakingType.Aura

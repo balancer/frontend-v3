@@ -114,8 +114,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
 }
 
 function StakingIcons({ pool }: { pool: ExpandedPoolInfo }) {
-  const shouldHideBalIcon =
-    pool.poolType === ExpandedPoolType.Unstaked || pool.poolType === ExpandedPoolType.Unlocked
+  const shouldHideBalIcon = pool.poolType === ExpandedPoolType.Unstaked
 
   const showBalIcon =
     !shouldHideBalIcon && (hasBalancerStakedBalance(pool) || hasVeBalStaking(pool))
