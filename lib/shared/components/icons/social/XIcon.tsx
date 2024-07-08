@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
-export function XIcon() {
+export function XIcon({ size = 24 }: { size?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 512 462.799"
+      width={size}
+      height={size}
       stroke="currentColor"
       fill="currentColor"
     >
