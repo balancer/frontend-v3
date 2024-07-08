@@ -18,6 +18,7 @@ import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -39,6 +40,8 @@ export function RemoveLiquidityModal({
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
   const isMounted = useIsMounted()
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   useEffect(() => {
     if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
