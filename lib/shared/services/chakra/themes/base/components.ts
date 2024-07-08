@@ -580,7 +580,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: ['xs', 'md'],
+          padding: ['sm', 'md'],
         },
         header: {
           padding: 'none',

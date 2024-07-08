@@ -36,6 +36,8 @@ import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useRouter } from 'next/navigation'
 import { parseSwapError } from './swap.helpers'
+import { useUserAccount } from '../web3/UserAccountProvider'
+import { ConnectWallet } from '../web3/ConnectWallet'
 
 export function SwapForm() {
   const router = useRouter()
@@ -67,6 +69,7 @@ export function SwapForm() {
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
+  const { isConnected } = useUserAccount()
 
   const isLoadingSwaps = simulationQuery.isLoading
 
@@ -197,20 +200,24 @@ export function SwapForm() {
             </VStack>
           </CardBody>
           <CardFooter>
-            <Tooltip label={isDisabled ? disabledReason : ''}>
-              <Button
-                ref={nextBtn}
-                variant="secondary"
-                w="full"
-                size="lg"
-                isDisabled={isDisabled || !isMounted}
-                isLoading={isLoadingSwaps || !isMounted}
-                loadingText={isLoadingSwaps || !isMounted ? 'Fetching swap...' : undefined}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-              >
-                Next
-              </Button>
-            </Tooltip>
+            {isConnected ? (
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  ref={nextBtn}
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || !isMounted}
+                  isLoading={isLoadingSwaps || !isMounted}
+                  loadingText={isLoadingSwaps || !isMounted ? 'Fetching swap...' : undefined}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Next
+                </Button>
+              </Tooltip>
+            ) : (
+              <ConnectWallet variant="primary" w="full" size="lg" />
+            )}
           </CardFooter>
         </Card>
       </Center>
