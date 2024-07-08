@@ -1,0 +1,21 @@
+{
+  "name": "getTokenPrices",
+  "request": {
+    "url": "/graphql",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "operationName": "GetTokenPrices",
+      "query": "(.*)query GetTokenPrices(.*)"
+    }
+  },
+  "responses": {
+    "ok": {
+      "default": true,
+      "status": 200,
+      "file": "data/getTokenPrices.json"
+    }
+  }
+}

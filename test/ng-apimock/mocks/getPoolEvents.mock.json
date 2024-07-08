@@ -1,0 +1,21 @@
+{
+  "name": "getPoolEvents",
+  "request": {
+    "url": "/graphql",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "operationName": "GetPoolEvents",
+      "query": "(.*)query GetPoolEvents\\((.*)"
+    }
+  },
+  "responses": {
+    "ok": {
+      "default": true,
+      "status": 200,
+      "file": "data/getPoolEvents.json"
+    }
+  }
+}

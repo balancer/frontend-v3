@@ -67,7 +67,7 @@ importers:
         version: 9.1.2
       chakra-react-select:
         specifier: ^4.7.6
-        version: 4.7.6(tpxrkqumplwq6zwmz6cptryacu)
+        version: 4.7.6(@chakra-ui/form-control@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/icon@3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/layout@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/media-query@3.3.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/menu@2.2.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(framer-motion@10.16.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/spinner@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
@@ -189,6 +189,12 @@ importers:
       '@graphql-typed-document-node/core':
         specifier: ^3.2.0
         version: 3.2.0(graphql@16.8.1)
+      '@ng-apimock/core':
+        specifier: ^3.12.0
+        version: 3.12.0
+      '@ng-apimock/dev-interface':
+        specifier: ^3.5.1
+        version: 3.5.1
       '@sentry/types':
         specifier: ^7.89.0
         version: 7.89.0
@@ -258,6 +264,9 @@ importers:
       eslint-plugin-prettier:
         specifier: ^4.2.1
         version: 4.2.1(eslint-config-prettier@8.10.0(eslint@8.43.0))(eslint@8.43.0)(prettier@2.8.8)
+      express:
+        specifier: ^4.19.2
+        version: 4.19.2
       happy-dom:
         specifier: ^12.10.3
         version: 12.10.3
@@ -2653,6 +2662,10 @@ packages:
   '@humanwhocodes/object-schema@1.2.1':
     resolution: {integrity: sha512-ZnQMnLV4e7hDlUvw8H+U8ASL02SS2Gn6+9Ac3wGGLIe7+je2AeAOxPY+izIPJDfFDb7eDjev0Us8MO1iFRN8hA==}
 
+  '@isaacs/cliui@8.0.2':
+    resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
+    engines: {node: '>=12'}
+
   '@isaacs/ttlcache@1.4.1':
     resolution: {integrity: sha512-RQgQ4uQ+pLbqXfOmieB91ejmLwvSgv9nLx6sT6sD83s7umBypgg+OIBOBbEUiJXrfpnp9j0mRhYYdzp9uqq3lA==}
     engines: {node: '>=12'}
@@ -2894,6 +2907,12 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@ng-apimock/core@3.12.0':
+    resolution: {integrity: sha512-hHFW0uIDa0bShYt+2nd2xmdMdZE+XbiS+Ckd5szgxGA2TiwOe11dnrT8LhAuSS6gUknBv021AKSw0k9+qQUnow==}
+
+  '@ng-apimock/dev-interface@3.5.1':
+    resolution: {integrity: sha512-A7394vltn3z7g8IGSguK9UwwGPSYqFG1P9074+xu0q8K8sQJ7iOCbGVLwq2PavhJg9bNNYf7WoUr8K+wRkGj9Q==}
+
   '@nikolovlazar/chakra-ui-prose@1.2.1':
     resolution: {integrity: sha512-I8EZiKDGkOnzBOkPquLWir1gvHoKpo7x23O+VusK2WhPcWtgR7p56On+e/QPMCitMbV4xW997ecivCohOxGk9Q==}
     peerDependencies:
@@ -3028,6 +3047,10 @@ packages:
   '@peculiar/webcrypto@1.4.3':
     resolution: {integrity: sha512-VtaY4spKTdN5LjJ04im/d/joXuvLbQdgy5Z4DXF4MFZhQ+MTrejbNMkfZBp1Bs3O5+bFqnJgyGdPuZQflvIa5A==}
     engines: {node: '>=10.12.0'}
+
+  '@pkgjs/parseargs@0.11.0':
+    resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
+    engines: {node: '>=14'}
 
   '@popperjs/core@2.11.8':
     resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
@@ -4304,9 +4327,6 @@ packages:
     resolution: {integrity: sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==}
     engines: {node: '>=8'}
 
-  call-bind@1.0.2:
-    resolution: {integrity: sha512-7O+FbCihrB5WGbFYesctwmTKae6rOiIzmz1icreWJ+0aA7LJfuqhEso2T9ncpcFtzMQtzXf2QGGueWJGTYsqrA==}
-
   call-bind@1.0.5:
     resolution: {integrity: sha512-C3nQxfFZxFRVoJoGKKI8y3MOEo129NQ+FgQ08iye+Mk4zNZZGdjfs06bVTr+DBSlA66Q2VEcMki/cUCP4SercQ==}
 
@@ -5185,8 +5205,8 @@ packages:
     resolution: {integrity: sha512-VyhnebXciFV2DESc+p6B+y0LjSm0krU4OgJN44qFAhBY0TJ+1V61tYD2+wHusZ6F9n5K+vl8k0sTy7PEfV4qpg==}
     engines: {node: '>=16.17'}
 
-  express@4.19.1:
-    resolution: {integrity: sha512-K4w1/Bp7y8iSiVObmCrtq8Cs79XjJc/RU2YYkZQ7wpUu5ZyZ7MtPHkqoMz4pf+mgXfNvo2qft8D9OnrH2ABk9w==}
+  express@4.19.2:
+    resolution: {integrity: sha512-5T6nhjsT+EOMzuck8JjBHARTHfMht0POzlA60WV2pMD3gyXw2LZnZ+ueGdNxG+0calOJcWKbpFcuzLZ91YWq9Q==}
     engines: {node: '>= 0.10.0'}
 
   extension-port-stream@3.0.0:
@@ -5341,6 +5361,10 @@ packages:
   for-each@0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
 
+  foreground-child@3.2.1:
+    resolution: {integrity: sha512-PXUUyLqrR2XCWICfv6ukppP96sdFwWbNEnfEMt7jNsISjMsvaLNinAHNDYyvkyU+SZG2BTSbT5NjG+vZslfGTA==}
+    engines: {node: '>=14'}
+
   forwarded@0.2.0:
     resolution: {integrity: sha512-buRG0fpBtRHSTCOASe6hD258tEubFoRLb4ZNA6NxMVHNw2gOcwHo9wyablzMzOA5z9xA9L1KNjk/Nt6MT9aYow==}
     engines: {node: '>= 0.6'}
@@ -5407,9 +5431,6 @@ packages:
   get-func-name@2.0.2:
     resolution: {integrity: sha512-8vXOvuE167CtIc3OyItco7N/dpRtBbYOsPsXCz7X/PMnlGjYjSGuZJgM1Y7mmew7BKf9BqvLX2tnOVy1BBUsxQ==}
 
-  get-intrinsic@1.2.1:
-    resolution: {integrity: sha512-2DcsyfABl+gVHEfCOaTrWgyt+tb6MSEGmKq+kI5HwLbIYgjgmMcV8KQ41uaKz1xxUcn9tJtgFbQUEVcEbd0FYw==}
-
   get-intrinsic@1.2.2:
     resolution: {integrity: sha512-0gSo4ml/0j98Y3lngkFEot/zhiCeWsbYIlZ+uZOVgzLyLaUw7wxUL+nCTP0XJvJg1AXulJRI3UJi8GsbDuxdGA==}
 
@@ -5449,6 +5470,11 @@ packages:
 
   glob-to-regexp@0.4.1:
     resolution: {integrity: sha512-lkX1HJXwyMcprw/5YUZc2s7DrpAiHB21/V+E1rHUrVNokkvB6bqMzT0VfV6/86ZNabt1k14YOIaT7nDvOX3Iiw==}
+
+  glob@10.3.12:
+    resolution: {integrity: sha512-TCNv8vJ+xz4QiqTpfOJA7HvYv+tNIRHKfUWw/q+v2jdgN4ebz+KY9tGx5J4rHP0o84mNP+ApH66HRX8us3Khqg==}
+    engines: {node: '>=16 || 14 >=14.17'}
+    hasBin: true
 
   glob@7.1.7:
     resolution: {integrity: sha512-OvD9ENzPLbegENnYP5UUfJIirTg4+XwMWGaQfQTY0JenxNvvIKP3U3/tAQSPIu/lHxXYSZmpXlUHeqAIdKzBLQ==}
@@ -5763,6 +5789,9 @@ packages:
   invariant@2.2.4:
     resolution: {integrity: sha512-phJfQVBuaJM5raOpJjSfkiD6BpbCE4Ns//LaXl6wGYtUBY83nWS6Rf9tXm2e8VaK60JEjYldbPif/A2B1C2gNA==}
 
+  inversify@6.0.2:
+    resolution: {integrity: sha512-i9m8j/7YIv4mDuYXUAcrpKPSaju/CIly9AHK5jvCBeoiM/2KEsuCQTTP+rzSWWpLYWRukdXFSl6ZTk2/uumbiA==}
+
   ipaddr.js@1.9.1:
     resolution: {integrity: sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==}
     engines: {node: '>= 0.10'}
@@ -6042,6 +6071,10 @@ packages:
 
   iterator.prototype@1.1.2:
     resolution: {integrity: sha512-DR33HMMr8EzwuRL8Y9D3u2BMj8+RqSE850jfGu59kS7tbmPLzGkZmVSfyCFSDxuZiEY6Rzt3T2NA/qU+NwVj1w==}
+
+  jackspeak@2.3.6:
+    resolution: {integrity: sha512-N3yCS/NegsOBokc8GAdM8UcmfsKiSS8cipheD/nivzr700H+nsMOxJjQnvwOcRYVuFkdH0wGUvW2WbXGmrZGbQ==}
+    engines: {node: '>=14'}
 
   jest-environment-node@29.7.0:
     resolution: {integrity: sha512-DOSwCRqXirTOyheM+4d5YZOrWcdu0LNZ87ewUoywbcb2XR4wKgqiG8vNeYwhjFMbEkfju7wx2GYH0P2gevGvFw==}
@@ -6587,12 +6620,20 @@ packages:
     resolution: {integrity: sha512-lKwV/1brpG6mBUFHtb7NUmtABCb2WZZmm2wNiOA5hAb8VdCS4B3dtMWyvcoViccwAW/COERjXLt0zP1zXUN26g==}
     engines: {node: '>=10'}
 
+  minimatch@9.0.5:
+    resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
+    engines: {node: '>=16 || 14 >=14.17'}
+
   minimist-options@4.1.0:
     resolution: {integrity: sha512-Q4r8ghd80yhO/0j1O3B2BjweX3fiHg9cdOwjJd2J76Q135c+NDxGCqdYKQ1SKBuFfgWbAUzBfvYjPUEeNgqN1A==}
     engines: {node: '>= 6'}
 
   minimist@1.2.8:
     resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+
+  minipass@7.1.2:
+    resolution: {integrity: sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==}
+    engines: {node: '>=16 || 14 >=14.17'}
 
   mipd@0.0.5:
     resolution: {integrity: sha512-gbKA784D2WKb5H/GtqEv+Ofd1S9Zj+Z/PGDIl1u1QAbswkxD28BQ5bSXQxkeBzPBABg1iDSbiwGG1XqlOxRspA==}
@@ -7011,6 +7052,10 @@ packages:
   path-root@0.1.1:
     resolution: {integrity: sha512-QLcPegTHF11axjfojBIoDygmS2E3Lf+8+jI6wOVmNVenrKSo3mFdSGiIgdSHenczw3wPtlVMQaFVwGmM7BJdtg==}
     engines: {node: '>=0.10.0'}
+
+  path-scurry@1.11.1:
+    resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
+    engines: {node: '>=16 || 14 >=14.18'}
 
   path-to-regexp@0.1.7:
     resolution: {integrity: sha512-5DFkuoqlv1uYQKxy8omFBeJPQcdoE07Kv2sferDCrAq1ohOU+MSDswDIbnx3YAM60qIOnYa53wBhXW0EbMonrQ==}
@@ -7434,6 +7479,9 @@ packages:
   redent@4.0.0:
     resolution: {integrity: sha512-tYkDkVVtYkSVhuQ4zBgfvciymHaeuel+zFKXShfDnFP5SyVEP7qo70Rf1jTOTCx3vGNAbnEi/xFkcfQVMIBWag==}
     engines: {node: '>=12'}
+
+  reflect-metadata@0.2.2:
+    resolution: {integrity: sha512-urBwgfrvVP/eAyXx4hluJivBKzuEbSQs9rKWCrCkbSxNv8mxPcUZKeuoF3Uy4mJl3Lwprp6yy5/39VWigZ4K6Q==}
 
   reflect.getprototypeof@1.0.4:
     resolution: {integrity: sha512-ECkTw8TmJwW60lOTR+ZkODISW6RQ8+2CL3COqtiJKLd6MmB45hN51HprHFziKLGkAuTGQhBb91V8cy+KHlaCjw==}
@@ -11855,6 +11903,15 @@ snapshots:
 
   '@humanwhocodes/object-schema@1.2.1': {}
 
+  '@isaacs/cliui@8.0.2':
+    dependencies:
+      string-width: 5.1.2
+      string-width-cjs: string-width@4.2.3
+      strip-ansi: 7.1.0
+      strip-ansi-cjs: strip-ansi@6.0.1
+      wrap-ansi: 8.1.0
+      wrap-ansi-cjs: wrap-ansi@7.0.0
+
   '@isaacs/ttlcache@1.4.1': {}
 
   '@istanbuljs/schema@0.1.3': {}
@@ -12189,6 +12246,23 @@ snapshots:
   '@next/swc-win32-x64-msvc@14.2.0':
     optional: true
 
+  '@ng-apimock/core@3.12.0':
+    dependencies:
+      body-parser: 1.20.2
+      chokidar: 3.6.0
+      debug: 4.3.4
+      fs-extra: 11.2.0
+      glob: 10.3.12
+      inversify: 6.0.2
+      node-fetch: 2.7.0
+      reflect-metadata: 0.2.2
+      uuid: 9.0.1
+    transitivePeerDependencies:
+      - encoding
+      - supports-color
+
+  '@ng-apimock/dev-interface@3.5.1': {}
+
   '@nikolovlazar/chakra-ui-prose@1.2.1(@chakra-ui/react@2.8.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(framer-motion@10.16.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0)':
     dependencies:
       '@chakra-ui/react': 2.8.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(framer-motion@10.16.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -12306,6 +12380,9 @@ snapshots:
       pvtsutils: 1.3.5
       tslib: 2.6.2
       webcrypto-core: 1.7.7
+
+  '@pkgjs/parseargs@0.11.0':
+    optional: true
 
   '@popperjs/core@2.11.8': {}
 
@@ -13998,7 +14075,7 @@ snapshots:
 
   array-buffer-byte-length@1.0.0:
     dependencies:
-      call-bind: 1.0.2
+      call-bind: 1.0.5
       is-array-buffer: 3.0.2
 
   array-flatten@1.1.1: {}
@@ -14289,11 +14366,6 @@ snapshots:
 
   cac@6.7.14: {}
 
-  call-bind@1.0.2:
-    dependencies:
-      function-bind: 1.1.2
-      get-intrinsic: 1.2.1
-
   call-bind@1.0.5:
     dependencies:
       function-bind: 1.1.2
@@ -14350,8 +14422,8 @@ snapshots:
       pathval: 1.1.1
       type-detect: 4.0.8
 
-  chakra-react-select@4.7.6(tpxrkqumplwq6zwmz6cptryacu):
-    dependencies:
+  ? chakra-react-select@4.7.6(@chakra-ui/form-control@2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/icon@3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/layout@2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/media-query@3.3.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/menu@2.2.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(framer-motion@10.16.4(react-dom@18.2.0(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/spinner@2.1.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0))(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
+  : dependencies:
       '@chakra-ui/form-control': 2.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/icon': 3.2.0(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0)
       '@chakra-ui/layout': 2.3.1(@chakra-ui/system@2.6.2(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@emotion/styled@11.11.0(@emotion/react@11.11.1(@types/react@18.2.34)(react@18.2.0))(@types/react@18.2.34)(react@18.2.0))(react@18.2.0))(react@18.2.0)
@@ -14800,7 +14872,7 @@ snapshots:
     dependencies:
       get-intrinsic: 1.2.2
       gopd: 1.0.1
-      has-property-descriptors: 1.0.0
+      has-property-descriptors: 1.0.1
 
   define-lazy-prop@2.0.0: {}
 
@@ -15408,7 +15480,7 @@ snapshots:
       signal-exit: 4.1.0
       strip-final-newline: 3.0.0
 
-  express@4.19.1:
+  express@4.19.2:
     dependencies:
       accepts: 1.3.8
       array-flatten: 1.1.1
@@ -15617,6 +15689,11 @@ snapshots:
     dependencies:
       is-callable: 1.2.7
 
+  foreground-child@3.2.1:
+    dependencies:
+      cross-spawn: 7.0.3
+      signal-exit: 4.1.0
+
   forwarded@0.2.0: {}
 
   fraction.js@4.3.7: {}
@@ -15671,13 +15748,6 @@ snapshots:
 
   get-func-name@2.0.2: {}
 
-  get-intrinsic@1.2.1:
-    dependencies:
-      function-bind: 1.1.2
-      has: 1.0.4
-      has-proto: 1.0.1
-      has-symbols: 1.0.3
-
   get-intrinsic@1.2.2:
     dependencies:
       function-bind: 1.1.2
@@ -15713,6 +15783,14 @@ snapshots:
       is-glob: 4.0.3
 
   glob-to-regexp@0.4.1: {}
+
+  glob@10.3.12:
+    dependencies:
+      foreground-child: 3.2.1
+      jackspeak: 2.3.6
+      minimatch: 9.0.5
+      minipass: 7.1.2
+      path-scurry: 1.11.1
 
   glob@7.1.7:
     dependencies:
@@ -16076,6 +16154,8 @@ snapshots:
     dependencies:
       loose-envify: 1.4.0
 
+  inversify@6.0.2: {}
+
   ipaddr.js@1.9.1: {}
 
   iron-webcrypto@1.1.0: {}
@@ -16092,8 +16172,8 @@ snapshots:
 
   is-array-buffer@3.0.2:
     dependencies:
-      call-bind: 1.0.2
-      get-intrinsic: 1.2.1
+      call-bind: 1.0.5
+      get-intrinsic: 1.2.2
       is-typed-array: 1.1.12
 
   is-arrayish@0.2.1: {}
@@ -16198,7 +16278,7 @@ snapshots:
 
   is-regex@1.1.4:
     dependencies:
-      call-bind: 1.0.2
+      call-bind: 1.0.5
       has-tostringtag: 1.0.0
 
   is-relative@1.0.0:
@@ -16209,7 +16289,7 @@ snapshots:
 
   is-shared-array-buffer@1.0.2:
     dependencies:
-      call-bind: 1.0.2
+      call-bind: 1.0.5
 
   is-stream@2.0.1: {}
 
@@ -16323,6 +16403,12 @@ snapshots:
       has-symbols: 1.0.3
       reflect.getprototypeof: 1.0.4
       set-function-name: 2.0.1
+
+  jackspeak@2.3.6:
+    dependencies:
+      '@isaacs/cliui': 8.0.2
+    optionalDependencies:
+      '@pkgjs/parseargs': 0.11.0
 
   jest-environment-node@29.7.0:
     dependencies:
@@ -17024,6 +17110,10 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.1
 
+  minimatch@9.0.5:
+    dependencies:
+      brace-expansion: 2.0.1
+
   minimist-options@4.1.0:
     dependencies:
       arrify: 1.0.1
@@ -17031,6 +17121,8 @@ snapshots:
       kind-of: 6.0.3
 
   minimist@1.2.8: {}
+
+  minipass@7.1.2: {}
 
   mipd@0.0.5(bufferutil@4.0.8)(typescript@5.4.5)(zod@3.22.4):
     dependencies:
@@ -17249,7 +17341,7 @@ snapshots:
 
   object.assign@4.1.4:
     dependencies:
-      call-bind: 1.0.2
+      call-bind: 1.0.5
       define-properties: 1.2.1
       has-symbols: 1.0.3
       object-keys: 1.1.1
@@ -17472,6 +17564,11 @@ snapshots:
   path-root@0.1.1:
     dependencies:
       path-root-regex: 0.1.2
+
+  path-scurry@1.11.1:
+    dependencies:
+      lru-cache: 10.2.0
+      minipass: 7.1.2
 
   path-to-regexp@0.1.7: {}
 
@@ -17947,6 +18044,8 @@ snapshots:
       indent-string: 5.0.0
       strip-indent: 4.0.0
 
+  reflect-metadata@0.2.2: {}
+
   reflect.getprototypeof@1.0.4:
     dependencies:
       call-bind: 1.0.5
@@ -17972,7 +18071,7 @@ snapshots:
 
   regexp.prototype.flags@1.5.1:
     dependencies:
-      call-bind: 1.0.2
+      call-bind: 1.0.5
       define-properties: 1.2.1
       set-function-name: 2.0.1
 
@@ -18176,7 +18275,7 @@ snapshots:
   sentry-testkit@5.0.9:
     dependencies:
       body-parser: 1.20.2
-      express: 4.19.1
+      express: 4.19.2
     transitivePeerDependencies:
       - supports-color
 
