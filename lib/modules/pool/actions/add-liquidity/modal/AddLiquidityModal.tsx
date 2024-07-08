@@ -41,6 +41,13 @@ export function AddLiquidityModal({
   const isMounted = useIsMounted()
   const { userAddress } = useUserAccount()
 
+  // Every time the modal is opened, reset the current step index to re-check isCompleted for all steps
+  // (conditions might have changed, for instance, for token approvals)
+  useEffect(() => {
+    if (isOpen) transactionSteps.setCurrentStepIndex(0)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen])
+
   useEffect(() => {
     if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
       window.history.replaceState({}, '', `./add-liquidity/${addLiquidityTxHash}`)
