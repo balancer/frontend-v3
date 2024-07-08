@@ -108,7 +108,7 @@ describe('fetches onchain and overrides user balances', async () => {
       stakedBalances: [
         {
           balance: '52.364668984347889717',
-          balanceUsd: expect.any(String),
+          balanceUsd: expect.any(Number),
           stakingId: '0x55ec14e951b1c25ab09132dae12363bea0d20105', // Non preferential gauge
           stakingType: 'GAUGE',
         },
