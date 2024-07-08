@@ -87,10 +87,16 @@ export default function PoolMyLiquidity() {
   }
 
   function calcUserPoolTokenBalances() {
+    const poolTokens = pool.poolTokens.map(({ balance, decimals, address }) => ({
+      balance,
+      decimals,
+      address,
+    }))
+
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
         getBptBalanceForTab(),
-        pool.poolTokens,
+        poolTokens,
         pool.dynamicData.totalShares
       ),
       'address'
