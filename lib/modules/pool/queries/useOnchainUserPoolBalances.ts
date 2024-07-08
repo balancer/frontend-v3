@@ -12,8 +12,8 @@ import { useEffect } from 'react'
 import { ReadContractsErrorType } from 'wagmi/actions'
 import { Pool as OriginalPool } from '../PoolProvider'
 import { calcBptPriceFor } from '../pool.helpers'
-import { calcNonVeBalStakedBalance } from '../user-balance.helpers'
-import { GaugeStakedBalancesByPoolId, useUserStakedBalance } from './useUserStakedBalance'
+import { calcNonOnChainFetchedStakedBalance } from '../user-balance.helpers'
+import { StakedBalancesByPoolId, useUserStakedBalance } from './useUserStakedBalance'
 import { UnstakedBalanceByPoolId, useUserUnstakedBalance } from './useUserUnstakedBalance'
 
 type Pool = OriginalPool & {
@@ -29,7 +29,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   } = useUserUnstakedBalance(pools)
 
   const {
-    gaugeStakedBalancesByPoolId,
+    stakedBalancesByPoolId,
     isLoading: isLoadingStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
@@ -44,7 +44,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const enrichedPools = overwriteOnchainPoolBalanceData(
     pools,
     unstakedBalanceByPoolId,
-    gaugeStakedBalancesByPoolId
+    stakedBalancesByPoolId
   )
 
   useEffect(() => {
@@ -102,15 +102,13 @@ function captureUnstakedMulticallError(unstakedPoolBalancesError: ReadContractsE
 function overwriteOnchainPoolBalanceData(
   pools: Pool[],
   ocUnstakedBalances: UnstakedBalanceByPoolId,
-  gaugeStakedBalancesByPoolId: GaugeStakedBalancesByPoolId
+  stakedBalancesByPoolId: StakedBalancesByPoolId
 ) {
   return pools.map(pool => {
-    if (
-      !Object.keys(ocUnstakedBalances).length ||
-      !Object.keys(gaugeStakedBalancesByPoolId).length
-    ) {
+    if (!Object.keys(ocUnstakedBalances).length || !Object.keys(stakedBalancesByPoolId).length) {
       return pool
     }
+
     const bptPrice = calcBptPriceFor(pool)
 
     // Unstaked balances
@@ -119,22 +117,24 @@ function overwriteOnchainPoolBalanceData(
     const onchainUnstakedBalanceUsd = bn(onchainUnstakedBalance).times(bptPrice).toNumber()
 
     // Staked balances
-    const onchainGaugeStakedBalances = gaugeStakedBalancesByPoolId[pool.id]
-    const onchainTotalGaugeStakedBalance = Number(
-      safeSum(onchainGaugeStakedBalances.map(stakedBalance => bn(stakedBalance.balance)))
+    const onchainStakedBalances = stakedBalancesByPoolId[pool.id]
+    const onchainTotalStakedBalance = safeSum(
+      onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance))
     )
 
     // Total balances
-    const totalBalance =
-      calcNonVeBalStakedBalance(pool) +
-      onchainTotalGaugeStakedBalance +
-      Number(onchainUnstakedBalance)
+    const totalBalance = safeSum([
+      calcNonOnChainFetchedStakedBalance(pool),
+      onchainTotalStakedBalance,
+      onchainUnstakedBalance,
+    ])
+
     const totalBalanceUsd = Number(bn(totalBalance).times(bptPrice))
 
     const userBalance: GqlPoolUserBalance = {
       __typename: 'GqlPoolUserBalance',
       ...(pool.userBalance || {}),
-      stakedBalances: overrideStakedBalances(pool, gaugeStakedBalancesByPoolId[pool.id]),
+      stakedBalances: overrideStakedBalances(pool, stakedBalancesByPoolId[pool.id]),
       walletBalance: onchainUnstakedBalance,
       walletBalanceUsd: onchainUnstakedBalanceUsd,
       totalBalance: totalBalance.toString(),
@@ -152,12 +152,12 @@ function overwriteOnchainPoolBalanceData(
  */
 function overrideStakedBalances(
   pool: Pool,
-  onChainGaugeStakedBalances: GqlUserStakedBalance[]
+  onChainStakedBalances: GqlUserStakedBalance[]
 ): GqlUserStakedBalance[] {
-  if (!pool.userBalance) return onChainGaugeStakedBalances
+  if (!pool.userBalance) return onChainStakedBalances
   const apiStakedBalances = [...pool.userBalance.stakedBalances]
 
-  onChainGaugeStakedBalances.forEach(onchainStakedBalance => {
+  onChainStakedBalances.forEach(onchainStakedBalance => {
     // Index of the onchain gauge in the api staked balances
     const index = apiStakedBalances.findIndex(apiBalance =>
       isSameAddress(apiBalance.stakingId, onchainStakedBalance.stakingId)
