@@ -39,7 +39,7 @@ export function useSimulateSwapQuery({
   return useQuery<SimulateSwapResponse, Error>({
     queryKey,
     queryFn,
-    enabled: enabled && !!isZero(debouncedSwapAmount),
+    enabled: enabled && !isZero(debouncedSwapAmount),
     gcTime: 0,
     meta: sentryMetaForSwapHandler('Error in swap simulation query', {
       handler,
