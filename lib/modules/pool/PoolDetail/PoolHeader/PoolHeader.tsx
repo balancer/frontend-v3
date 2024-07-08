@@ -19,7 +19,7 @@ export function PoolHeader() {
   }
 
   return (
-    <Stack w="full" justify="space-between" direction={{ base: 'column', sm: 'row' }}>
+    <Stack w="full" justify="space-between" spacing="md" direction={{ base: 'column', sm: 'row' }}>
       <PoolMetaBadges />
       <Button onClick={handleClick} variant="primary" size="lg" isDisabled={isAddLiquidityBlocked}>
         Add liquidity
