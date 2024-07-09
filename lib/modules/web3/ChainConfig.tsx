@@ -41,7 +41,7 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
 
 // Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: undefined,
+  [GqlChain.Mainnet]: 'https://rpc.tenderly.co/fork/fc7c306d-5953-4658-87ab-36bc5a5c18f9',
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: undefined,
