@@ -53,7 +53,7 @@ const basePopoverAprItemProps = {
 }
 
 const defaultDisplayValueFormatter = (value: BigNumber) => fNum('apr', value.toString())
-const defaultNumberFormatter = (value: string) => bn(bn(value).toFixed(4, BigNumber.ROUND_HALF_UP))
+const defaultNumberFormatter = (value: string) => bn(value)
 
 function BaseAprTooltip({
   aprItems,

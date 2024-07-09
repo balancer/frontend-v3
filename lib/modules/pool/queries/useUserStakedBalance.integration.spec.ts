@@ -30,7 +30,7 @@ describe('fetches onchain user balances', async () => {
     await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 
     // Returns gauge staked balances by pool id
-    const gaugeStakedBalances = result.current.gaugeStakedBalancesByPoolId[poolId]
+    const gaugeStakedBalances = result.current.stakedBalancesByPoolId[poolId]
     expect(gaugeStakedBalances).toMatchObject([
       {
         balance: '0',
@@ -59,7 +59,7 @@ describe('fetches onchain user balances', async () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 
-    expect(result.current.gaugeStakedBalancesByPoolId).toEqual({
+    expect(result.current.stakedBalancesByPoolId).toEqual({
       '0x05f21bacc4fd8590d1eaca9830a64b66a733316c00000000000000000000087e': [],
     })
   })

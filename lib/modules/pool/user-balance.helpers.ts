@@ -1,10 +1,11 @@
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { Pool } from './PoolProvider'
 import { PoolListItem } from './pool.types'
-import { Address, parseUnits } from 'viem'
+import { parseUnits } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { HumanAmount } from '@balancer/sdk'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { hasNonPreferentialStakedBalance, hasPreferentialGauge } from './actions/stake.helpers'
 
 export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
   const userBalance = pool.userBalance
@@ -12,6 +13,17 @@ export function calcTotalStakedBalance(pool: Pool | PoolListItem): HumanAmount {
 
   return safeSum(
     userBalance.stakedBalances.map(stakedBalance => bn(stakedBalance.balance))
+  ) as HumanAmount
+}
+
+export function calcGaugeStakedBalance(pool: Pool | PoolListItem): HumanAmount {
+  const userBalance = pool.userBalance
+  if (!userBalance) return '0'
+
+  return safeSum(
+    userBalance.stakedBalances
+      .filter(stakedBalance => stakedBalance.stakingType === GqlPoolStakingType.Gauge)
+      .map(stakedBalance => bn(stakedBalance.balance))
   ) as HumanAmount
 }
 
@@ -65,34 +77,60 @@ export function getUserTotalBalanceInt(pool: Pool): bigint {
 }
 
 /*
-   The api provides staked balances that, for now, we don't fetch onchain (AURA, FARMING, etc.)
-   We need this "non veBal staked balance" in the totalBalance calculation
+   The api provides staked balances that, for now, we don't fetch onchain (FARMING, etc.)
+   We need this "non onChain fetched staked balance" in the totalBalance calculation
 */
-export function calcNonVeBalStakedBalance(pool: Pool): number {
-  const userBalance = pool.userBalance
-  if (!userBalance) return 0
-
-  const nonGaugeStakedBalances = userBalance.stakedBalances
-    .filter(balance => balance.stakingType !== GqlPoolStakingType.Gauge)
-    .map(stakedBalance => stakedBalance.balance)
-
-  return Number(safeSum(nonGaugeStakedBalances))
-}
-
-export function getGaugeStakedBalance(pool: Pool, gaugeAddress: Address): HumanAmount {
+export function calcNonOnChainFetchedStakedBalance(pool: Pool): string {
   const userBalance = pool.userBalance
   if (!userBalance) return '0'
 
-  const gaugeStakedBalance = userBalance.stakedBalances.find(
-    balance =>
-      balance.stakingType === GqlPoolStakingType.Gauge && balance.stakingId === gaugeAddress
-  )
+  const nonOnChainFetchedStakedBalances = userBalance.stakedBalances
+    .filter(
+      balance =>
+        balance.stakingType !== GqlPoolStakingType.Gauge &&
+        balance.stakingType !== GqlPoolStakingType.Aura
+    )
+    .map(stakedBalance => stakedBalance.balance)
 
-  if (!gaugeStakedBalance) {
-    return '0'
+  return safeSum(nonOnChainFetchedStakedBalances)
+}
+
+type StakedBalance = {
+  balance: HumanAmount
+  balanceUsd: number
+}
+
+export function getStakedBalance(pool: Pool, stakingType: GqlPoolStakingType): StakedBalance {
+  const zeroStakedBalance = {
+    balance: '0' as HumanAmount,
+    balanceUsd: 0,
   }
 
-  return gaugeStakedBalance.balance as HumanAmount
+  const userBalance = pool.userBalance
+  if (!userBalance) return zeroStakedBalance
+
+  const stakingAddress =
+    stakingType === GqlPoolStakingType.Gauge ? pool.staking?.gauge?.id : pool.staking?.aura?.id
+  const stakedBalance = userBalance.stakedBalances.find(
+    balance => balance.stakingType === stakingType && balance.stakingId === stakingAddress
+  )
+
+  if (!stakedBalance) {
+    return zeroStakedBalance
+  }
+
+  return {
+    balance: stakedBalance.balance as HumanAmount,
+    balanceUsd: stakedBalance.balanceUsd,
+  }
+}
+
+export function calcStakedBalanceInt(pool: Pool, stakingType: GqlPoolStakingType) {
+  return parseUnits(getStakedBalance(pool, stakingType).balance, BPT_DECIMALS)
+}
+
+export function calcStakedBalanceUsd(pool: Pool, stakingType: GqlPoolStakingType): number {
+  return Number(bn(getStakedBalance(pool, stakingType).balanceUsd))
 }
 
 export function hasTotalBalance(pool: Pool) {
@@ -123,4 +161,9 @@ export function hasTinyBalance(pool: Pool | PoolListItem, minUsdBalance = 0.01):
   const userBalance = pool.userBalance
   if (!userBalance) return false
   return bn(getUserTotalBalanceUsd(pool)).lt(minUsdBalance)
+}
+
+export function shouldMigrateStake(pool: Pool): boolean {
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
+  return hasPreferentialGauge(pool) && hasNonPreferentialBalance
 }

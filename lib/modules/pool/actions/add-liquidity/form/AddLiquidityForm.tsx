@@ -40,6 +40,8 @@ import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip
 import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../../useModalWithPoolRedirect'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -77,6 +79,7 @@ function AddLiquidityMainForm() {
   const tokenSelectDisclosure = useDisclosure()
   const { setValidationError } = useTokenInputsValidation()
   const { balanceFor, isBalancesLoading } = useTokenBalances()
+  const { isConnected } = useUserAccount()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -211,19 +214,23 @@ function AddLiquidityMainForm() {
               error={simulationQuery.error}
             ></GenericError>
           )}
-          <Tooltip label={isDisabled ? disabledReason : ''}>
-            <Button
-              ref={nextBtn}
-              variant="secondary"
-              w="full"
-              size="lg"
-              isDisabled={isDisabled}
-              isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
-              onClick={() => !isDisabled && onModalOpen()}
-            >
-              Next
-            </Button>
-          </Tooltip>
+          {isConnected ? (
+            <Tooltip label={isDisabled ? disabledReason : ''}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={isDisabled}
+                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
+                onClick={() => !isDisabled && onModalOpen()}
+              >
+                Next
+              </Button>
+            </Tooltip>
+          ) : (
+            <ConnectWallet variant="primary" w="full" size="lg" />
+          )}
         </VStack>
       </Card>
       <AddLiquidityModal

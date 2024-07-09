@@ -87,11 +87,12 @@ export function PoolAlert({
       color="font.dark"
       role="group"
     >
-      <HStack>
+      <HStack w="full">
         <Box flex="0 0 auto">
           <AlertTriangle width="24px" height="24px" />
         </Box>
         <AlertTitle
+          w="full"
           gap={1}
           display="flex"
           alignItems="center"
