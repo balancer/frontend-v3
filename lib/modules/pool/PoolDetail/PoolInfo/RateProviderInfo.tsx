@@ -110,11 +110,11 @@ export function RateProviderInfoPopOver({
                   <Text>{data.factory ?? 'None'}</Text>
                 </VStack>
                 <VStack alignItems="flex-start">
-                  <Text color="grayText">Review URL</Text>
+                  <Text color="grayText">Review</Text>
                   {data.reviewUrl ? (
                     <Link href={data.reviewUrl} target="_blank">
                       <Box as="span" color="font.link">
-                        Link
+                        Link to review
                       </Box>
                     </Link>
                   ) : (
