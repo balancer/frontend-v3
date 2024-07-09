@@ -9,10 +9,15 @@ import { useState } from 'react'
 import ClaimProtocolRevenueModal from '../ClaimProtocolRevenueModal'
 import { useRouter } from 'next/navigation'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { useHasMerklRewards } from '../../useHasMerklRewards'
 
 export function ClaimNetworkPools() {
-  const { poolsByChainMap, protocolRewardsBalance, totalFiatClaimableBalanceByChain } =
-    usePortfolio()
+  const {
+    poolsByChainMap,
+    protocolRewardsBalance,
+    totalFiatClaimableBalanceByChain,
+    poolsWithOnchainUserBalances,
+  } = usePortfolio()
 
   const [isOpenedProtocolRevenueModal, setIsOpenedProtocolRevenueModal] = useState(false)
   const { isConnected } = useUserAccount()
@@ -20,6 +25,8 @@ export function ClaimNetworkPools() {
 
   const emptyChainMap = Object.keys(poolsByChainMap).length === 0
   const hasProtocolRewards = protocolRewardsBalance && protocolRewardsBalance.isGreaterThan(0)
+
+  const { hasMerklRewards } = useHasMerklRewards(poolsWithOnchainUserBalances)
 
   if (!isConnected || (emptyChainMap && !hasProtocolRewards)) {
     return null
@@ -29,6 +36,7 @@ export function ClaimNetworkPools() {
     <FadeInOnView>
       <Stack gap={5}>
         <Heading size="lg">Claimable incentives</Heading>
+        <Heading size="lg">HAS REWARDS {JSON.stringify(hasMerklRewards)}</Heading>
 
         <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
           {Object.entries(poolsByChainMap).map(([chain, pools]) => (
