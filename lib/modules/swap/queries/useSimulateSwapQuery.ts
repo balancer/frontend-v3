@@ -7,6 +7,7 @@ import { SwapHandler } from '../handlers/Swap.handler'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SimulateSwapInputs, SimulateSwapResponse } from '../swap.types'
 import { sentryMetaForSwapHandler } from '@/lib/shared/utils/query-errors'
+import { isZero } from '@/lib/shared/utils/numbers'
 
 export type SwapSimulationQueryResult = ReturnType<typeof useSimulateSwapQuery>
 
@@ -38,7 +39,7 @@ export function useSimulateSwapQuery({
   return useQuery<SimulateSwapResponse, Error>({
     queryKey,
     queryFn,
-    enabled,
+    enabled: enabled && !isZero(debouncedSwapAmount),
     gcTime: 0,
     meta: sentryMetaForSwapHandler('Error in swap simulation query', {
       handler,
