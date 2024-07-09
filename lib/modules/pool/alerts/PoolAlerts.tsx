@@ -72,7 +72,7 @@ export function PoolAlert({
   return tryWrapInLink(
     <Alert status={status}>
       <AlertIcon />
-      <AlertTitle gap={1} display="flex">
+      <AlertTitle gap={1} display="flex" w="full">
         {title}
         {learnMoreLink && (
           <Link

@@ -1,7 +1,7 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { AlertStatus, HStack, Tooltip } from '@chakra-ui/react'
+import { AlertStatus, Box, HStack, Tooltip } from '@chakra-ui/react'
 import { isNil } from 'lodash'
 import { hasReviewedRateProvider } from '../pool.helpers'
 import { usePathname, useRouter } from 'next/navigation'
@@ -124,14 +124,12 @@ export function usePoolAlerts(pool: Pool) {
 
     function MigrateStakeTitle() {
       return (
-        <HStack justify="space-between" w="full">
-          <HStack>
-            <div>Migrate to the new veBAL staking gauge for future BAL liquidity incentives </div>
-            <Tooltip label={migrateStakeTooltipLabel}>
-              <InfoOutlineIcon fontSize="sm" />
-            </Tooltip>
-          </HStack>
-          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
+        <HStack w="full">
+          <Box>Migrate to the new veBAL staking gauge for future BAL liquidity incentives</Box>
+          <Tooltip label={migrateStakeTooltipLabel}>
+            <InfoOutlineIcon fontSize="sm" />
+          </Tooltip>
+          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)} top={-3}>
             Migrate
           </PoolAlertButton>
         </HStack>
@@ -146,6 +144,7 @@ export function usePoolAlerts(pool: Pool) {
         isSoftWarning: false,
       })
     }
+
     return alerts
   }
 
