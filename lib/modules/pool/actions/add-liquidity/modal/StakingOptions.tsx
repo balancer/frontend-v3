@@ -4,12 +4,13 @@ import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
 import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
+import { getAuraPoolLink, getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { getChainId } from '@/lib/config/app.config'
 
 export function StakingOptions() {
-  const { pool } = usePool()
+  const { chain, pool } = usePool()
   const canStake = !!pool.staking
   const stakePath = getPoolActionPath({
     id: pool.id,
@@ -58,15 +59,17 @@ export function StakingOptions() {
             <Flex position="absolute" top={3} right={2}>
               <Image src="/images/protocols/aura.svg" width={30} height={30} alt="balancer" />
             </Flex>
-            <Button
-              as={Link}
-              target="_blank"
-              href={'https://aura.finance/'}
-              w="full"
-              variant={'secondary'}
-            >
-              Learn more
-            </Button>
+            {pool.staking && pool.staking.aura && (
+              <Button
+                as={Link}
+                target="_blank"
+                href={getAuraPoolLink(getChainId(chain), pool.staking.aura.auraPoolId)}
+                w="full"
+                variant={'secondary'}
+              >
+                Learn more
+              </Button>
+            )}
           </VStack>
         </Card>
       </HStack>
