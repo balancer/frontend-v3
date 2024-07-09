@@ -20,12 +20,12 @@ export function useAddLiquiditySteps({
   simulationQuery,
 }: AddLiquidityStepsParams) {
   const vaultAddress = useContractAddress('balancer.vaultV2')
-  const { pool, chainId } = usePool()
+  const { pool, chainId, chain } = usePool()
   const relayerMode = useRelayerMode(pool)
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
-  const signRelayerStep = useSignRelayerStep()
+  const signRelayerStep = useSignRelayerStep(chain)
 
   const inputAmounts = useMemo(
     () => helpers.toInputAmounts(humanAmountsIn),

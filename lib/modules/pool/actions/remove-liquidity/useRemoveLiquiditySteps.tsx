@@ -10,10 +10,10 @@ import { RemoveLiquidityStepParams, useRemoveLiquidityStep } from './useRemoveLi
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
 
 export function useRemoveLiquiditySteps(params: RemoveLiquidityStepParams): TransactionStep[] {
-  const { chainId, pool } = usePool()
+  const { chainId, pool, chain } = usePool()
   const relayerMode = useRelayerMode(pool)
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
-  const signRelayerStep = useSignRelayerStep()
+  const signRelayerStep = useSignRelayerStep(chain)
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
 
