@@ -82,6 +82,8 @@ query GetPools(
         id
         apr
         auraPoolAddress
+        auraPoolId
+        isShutdown
       }
     }
     factory

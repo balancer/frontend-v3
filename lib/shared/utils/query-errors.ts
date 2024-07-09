@@ -198,15 +198,18 @@ export function captureSentryError(
   e: unknown,
   { context, errorMessage, errorName }: SentryMetadata
 ) {
-  const error = ensureError(e)
-  if (shouldIgnoreExecutionError(error)) return
-  const sentryError = new SentryError(errorMessage, {
-    cause: error,
+  const causeError = ensureError(e)
+  if (shouldIgnoreExecutionError(causeError)) return
+
+  // Adding the root cause message to the top level message makes slack alerts more useful
+  const errorMessageWithCause = errorMessage + `\n\nCause: \n` + causeError.message
+
+  const sentryError = new SentryError(errorMessageWithCause, {
+    cause: causeError,
     name: errorName,
     context,
   })
 
-  // console.error('Sentry error en wagmi react query wrapper 2. Context', sentryError)
   captureException(sentryError, context)
 }
 
@@ -224,7 +227,7 @@ export function shouldIgnoreError(e: Error) {
 }
 
 function shouldIgnore(e: Error): boolean {
-  if (e.message.includes('connector.getAccounts is not a function')) return true
+  if (e.message.includes('.getAccounts is not a function')) return true
 
   if (isUserRejectedError(e)) return true
 
