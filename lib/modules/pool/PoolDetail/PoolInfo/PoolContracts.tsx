@@ -103,7 +103,7 @@ export function PoolContracts({ ...props }: CardProps) {
           Pool contracts
         </Heading>
         {contracts.map((contract, index) => (
-          <Grid key={index} templateColumns="repeat(2, 1fr)" gap="sm">
+          <Grid key={index} templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
             <GridItem>
               <Text variant="secondary">{contract.label}</Text>
             </GridItem>
@@ -117,7 +117,7 @@ export function PoolContracts({ ...props }: CardProps) {
             </GridItem>
           </Grid>
         ))}
-        <Grid templateColumns="repeat(2, 1fr)" gap="sm">
+        <Grid templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
           <GridItem>
             <Tooltip
               // eslint-disable-next-line max-len
