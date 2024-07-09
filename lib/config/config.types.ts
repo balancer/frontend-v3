@@ -9,6 +9,7 @@ export interface TokensConfig {
   addresses: {
     bal: Address
     wNativeAsset: Address
+    auraBal?: Address
   }
   nativeAsset: {
     name: string
