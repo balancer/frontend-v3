@@ -76,9 +76,10 @@ export function usePoolAlerts(pool: Pool) {
       if (!hasReviewedRateProvider(token)) {
         alerts.push({
           identifier: `PriceProviderNotReviewed-${token.symbol}`,
-          title: `The price data provider for ${token.symbol} has not been reviewed.`,
+          // eslint-disable-next-line max-len
+          title: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
           status: 'error',
-          isSoftWarning: false,
+          isSoftWarning: true,
         })
       }
 
@@ -86,20 +87,26 @@ export function usePoolAlerts(pool: Pool) {
         alerts.push({
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
-          title: `The price data provider for ${token.symbol} is currently deemed unreliable.`,
+          title: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
           status: 'error',
-          isSoftWarning: false,
+          isSoftWarning: true,
         })
       }
 
-      token.priceRateProviderData?.warnings?.forEach(warning => {
+      if (
+        hasReviewedRateProvider(token) &&
+        token.priceRateProviderData?.summary === 'safe' &&
+        token.priceRateProviderData?.warnings &&
+        token.priceRateProviderData?.warnings.length > 0
+      ) {
         alerts.push({
-          identifier: `PriceProviderWarning-${token.symbol}-${warning}`,
-          title: `Attention: ${token.symbol} Price Provider Alert - ${warning}`,
-          status: 'warning',
+          identifier: `PriceProviderWithWarnings-${token.symbol}`,
+          // eslint-disable-next-line max-len
+          title: `The rate provider for ${token.symbol} has been reviewed as ‘safe’ but with warnings. Please review in the Pool contracts section.`,
+          status: 'error',
           isSoftWarning: true,
         })
-      })
+      }
     })
 
     return alerts
