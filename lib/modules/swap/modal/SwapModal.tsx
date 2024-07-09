@@ -17,6 +17,7 @@ import { SwapModalBody } from './SwapModalBody'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { useResetStepIndexOnOpen } from '../../pool/actions/useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -38,6 +39,8 @@ export function SwapPreviewModal({
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   useEffect(() => {
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {

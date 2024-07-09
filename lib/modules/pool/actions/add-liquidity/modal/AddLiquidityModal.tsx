@@ -18,6 +18,7 @@ import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -41,12 +42,7 @@ export function AddLiquidityModal({
   const isMounted = useIsMounted()
   const { userAddress } = useUserAccount()
 
-  // Every time the modal is opened, reset the current step index to re-check isCompleted for all steps
-  // (conditions might have changed, for instance, for token approvals)
-  useEffect(() => {
-    if (isOpen) transactionSteps.setCurrentStepIndex(0)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen])
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   useEffect(() => {
     if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {

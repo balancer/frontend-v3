@@ -21,6 +21,7 @@ import { MigrateStakePreview } from './MigrateStakePreview'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { usePoolRedirect } from '../../pool.hooks'
+import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -41,6 +42,8 @@ export function MigrateStakeModal({
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   return (
     <Modal
