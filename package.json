@@ -5,7 +5,6 @@
   "repository": "balancer/frontend-v3",
   "private": true,
   "scripts": {
-    "next-dev": "next dev",
     "dev": "concurrently \"pnpm gen:graphql:dev --watch\" \"next dev\"",
     "dev-bal": "PROTOCOL=bal pnpm dev",
     "dev-beets": "PROTOCOL=beets pnpm dev",
@@ -30,7 +29,9 @@
     "test:unit:coverage": "vitest --coverage",
     "test:unit:silent:coverage": "SILENT_TESTS=true vitest --coverage",
     "test:integration": "vitest -c ./vitest.config.integration.ts",
-    "postinstall": "npm run gen:theme-typings"
+    "postinstall": "npm run gen:theme-typings",
+    "start-mock-server": "node test/ng-apimock/server.js",
+    "start-dev": "next dev"
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
