@@ -1,4 +1,4 @@
-import { getChainId } from '@/lib/config/app.config'
+import { getChainId, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { SwapHandler } from './Swap.handler'
 import { GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { AuraBalSwap, HumanAmount, Slippage, SwapKind, Token, TokenAmount } from '@balancer/sdk'
@@ -10,7 +10,8 @@ import {
   SimulateSwapInputs,
 } from '../swap.types'
 import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
-import { isSameAddress } from '@/lib/shared/utils/addresses'
+import { isNativeAsset, isSameAddress } from '@/lib/shared/utils/addresses'
+import { bn } from '@/lib/shared/utils/numbers'
 
 export class AuraBalSwapHandler implements SwapHandler {
   constructor(public tokens: GqlToken[]) {}
@@ -18,15 +19,23 @@ export class AuraBalSwapHandler implements SwapHandler {
   async simulate({ ...variables }: SimulateSwapInputs): Promise<AuraBalSimulateSwapResponse> {
     const { chain, swapType } = variables
     const rpcUrl = getDefaultRpcUrl(getChainId(chain))
-    const _tokenIn = this.tokens.find(token => isSameAddress(token.address, variables.tokenIn))
-    const _tokenOut = this.tokens.find(token => isSameAddress(token.address, variables.tokenOut))
+
+    const tokenInAddress = isNativeAsset(chain, variables.tokenIn)
+      ? getWrappedNativeAssetAddress(chain)
+      : variables.tokenIn
+    const tokenOutAddress = isNativeAsset(chain, variables.tokenOut)
+      ? getWrappedNativeAssetAddress(chain)
+      : variables.tokenOut
+
+    const _tokenIn = this.tokens.find(token => isSameAddress(token.address, tokenInAddress))
+    const _tokenOut = this.tokens.find(token => isSameAddress(token.address, tokenOutAddress))
 
     if (!_tokenIn || !_tokenOut) {
       throw new Error('Token not found')
     }
 
-    const tokenIn = new Token(_tokenIn.chainId, variables.tokenIn, _tokenIn.decimals)
-    const tokenOut = new Token(_tokenOut.chainId, variables.tokenOut, _tokenOut.decimals)
+    const tokenIn = new Token(_tokenIn.chainId, tokenInAddress, _tokenIn.decimals)
+    const tokenOut = new Token(_tokenOut.chainId, tokenOutAddress, _tokenOut.decimals)
     const swapAmountToken = swapType === GqlSorSwapType.ExactIn ? tokenIn : tokenOut
     const swapAmount = TokenAmount.fromHumanAmount(
       swapAmountToken,
@@ -43,7 +52,7 @@ export class AuraBalSwapHandler implements SwapHandler {
       kind,
     })
 
-    if (!isAuraBalSwap) throw new Error('Invalid AuraBal swap')
+    if (!isAuraBalSwap) throw new Error('Invalid auraBAL swap')
 
     // Get accurate return amount with onchain call
     const queryOutput = await auraBalSwap.query({
@@ -63,8 +72,8 @@ export class AuraBalSwapHandler implements SwapHandler {
       returnAmount,
       queryOutput,
       swapType,
-      effectivePrice: '1', // TODO
-      effectivePriceReversed: '1', // TODO
+      effectivePrice: bn(variables.swapAmount).div(returnAmount).toString(),
+      effectivePriceReversed: bn(returnAmount).div(variables.swapAmount).toString(),
     }
   }
 
