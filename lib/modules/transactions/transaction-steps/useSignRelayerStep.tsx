@@ -28,7 +28,7 @@ export function useSignRelayerStep(chain: GqlChain): TransactionStep {
           {error}
         </Alert>
       )}
-      {!isConnected && <ConnectWallet width="full" />}
+      {!isConnected && <ConnectWallet width="full" isLoading={isLoading} />}
       {shouldChangeNetwork && isConnected && <NetworkSwitchButton {...networkSwitchButtonProps} />}
       {!shouldChangeNetwork && isConnected && (
         <Button
