@@ -9,7 +9,8 @@ import { useState } from 'react'
 import ClaimProtocolRevenueModal from '../ClaimProtocolRevenueModal'
 import { useRouter } from 'next/navigation'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { useHasMerklRewards } from '../../useHasMerklRewards'
+import { useHasMerklRewards } from '../../merkl/useHasMerklRewards'
+import { MerklAlert } from '../../merkl/MerklAlert'
 
 export function ClaimNetworkPools() {
   const {
@@ -36,9 +37,10 @@ export function ClaimNetworkPools() {
     <FadeInOnView>
       <Stack gap={5}>
         <Heading size="lg">Claimable incentives</Heading>
-        <Heading size="lg">HAS REWARDS {JSON.stringify(hasMerklRewards)}</Heading>
 
         <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
+          {hasMerklRewards && <MerklAlert />}
+
           {Object.entries(poolsByChainMap).map(([chain, pools]) => (
             <ClaimNetworkBlock
               key={chain}
