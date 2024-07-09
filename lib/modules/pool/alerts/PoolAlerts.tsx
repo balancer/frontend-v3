@@ -120,11 +120,11 @@ export function PoolAlert({
       </HStack>
 
       {isSoftWarning && (
-        <IconButton
-          variant="ghost"
-          icon={<XCircle />}
+        <CloseButton
           onClick={onClose}
-          width="24x"
+          variant="softWarning"
+          ml="auto"
+          size="sm"
           aria-label="Close"
         />
       )}

@@ -841,5 +841,13 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
       },
     },
+    CloseButton: {
+      variants: {
+        softWarning: {
+          bg: 'hsla(0, 0%, 100%, 0.5)',
+          borderRadius: 'full',
+        },
+      },
+    },
   }
 }
