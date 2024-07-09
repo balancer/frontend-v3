@@ -103,7 +103,7 @@ export function usePoolAlerts(pool: Pool) {
           identifier: `PriceProviderWithWarnings-${token.symbol}`,
           // eslint-disable-next-line max-len
           title: `The rate provider for ${token.symbol} has been reviewed as ‘safe’ but with warnings. Please review in the Pool contracts section.`,
-          status: 'error',
+          status: 'warning',
           isSoftWarning: true,
         })
       }
