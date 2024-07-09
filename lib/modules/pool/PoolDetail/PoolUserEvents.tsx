@@ -25,6 +25,7 @@ import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
 import { isEmpty } from 'lodash'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { isVebalPool } from '../pool.helpers'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -119,6 +120,9 @@ export default function PoolUserEvents() {
     userAddress,
   })
 
+  const isVeBal = isVebalPool(pool.id)
+  const showBoostValue = !isVeBal
+
   // keep this card the same height as the 'My liquidity' section
   useLayoutEffect(() => {
     if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
@@ -131,6 +135,14 @@ export default function PoolUserEvents() {
       setPoolEvents(userPoolEventsData.poolEvents)
     }
   }, [userPoolEventsData, isLoading])
+
+  function getShareTitle() {
+    if (isVeBal) {
+      return 'locked'
+    }
+
+    return 'staked'
+  }
 
   const stakedPercentage = useMemo(() => {
     const totalBalance = getUserTotalBalance(pool)
@@ -211,14 +223,18 @@ export default function PoolUserEvents() {
           <Divider />
           <HStack spacing="4">
             <Text variant="secondary" fontSize="0.85rem">
-              {`${stakedPercentage} staked`}
+              {`${stakedPercentage} ${getShareTitle()}`}
             </Text>
-            <Text variant="secondary" fontSize="0.85rem">
-              &middot;
-            </Text>
-            <Text variant="secondary" fontSize="0.85rem">
-              {`${boost}x boost`}
-            </Text>
+            {showBoostValue && (
+              <>
+                <Text variant="secondary" fontSize="0.85rem">
+                  &middot;
+                </Text>
+                <Text variant="secondary" fontSize="0.85rem">
+                  {`${boost}x boost`}
+                </Text>
+              </>
+            )}
           </HStack>
         </VStack>
       )}
