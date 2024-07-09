@@ -1,0 +1,21 @@
+{
+  "name": "getTokens",
+  "request": {
+    "url": "/graphql",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "operationName": "GetTokens",
+      "query": "(.*)query GetTokens(.*)"
+    }
+  },
+  "responses": {
+    "ok": {
+      "default": true,
+      "status": 200,
+      "file": "data/getTokens.json"
+    }
+  }
+}

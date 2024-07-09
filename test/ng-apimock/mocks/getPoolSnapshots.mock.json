@@ -1,0 +1,21 @@
+{
+  "name": "getPoolSnapshots",
+  "request": {
+    "url": "/graphql",
+    "method": "POST",
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": {
+      "operationName": "GetPoolSnapshots",
+      "query": "(.*)query GetPoolSnapshots(.*)"
+    }
+  },
+  "responses": {
+    "ok": {
+      "default": true,
+      "status": 200,
+      "file": "data/getPoolSnapshots.json"
+    }
+  }
+}
