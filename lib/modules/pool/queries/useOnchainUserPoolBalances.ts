@@ -137,7 +137,7 @@ function overwriteOnchainPoolBalanceData(
       stakedBalances: overrideStakedBalances(pool, stakedBalancesByPoolId[pool.id]),
       walletBalance: onchainUnstakedBalance,
       walletBalanceUsd: onchainUnstakedBalanceUsd,
-      totalBalance,
+      totalBalance: totalBalance.toString(),
       totalBalanceUsd,
     }
 

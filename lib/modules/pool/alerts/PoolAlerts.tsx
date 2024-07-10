@@ -2,20 +2,16 @@
 
 import {
   Alert,
+  AlertIcon,
   AlertStatus,
   AlertTitle,
-  Box,
-  HStack,
-  IconButton,
+  CloseButton,
   Link,
   VStack,
 } from '@chakra-ui/react'
 import { usePool } from '../PoolProvider'
-
-import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-
 import { MouseEvent, ReactNode, useCallback } from 'react'
-import { AlertTriangle, ArrowRight, XCircle } from 'react-feather'
+import { ArrowRight } from 'react-feather'
 import { usePoolAlerts } from './usePoolAlerts'
 
 export type PoolAlertProps = {
@@ -54,8 +50,6 @@ export function PoolAlert({
   isSoftWarning,
   onClose,
 }: PoolAlertProps) {
-  const colorMode = useThemeColorMode()
-
   const tryWrapInLink = useCallback(
     (children: ReactNode) => {
       if (!learnMoreLink) return children
@@ -76,56 +70,27 @@ export function PoolAlert({
   )
 
   return tryWrapInLink(
-    <Alert
-      display="flex"
-      justifyContent="space-between"
-      bg={colorMode === 'dark' ? 'orange.300' : 'orange.200'}
-      status={status}
-      rounded="lg"
-      border="none !important"
-      alignItems="center"
-      color="font.dark"
-      role="group"
-    >
-      <HStack w="full">
-        <Box flex="0 0 auto">
-          <AlertTriangle width="24px" height="24px" />
-        </Box>
-        <AlertTitle
-          w="full"
-          gap={1}
-          display="flex"
-          alignItems="center"
-          ml="md"
-          sx={{ a: { textDecoration: 'underline' } }}
-          fontWeight={500}
-          color="font.dark"
-          mr={isSoftWarning ? 7 : 'none'}
-        >
-          {title}
-
-          {learnMoreLink && (
-            <>
-              <Link
-                display="flex"
-                color="font.dark"
-                sx={{ textDecoration: 'underline' }}
-                _groupHover={{ color: 'font.maxContrast' }}
-              >
-                Learn more
-                <ArrowRight width="16px" />
-              </Link>
-            </>
-          )}
-        </AlertTitle>
-      </HStack>
-
+    <Alert status={status}>
+      <AlertIcon />
+      <AlertTitle gap={1} display="flex" w="full">
+        {title}
+        {learnMoreLink && (
+          <Link
+            display="flex"
+            sx={{ textDecoration: 'underline' }}
+            _groupHover={{ color: 'font.maxContrast' }}
+          >
+            Learn more
+            <ArrowRight width="16px" />
+          </Link>
+        )}
+      </AlertTitle>
       {isSoftWarning && (
-        <IconButton
-          variant="ghost"
-          icon={<XCircle />}
+        <CloseButton
           onClick={onClose}
-          width="24x"
+          variant="softWarning"
+          ml="auto"
+          size="sm"
           aria-label="Close"
         />
       )}

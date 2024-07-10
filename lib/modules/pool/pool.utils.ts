@@ -170,6 +170,9 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
 const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
   [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
   [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+  [GqlPoolFilterCategory.Lrt]: 'LRT',
+  [GqlPoolFilterCategory.Points]: 'Points',
+  [GqlPoolFilterCategory.PointsEigenlayer]: 'Points - Eigenlayer',
 }
 
 export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
@@ -219,7 +222,7 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool'>[],
+  poolTokens: { balance: string; decimals: number; address: string }[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)

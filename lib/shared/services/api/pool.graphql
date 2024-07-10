@@ -120,11 +120,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -158,11 +154,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -196,11 +188,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -236,11 +224,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -276,11 +260,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -315,11 +295,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -371,11 +347,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -413,11 +385,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -434,6 +402,20 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       }
     }
   }
+}
+
+fragment PriceRateProviderDataFields on GqlPriceRateProviderData {
+  address
+  name
+  summary
+  reviewed
+  warnings
+  upgradeableComponents {
+    entryPoint
+    implementationReviewed
+  }
+  reviewUrl
+  factory
 }
 
 query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $chainId: GqlChain!) {
@@ -465,8 +447,8 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
 query GetPoolEvents(
   $first: Int
   $skip: Int
-  $poolId: String!
-  $chain: GqlChain!
+  $poolIdIn: [String!]!
+  $chainIn: [GqlChain!]!
   $range: GqlPoolEventsDataRange
   $typeIn: [GqlPoolEventType]
   $userAddress: String
@@ -475,8 +457,8 @@ query GetPoolEvents(
     first: $first
     skip: $skip
     where: {
-      poolId: $poolId
-      chain: $chain
+      poolIdIn: $poolIdIn
+      chainIn: $chainIn
       range: $range
       typeIn: $typeIn
       userAddress: $userAddress

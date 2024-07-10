@@ -1,18 +1,19 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { AlertStatus, HStack, Tooltip } from '@chakra-ui/react'
+import { AlertStatus, Box, HStack, Tooltip } from '@chakra-ui/react'
 import { isNil } from 'lodash'
+import { hasReviewedRateProvider } from '../pool.helpers'
 import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode, useEffect, useState } from 'react'
 import { zeroAddress } from 'viem'
 import { Pool } from '../PoolProvider'
 import { migrateStakeTooltipLabel } from '../actions/stake.helpers'
-import { hasUnreviewedRateProvider } from '../pool.helpers'
 import { shouldMigrateStake } from '../user-balance.helpers'
 import { PoolAlertButton } from './PoolAlertButton'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
+import { getRateProviderWarnings } from '../pool.helpers'
 
 export type PoolAlert = {
   identifier: string
@@ -71,6 +72,8 @@ export function usePoolAlerts(pool: Pool) {
         })
       }
 
+      const warnings = getRateProviderWarnings(token.priceRateProviderData?.warnings || [])
+
       const isPriceRateProviderLegit =
         isNil(token.priceRateProvider) || // if null, we consider rate provider as zero address
         token.priceRateProvider === zeroAddress ||
@@ -80,12 +83,13 @@ export function usePoolAlerts(pool: Pool) {
         return
       }
 
-      if (hasUnreviewedRateProvider(token)) {
+      if (!hasReviewedRateProvider(token)) {
         alerts.push({
           identifier: `PriceProviderNotReviewed-${token.symbol}`,
-          title: `The price data provider for ${token.symbol} has not been reviewed.`,
+          // eslint-disable-next-line max-len
+          title: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
           status: 'error',
-          isSoftWarning: false,
+          isSoftWarning: true,
         })
       }
 
@@ -93,20 +97,25 @@ export function usePoolAlerts(pool: Pool) {
         alerts.push({
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
-          title: `The price data provider for ${token.symbol} is currently deemed unreliable.`,
+          title: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
           status: 'error',
-          isSoftWarning: false,
+          isSoftWarning: true,
         })
       }
 
-      token.priceRateProviderData?.warnings?.forEach(warning => {
+      if (
+        hasReviewedRateProvider(token) &&
+        token.priceRateProviderData?.summary === 'safe' &&
+        warnings.length > 0
+      ) {
         alerts.push({
-          identifier: `PriceProviderWarning-${token.symbol}-${warning}`,
-          title: `Attention: ${token.symbol} Price Provider Alert - ${warning}`,
+          identifier: `PriceProviderWithWarnings-${token.symbol}`,
+          // eslint-disable-next-line max-len
+          title: `The rate provider for ${token.symbol} has been reviewed as ‘safe’ but with warnings. Please review in the Pool contracts section.`,
           status: 'warning',
           isSoftWarning: true,
         })
-      })
+      }
     })
 
     return alerts
@@ -117,14 +126,12 @@ export function usePoolAlerts(pool: Pool) {
 
     function MigrateStakeTitle() {
       return (
-        <HStack justify="space-between" w="full">
-          <HStack>
-            <div>Migrate to the new veBAL staking gauge for future BAL liquidity incentives </div>
-            <Tooltip label={migrateStakeTooltipLabel}>
-              <InfoOutlineIcon fontSize="sm" />
-            </Tooltip>
-          </HStack>
-          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
+        <HStack w="full">
+          <Box>Migrate to the new veBAL staking gauge for future BAL liquidity incentives</Box>
+          <Tooltip label={migrateStakeTooltipLabel}>
+            <InfoOutlineIcon fontSize="sm" />
+          </Tooltip>
+          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)} top={-3}>
             Migrate
           </PoolAlertButton>
         </HStack>
@@ -139,6 +146,7 @@ export function usePoolAlerts(pool: Pool) {
         isSoftWarning: false,
       })
     }
+
     return alerts
   }
 

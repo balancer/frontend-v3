@@ -58,7 +58,7 @@ function _usePortfolio() {
     {
       variables: {
         where: {
-          userAddress,
+          userAddress: userAddress?.toLowerCase(),
           chainIn,
         },
       },

@@ -16,7 +16,7 @@ import {
   Tooltip,
   Link,
 } from '@chakra-ui/react'
-import React, { useEffect, useMemo, useState, useLayoutEffect } from 'react'
+import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
@@ -36,34 +36,67 @@ import {
   shouldMigrateStake,
   calcGaugeStakedBalance,
 } from '../user-balance.helpers'
-import { calcUserShareOfPool, hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
+import {
+  hasNestedPools,
+  isVebalPool,
+  shouldBlockAddLiquidity,
+  calcUserShareOfPool,
+} from '../pool.helpers'
+
 import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
 import { getChainId } from '@/lib/config/app.config'
+import { VeBalLink } from '../../vebal/VebalRedirectModal'
 
-const TABS = [
-  {
-    value: 'total',
-    label: 'Total',
-  },
-  {
-    value: 'unstaked',
-    label: 'Unstaked',
-  },
-  {
-    value: 'gauge',
-    label: 'Staked',
-  },
-]
+function getTabs(isVeBalPool: boolean) {
+  return [
+    {
+      value: 'total',
+      label: 'Total',
+    },
+    {
+      value: 'unstaked',
+      label: isVeBalPool ? 'Unlocked' : 'Unstaked',
+    },
+    {
+      value: 'gauge',
+      label: isVeBalPool ? 'Locked' : 'Staked',
+    },
+  ]
+}
 
 export default function PoolMyLiquidity() {
-  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool, chain, isLoadingOnchainUserBalances, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
+
+  const isVeBal = isVebalPool(pool.id)
+  const tabs = useMemo(() => {
+    const tabsArr = getTabs(isVeBal)
+
+    if (
+      pool.staking?.aura &&
+      !pool.staking.aura.isShutdown &&
+      tabsArr.findIndex(tab => tab.value === 'aura') === -1
+    ) {
+      tabsArr.push({
+        value: 'aura',
+        label: 'Aura',
+      })
+    } else if (!pool.staking?.aura) {
+      const index = tabsArr.findIndex(tab => tab.value === 'aura')
+      if (index > -1) {
+        tabsArr.splice(index, 1)
+      }
+    }
+
+    return tabsArr
+  }, [isVeBal, pool])
+
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabs[0])
   const pathname = usePathname()
   const [height, setHeight] = useState(0)
 
@@ -75,24 +108,6 @@ export default function PoolMyLiquidity() {
     }
   }, [])
 
-  useEffect(() => {
-    if (
-      pool.staking?.aura &&
-      !pool.staking.aura.isShutdown &&
-      TABS.findIndex(tab => tab.value === 'aura') === -1
-    ) {
-      TABS.push({
-        value: 'aura',
-        label: 'Aura',
-      })
-    } else if (!pool.staking?.aura) {
-      const index = TABS.findIndex(tab => tab.value === 'aura')
-      if (index > -1) {
-        TABS.splice(index, 1)
-      }
-    }
-  }, [pool])
-
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
   }
@@ -100,6 +115,7 @@ export default function PoolMyLiquidity() {
   function getStakingType(tabsValue: string) {
     switch (tabsValue) {
       case 'gauge':
+        if (isVeBal) return GqlPoolStakingType.Vebal
         return GqlPoolStakingType.Gauge
       case 'aura':
         return GqlPoolStakingType.Aura
@@ -125,10 +141,16 @@ export default function PoolMyLiquidity() {
   }
 
   function calcUserPoolTokenBalances() {
+    const poolTokens = pool.poolTokens.map(({ balance, decimals, address }) => ({
+      balance,
+      decimals,
+      address,
+    }))
+
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
         getBptBalanceForTab(),
-        pool.poolTokens,
+        poolTokens,
         pool.dynamicData.totalShares
       ),
       'address'
@@ -140,15 +162,21 @@ export default function PoolMyLiquidity() {
       case 'total':
         return 'My total balance'
       case 'gauge':
-        return 'Staked on Balancer'
+        return isVeBal ? 'Locked' : 'Staked on Balancer'
       case 'aura':
         return 'Staked on Aura'
       case 'unstaked':
-        return 'My unstaked balance'
+        return isVeBal ? 'Unlocked' : 'My unstaked balance'
       default:
         return ''
     }
   }
+
+  const stakedBalance = calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
+  const unstakedBalance = getUserWalletBalanceUsd(pool)
+
+  const lockBtnText =
+    bn(stakedBalance).gt(0) && bn(unstakedBalance).isEqualTo(0) ? 'Extend lock' : 'Lock'
 
   function getTotalBalanceUsd() {
     if (!isConnected || isConnecting) return 0
@@ -158,9 +186,9 @@ export default function PoolMyLiquidity() {
         return getUserTotalBalanceUsd(pool)
       case 'gauge':
       case 'aura':
-        return calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
+        return stakedBalance
       case 'unstaked':
-        return getUserWalletBalanceUsd(pool)
+        return unstakedBalance
       default:
         return getUserTotalBalanceUsd(pool)
     }
@@ -189,12 +217,12 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   const options = useMemo(() => {
-    return TABS.map(tab => ({
+    return tabs.map(tab => ({
       ...tab,
       disabled: tab.value !== 'total' && !canStake,
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool])
+  }, [tabs, pool])
 
   return (
     <Card ref={myLiquiditySectionRef} h="fit-content">
@@ -284,34 +312,47 @@ export default function PoolMyLiquidity() {
             >
               Remove
             </Button>
-            <Button
-              onClick={() => router.push(`${pathname}/stake`)}
-              variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
-              isDisabled={!(canStake && hasUnstakedBalance)}
-              flex="1"
-            >
-              Stake
-            </Button>
-            {shouldMigrateStake(pool) ? (
-              <Tooltip label={migrateStakeTooltipLabel}>
+            {isVeBal ? (
+              <VeBalLink
+                flex="1"
+                triggerEl={
+                  <Button w="100%" variant="secondary">
+                    {lockBtnText}
+                  </Button>
+                }
+              />
+            ) : (
+              <>
                 <Button
-                  onClick={() => router.push(`${pathname}/migrate-stake`)}
-                  variant="secondary"
-                  rightIcon={<InfoOutlineIcon fontSize="sm" />}
+                  onClick={() => router.push(`${pathname}/stake`)}
+                  variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                  isDisabled={!(canStake && hasUnstakedBalance)}
                   flex="1"
                 >
-                  Migrate stake
+                  Stake
                 </Button>
-              </Tooltip>
-            ) : (
-              <Button
-                onClick={() => router.push(`${pathname}/unstake`)}
-                variant={hasGaugeStakedBalance ? 'tertiary' : 'disabled'}
-                isDisabled={!hasGaugeStakedBalance}
-                flex="1"
-              >
-                Unstake
-              </Button>
+                {shouldMigrateStake(pool) ? (
+                  <Tooltip label={migrateStakeTooltipLabel}>
+                    <Button
+                      onClick={() => router.push(`${pathname}/migrate-stake`)}
+                      variant="secondary"
+                      rightIcon={<InfoOutlineIcon fontSize="sm" />}
+                      flex="1"
+                    >
+                      Migrate stake
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    onClick={() => router.push(`${pathname}/unstake`)}
+                    variant={hasGaugeStakedBalance ? 'tertiary' : 'disabled'}
+                    isDisabled={!hasGaugeStakedBalance}
+                    flex="1"
+                  >
+                    Unstake
+                  </Button>
+                )}
+              </>
             )}
           </HStack>
         </VStack>

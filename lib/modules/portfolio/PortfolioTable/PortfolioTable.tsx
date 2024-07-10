@@ -1,23 +1,20 @@
 import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { usePortfolio } from '../PortfolioProvider'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
-import { PoolListItem } from '../../pool/pool.types'
 import { PortfolioTableRow } from './PortfolioTableRow'
-import { Center, Checkbox, HStack, Heading, Skeleton, Stack, Text } from '@chakra-ui/react'
+import { Center, Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
-import { Pool } from '../../pool/PoolProvider'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import {
-  calcTotalStakedBalance,
   getUserTotalBalanceUsd,
   hasAuraStakedBalance,
   hasBalancerStakedBalance,
   hasTinyBalance,
 } from '../../pool/user-balance.helpers'
-import { bn } from '@/lib/shared/utils/numbers'
 import { getTotalApr } from '../../pool/pool.utils'
+import { ExpandedPoolInfo, ExpandedPoolType, useExpandedPools } from './useExpandedPools'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { ConnectWallet } from '../../web3/ConnectWallet'
 
@@ -60,11 +57,14 @@ const rowProps = {
   gap: { base: 'xxs', xl: 'lg' },
 }
 
-const generateStakingWeightForSort = (pool: Pool) => {
+const generateStakingWeightForSort = (pool: ExpandedPoolInfo) => {
   return (
-    Number(bn(calcTotalStakedBalance(pool)).isGreaterThan(0)) +
-    Number(hasBalancerStakedBalance(pool)) +
-    Number(hasAuraStakedBalance(pool)) * 2
+    Number(pool.poolType === ExpandedPoolType.Locked) * 100 +
+    Number(pool.poolType === ExpandedPoolType.Unlocked) * 50 +
+    Number(pool.poolType === ExpandedPoolType.Staked) * 20 +
+    Number(pool.poolType === ExpandedPoolType.Unstaked) * 10 +
+    Number(hasAuraStakedBalance(pool)) * 2 +
+    Number(hasBalancerStakedBalance(pool))
   )
 }
 
@@ -79,6 +79,8 @@ export function PortfolioTable() {
     ? portfolioData.pools.filter(pool => !hasTinyBalance(pool, minUsdBalance))
     : portfolioData.pools
 
+  const expandedPools = useExpandedPools(filteredBalancePools)
+
   const hasTinyBalances = portfolioData.pools.some(pool => hasTinyBalance(pool, minUsdBalance))
 
   const { veBalBoostMap } = useVebalBoost(portfolioData.stakedPools)
@@ -90,7 +92,7 @@ export function PortfolioTable() {
 
   const sortedPools = useMemo(() => {
     if (!portfolioData?.pools) return []
-    const arr = [...filteredBalancePools]
+    const arr = [...expandedPools]
 
     return arr.sort((a, b) => {
       if (currentSortingObj.id === 'staking') {
@@ -128,7 +130,7 @@ export function PortfolioTable() {
     })
   }, [
     portfolioData?.pools,
-    filteredBalancePools,
+    expandedPools,
     currentSortingObj.id,
     currentSortingObj.desc,
     veBalBoostMap,
@@ -151,7 +153,7 @@ export function PortfolioTable() {
                 {...rowProps}
               />
             )}
-            renderTableRow={(item: PoolListItem, index) => {
+            renderTableRow={(item: ExpandedPoolInfo, index) => {
               return (
                 <PortfolioTableRow
                   keyValue={index}
