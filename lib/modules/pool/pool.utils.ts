@@ -170,6 +170,9 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
 const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
   [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
   [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+  [GqlPoolFilterCategory.Lrt]: 'LRT',
+  [GqlPoolFilterCategory.Points]: 'Points',
+  [GqlPoolFilterCategory.PointsEigenlayer]: 'Points - Eigenlayer',
 }
 
 export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
