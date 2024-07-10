@@ -33,7 +33,7 @@ export function RateProviderInfoPopOver({
   const warnings = (data.warnings ?? []).filter(warning => !isEmpty(warning))
 
   return (
-    <Popover>
+    <Popover trigger="hover">
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent w="auto">
         <PopoverArrow bg="background.level2" />
