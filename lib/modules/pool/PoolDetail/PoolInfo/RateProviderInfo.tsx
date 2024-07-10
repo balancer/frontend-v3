@@ -15,9 +15,9 @@ import {
   ListItem,
   Icon,
 } from '@chakra-ui/react'
-import { isEmpty } from 'lodash'
 import Link from 'next/link'
 import { ArrowUpRight } from 'react-feather'
+import { getRateProviderWarnings } from '../../pool.helpers'
 
 type RateProviderInfoPopOverProps = {
   token: GqlToken
@@ -32,7 +32,7 @@ export function RateProviderInfoPopOver({
   level,
   children,
 }: RateProviderInfoPopOverProps) {
-  const warnings = (data.warnings ?? []).filter(warning => !isEmpty(warning))
+  const warnings = getRateProviderWarnings(data.warnings || [])
 
   return (
     <Popover trigger="hover">

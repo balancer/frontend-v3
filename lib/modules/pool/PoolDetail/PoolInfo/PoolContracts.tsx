@@ -26,6 +26,7 @@ import { AlertTriangle, XCircle } from 'react-feather'
 import Image from 'next/image'
 import { RateProviderInfoPopOver } from './RateProviderInfo'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
+import { getRateProviderWarnings } from '@/lib/modules/pool/pool.helpers'
 
 type RateProvider = {
   tokenAddress: Address
@@ -36,8 +37,10 @@ function getRateProviderIcon(data: GqlPriceRateProviderData, token: GqlToken) {
   let icon
   let level
 
+  const warnings = getRateProviderWarnings(data.warnings || [])
+
   if (data.reviewed && data.summary === 'safe') {
-    if (data.warnings) {
+    if (warnings.length > 0) {
       icon = <Icon as={AlertTriangle} color="orange.500" size={16} cursor="pointer" />
       level = 1
     } else {

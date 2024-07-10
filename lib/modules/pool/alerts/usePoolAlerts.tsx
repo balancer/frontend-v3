@@ -13,6 +13,7 @@ import { shouldMigrateStake } from '../user-balance.helpers'
 import { PoolAlertButton } from './PoolAlertButton'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
+import { getRateProviderWarnings } from '../pool.helpers'
 
 export type PoolAlert = {
   identifier: string
@@ -71,6 +72,8 @@ export function usePoolAlerts(pool: Pool) {
         })
       }
 
+      const warnings = getRateProviderWarnings(token.priceRateProviderData?.warnings || [])
+
       const isPriceRateProviderLegit =
         isNil(token.priceRateProvider) || // if null, we consider rate provider as zero address
         token.priceRateProvider === zeroAddress ||
@@ -103,8 +106,7 @@ export function usePoolAlerts(pool: Pool) {
       if (
         hasReviewedRateProvider(token) &&
         token.priceRateProviderData?.summary === 'safe' &&
-        token.priceRateProviderData?.warnings &&
-        token.priceRateProviderData?.warnings.length > 0
+        warnings.length > 0
       ) {
         alerts.push({
           identifier: `PriceProviderWithWarnings-${token.symbol}`,

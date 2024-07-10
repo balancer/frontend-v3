@@ -13,7 +13,7 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainnet } from '../chains/chain.utils'
@@ -295,4 +295,8 @@ export function getVaultConfig(pool: Pool) {
 
 export function isV3Pool(pool: Pool): boolean {
   return pool.protocolVersion === 3
+}
+
+export function getRateProviderWarnings(warnings: string[]) {
+  return warnings.filter(warning => !isEmpty(warning))
 }
