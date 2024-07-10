@@ -16,6 +16,7 @@ import {
   extraBalTooltipText,
   lockingIncentivesTooltipText,
   votingIncentivesTooltipText,
+  merklIncentivesTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
 import { TooltipAprItem } from './TooltipAprItem'
 import BigNumber from 'bignumber.js'
@@ -179,6 +180,7 @@ function BaseAprTooltip({
           title="Merkl.xyz incentives"
           apr={merklIncentivesAprDisplayed}
           aprOpacity={1}
+          tooltipText={merklIncentivesTooltipText}
           bg="background.level3"
         />
       )}
