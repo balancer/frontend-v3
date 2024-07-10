@@ -117,55 +117,57 @@ export function PoolContracts({ ...props }: CardProps) {
             </GridItem>
           </Grid>
         ))}
-        <Grid templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
-          <GridItem>
-            <Tooltip
-              // eslint-disable-next-line max-len
-              label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
-              fontSize="sm"
-            >
-              <Text variant="secondary">Rate provider(s)</Text>
-            </Tooltip>
-          </GridItem>
-          <GridItem>
-            <VStack alignItems="flex-start">
-              {rateProviders.map(provider => {
-                const token = getToken(provider.tokenAddress, chain)
-                return (
-                  token && (
-                    <HStack key={provider.tokenAddress}>
-                      <Tooltip label={token.symbol} fontSize="sm" shouldWrapChildren>
-                        <TokenIcon
-                          chain={chain}
-                          address={token.address}
-                          size={16}
-                          alt={token.address}
-                        />
-                      </Tooltip>
-                      <Link
-                        key={provider.priceRateProviderData.address}
-                        target="_blank"
-                        href={getBlockExplorerAddressUrl(
-                          provider.priceRateProviderData.address,
-                          chain
-                        )}
-                        variant="link"
-                      >
-                        <HStack>
-                          <Text color="link">
-                            {abbreviateAddress(provider.priceRateProviderData.address)}
-                          </Text>
-                          <ArrowUpRight size={12} />
-                        </HStack>
-                      </Link>
-                      {getRateProviderIcon(provider.priceRateProviderData, token)}
-                    </HStack>
+        {rateProviders.length > 0 && (
+          <Grid templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
+            <GridItem>
+              <Tooltip
+                // eslint-disable-next-line max-len
+                label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
+                fontSize="sm"
+              >
+                <Text variant="secondary">Rate provider(s)</Text>
+              </Tooltip>
+            </GridItem>
+            <GridItem>
+              <VStack alignItems="flex-start">
+                {rateProviders.map(provider => {
+                  const token = getToken(provider.tokenAddress, chain)
+                  return (
+                    token && (
+                      <HStack key={provider.tokenAddress}>
+                        <Tooltip label={token.symbol} fontSize="sm" shouldWrapChildren>
+                          <TokenIcon
+                            chain={chain}
+                            address={token.address}
+                            size={16}
+                            alt={token.address}
+                          />
+                        </Tooltip>
+                        <Link
+                          key={provider.priceRateProviderData.address}
+                          target="_blank"
+                          href={getBlockExplorerAddressUrl(
+                            provider.priceRateProviderData.address,
+                            chain
+                          )}
+                          variant="link"
+                        >
+                          <HStack>
+                            <Text color="link">
+                              {abbreviateAddress(provider.priceRateProviderData.address)}
+                            </Text>
+                            <ArrowUpRight size={12} />
+                          </HStack>
+                        </Link>
+                        {getRateProviderIcon(provider.priceRateProviderData, token)}
+                      </HStack>
+                    )
                   )
-                )
-              })}
-            </VStack>
-          </GridItem>
-        </Grid>
+                })}
+              </VStack>
+            </GridItem>
+          </Grid>
+        )}
       </VStack>
     </Card>
   )
