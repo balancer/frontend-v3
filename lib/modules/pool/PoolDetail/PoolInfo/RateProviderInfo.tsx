@@ -13,9 +13,11 @@ import {
   Box,
   UnorderedList,
   ListItem,
+  Icon,
 } from '@chakra-ui/react'
 import { isEmpty } from 'lodash'
 import Link from 'next/link'
+import { ArrowUpRight } from 'react-feather'
 
 type RateProviderInfoPopOverProps = {
   token: GqlToken
@@ -112,18 +114,14 @@ export function RateProviderInfoPopOver({
                   <Text color="grayText">Rate provider factory</Text>
                   <Text>{data.factory ?? 'None'}</Text>
                 </VStack>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Review</Text>
-                  {data.reviewUrl ? (
-                    <Link href={data.reviewUrl} target="_blank">
-                      <Box as="span" color="font.link">
-                        Link to review
-                      </Box>
-                    </Link>
-                  ) : (
-                    <Text>&mdash;</Text>
-                  )}
-                </VStack>
+                {data.reviewUrl && (
+                  <Link href={data.reviewUrl} target="_blank">
+                    <HStack>
+                      <Text color="font.link">View review details</Text>
+                      <Icon as={ArrowUpRight} size={12} color="font.link" />
+                    </HStack>
+                  </Link>
+                )}
               </>
             )}
           </VStack>
