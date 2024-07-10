@@ -14,7 +14,7 @@ import {
 import { usePool } from '../PoolProvider'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { GqlChain, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
@@ -115,8 +115,8 @@ export default function PoolUserEvents() {
   const { veBalBoostMap } = useVebalBoost([pool])
   const { userAddress } = useUserAccount()
   const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
-    chain,
-    poolId: pool.id,
+    chainIn: [chain],
+    poolIdIn: [pool.id],
     userAddress,
   })
 

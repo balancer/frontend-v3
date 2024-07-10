@@ -30,8 +30,8 @@ export function PoolDetail() {
     startPolling,
     stopPolling,
   } = usePoolEvents({
-    chain,
-    poolId: pool.id,
+    chainIn: [chain],
+    poolIdIn: [pool.id],
     userAddress,
   })
 
