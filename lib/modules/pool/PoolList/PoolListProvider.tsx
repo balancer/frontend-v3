@@ -8,6 +8,7 @@ import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isAddress } from 'viem'
+import { ApiErrorAlert } from '@/lib/shared/components/errors/ApiErrorAlert'
 
 export function _usePoolList() {
   const { queryVariables, toggleUserAddress } = usePoolListQueryState()
@@ -44,6 +45,10 @@ export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | n
 
 export function PoolListProvider({ children }: { children: ReactNode }) {
   const hook = _usePoolList()
+
+  if (hook.error) {
+    return <ApiErrorAlert />
+  }
 
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }

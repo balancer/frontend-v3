@@ -1,10 +1,13 @@
 import { config } from '@/lib/config/app.config'
 import { ApolloLink, HttpLink } from '@apollo/client'
+import { onError } from '@apollo/client/link/error'
+
 import {
   NextSSRApolloClient,
   NextSSRInMemoryCache,
   SSRMultipartLink,
 } from '@apollo/experimental-nextjs-app-support/ssr'
+import { captureException } from '@sentry/nextjs'
 
 /*const userMiddleware = new ApolloLink((operation, forward) => {
   // add the user address to the headers
@@ -25,6 +28,19 @@ export function createApolloClient() {
   //const keyArgs = ['where', ['poolIdIn']]
   const httpLink = new HttpLink({ uri: config.apiUrl })
 
+  const errorLink = onError(({ graphQLErrors, networkError }) => {
+    if (graphQLErrors) {
+      graphQLErrors.forEach(({ message }) => {
+        captureException(new Error(message), { level: 'fatal' })
+      })
+    }
+
+    if (networkError) {
+      // For now we use fatal level, we can adjust this if it becomes noisy
+      captureException(networkError, { level: 'fatal' })
+    }
+  })
+
   return new NextSSRApolloClient({
     ssrMode: typeof window === 'undefined',
     link:
@@ -34,8 +50,9 @@ export function createApolloClient() {
               stripDefer: true,
             }),
             httpLink,
+            errorLink,
           ])
-        : httpLink,
+        : ApolloLink.from([httpLink, errorLink]),
     cache: new NextSSRInMemoryCache({
       typePolicies: {
         GqlToken: {

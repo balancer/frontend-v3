@@ -15,6 +15,7 @@ import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
+import { ApiErrorAlert } from '@/lib/shared/components/errors/ApiErrorAlert'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -34,7 +35,7 @@ export function _usePool({
 
   const myLiquiditySectionRef = useRef<HTMLDivElement | null>(null)
 
-  const { data } = useQuery(GetPoolDocument, {
+  const { data, error } = useQuery(GetPoolDocument, {
     variables: queryVariables,
   })
 
@@ -74,6 +75,7 @@ export function _usePool({
     // this assumption may need to be questioned
     refetch,
     ...usePoolHelpers(pool, chain),
+    error,
   }
 }
 
@@ -85,6 +87,11 @@ export function PoolProvider({
   data,
 }: PropsWithChildren<FetchPoolProps> & { data: GetPoolQuery }) {
   const hook = _usePool({ id, chain, variant, initialData: data })
+
+  if (hook.error) {
+    return <ApiErrorAlert />
+  }
+
   const payload = {
     ...hook,
     chain,
