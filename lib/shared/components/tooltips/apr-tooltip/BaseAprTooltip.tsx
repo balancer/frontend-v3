@@ -82,6 +82,8 @@ function BaseAprTooltip({
     extraBalAprDisplayed,
     yieldBearingTokensAprDisplayed,
     stakingIncentivesAprDisplayed,
+    merklIncentivesAprDisplayed,
+    hasMerklIncentives,
     swapFeesDisplayed,
     isSwapFeePresent,
     isYieldPresent,
@@ -170,6 +172,16 @@ function BaseAprTooltip({
           )
         })}
       </TooltipAprItem>
+      {hasMerklIncentives && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Merkl.xyz incentives"
+          apr={merklIncentivesAprDisplayed}
+          aprOpacity={1}
+          bg="background.level3"
+        />
+      )}
       <Divider />
       <TooltipAprItem
         {...basePopoverAprItemProps}
