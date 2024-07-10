@@ -287,7 +287,10 @@ export function usePoolActivityChart(isExpanded: boolean) {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { loading, data: response } = usePoolEvents({ poolId: poolId as string, chain: _chain })
+  const { loading, data: response } = usePoolEvents({
+    poolIdIn: [poolId] as string[],
+    chainIn: [_chain],
+  })
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
