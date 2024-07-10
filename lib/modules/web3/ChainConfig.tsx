@@ -41,7 +41,7 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
 
 // Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: undefined,
+  [GqlChain.Mainnet]: 'https://ethereum-rpc.publicnode.com',
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: undefined,
