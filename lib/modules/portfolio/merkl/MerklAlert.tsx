@@ -21,7 +21,7 @@ function MerklTitle() {
         target="_blank"
         href="https://app.merkl.xyz/"
         width="auto"
-        variant={'outline'}
+        variant="outline"
         rightIcon={<ArrowUpRight />}
       >
         Learn more
