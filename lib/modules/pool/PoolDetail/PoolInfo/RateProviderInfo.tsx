@@ -14,6 +14,7 @@ import {
   UnorderedList,
   ListItem,
 } from '@chakra-ui/react'
+import { isEmpty } from 'lodash'
 import Link from 'next/link'
 
 type RateProviderInfoPopOverProps = {
@@ -29,6 +30,8 @@ export function RateProviderInfoPopOver({
   level,
   children,
 }: RateProviderInfoPopOverProps) {
+  const warnings = (data.warnings ?? []).filter(warning => !isEmpty(warning))
+
   return (
     <Popover>
       <PopoverTrigger>{children}</PopoverTrigger>
@@ -75,9 +78,9 @@ export function RateProviderInfoPopOver({
                 </VStack>
                 <VStack alignItems="flex-start">
                   <Text color="grayText">Warnings</Text>1
-                  {data.warnings && data.warnings.length > 0 ? (
+                  {warnings.length > 0 ? (
                     <UnorderedList>
-                      {data.warnings.map((warning, index) => (
+                      {warnings.map((warning, index) => (
                         <ListItem key={index}>{warning}</ListItem>
                       ))}
                     </UnorderedList>
