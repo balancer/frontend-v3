@@ -4,7 +4,6 @@ import {
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
-  GqlPoolFilterCategory,
   GqlPoolAprItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
@@ -164,19 +163,6 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
-}
-
-// Maps GraphQL pool category enum to human readable label for UI.
-const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
-  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
-  [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
-  [GqlPoolFilterCategory.Lrt]: 'LRT',
-  [GqlPoolFilterCategory.Points]: 'Points',
-  [GqlPoolFilterCategory.PointsEigenlayer]: 'Points - Eigenlayer',
-}
-
-export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
-  return poolCategoryLabelMap[category] ?? category.replace(/_/g, ' ').toLowerCase()
 }
 
 export const poolClickHandler = (
