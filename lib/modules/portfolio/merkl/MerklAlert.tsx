@@ -1,8 +1,12 @@
-import { HStack } from '@chakra-ui/react'
-import { PoolAlert } from '../../pool/alerts/PoolAlerts'
+import { Alert, AlertIcon, HStack, Link } from '@chakra-ui/react'
 
 export function MerklAlert() {
-  return <PoolAlert status="info" isSoftWarning={false} title={<MerklTitle />} />
+  return (
+    <Alert status="info" width="full">
+      <AlertIcon />
+      <MerklTitle />
+    </Alert>
+  )
 }
 
 function MerklTitle() {
@@ -11,9 +15,9 @@ function MerklTitle() {
       <HStack>
         <div>It looks like you could also have Merkl rewards.</div>
       </HStack>
-      <a href="https://app.merkl.xyz/" target="_blank">
-        Go to Merkl
-      </a>
+      <Link href="https://app.merkl.xyz/" target="_blank">
+        Go to merkl.xyz
+      </Link>
     </HStack>
   )
 }
