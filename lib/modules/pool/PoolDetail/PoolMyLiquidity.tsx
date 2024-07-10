@@ -4,62 +4,124 @@ import TokenRow from '../../tokens/TokenRow/TokenRow'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { Box, Button, Card, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
-import React, { useMemo, useState } from 'react'
+import {
+  Divider,
+  Button,
+  Card,
+  HStack,
+  Heading,
+  Skeleton,
+  Text,
+  VStack,
+  Tooltip,
+  Link,
+} from '@chakra-ui/react'
+import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { usePool } from '../PoolProvider'
 import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getTotalAprLabel, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
-  calcTotalStakedBalanceInt,
   getUserTotalBalanceInt,
   getUserWalletBalanceInt,
-  calcTotalStakedBalance,
-  calcTotalStakedBalanceUsd,
   getUserTotalBalanceUsd,
   getUserWalletBalance,
   getUserWalletBalanceUsd,
+  calcStakedBalanceInt,
+  calcStakedBalanceUsd,
+  shouldMigrateStake,
+  calcGaugeStakedBalance,
 } from '../user-balance.helpers'
-import { hasNestedPools, shouldBlockAddLiquidity } from '../pool.helpers'
-import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
-import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
-import StakedBalanceDistributionChart from './PoolWeightCharts/StakedBalanceDistributionChart'
-import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-// TODO: will be implemented in a different PR
-// import { hasNonPreferentialStakedBalance } from '../actions/stake.helpers'
+import {
+  hasNestedPools,
+  isVebalPool,
+  shouldBlockAddLiquidity,
+  calcUserShareOfPool,
+} from '../pool.helpers'
 
-const TABS = [
-  {
-    value: 'total',
-    label: 'Total',
-  },
-  {
-    value: 'unstaked',
-    label: 'Unstaked',
-  },
-  {
-    value: 'staked',
-    label: 'Staked',
-  },
-]
+import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
+import { ArrowUpRight } from 'react-feather'
+import { getChainId } from '@/lib/config/app.config'
+import { VeBalLink } from '../../vebal/VebalRedirectModal'
+
+function getTabs(isVeBalPool: boolean) {
+  return [
+    {
+      value: 'total',
+      label: 'Total',
+    },
+    {
+      value: 'unstaked',
+      label: isVeBalPool ? 'Unlocked' : 'Unstaked',
+    },
+    {
+      value: 'gauge',
+      label: isVeBalPool ? 'Locked' : 'Staked',
+    },
+  ]
+}
 
 export default function PoolMyLiquidity() {
-  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool, chain, isLoadingOnchainUserBalances, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
-  const { isMobile } = useBreakpoints()
   const router = useRouter()
 
+  const isVeBal = isVebalPool(pool.id)
+  const tabs = useMemo(() => {
+    const tabsArr = getTabs(isVeBal)
+
+    if (
+      pool.staking?.aura &&
+      !pool.staking.aura.isShutdown &&
+      tabsArr.findIndex(tab => tab.value === 'aura') === -1
+    ) {
+      tabsArr.push({
+        value: 'aura',
+        label: 'Aura',
+      })
+    } else if (!pool.staking?.aura) {
+      const index = tabsArr.findIndex(tab => tab.value === 'aura')
+      if (index > -1) {
+        tabsArr.splice(index, 1)
+      }
+    }
+
+    return tabsArr
+  }, [isVeBal, pool])
+
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabs[0])
   const pathname = usePathname()
+  const [height, setHeight] = useState(0)
+
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
+
+  useLayoutEffect(() => {
+    if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
+      setHeight(myLiquiditySectionRef.current.offsetHeight)
+    }
+  }, [])
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
+  }
+
+  function getStakingType(tabsValue: string) {
+    switch (tabsValue) {
+      case 'gauge':
+        if (isVeBal) return GqlPoolStakingType.Vebal
+        return GqlPoolStakingType.Gauge
+      case 'aura':
+        return GqlPoolStakingType.Aura
+      default:
+        return GqlPoolStakingType.Gauge
+    }
   }
 
   function getBptBalanceForTab() {
@@ -68,8 +130,9 @@ export default function PoolMyLiquidity() {
     switch (activeTab.value) {
       case 'total':
         return rawTotalBalance
-      case 'staked':
-        return calcTotalStakedBalanceInt(pool)
+      case 'gauge':
+      case 'aura':
+        return calcStakedBalanceInt(pool, getStakingType(activeTab.value))
       case 'unstaked':
         return getUserWalletBalanceInt(pool)
       default:
@@ -78,10 +141,16 @@ export default function PoolMyLiquidity() {
   }
 
   function calcUserPoolTokenBalances() {
+    const poolTokens = pool.poolTokens.map(({ balance, decimals, address }) => ({
+      balance,
+      decimals,
+      address,
+    }))
+
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
         getBptBalanceForTab(),
-        pool.poolTokens,
+        poolTokens,
         pool.dynamicData.totalShares
       ),
       'address'
@@ -91,15 +160,23 @@ export default function PoolMyLiquidity() {
   function getTitlePrefix() {
     switch (activeTab.value) {
       case 'total':
-        return 'total'
-      case 'staked':
-        return 'staked'
+        return 'My total balance'
+      case 'gauge':
+        return isVeBal ? 'Locked' : 'Staked on Balancer'
+      case 'aura':
+        return 'Staked on Aura'
       case 'unstaked':
-        return 'unstaked'
+        return isVeBal ? 'Unlocked' : 'My unstaked balance'
       default:
         return ''
     }
   }
+
+  const stakedBalance = calcStakedBalanceUsd(pool, getStakingType(activeTab.value))
+  const unstakedBalance = getUserWalletBalanceUsd(pool)
+
+  const lockBtnText =
+    bn(stakedBalance).gt(0) && bn(unstakedBalance).isEqualTo(0) ? 'Extend lock' : 'Lock'
 
   function getTotalBalanceUsd() {
     if (!isConnected || isConnecting) return 0
@@ -107,10 +184,11 @@ export default function PoolMyLiquidity() {
     switch (activeTab.value) {
       case 'total':
         return getUserTotalBalanceUsd(pool)
-      case 'staked':
-        return calcTotalStakedBalanceUsd(pool)
+      case 'gauge':
+      case 'aura':
+        return stakedBalance
       case 'unstaked':
-        return getUserWalletBalanceUsd(pool)
+        return unstakedBalance
       default:
         return getUserTotalBalanceUsd(pool)
     }
@@ -125,14 +203,13 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  // const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
-  // TODO: will be implemented in a different PR
-  const hasNonPreferentialBalance = false
+  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
   const canStake = pool.staking && !hasNonPreferentialBalance
-  const shouldMigrateStake = hasNonPreferentialBalance
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
-  const hasStakedBalance = bn(calcTotalStakedBalance(pool)).gt(0)
-  const aprLabel = getTotalAprLabel(pool.dynamicData?.apr.items)
+  const hasGaugeStakedBalance = bn(calcGaugeStakedBalance(pool)).gt(0)
+  const shareOfPool = calcUserShareOfPool(pool)
+  const shareofPoolLabel = bn(shareOfPool).gt(0) ? fNum('sharePercent', shareOfPool) : <>&mdash;</>
+  const chainId = getChainId(chain)
 
   const displayTokens = hasNestedPools(pool)
     ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
@@ -140,124 +217,146 @@ export default function PoolMyLiquidity() {
     : pool.displayTokens
 
   const options = useMemo(() => {
-    return TABS.map(tab => ({
+    return tabs.map(tab => ({
       ...tab,
       disabled: tab.value !== 'total' && !canStake,
     }))
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool])
+  }, [tabs, pool])
 
   return (
-    pool.userBalance?.totalBalance && (
-      <Card ref={myLiquiditySectionRef}>
-        <Stack
-          w="full"
-          spacing="md"
-          direction={{ base: 'column', lg: 'row' }}
-          justifyContent="stretch"
-        >
-          <VStack spacing="md" width="full">
-            <HStack width="full" justifyContent="space-between">
-              <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
-                My liquidity
+    <Card ref={myLiquiditySectionRef} h="fit-content">
+      <VStack spacing="md" width="full">
+        <HStack width="full" justifyContent="space-between">
+          <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
+            My liquidity
+          </Heading>
+          <ButtonGroup
+            size="xxs"
+            currentOption={activeTab}
+            options={options}
+            onChange={handleTabChanged}
+            groupId="my-liquidity"
+          />
+        </HStack>
+        <Divider />
+        <VStack spacing="md" width="full">
+          <HStack width="full" justifyContent="space-between">
+            <VStack alignItems="flex-start">
+              <Heading fontWeight="bold" size="h6">
+                {getTitlePrefix()}
               </Heading>
-              <ButtonGroup
-                size="xxs"
-                currentOption={activeTab}
-                options={options}
-                onChange={handleTabChanged}
-                groupId="my-liquidity"
-              />
-            </HStack>
-            <Box width="full">
-              <Card variant="subSection">
-                <VStack spacing="md" width="full">
-                  <Box pb="md" width="full" borderBottomWidth={1} borderColor="border.base">
-                    <HStack width="full" justifyContent="space-between">
-                      <VStack alignItems="flex-start">
-                        <Heading fontWeight="bold" size="h6">
-                          My {getTitlePrefix()} balance
-                        </Heading>
-                        <Text variant="secondary" fontSize="0.85rem">
-                          APR
-                        </Text>
-                      </VStack>
-                      <VStack alignItems="flex-end">
-                        {isLoadingOnchainUserBalances || isConnecting ? (
-                          <Skeleton w="12" h="5" />
-                        ) : (
-                          <Heading fontWeight="bold" size="h6">
-                            {toCurrency(totalBalanceUsd)}
-                          </Heading>
-                        )}
-                        <Text variant="secondary" fontSize="0.85rem">
-                          {aprLabel}
-                        </Text>
-                      </VStack>
-                    </HStack>
-                  </Box>
-                  <VStack spacing="md" width="full">
-                    {displayTokens.map(token => {
-                      return (
-                        <TokenRow
-                          chain={chain}
-                          key={`my-liquidity-token-${token.address}`}
-                          address={token.address as Address}
-                          value={tokenBalanceFor(token.address)}
-                          isLoading={isLoadingOnchainUserBalances || isConnecting}
-                        />
-                      )
-                    })}
-                  </VStack>
-                  <HStack mt="md" width="full" justifyContent="flex-start">
-                    <Button
-                      onClick={() => router.push(`${pathname}/add-liquidity`)}
-                      variant="primary"
-                      flex="1"
-                      isDisabled={isAddLiquidityBlocked}
-                    >
-                      Add
-                    </Button>
-                    <Button
-                      onClick={() => router.push(`${pathname}/remove-liquidity`)}
-                      variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
-                      isDisabled={!hasUnstakedBalance}
-                      flex="1"
-                    >
-                      Remove
-                    </Button>
-                    <Button
-                      onClick={() => router.push(`${pathname}/stake`)}
-                      variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
-                      isDisabled={!(canStake && hasUnstakedBalance)}
-                      flex="1"
-                    >
-                      Stake
-                    </Button>
-                    <Button
-                      onClick={() => router.push(`${pathname}/unstake`)}
-                      variant={hasStakedBalance ? 'tertiary' : 'disabled'}
-                      isDisabled={!hasStakedBalance}
-                      flex="1"
-                    >
-                      Unstake
-                    </Button>
-                  </HStack>
-                </VStack>
-              </Card>
-            </Box>
+              <Text variant="secondary" fontSize="0.85rem">
+                Pool share
+              </Text>
+            </VStack>
+            <VStack alignItems="flex-end">
+              {isLoadingOnchainUserBalances || isConnecting ? (
+                <Skeleton w="12" h="5" />
+              ) : (
+                <Heading fontWeight="bold" size="h6">
+                  {toCurrency(totalBalanceUsd)}
+                </Heading>
+              )}
+              <Text variant="secondary" fontSize="0.85rem">
+                {shareofPoolLabel}
+              </Text>
+            </VStack>
+          </HStack>
+          <Divider />
+          <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
+            {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
+              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
+                <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
+                <Text color="white" ml="auto">
+                  Learn more
+                </Text>
+                <Link
+                  href={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
+                  target="_blank"
+                  color="white"
+                >
+                  <ArrowUpRight size={16} />
+                </Link>
+              </HStack>
+            ) : (
+              displayTokens.map(token => {
+                return (
+                  <TokenRow
+                    chain={chain}
+                    key={`my-liquidity-token-${token.address}`}
+                    address={token.address as Address}
+                    value={tokenBalanceFor(token.address)}
+                    isLoading={isLoadingOnchainUserBalances || isConnecting}
+                    abbreviated={false}
+                  />
+                )
+              })
+            )}
           </VStack>
-          <Box w="full" minH="320px" display="flex" justifyContent="stretch">
-            <NoisyCard
-              cardProps={{ position: 'relative', overflow: 'hidden' }}
-              contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
+          <Divider />
+          <HStack mt="md" width="full" justifyContent="flex-start">
+            <Button
+              onClick={() => router.push(`${pathname}/add-liquidity`)}
+              variant="primary"
+              flex="1"
+              isDisabled={isAddLiquidityBlocked}
             >
-              <StakedBalanceDistributionChart pool={pool} isSmall={isMobile} />
-              {!isMobile && <ZenGarden variant="pill" sizePx="80%" heightPx="80%" />}
-            </NoisyCard>
-          </Box>
-        </Stack>
-      </Card>
-    )
+              Add
+            </Button>
+            <Button
+              onClick={() => router.push(`${pathname}/remove-liquidity`)}
+              variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
+              isDisabled={!hasUnstakedBalance}
+              flex="1"
+            >
+              Remove
+            </Button>
+            {isVeBal ? (
+              <VeBalLink
+                flex="1"
+                triggerEl={
+                  <Button w="100%" variant="secondary">
+                    {lockBtnText}
+                  </Button>
+                }
+              />
+            ) : (
+              <>
+                <Button
+                  onClick={() => router.push(`${pathname}/stake`)}
+                  variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
+                  isDisabled={!(canStake && hasUnstakedBalance)}
+                  flex="1"
+                >
+                  Stake
+                </Button>
+                {shouldMigrateStake(pool) ? (
+                  <Tooltip label={migrateStakeTooltipLabel}>
+                    <Button
+                      onClick={() => router.push(`${pathname}/migrate-stake`)}
+                      variant="secondary"
+                      rightIcon={<InfoOutlineIcon fontSize="sm" />}
+                      flex="1"
+                    >
+                      Migrate stake
+                    </Button>
+                  </Tooltip>
+                ) : (
+                  <Button
+                    onClick={() => router.push(`${pathname}/unstake`)}
+                    variant={hasGaugeStakedBalance ? 'tertiary' : 'disabled'}
+                    isDisabled={!hasGaugeStakedBalance}
+                    flex="1"
+                  >
+                    Unstake
+                  </Button>
+                )}
+              </>
+            )}
+          </HStack>
+        </VStack>
+      </VStack>
+    </Card>
   )
 }

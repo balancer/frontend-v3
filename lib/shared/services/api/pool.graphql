@@ -11,7 +11,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     createTime
     type
     chain
-    vaultVersion
+    protocolVersion
     dynamicData {
       poolId
       swapEnabled
@@ -23,62 +23,11 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       holdersCount
       isInRecoveryMode
       isPaused
-      apr {
-        hasRewardApr
-        thirdPartyApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        nativeRewardApr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        swapApr
-        apr {
-          ... on GqlPoolAprTotal {
-            total
-          }
-          ... on GqlPoolAprRange {
-            min
-            max
-          }
-        }
-        items {
-          id
-          title
-          apr {
-            ... on GqlPoolAprTotal {
-              total
-            }
-            ... on GqlPoolAprRange {
-              min
-              max
-            }
-          }
-          subItems {
-            id
-            title
-            apr {
-              ... on GqlPoolAprTotal {
-                total
-              }
-              ... on GqlPoolAprRange {
-                min
-                max
-              }
-            }
-          }
-        }
+      aprItems {
+        id
+        title
+        apr
+        type
       }
     }
     allTokens {
@@ -137,6 +86,8 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
         id
         apr
         auraPoolAddress
+        auraPoolId
+        isShutdown
       }
     }
     userBalance {
@@ -160,6 +111,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -168,11 +120,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -184,6 +132,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -196,6 +145,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -204,11 +154,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -220,6 +166,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -232,6 +179,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -240,11 +188,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -256,6 +200,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -270,6 +215,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -278,11 +224,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -294,6 +236,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -308,6 +251,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -316,11 +260,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -332,6 +272,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -345,6 +286,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -353,11 +295,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -369,6 +307,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -399,6 +338,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -407,11 +347,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -423,6 +359,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
@@ -439,6 +376,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           name
           symbol
           balance
+          balanceUSD
           address
           priceRate
           decimals
@@ -447,11 +385,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -463,10 +397,25 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
               decimals
             }
           }
+          isAllowed
         }
       }
     }
   }
+}
+
+fragment PriceRateProviderDataFields on GqlPriceRateProviderData {
+  address
+  name
+  summary
+  reviewed
+  warnings
+  upgradeableComponents {
+    entryPoint
+    implementationReviewed
+  }
+  reviewUrl
+  factory
 }
 
 query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $chainId: GqlChain!) {
@@ -495,8 +444,26 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
   }
 }
 
-query GetPoolEvents($first: Int, $poolId: String!, $chain: GqlChain!) {
-  poolEvents(first: $first, where: { poolId: $poolId, chain: $chain }) {
+query GetPoolEvents(
+  $first: Int
+  $skip: Int
+  $poolIdIn: [String!]!
+  $chainIn: [GqlChain!]!
+  $range: GqlPoolEventsDataRange
+  $typeIn: [GqlPoolEventType]
+  $userAddress: String
+) {
+  poolEvents(
+    first: $first
+    skip: $skip
+    where: {
+      poolIdIn: $poolIdIn
+      chainIn: $chainIn
+      range: $range
+      typeIn: $typeIn
+      userAddress: $userAddress
+    }
+  ) {
     id
     poolId
     timestamp

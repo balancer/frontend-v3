@@ -12,12 +12,13 @@ import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
 import { useTokens } from '../tokens/TokensProvider'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import pluralize from 'pluralize'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
 
   const queryData = simulationQuery.data as SdkSimulateSwapResponse
-  const orderRouteVersion = queryData ? queryData.vaultVersion : 2
+  const orderRouteVersion = queryData ? queryData.protocolVersion : 2
   const hopCount = queryData ? queryData.routes[0].hops.length : 0
 
   return (
@@ -25,7 +26,7 @@ export function OrderRoute() {
       <Text color="grayText">Order route</Text>
       <HStack>
         <Text color="grayText">
-          BV{orderRouteVersion}: {hopCount} hops
+          BV{orderRouteVersion}: {hopCount} {pluralize('hop', hopCount)}
         </Text>
         <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
           <InfoIcon />

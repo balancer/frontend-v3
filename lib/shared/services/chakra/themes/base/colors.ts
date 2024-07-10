@@ -111,4 +111,21 @@ export const colors = {
     sandLight: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
     sandDark: 'linear-gradient(180deg, #E5D3BE 0%, #E6C6A0 100%)',
   },
+  aura: {
+    purple: '#A855F7',
+  },
+  sparkles: {
+    corePool: {
+      from: '#936927',
+      to: '#F4EAD2',
+    },
+    rewards: {
+      from: 'yellow',
+      to: 'pink',
+    },
+    default: {
+      from: '#718096',
+      to: '#A0AEC0',
+    },
+  },
 }

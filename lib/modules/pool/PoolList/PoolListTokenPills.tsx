@@ -26,6 +26,7 @@ function WeightedTokenPills({
             borderWidth={1}
             borderColor="border.base"
             shadow="sm"
+            textTransform="none"
           >
             <HStack gap={['xs', 'sm']}>
               <TokenIcon chain={chain} address={token.address} size={iconSize} alt={token.symbol} />
@@ -69,6 +70,7 @@ function StableTokenPills({
             shadow="sm"
             ml={isFirstToken(i) ? 0 : -10}
             zIndex={zIndices[i]}
+            textTransform="none"
           >
             <HStack gap={['xs', '1.5']}>
               <TokenIcon chain={chain} address={token.address} size={iconSize} alt={token.symbol} />

@@ -226,7 +226,7 @@ export const TokenInput = forwardRef(
     useEffect(() => {
       validateInput(value || '')
       setInputTitle(value || '')
-    }, [value])
+    }, [value, token?.address])
 
     return (
       <Box

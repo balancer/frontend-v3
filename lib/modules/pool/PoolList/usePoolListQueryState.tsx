@@ -134,6 +134,18 @@ export function usePoolListQueryState() {
     }
   }
 
+  function resetFilters() {
+    setNetworks(null)
+    setPoolTypes(null)
+    setMinTvl(null)
+    setPoolCategories(null)
+    setUserAddress(null)
+    setFirst(null)
+    setSkip(null)
+    setOrderBy(null)
+    setOrderDirection(null)
+  }
+
   const totalFilterCount =
     networks.length +
     poolTypes.length +
@@ -193,6 +205,7 @@ export function usePoolListQueryState() {
     setMinTvl,
     setPoolTypes,
     setPoolCategories,
+    resetFilters,
     poolCategories,
     minTvl,
     searchText: textSearch,

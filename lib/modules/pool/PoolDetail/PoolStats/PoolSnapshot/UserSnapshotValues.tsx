@@ -3,7 +3,7 @@
 import React, { memo, useMemo } from 'react'
 import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../../../tokens/TokenIconStack'
-import { GqlToken, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { SECONDS_IN_DAY } from '@/test/utils/numbers'
 import { sumBy, isEmpty } from 'lodash'
@@ -28,7 +28,7 @@ const POSSIBLE_STAKED_BALANCE_USD = 10000
 export function UserSnapshotValues() {
   const { pool, chain, isLoading: isLoadingPool, myLiquiditySectionRef } = usePool()
   const { toCurrency } = useCurrency()
-  const { veBalBoostMap } = useVebalBoost([pool as unknown as GqlPoolMinimal])
+  const { veBalBoostMap } = useVebalBoost([pool])
   const { getToken } = useTokens()
 
   const {
@@ -65,7 +65,7 @@ export function UserSnapshotValues() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [veBalBoostMap])
 
-  const myAprRaw = getTotalAprRaw(pool.dynamicData?.apr.items, boost)
+  const myAprRaw = getTotalAprRaw(pool.dynamicData.aprItems, boost)
 
   const poolMyStatsValues: PoolMyStatsValues | undefined = useMemo(() => {
     if (pool && pool.userBalance && !isLoadingPool && !isLoadingClaiming) {
@@ -124,10 +124,11 @@ export function UserSnapshotValues() {
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
           <MemoizedMainAprTooltip
-            data={pool.dynamicData.apr}
+            aprItems={pool.dynamicData.aprItems}
             poolId={pool.id}
             textProps={{ fontWeight: 'bold', fontSize: '2xl', lineHeight: '28px' }}
             vebalBoost={boost || '1'}
+            pool={pool}
           />
         ) : (
           <Heading size="h4">&mdash;</Heading>

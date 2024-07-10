@@ -1,14 +1,17 @@
-import { Card, HStack, Icon, PopoverArrow, PopoverContent, Text, VStack } from '@chakra-ui/react'
+import { Card, HStack, PopoverArrow, PopoverContent, Text, VStack } from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
-import { Info } from 'react-feather'
-import StarsIcon from '../../icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { SparklesIcon } from './MainAprTooltip'
 
-interface Props extends Omit<BaseAprTooltipProps, 'children' | 'totalBaseText' | 'maxVeBalText'> {
+interface Props
+  extends Omit<
+    BaseAprTooltipProps,
+    'children' | 'totalBaseText' | 'totalBaseVeBalText' | 'maxVeBalText' | 'poolId'
+  > {
   totalUsdValue: string
   weeklyYield: string
   pool: Pool
@@ -18,8 +21,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   const { toCurrency } = useCurrency()
 
   const numberFormatter = useCallback(
-    (value: string) =>
-      bn(bn(value).times(totalUsdValue).dividedBy(52).toFixed(2, BigNumber.ROUND_HALF_UP)),
+    (value: string) => bn(value).times(totalUsdValue).dividedBy(52),
     [totalUsdValue]
   )
 
@@ -41,15 +43,19 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   return (
     <BaseAprTooltip
       {...props}
+      poolId={pool.id}
       numberFormatter={numberFormatter}
       displayValueFormatter={displayValueFormatter}
       totalBaseText="Total weekly base"
+      totalBaseVeBalText="Total weekly base"
+      totalVeBalTitle="Total weekly"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
       vebalBoost="1"
       customPopoverContent={customPopoverContent}
       shouldDisplayBaseTooltip
       shouldDisplayMaxVeBalTooltip
+      usePortal={false}
     >
       <HStack align="center" alignItems="center">
         <Card cursor="pointer" variant="subSection" w="full" p={['sm', 'ms']}>
@@ -61,7 +67,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
               <Text variant="special" fontSize="md" lineHeight="16px" fontWeight="700">
                 {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
               </Text>
-              {pool.staking ? <Icon as={StarsIcon} /> : <Icon as={Info} color="gray.400" />}
+              <SparklesIcon isOpen={false} pool={pool} />
             </HStack>
           </VStack>
         </Card>

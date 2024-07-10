@@ -1,12 +1,12 @@
-import { Card, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import { Card, HStack, Text, VStack } from '@chakra-ui/react'
 import BaseAprTooltip from './BaseAprTooltip'
-import StarsIcon from '../../icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
 import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { calcPotentialYieldFor } from '@/lib/modules/pool/pool.utils'
+import { SparklesIcon } from './MainAprTooltip'
 
 interface Props {
   totalUsdValue: string
@@ -19,8 +19,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
   const { toCurrency } = useCurrency()
 
   const numberFormatter = useCallback(
-    (value: string) =>
-      bn(bn(value).times(totalUsdValue).dividedBy(52).toFixed(2, BigNumber.ROUND_HALF_UP)),
+    (value: string) => bn(value).times(totalUsdValue).dividedBy(52),
     [totalUsdValue]
   )
 
@@ -31,8 +30,11 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
 
   return (
     <BaseAprTooltip
-      data={pool.dynamicData.apr}
+      aprItems={pool.dynamicData.aprItems}
+      poolId={pool.id}
       totalBaseText="Total weekly base"
+      totalBaseVeBalText="Total weekly base"
+      totalVeBalTitle="Total weekly"
       maxVeBalText="Total with max veBAL"
       placement="top-start"
       vebalBoost="1"
@@ -40,6 +42,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
       displayValueFormatter={displayValueFormatter}
       shouldDisplayBaseTooltip
       shouldDisplayMaxVeBalTooltip
+      usePortal={false}
     >
       <Card cursor="pointer" variant="subSection" w="full">
         <VStack align="start" w="full" spacing="sm">
@@ -48,7 +51,7 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
             <Text variant="special" fontSize="lg" fontWeight="bold">
               {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
             </Text>
-            <Icon as={StarsIcon} />
+            <SparklesIcon isOpen={false} pool={pool} />
           </HStack>
         </VStack>
       </Card>

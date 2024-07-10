@@ -2,7 +2,6 @@ import { SupportedChainId } from '@/lib/config/config.types'
 import { usdtAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { MAX_BIGINT } from '@/lib/shared/utils/numbers'
 import { testRawAmount } from '@/test/utils/numbers'
-import { Address } from 'viem'
 import { RawAmount, getRequiredTokenApprovals } from './approval-rules'
 
 const chainId: SupportedChainId = 1
@@ -14,7 +13,7 @@ const rawAmounts: RawAmount[] = [
   },
   {
     address: wjAuraAddress,
-    rawAmount: testRawAmount('10'),
+    rawAmount: testRawAmount('20'),
   },
 ]
 
@@ -44,25 +43,10 @@ describe('getRequiredTokenApprovals', () => {
     ).toEqual([])
   })
 
-  test.skip('when all token allowances are lesser than the amounts to approve', () => {
+  test('when all the amounts to approve are greater than zero', () => {
     expect(
       getRequiredTokenApprovals({
-        rawAmounts: rawAmounts,
-        chainId,
-        allowanceFor,
-      })
-    ).toEqual([])
-  })
-
-  test.skip('when some token allowances are greater than the amounts to approve', () => {
-    function allowanceFor(tokenAddress: Address): bigint {
-      if (tokenAddress === wETHAddress) return 5n
-      return MAX_BIGINT
-    }
-
-    expect(
-      getRequiredTokenApprovals({
-        rawAmounts: rawAmounts,
+        rawAmounts,
         chainId,
         allowanceFor,
       })
@@ -72,11 +56,11 @@ describe('getRequiredTokenApprovals', () => {
         requiredRawAmount: 10000000000000000000n,
         requestedRawAmount: MAX_BIGINT,
       },
-      // {
-      //   tokenAddress: wjAuraAddress,
-      //   requiredRawAmount: 10000000000000000000n,
-      //   requestedRawAmount: MAX_BIGINT,
-      // },
+      {
+        tokenAddress: wjAuraAddress,
+        requiredRawAmount: 20000000000000000000n,
+        requestedRawAmount: MAX_BIGINT,
+      },
     ])
   })
 

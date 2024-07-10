@@ -9,6 +9,7 @@ import { getUserWalletBalance } from '../../user-balance.helpers'
 
 export function useStakeSteps(pool: Pool, stakeAmount = getUserWalletBalance(pool)) {
   const rawAmount = parseUnits(stakeAmount || '0', BPT_DECIMALS)
+
   const amountToApprove: RawAmount = {
     rawAmount,
     address: pool.address as Address,

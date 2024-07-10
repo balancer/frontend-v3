@@ -36,6 +36,7 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
     confirming: 'Confirming remove...',
     confirmed: `Liquidity removed!`,
     tooltip: `Remove liquidity from ${pool.name || 'pool'}.`,
+    poolId: pool.id,
   }
 
   const gasEstimationMeta = sentryMetaForWagmiSimulation(

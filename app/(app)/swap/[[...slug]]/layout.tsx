@@ -8,8 +8,10 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PropsWithChildren } from 'react'
-import { getSwapPathParams } from './getSwapPathParams'
 import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+import { getSwapPathParams } from './getSwapPathParams'
+import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 
 type Props = PropsWithChildren<{
   params: { slug?: string[] }
@@ -25,14 +27,18 @@ export default function SwapLayout({ params: { slug }, children }: Props) {
   const initTokens = getTokensByChain(initChain)
 
   return (
-    <TransactionStateProvider>
-      <TokenInputsValidationProvider>
-        <TokenBalancesProvider initTokens={initTokens}>
-          <PriceImpactProvider>
-            <SwapProvider pathParams={{ ...pathParams }}>{children}</SwapProvider>
-          </PriceImpactProvider>
-        </TokenBalancesProvider>
-      </TokenInputsValidationProvider>
-    </TransactionStateProvider>
+    <DefaultPageContainer>
+      <TransactionStateProvider>
+        <RelayerSignatureProvider>
+          <TokenInputsValidationProvider>
+            <TokenBalancesProvider initTokens={initTokens}>
+              <PriceImpactProvider>
+                <SwapProvider pathParams={{ ...pathParams }}>{children}</SwapProvider>
+              </PriceImpactProvider>
+            </TokenBalancesProvider>
+          </TokenInputsValidationProvider>
+        </RelayerSignatureProvider>
+      </TransactionStateProvider>
+    </DefaultPageContainer>
   )
 }

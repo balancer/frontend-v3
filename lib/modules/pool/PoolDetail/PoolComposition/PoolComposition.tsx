@@ -130,7 +130,7 @@ export function PoolComposition() {
           </Text>
         </VStack>
         <NoisyCard
-          cardProps={{ position: 'relative', overflow: 'hidden' }}
+          cardProps={{ position: 'relative', overflow: 'hidden', height: ['300px', '400px'] }}
           contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
           <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
