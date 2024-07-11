@@ -13,7 +13,7 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainnet } from '../chains/chain.utils'
@@ -236,8 +236,12 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   return addresses
 }
 
-export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
-  return !!token.priceRateProvider && !token.priceRateProviderData
+export function hasReviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return (
+    !!token.priceRateProvider &&
+    !!token.priceRateProviderData &&
+    token.priceRateProviderData.reviewed
+  )
 }
 
 /**
@@ -258,7 +262,7 @@ export function shouldBlockAddLiquidity(pool: Pool) {
     if (token.priceRateProvider === token.nestedPool?.address) return false
 
     // if price rate provider is set but is not reviewed - we should block adding liquidity
-    if (hasUnreviewedRateProvider(token)) return true
+    if (!hasReviewedRateProvider(token)) return true
 
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
@@ -291,4 +295,8 @@ export function getVaultConfig(pool: Pool) {
 
 export function isV3Pool(pool: Pool): boolean {
   return pool.protocolVersion === 3
+}
+
+export function getRateProviderWarnings(warnings: string[]) {
+  return warnings.filter(warning => !isEmpty(warning))
 }

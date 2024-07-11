@@ -208,7 +208,7 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool'>[],
+  poolTokens: { balance: string; decimals: number; address: string }[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)
