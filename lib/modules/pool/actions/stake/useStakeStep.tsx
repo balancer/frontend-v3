@@ -68,7 +68,8 @@ export function useStakeStep(pool: Pool, rawDepositAmount: bigint): TransactionS
       onSuccess: () => refetchPool(),
       renderAction: () => <ManagedTransactionButton id={stakeStepId} {...props} />,
     }),
-    [labels, transaction?.result.isSuccess, refetchPool, props]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [labels, transaction?.result.isSuccess, props]
   )
 
   return step
