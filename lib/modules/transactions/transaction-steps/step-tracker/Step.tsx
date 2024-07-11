@@ -27,9 +27,7 @@ export function StepIndicator({
   transaction,
   ...props
 }: StepProps & { transaction?: ManagedResult }) {
-  const { color, isActiveLoading, status, stepNumber, title } = getStepSettings(props, transaction)
-  const { isLoading } = useSignRelayerApproval()
-  const isSignRelayerStepLoading = isLoading && title === signRelayerStepTitle
+  const { color, isActiveLoading, status, stepNumber } = getStepSettings(props, transaction)
 
   if (status === 'complete') {
     return (
@@ -50,7 +48,7 @@ export function StepIndicator({
   return (
     <CircularProgress
       value={100}
-      isIndeterminate={isActiveLoading || isSignRelayerStepLoading}
+      isIndeterminate={isActiveLoading}
       trackColor="border.base"
       thickness="8"
       size="7"
