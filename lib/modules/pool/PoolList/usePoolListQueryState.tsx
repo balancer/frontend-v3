@@ -188,7 +188,7 @@ export function usePoolListQueryState() {
       chainIn: networks.length > 0 ? networks : getProjectConfig().supportedNetworks,
       userAddress,
       minTvl,
-      tagIn: mappedPoolCategories,
+      tagIn: mappedPoolCategories.length > 0 ? mappedPoolCategories : null,
     },
     textSearch,
   }
