@@ -18,7 +18,6 @@ import {
   SortingState,
 } from '../pool.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
-import { Pool } from 'vitest'
 
 export function usePoolListQueryState() {
   const [first, setFirst] = useQueryState('first', poolListQueryStateParsers.first)
@@ -132,6 +131,8 @@ export function usePoolListQueryState() {
         return 'Incentivized'
       case 'POINTS':
         return 'Points'
+      case 'SUPERFEST':
+        return 'Superfest'
       default:
         return (poolCategory as string).toLowerCase().replace('_', ' ')
     }

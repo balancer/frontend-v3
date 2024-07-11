@@ -79,15 +79,18 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
 }
 
-export const poolCategoryFilters = [
-  //GqlPoolFilterCategory.BlackListed, NOT USED
-  'INCENTIVIZED',
-  'POINTS',
-] as const
+export const poolCategoryFilters = ['INCENTIVIZED', 'POINTS', 'SUPERFEST'] as const
 export type PoolCategoryType = (typeof poolCategoryFilters)[number]
 export const POOL_CATEGORY_MAP: { [key in PoolCategoryType]: GqlPoolFilterCategory[] } = {
   INCENTIVIZED: [GqlPoolFilterCategory.Incentivized],
-  POINTS: [GqlPoolFilterCategory.PointsEigenlayer],
+  POINTS: [
+    GqlPoolFilterCategory.PointsEigenlayer,
+    GqlPoolFilterCategory.PointsGyro,
+    GqlPoolFilterCategory.PointsKelp,
+    GqlPoolFilterCategory.PointsRenzo,
+    GqlPoolFilterCategory.PointsSwell,
+  ],
+  SUPERFEST: [GqlPoolFilterCategory.Superfest],
 }
 
 export type SortingState = PoolsColumnSort[]
