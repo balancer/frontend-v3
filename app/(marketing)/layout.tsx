@@ -2,5 +2,5 @@ import { DefaultPageContainer } from '@/lib/shared/components/containers/Default
 import { PropsWithChildren } from 'react'
 
 export default function MarketingLayout({ children }: PropsWithChildren) {
-  return <DefaultPageContainer>{children}</DefaultPageContainer>
+  return <div>{children}</div>
 }

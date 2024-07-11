@@ -129,7 +129,13 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>100+</span> protocol builders
                     </Text>
-                    <Button variant="secondary" size="lg">
+                    <Button
+                      variant="secondary"
+                      as={Link}
+                      href="/build/v3"
+                      prefetch={true}
+                      size="lg"
+                    >
                       Start building
                     </Button>
                   </Box>

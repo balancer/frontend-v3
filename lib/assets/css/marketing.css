@@ -37,3 +37,14 @@
   box-shadow: var(--chakra-shadows-2xl);
   border-radius: 9999px;
 }
+
+
+/* v3 page */
+
+.feature-table {
+  overflow: hidden;
+  td {
+    font-weight: 500;
+    letter-spacing: -0.03rem;
+  }
+}
