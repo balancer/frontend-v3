@@ -275,12 +275,7 @@ export default function PoolMyLiquidity() {
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl" justify="space-between">
                 <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
 
-                <Button
-                  target="_blank"
-                  color="white"
-                  variant="outline"
-                  onClick={auraDisclosure.onOpen}
-                >
+                <Button color="white" variant="outline" onClick={auraDisclosure.onOpen}>
                   <HStack>
                     <Text>Learn more</Text>
                     <ArrowUpRight size={16} />
