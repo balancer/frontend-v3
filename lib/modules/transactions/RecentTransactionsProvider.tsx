@@ -1,5 +1,6 @@
 'use client'
 
+import { getChainId } from '@/lib/config/app.config'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -40,7 +41,7 @@ export type TrackedTransaction = {
   toastId?: ToastId
   timestamp: number
   init?: string
-  chain?: GqlChain
+  chain: GqlChain
   duration?: number | null
   poolId?: string
 }
@@ -81,7 +82,10 @@ export function _useRecentTransactions() {
       // so we use the underlying viem call to get the transactions confirmation status
       for (const tx of unconfirmedTransactions) {
         try {
-          const receipt = await waitForTransactionReceipt(config, { hash: tx.hash })
+          const receipt = await waitForTransactionReceipt(config, {
+            hash: tx.hash,
+            chainId: getChainId(tx.chain),
+          })
           if (receipt?.status === 'success') {
             updatePayload[tx.hash] = {
               ...tx,

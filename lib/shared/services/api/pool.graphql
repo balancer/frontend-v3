@@ -86,6 +86,8 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
         id
         apr
         auraPoolAddress
+        auraPoolId
+        isShutdown
       }
     }
     userBalance {
@@ -445,8 +447,8 @@ query GetPoolTokensDynamicData($addresses: [String!]!) {
 query GetPoolEvents(
   $first: Int
   $skip: Int
-  $poolId: String!
-  $chain: GqlChain!
+  $poolIdIn: [String!]!
+  $chainIn: [GqlChain!]!
   $range: GqlPoolEventsDataRange
   $typeIn: [GqlPoolEventType]
   $userAddress: String
@@ -455,8 +457,8 @@ query GetPoolEvents(
     first: $first
     skip: $skip
     where: {
-      poolId: $poolId
-      chain: $chain
+      poolIdIn: $poolIdIn
+      chainIn: $chainIn
       range: $range
       typeIn: $typeIn
       userAddress: $userAddress

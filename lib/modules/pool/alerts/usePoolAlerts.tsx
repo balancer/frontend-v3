@@ -1,13 +1,19 @@
-import { zeroAddress } from 'viem'
-import { Pool } from '../PoolProvider'
-import { ReactNode, useEffect, useState } from 'react'
 import { getNetworkConfig } from '@/lib/config/app.config'
-import { AlertStatus } from '@chakra-ui/react'
-import { PoolIssue } from './pool-issues/PoolIssue.type'
-import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
+import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
+import { InfoOutlineIcon } from '@chakra-ui/icons'
+import { AlertStatus, Box, HStack, Tooltip } from '@chakra-ui/react'
 import { isNil } from 'lodash'
 import { hasReviewedRateProvider } from '../pool.helpers'
-import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
+import { usePathname, useRouter } from 'next/navigation'
+import { ReactNode, useEffect, useState } from 'react'
+import { zeroAddress } from 'viem'
+import { Pool } from '../PoolProvider'
+import { migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { shouldMigrateStake } from '../user-balance.helpers'
+import { PoolAlertButton } from './PoolAlertButton'
+import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
+import { PoolIssue } from './pool-issues/PoolIssue.type'
+import { getRateProviderWarnings } from '../pool.helpers'
 
 export type PoolAlert = {
   identifier: string
@@ -18,6 +24,8 @@ export type PoolAlert = {
 }
 
 export function usePoolAlerts(pool: Pool) {
+  const pathname = usePathname()
+  const router = useRouter()
   const [poolAlerts, setPoolAlerts] = useState<PoolAlert[]>([])
 
   const getNetworkPoolAlerts = (pool: Pool): PoolAlert[] => {
@@ -64,6 +72,8 @@ export function usePoolAlerts(pool: Pool) {
         })
       }
 
+      const warnings = getRateProviderWarnings(token.priceRateProviderData?.warnings || [])
+
       const isPriceRateProviderLegit =
         isNil(token.priceRateProvider) || // if null, we consider rate provider as zero address
         token.priceRateProvider === zeroAddress ||
@@ -96,8 +106,7 @@ export function usePoolAlerts(pool: Pool) {
       if (
         hasReviewedRateProvider(token) &&
         token.priceRateProviderData?.summary === 'safe' &&
-        token.priceRateProviderData?.warnings &&
-        token.priceRateProviderData?.warnings.length > 0
+        warnings.length > 0
       ) {
         alerts.push({
           identifier: `PriceProviderWithWarnings-${token.symbol}`,
@@ -112,11 +121,42 @@ export function usePoolAlerts(pool: Pool) {
     return alerts
   }
 
+  const getUserAlerts = (pool: Pool): PoolAlert[] => {
+    const alerts: PoolAlert[] = []
+
+    function MigrateStakeTitle() {
+      return (
+        <HStack w="full">
+          <Box>Migrate to the new veBAL staking gauge for future BAL liquidity incentives</Box>
+          <Tooltip label={migrateStakeTooltipLabel}>
+            <InfoOutlineIcon fontSize="sm" />
+          </Tooltip>
+          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)} top={-3}>
+            Migrate
+          </PoolAlertButton>
+        </HStack>
+      )
+    }
+
+    if (shouldMigrateStake(pool)) {
+      alerts.push({
+        identifier: 'shouldMigrateStake',
+        title: MigrateStakeTitle(),
+        status: 'warning',
+        isSoftWarning: false,
+      })
+    }
+
+    return alerts
+  }
+
   useEffect(() => {
     const networkPoolAlerts = getNetworkPoolAlerts(pool)
     const tokenPoolAlerts = getTokenPoolAlerts(pool)
+    const userAlerts = getUserAlerts(pool)
 
-    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts])
+    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts, ...userAlerts])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
 
   return {

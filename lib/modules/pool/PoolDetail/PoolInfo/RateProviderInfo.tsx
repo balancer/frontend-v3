@@ -13,8 +13,11 @@ import {
   Box,
   UnorderedList,
   ListItem,
+  Icon,
 } from '@chakra-ui/react'
 import Link from 'next/link'
+import { ArrowUpRight } from 'react-feather'
+import { getRateProviderWarnings } from '../../pool.helpers'
 
 type RateProviderInfoPopOverProps = {
   token: GqlToken
@@ -29,8 +32,10 @@ export function RateProviderInfoPopOver({
   level,
   children,
 }: RateProviderInfoPopOverProps) {
+  const warnings = getRateProviderWarnings(data.warnings || [])
+
   return (
-    <Popover>
+    <Popover trigger="hover">
       <PopoverTrigger>{children}</PopoverTrigger>
       <PopoverContent w="auto">
         <PopoverArrow bg="background.level2" />
@@ -75,9 +80,9 @@ export function RateProviderInfoPopOver({
                 </VStack>
                 <VStack alignItems="flex-start">
                   <Text color="grayText">Warnings</Text>1
-                  {data.warnings && data.warnings.length > 0 ? (
+                  {warnings.length > 0 ? (
                     <UnorderedList>
-                      {data.warnings.map((warning, index) => (
+                      {warnings.map((warning, index) => (
                         <ListItem key={index}>{warning}</ListItem>
                       ))}
                     </UnorderedList>
@@ -109,18 +114,14 @@ export function RateProviderInfoPopOver({
                   <Text color="grayText">Rate provider factory</Text>
                   <Text>{data.factory ?? 'None'}</Text>
                 </VStack>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Review URL</Text>
-                  {data.reviewUrl ? (
-                    <Link href={data.reviewUrl} target="_blank">
-                      <Box as="span" color="font.link">
-                        Link
-                      </Box>
-                    </Link>
-                  ) : (
-                    <Text>&mdash;</Text>
-                  )}
-                </VStack>
+                {data.reviewUrl && (
+                  <Link href={data.reviewUrl} target="_blank">
+                    <HStack>
+                      <Text color="font.link">View review details</Text>
+                      <Icon as={ArrowUpRight} size={12} color="font.link" />
+                    </HStack>
+                  </Link>
+                )}
               </>
             )}
           </VStack>

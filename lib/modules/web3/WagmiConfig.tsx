@@ -20,9 +20,9 @@ import { chains, rpcOverrides } from './ChainConfig'
 
 function getTransports(chain: Chain) {
   const gqlChain = getGqlChain(chain.id as SupportedChainId)
-  const overridenRpcUrl = rpcOverrides[gqlChain]
+  const overrideRpcUrl = rpcOverrides[gqlChain]
   const fallbackRpcUrl = rpcOverrides[gqlChain]
-  return fallback([http(overridenRpcUrl), http(), http(fallbackRpcUrl)])
+  return fallback([http(overrideRpcUrl), http(), http(fallbackRpcUrl)])
 }
 
 const transports = Object.fromEntries(

@@ -15,7 +15,6 @@ import { calcBptPriceFor, usePoolHelpers } from './pool.helpers'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
-import { useSkipInitialQuery } from '@/lib/shared/hooks/useSkipInitialQuery'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -31,13 +30,12 @@ export function _usePool({
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
   const { userAddress } = useUserAccount()
-  const queryVariables = { id, chain, userAddress }
-  const skipQuery = useSkipInitialQuery(queryVariables)
+  const queryVariables = { id, chain, userAddress: userAddress.toLowerCase() }
+
   const myLiquiditySectionRef = useRef<HTMLDivElement | null>(null)
 
   const { data } = useQuery(GetPoolDocument, {
     variables: queryVariables,
-    skip: skipQuery,
   })
 
   const {

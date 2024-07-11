@@ -135,9 +135,12 @@ function PoolNetworkFilters() {
   const { supportedNetworks } = getProjectConfig()
   const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
+  // Sort networks alphabetically after mainnet
+  const sortedNetworks = [supportedNetworks[0], ...supportedNetworks.slice(1).sort()]
+
   return (
     <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
-      {supportedNetworks.map(network => (
+      {sortedNetworks.map(network => (
         <Box key={network} as={motion.div} variants={staggeredFadeInUp}>
           <Checkbox
             isChecked={!!toggledNetworks.find(toggledNetwork => toggledNetwork === network)}

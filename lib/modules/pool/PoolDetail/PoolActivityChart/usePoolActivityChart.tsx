@@ -1,6 +1,6 @@
+/* eslint-disable max-len */
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'next/navigation'
@@ -11,7 +11,6 @@ import {
   GqlChain,
   GqlPoolType,
   GqlPoolEventType,
-  GetPoolEventsDocument,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -52,7 +51,8 @@ const getDefaultPoolActivityChartOptions = (
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
-  isExpanded = false
+  isExpanded = false,
+  chain: GqlChain
 ): echarts.EChartsCoreOption => {
   const toolTipTheme = {
     heading: 'font-weight: bold; color: #E5D3BE',
@@ -142,8 +142,8 @@ const getDefaultPoolActivityChartOptions = (
         }) as ChartInfoTokens[]
 
         const tx = metaData.tx
-        const txLink = getBlockExplorerTxUrl(tx)
-        const addressLink = getBlockExplorerAddressUrl(userAddress)
+        const txLink = getBlockExplorerTxUrl(tx, chain)
+        const addressLink = getBlockExplorerAddressUrl(userAddress, chain)
         const arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" fill="none"><path stroke="#718096" stroke-linecap="round" stroke-linejoin="round" d="M2 1h6v6M1 8l7-7"/></svg>`
 
         return `
@@ -177,23 +177,24 @@ const getDefaultPoolActivityChartOptions = (
                 `
               })}
             </div>
-            <a style="display:flex;align-items:center;font-size: 0.85rem; font-weight: 500; color: ${
+            <a style="width:100%;display:flex;align-items:center;justify-content:space-between;font-size: 0.75rem; font-weight: 500; color: ${
               toolTipTheme.text
-            };" href=${addressLink} target="_blank">
-              <span style="font-size: 0.75rem; margin-right:4px;">By: ${abbreviateAddress(
-                userAddress
-              )}</span>
-              ${arrow}
-            </a>
-            <div style="font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
-              toolTipTheme.text
-            };">
-                <a style="display:flex;align-items:center;" href=${txLink} target="_blank">
-                  <span style="margin-right:4px;">
-                    ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
+            };" href=${txLink} target="_blank">
+            <span style="margin-right:4px;">
+                    Tx: ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
                       .replace('AM', 'am')
                       .replace('PM', 'pm')}
                   </span>
+              
+              ${arrow}
+            </a>
+            <div style="width:100%;display:flex;align-items:center;justify-content:space-between;font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
+              toolTipTheme.text
+            };">
+                <a style="display:flex;align-items:center;" href=${addressLink} target="_blank">
+                  <span style="font-size: 0.75rem; margin-right:4px;">By: ${abbreviateAddress(
+                    userAddress
+                  )}</span>
                   ${arrow}
                 </a>
             </div>
@@ -286,7 +287,10 @@ export function usePoolActivityChart(isExpanded: boolean) {
 
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
 
-  const { loading, data: response } = usePoolEvents({ poolId: poolId as string, chain: _chain })
+  const { loading, data: response } = usePoolEvents({
+    poolIdIn: [poolId] as string[],
+    chainIn: [_chain],
+  })
 
   const chartData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -500,7 +504,8 @@ export function usePoolActivityChart(isExpanded: boolean) {
       theme,
       toCurrency,
       isMobile,
-      isExpanded
+      isExpanded,
+      _chain
     ),
     activeTab,
     setActiveTab,

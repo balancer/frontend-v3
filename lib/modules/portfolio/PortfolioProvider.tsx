@@ -14,7 +14,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../pool/PoolProvider'
 import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
-import { millisecondsToSeconds, sub, isAfter } from 'date-fns'
+import { isAfter } from 'date-fns'
 import { compact, uniq, uniqBy } from 'lodash'
 import {
   calcTotalStakedBalance,
@@ -58,7 +58,7 @@ function _usePortfolio() {
     {
       variables: {
         where: {
-          userAddress,
+          userAddress: userAddress?.toLowerCase(),
           chainIn,
         },
       },
@@ -222,6 +222,7 @@ function _usePortfolio() {
     claimableRewards,
     poolRewardsMap,
     poolsByChainMap,
+    poolsWithOnchainUserBalances,
     totalFiatClaimableBalance,
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,

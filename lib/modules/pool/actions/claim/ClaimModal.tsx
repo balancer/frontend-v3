@@ -23,6 +23,7 @@ import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useEffect, useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
 
 type Props = {
   isOpen: boolean
@@ -41,6 +42,8 @@ export function ClaimModal({
 
   const { isDesktop, isMobile } = useBreakpoints()
   const { transactionSteps, claimTxHash, allClaimableRewards, totalClaimableUsd } = useClaim()
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   const rewards = useMemo(
     () =>

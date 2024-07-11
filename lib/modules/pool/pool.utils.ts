@@ -170,6 +170,9 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
 const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
   [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
   [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
+  [GqlPoolFilterCategory.Lrt]: 'LRT',
+  [GqlPoolFilterCategory.Points]: 'Points',
+  [GqlPoolFilterCategory.PointsEigenlayer]: 'Points - Eigenlayer',
 }
 
 export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
@@ -261,4 +264,8 @@ export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string 
   const [, maxTotalApr] = getTotalApr(pool.dynamicData.aprItems)
 
   return bn(amountUsd).times(maxTotalApr).div(52).toString()
+}
+
+export function getAuraPoolLink(chainId: number, pid: string) {
+  return `https://app.aura.finance/#/${chainId}/pool/${pid}`
 }
