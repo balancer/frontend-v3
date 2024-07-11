@@ -1,29 +1,28 @@
-
-
-@media (min-height: 680px) {
+@media (height >= 680px) {
   .build .hero {
     padding-bottom: 0;
   }
+
   .build .hero-container {
     height: calc(100vh - 80px);
   }
 }
 
-
-.feature-table td, .feature-table th {
+.feature-table td,
+.feature-table th {
   padding-left: 0;
   padding-right: 0;
   min-width: 40px;
 }
 
-@media (min-width: 780px) {
-  .feature-table td, .feature-table th {
+@media (width >= 780px) {
+  .feature-table td,
+  .feature-table th {
     min-width: 40px;
   }
 }
 
-
-@media (orientation: landscape) and (min-height: 780px) {
+@media (orientation: landscape) and (height >= 780px) {
   .hero-container {
     height: calc(100vh - 214px);
   }
@@ -38,11 +37,11 @@
   border-radius: 9999px;
 }
 
-
 /* v3 page */
 
 .feature-table {
   overflow: hidden;
+
   td {
     font-weight: 500;
     letter-spacing: -0.03rem;

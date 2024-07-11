@@ -1,4 +1,4 @@
-@import './marketing.css';
+@import url('./marketing.css');
 
 :root {
   --ease-out-cubic: cubic-bezier(0.22, 0.61, 0.36, 1);
@@ -46,11 +46,10 @@ body {
   text-wrap: balance;
 }
 
-
 .picture {
   height: 100%;
   display: flex;
-  border-radius: "9999px";
+  border-radius: '9999px';
 }
 
 .picture img {
