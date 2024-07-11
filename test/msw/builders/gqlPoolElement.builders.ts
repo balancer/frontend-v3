@@ -35,7 +35,7 @@ export function aBalWethPoolElementMock(...options: Partial<GqlPoolElement>[]): 
     address: getPoolAddress(poolId),
     allTokens,
     poolTokens: tokens as unknown as GqlPoolTokenDetail[],
-    vaultVersion: 2,
+    protocolVersion: 2,
     ...options,
   }
 
@@ -53,7 +53,7 @@ export function aWjAuraWethPoolElementMock(...options: Partial<GqlPoolElement>[]
     address: getPoolAddress(poolId),
     allTokens: tokens,
     poolTokens: tokens as unknown as GqlPoolTokenDetail[],
-    vaultVersion: 2,
+    protocolVersion: 2,
     ...options,
   }
 
@@ -187,6 +187,6 @@ export function aPhantomStablePoolMock(): GqlPoolElement {
     poolTokens: tokens as unknown as GqlPoolTokenDetail[],
     allTokens: tokens as unknown as GqlPoolTokenExpanded[],
     type: GqlPoolType.ComposableStable,
-    vaultVersion: 2,
+    protocolVersion: 2,
   })
 }

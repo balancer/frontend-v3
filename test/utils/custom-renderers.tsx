@@ -126,17 +126,19 @@ export const buildDefaultPoolTestProvider =
   ({ children }: PropsWithChildren) => {
     return (
       <TransactionStateProvider>
-        <PoolProvider
-          id={pool.id}
-          chain={GqlChain.Mainnet}
-          variant={BaseVariant.v2}
-          data={{
-            __typename: 'Query',
-            pool,
-          }}
-        >
-          {children}
-        </PoolProvider>
+        <RelayerSignatureProvider>
+          <PoolProvider
+            id={pool.id}
+            chain={GqlChain.Mainnet}
+            variant={BaseVariant.v2}
+            data={{
+              __typename: 'Query',
+              pool,
+            }}
+          >
+            {children}
+          </PoolProvider>
+        </RelayerSignatureProvider>
       </TransactionStateProvider>
     )
   }

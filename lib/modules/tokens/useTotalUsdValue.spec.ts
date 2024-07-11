@@ -5,8 +5,8 @@ import { act } from '@testing-library/react'
 import { useTotalUsdValue } from './useTotalUsdValue'
 import { mockTokenPricesList } from '@/test/msw/handlers/Tokens.handlers'
 import { aTokenPriceMock } from '@/lib/modules/tokens/__mocks__/token.builders'
-import { actSleep } from '@/lib/shared/utils/time'
 import { HumanTokenAmountWithAddress } from './token.types'
+import { actSleep } from '@/lib/shared/utils/sleep'
 
 const balPrice = 2
 const wethPrice = 3

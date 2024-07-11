@@ -1,7 +1,11 @@
 import { TokenApprovalLabelArgs, buildTokenApprovalLabels } from './approval-labels'
 
 test('Token approval labels for add liquidity', () => {
-  const args: TokenApprovalLabelArgs = { actionType: 'AddLiquidity', symbol: 'WETH' }
+  const args: TokenApprovalLabelArgs = {
+    actionType: 'AddLiquidity',
+    symbol: 'WETH',
+    requiredRawAmount: 100000000n,
+  }
   const result = buildTokenApprovalLabels(args)
   expect(result).toMatchInlineSnapshot(`
     {
@@ -17,8 +21,22 @@ test('Token approval labels for add liquidity', () => {
   `)
 })
 
+test('Token approval title when approving 0 USDT', () => {
+  const args: TokenApprovalLabelArgs = {
+    actionType: 'AddLiquidity',
+    symbol: 'WETH',
+    requiredRawAmount: 0n,
+  }
+  const result = buildTokenApprovalLabels(args)
+  expect(result.title).toBe('Approve 0 WETH')
+})
+
 test('Token approval labels for unapprove', () => {
-  const args: TokenApprovalLabelArgs = { actionType: 'Unapprove', symbol: 'WETH' }
+  const args: TokenApprovalLabelArgs = {
+    actionType: 'Unapprove',
+    symbol: 'WETH',
+    requiredRawAmount: 100000000n,
+  }
   const result = buildTokenApprovalLabels(args)
   expect(result).toMatchInlineSnapshot(`
     {

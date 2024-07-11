@@ -16,14 +16,19 @@ import {
 } from '@chakra-ui/react'
 import { ArrowUpRight } from 'react-feather'
 import NextLink from 'next/link'
+import { ReactNode } from 'react'
 
-export function VeBalLink({ ...props }: LinkProps) {
+interface VebalRedirectModalProps extends LinkProps {
+  triggerEl?: ReactNode
+}
+
+export function VeBalLink({ triggerEl, ...props }: VebalRedirectModalProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <>
       <Link onClick={onOpen} variant="nav" color="font.primary" {...props}>
-        veBAL
+        {triggerEl || 'veBAL'}
       </Link>
 
       <VebalRedirectModal isOpen={isOpen} onClose={onClose} />

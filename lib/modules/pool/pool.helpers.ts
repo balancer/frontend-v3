@@ -1,6 +1,5 @@
 import { getChainId, getNetworkConfig } from '@/lib/config/app.config'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { dateToUnixTimestamp } from '@/lib/shared/hooks/useTime'
 import {
   GetPoolQuery,
   GqlChain,
@@ -8,18 +7,22 @@ import {
   GqlPoolNestingType,
   GqlPoolStakingGauge,
   GqlPoolStakingOtherGauge,
+  GqlPoolTokenDetail,
   GqlPoolType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
+import { isEmpty, isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
-import { isNotMainet } from '../chains/chain.utils'
+import { isNotMainnet } from '../chains/chain.utils'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
-import { isNil } from 'lodash'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
+import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
+import { balancerV2VaultAbi } from '../web3/contracts/abi/generated'
+import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3Abi'
 
 /**
  * METHODS
@@ -202,11 +205,11 @@ export function isNotSupported(pool: Pool) {
  * claiming for v1 gauges on child-chains because they are deprecated and don't
  * conform to the the same interface as v1 gauges on mainnet and v2 gauges on child-chains.
  */
-function isClaimableGauge(
+export function isClaimableGauge(
   gauge: GqlPoolStakingGauge | GqlPoolStakingOtherGauge,
   chain: GqlChain | number
 ): boolean {
-  return !(gauge.version === 1 && isNotMainet(chain))
+  return !(gauge.version === 1 && isNotMainnet(chain))
 }
 
 /**
@@ -233,12 +236,22 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   return addresses
 }
 
+export function hasReviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return (
+    !!token.priceRateProvider &&
+    !!token.priceRateProviderData &&
+    token.priceRateProviderData.reviewed
+  )
+}
+
 /**
  * Returns true if we should block the user from adding liquidity to the pool.
  * @see https://github.com/balancer/frontend-v3/issues/613#issuecomment-2149443249
  */
 export function shouldBlockAddLiquidity(pool: Pool) {
-  return pool.poolTokens.some(token => {
+  const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
+
+  return poolTokens.some(token => {
     // if token is not allowed - we should block adding liquidity
     if (!token.isAllowed) return true
 
@@ -247,6 +260,9 @@ export function shouldBlockAddLiquidity(pool: Pool) {
 
     // if rateProvider is the nested pool address - we consider it as safe
     if (token.priceRateProvider === token.nestedPool?.address) return false
+
+    // if price rate provider is set but is not reviewed - we should block adding liquidity
+    if (!hasReviewedRateProvider(token)) return true
 
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
@@ -262,4 +278,25 @@ function isAffectedBy(pool: Pool, poolIssue: PoolIssue) {
   const issues = getNetworkConfig(getChainId(pool.chain)).pools.issues
   const affectedPoolIds = issues[poolIssue] ?? []
   return affectedPoolIds.includes(pool.id.toLowerCase())
+}
+
+export function getVaultConfig(pool: Pool) {
+  const networkConfig = getNetworkConfig(pool.chain)
+  const vaultAddress =
+    pool.protocolVersion === 3 && pool.chain === GqlChain.Sepolia
+      ? // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        networkConfig.contracts.balancer.vaultV3!
+      : networkConfig.contracts.balancer.vaultV2
+
+  const balancerVaultAbi = pool.protocolVersion === 3 ? balancerV3VaultAbi : balancerV2VaultAbi
+
+  return { vaultAddress, balancerVaultAbi }
+}
+
+export function isV3Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 3
+}
+
+export function getRateProviderWarnings(warnings: string[]) {
+  return warnings.filter(warning => !isEmpty(warning))
 }

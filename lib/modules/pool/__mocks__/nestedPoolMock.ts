@@ -14,7 +14,7 @@ export const nestedPoolMock: GqlPoolElement = {
   createTime: 1680364331,
   type: 'WEIGHTED',
   chain: 'MAINNET',
-  vaultVersion: 2,
+  protocolVersion: 2,
   dynamicData: {
     poolId: '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0',
     swapEnabled: true,

@@ -1,12 +1,13 @@
 'use client'
 
+import { getChainId } from '@/lib/config/app.config'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { getBlockExplorerTxUrl } from '@/lib/shared/hooks/useBlockExplorer'
-import { secs } from '@/lib/shared/hooks/useTime'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { ensureError } from '@/lib/shared/utils/errors'
 import { captureFatalError } from '@/lib/shared/utils/query-errors'
+import { secs } from '@/lib/shared/utils/time'
 import { AlertStatus, ToastId, useToast } from '@chakra-ui/react'
 import { keyBy, orderBy, take } from 'lodash'
 import React, { ReactNode, createContext, useCallback, useEffect, useState } from 'react'
@@ -40,8 +41,9 @@ export type TrackedTransaction = {
   toastId?: ToastId
   timestamp: number
   init?: string
-  chain?: GqlChain
+  chain: GqlChain
   duration?: number | null
+  poolId?: string
 }
 
 type UpdateTrackedTransaction = Pick<
@@ -80,7 +82,10 @@ export function _useRecentTransactions() {
       // so we use the underlying viem call to get the transactions confirmation status
       for (const tx of unconfirmedTransactions) {
         try {
-          const receipt = await waitForTransactionReceipt(config, { hash: tx.hash })
+          const receipt = await waitForTransactionReceipt(config, {
+            hash: tx.hash,
+            chainId: getChainId(tx.chain),
+          })
           if (receipt?.status === 'success') {
             updatePayload[tx.hash] = {
               ...tx,

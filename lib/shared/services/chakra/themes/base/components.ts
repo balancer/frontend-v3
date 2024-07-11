@@ -426,6 +426,10 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
         solid: {
           color: 'text-body',
+          bg: 'background.level2',
+          _hover: {
+            bg: 'background.level1',
+          },
         },
         'tx-gas': {
           bgGradient: 'linear(to-tr, blue.300 0%, #D7CBE7 50%, #EAA879 100%)',
@@ -562,6 +566,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
             color: 'grayText',
             px: 'sm',
             py: 'xs',
+            rounded: 'md',
           },
         },
       },
@@ -575,7 +580,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           borderColor: 'transparent',
           shadow: 'xl',
           width: 'full',
-          padding: ['xs', 'md'],
+          padding: ['sm', 'md'],
         },
         header: {
           padding: 'none',
@@ -833,6 +838,14 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           py: 1,
           px: 2,
           textTransform: 'capitalize',
+        },
+      },
+    },
+    CloseButton: {
+      variants: {
+        softWarning: {
+          bg: 'hsla(0, 0%, 100%, 0.5)',
+          borderRadius: 'full',
         },
       },
     },

@@ -1,5 +1,5 @@
 import { zipObject } from 'lodash'
-import { Address, ReadContractParameters, erc20Abi } from 'viem'
+import { Address, ContractFunctionParameters, ReadContractParameters, erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
 import { SupportedChainId } from '@/lib/config/config.types'
@@ -17,20 +17,23 @@ type Props = {
   tokenAddresses: Address[]
 }
 
+type AllowanceContracts = ReadContractParameters<Erc20Abi, 'allowance'> & { chainId: number }
+
 export function useTokenAllowances({
   chainId,
   userAddress,
   spenderAddress,
   tokenAddresses,
 }: Props) {
-  const contracts: ReadContractParameters<Erc20Abi, 'allowance'>[] = tokenAddresses.map(
-    tokenAddress => ({
-      chainId,
-      address: tokenAddress,
-      abi: erc20Abi,
-      functionName: 'allowance',
-      args: [userAddress, spenderAddress],
-    })
+  const contracts = tokenAddresses.map(
+    tokenAddress =>
+      ({
+        chainId,
+        address: tokenAddress,
+        abi: erc20Abi,
+        functionName: 'allowance',
+        args: [userAddress, spenderAddress],
+      } satisfies AllowanceContracts)
   )
 
   const { data, isLoading, isRefetching, refetch } = useReadContracts({

@@ -11,20 +11,23 @@ export type ApprovalAction =
 export type TokenApprovalLabelArgs = {
   actionType: ApprovalAction
   symbol: string
+  requiredRawAmount: bigint
 }
 
-export const buildTokenApprovalLabels: BuildTransactionLabels = (args: TokenApprovalLabelArgs) => {
+export const buildTokenApprovalLabels: BuildTransactionLabels = ({
+  requiredRawAmount,
+  actionType,
+  symbol,
+}: TokenApprovalLabelArgs) => {
   return {
-    init: initApprovalLabelFor(args.actionType, args.symbol),
-    title: `Approve ${args.symbol}`,
-    description: descriptionFor(args.actionType, args.symbol),
-    confirming:
-      args.actionType === 'Unapprove'
-        ? `Unapproving ${args.symbol}...`
-        : `Approving ${args.symbol}...`,
-    confirmed: `${args.symbol} ${args.actionType === 'Unapprove' ? 'unapproved' : 'approved!'}`,
-    tooltip: tooltipApprovalLabelFor(args.actionType, args.symbol),
-    error: `Error ${args.actionType === 'Unapprove' ? 'unapproving' : 'approving'} ${args.symbol}`,
+    init: initApprovalLabelFor(actionType, symbol),
+    // requiredRawAmount === 0n is an edge-case for tokens like USDT
+    title: requiredRawAmount > 0n ? `Approve ${symbol}` : `Approve 0 ${symbol}`,
+    description: descriptionFor(actionType, symbol),
+    confirming: actionType === 'Unapprove' ? `Unapproving ${symbol}...` : `Approving ${symbol}...`,
+    confirmed: `${symbol} ${actionType === 'Unapprove' ? 'unapproved' : 'approved!'}`,
+    tooltip: tooltipApprovalLabelFor(actionType, symbol),
+    error: `Error ${actionType === 'Unapprove' ? 'unapproving' : 'approving'} ${symbol}`,
   }
 }
 

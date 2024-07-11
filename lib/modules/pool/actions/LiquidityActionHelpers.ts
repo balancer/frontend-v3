@@ -19,7 +19,13 @@ import {
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
 
-import { hasNestedPools, isAffectedByCspIssue, isComposableStableV1, isGyro } from '../pool.helpers'
+import {
+  hasNestedPools,
+  isAffectedByCspIssue,
+  isComposableStableV1,
+  isGyro,
+  isV3Pool,
+} from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
@@ -111,6 +117,10 @@ export class LiquidityActionHelpers {
       })
   }
 
+  public isV3Pool(): boolean {
+    return isV3Pool(this.pool)
+  }
+
   /*
    1. Converts humanAmountsIn into SDK InputAmounts
    2. When the input includes it, it swaps the native asset with the wrapped native asset
@@ -194,7 +204,7 @@ export function requiresProportionalInput(poolType: GqlPoolType): boolean {
   return isGyro(poolType)
 }
 
-type VaultVersion = PoolState['vaultVersion']
+type ProtocolVersion = PoolState['protocolVersion']
 
 export function toPoolState(pool: Pool): PoolState {
   return {
@@ -202,7 +212,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 
@@ -218,7 +228,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: pool.vaultVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 

@@ -2,7 +2,7 @@
 
 import NextLink from 'next/link'
 import DarkModeToggle from '../btns/DarkModeToggle'
-import { Box, HStack, BoxProps, Link } from '@chakra-ui/react'
+import { Box, HStack, BoxProps, Link, Button } from '@chakra-ui/react'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
@@ -14,6 +14,8 @@ import { motion } from 'framer-motion'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { MobileNav } from './MobileNav'
 import { useNav } from './useNav'
+import { useMemo } from 'react'
+import { usePathname } from 'next/navigation'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -76,23 +78,61 @@ function NavLogo() {
 }
 
 function NavActions() {
+  const pathname = usePathname()
+
+  const actions = useMemo(() => {
+    if (pathname === '/') {
+      return [
+        {
+          el: <DarkModeToggle />,
+          display: { base: 'none', lg: 'block' },
+        },
+        {
+          el: (
+            <Button size="md" px={7} as={NextLink} href="/pools" prefetch={true} variant="primary">
+              Launch app
+            </Button>
+          ),
+          display: { base: 'block', lg: 'block' },
+        },
+        {
+          el: <MobileNav />,
+          display: { base: 'block', lg: 'none' },
+        },
+      ]
+    }
+
+    return [
+      {
+        el: <RecentTransactions />,
+        display: { base: 'none', lg: 'block' },
+      },
+      {
+        el: <UserSettings />,
+        display: { base: 'none', lg: 'block' },
+      },
+      {
+        el: <DarkModeToggle />,
+        display: { base: 'none', lg: 'block' },
+      },
+      {
+        el: <ConnectWallet />,
+        display: { base: 'block', lg: 'block' },
+      },
+      {
+        el: <MobileNav />,
+        display: { base: 'block', lg: 'none' },
+      },
+    ]
+  }, [pathname])
+
   return (
     <>
-      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
-        <RecentTransactions />
-      </Box>
-      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
-        <UserSettings />
-      </Box>
-      <Box as={motion.div} variants={fadeIn} display={{ base: 'none', lg: 'block' }}>
-        <DarkModeToggle />
-      </Box>
-      <Box as={motion.div} variants={fadeIn}>
-        <ConnectWallet />
-      </Box>
-      <Box as={motion.div} variants={fadeIn} display={{ base: 'block', lg: 'none' }}>
-        <MobileNav />
-      </Box>
+      {actions.map(({ el, display }, i) => (
+        <Box key={i} as={motion.div} variants={fadeIn} display={display}>
+          {el}
+        </Box>
+      ))}
     </>
   )
 }

@@ -14,6 +14,7 @@ import { BuildSwapQueryParams, useBuildSwapQuery } from './queries/useBuildSwapQ
 import { swapActionPastTense } from './swap.helpers'
 import { SwapAction } from './swap.types'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
+import { useUserAccount } from '../web3/UserAccountProvider'
 
 export const swapStepId = 'swap'
 
@@ -32,6 +33,7 @@ export function useSwapStep({
   tokenInInfo,
   tokenOutInfo,
 }: SwapStepParams): TransactionStep {
+  const { isConnected } = useUserAccount()
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
   const { getTransaction } = useTransactionState()
   const { refetchBalances } = useTokenBalances()
@@ -58,7 +60,7 @@ export function useSwapStep({
 
   useEffect(() => {
     // simulationQuery is refetched every 30 seconds by SwapTimeout
-    if (simulationQuery.data) {
+    if (simulationQuery.data && isConnected) {
       buildSwapQuery.refetch()
     }
   }, [simulationQuery.data])

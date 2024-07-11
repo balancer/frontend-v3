@@ -1,13 +1,14 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { shouldIgnoreExecutionError } from './error-filters'
+import { isUserRejectedError, shouldIgnoreExecutionError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
 } from '@/lib/modules/pool/actions/add-liquidity/queries/add-liquidity-keys'
 import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
 import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQuery'
+import { isProd } from '@/lib/config/app.config'
 
 /**
  * Metadata to be added to the captured Sentry error
@@ -197,14 +198,38 @@ export function captureSentryError(
   e: unknown,
   { context, errorMessage, errorName }: SentryMetadata
 ) {
-  const error = ensureError(e)
-  if (shouldIgnoreExecutionError(error)) return
-  const sentryError = new SentryError(errorMessage, {
-    cause: error,
+  const causeError = ensureError(e)
+  if (shouldIgnoreExecutionError(causeError)) return
+
+  // Adding the root cause message to the top level message makes slack alerts more useful
+  const errorMessageWithCause = errorMessage + `\n\nCause: \n` + causeError.message
+
+  const sentryError = new SentryError(errorMessageWithCause, {
+    cause: causeError,
     name: errorName,
     context,
   })
 
-  // console.error('Sentry error en wagmi react query wrapper 2. Context', sentryError)
   captureException(sentryError, context)
+}
+
+/*
+  Detects common errors that we don't want to capture in Sentry
+*/
+export function shouldIgnoreError(e: Error) {
+  /*
+    Thrown from useWalletClient() when loading a pool page from scratch.
+    It looks like is is caused by the useWalletClient call in AddTokenToWalletButton but it does not affect it's behavior.
+  */
+  const ignored = shouldIgnore(e)
+  if (ignored && !isProd) console.log('Ignoring error with message: ', e.message)
+  return ignored
+}
+
+function shouldIgnore(e: Error): boolean {
+  if (e.message.includes('.getAccounts is not a function')) return true
+
+  if (isUserRejectedError(e)) return true
+
+  return false
 }

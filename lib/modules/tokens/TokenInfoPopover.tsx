@@ -18,16 +18,21 @@ import { CoingeckoIcon } from '@/lib/shared/components/icons/CoingeckoIcon'
 import { AddTokenToWalletButton } from './AddTokenToWalletButton'
 import { ExternalLink } from 'react-feather'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { useTokens } from './TokensProvider'
 
 type Props = {
   tokenAddress: string | Address
   chain: GqlChain
+  isBpt?: boolean
 }
 
-export function TokenInfoPopover({ tokenAddress, chain }: Props) {
+export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) {
   const { getBlockExplorerTokenUrl } = useBlockExplorer(chain)
+  const { getToken } = useTokens()
+  const token = getToken(tokenAddress, chain)
+  const coingeckoId = token?.coingeckoId
 
-  const coingeckoUrl = `https://www.coingecko.com/en/coins/${tokenAddress}`
+  const coingeckoUrl = coingeckoId ? `https://www.coingecko.com/en/coins/${coingeckoId}` : undefined
 
   return (
     <Popover placement="right" variant="tooltip" arrowSize={12}>
@@ -47,7 +52,7 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
         />
       </PopoverTrigger>
       <PopoverContent w="auto">
-        <PopoverArrow bg="background.level3" shadow="none" />
+        <PopoverArrow bg="background.level2" />
         <PopoverBody>
           <HStack>
             <Text color="inherit" fontWeight="medium" fontSize="sm">
@@ -56,21 +61,23 @@ export function TokenInfoPopover({ tokenAddress, chain }: Props) {
             <HStack spacing="xs">
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
-              <Tooltip label="View on Coingecko">
-                <IconButton
-                  size="xs"
-                  isRound
-                  variant="ghost"
-                  aria-label="View on Coingecko"
-                  w="6"
-                  h="6"
-                  icon={<CoingeckoIcon width={15} height={15} />}
-                  as="a"
-                  href={coingeckoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
-              </Tooltip>
+              {!isBpt && coingeckoUrl && (
+                <Tooltip label="View on Coingecko">
+                  <IconButton
+                    size="xs"
+                    isRound
+                    variant="ghost"
+                    aria-label="View on Coingecko"
+                    w="6"
+                    h="6"
+                    icon={<CoingeckoIcon width={15} height={15} />}
+                    as="a"
+                    href={coingeckoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                </Tooltip>
+              )}
               <Tooltip label={`View on ${getBlockExplorerName(chain)}`}>
                 <IconButton
                   size="xs"

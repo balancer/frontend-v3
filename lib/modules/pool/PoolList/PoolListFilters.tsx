@@ -135,9 +135,12 @@ function PoolNetworkFilters() {
   const { supportedNetworks } = getProjectConfig()
   const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
 
+  // Sort networks alphabetically after mainnet
+  const sortedNetworks = [supportedNetworks[0], ...supportedNetworks.slice(1).sort()]
+
   return (
     <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
-      {supportedNetworks.map(network => (
+      {sortedNetworks.map(network => (
         <Box key={network} as={motion.div} variants={staggeredFadeInUp}>
           <Checkbox
             isChecked={!!toggledNetworks.find(toggledNetwork => toggledNetwork === network)}
@@ -285,6 +288,7 @@ const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
 export function PoolListFilters() {
   const { isConnected } = useUserAccount()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
+  const { resetFilters, totalFilterCount } = usePoolListQueryState()
 
   return (
     <VStack w="full">
@@ -332,6 +336,12 @@ export function PoolListFilters() {
                           Filters
                         </Text>
                       </Box>
+
+                      {totalFilterCount > 0 && (
+                        <Button size="xs" w="full" onClick={resetFilters}>
+                          Reset filters
+                        </Button>
+                      )}
 
                       {isConnected && (
                         <Box as={motion.div} variants={staggeredFadeInUp}>
