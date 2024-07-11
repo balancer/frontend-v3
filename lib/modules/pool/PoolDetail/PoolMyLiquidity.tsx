@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
   Tooltip,
-  Link,
+  useDisclosure,
 } from '@chakra-ui/react'
 import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { usePool } from '../PoolProvider'
@@ -49,6 +49,10 @@ import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
 import { getChainId } from '@/lib/config/app.config'
 import { VeBalLink } from '../../vebal/VebalRedirectModal'
+import {
+  PartnerRedirectModal,
+  RedirectPartner,
+} from '@/lib/shared/components/modals/PartnerRedirectModal'
 
 function getTabs(isVeBalPool: boolean) {
   return [
@@ -72,6 +76,7 @@ export default function PoolMyLiquidity() {
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
+  const auraDisclosure = useDisclosure()
 
   const isVeBal = isVebalPool(pool.id)
   const tabs = useMemo(() => {
@@ -106,6 +111,7 @@ export default function PoolMyLiquidity() {
     if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
       setHeight(myLiquiditySectionRef.current.offsetHeight)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handleTabChanged(option: ButtonGroupOption) {
@@ -266,18 +272,21 @@ export default function PoolMyLiquidity() {
           <Divider />
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
             {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
-              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
+              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl" justify="space-between">
                 <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
-                <Text color="white" ml="auto">
-                  Learn more
-                </Text>
-                <Link
-                  href={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
-                  target="_blank"
-                  color="white"
-                >
-                  <ArrowUpRight size={16} />
-                </Link>
+
+                <Button color="white" variant="outline" onClick={auraDisclosure.onOpen}>
+                  <HStack>
+                    <Text>Learn more</Text>
+                    <ArrowUpRight size={16} />
+                  </HStack>
+                </Button>
+                <PartnerRedirectModal
+                  partner={RedirectPartner.Aura}
+                  redirectUrl={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
+                  isOpen={auraDisclosure.isOpen}
+                  onClose={auraDisclosure.onClose}
+                />
               </HStack>
             ) : (
               displayTokens.map(token => {

@@ -1,13 +1,17 @@
 'use client'
 
 import StarsIcon from '@/lib/shared/components/icons/StarsIcon'
-import { Button, Card, Flex, HStack, Icon, Text, VStack } from '@chakra-ui/react'
+import { Button, Card, Flex, HStack, Icon, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { getAuraPoolLink, getPoolActionPath, getTotalAprLabel } from '../../../pool.utils'
 import { usePool } from '../../../PoolProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { getChainId } from '@/lib/config/app.config'
+import {
+  PartnerRedirectModal,
+  RedirectPartner,
+} from '@/lib/shared/components/modals/PartnerRedirectModal'
 
 export function StakingOptions() {
   const { chain, pool } = usePool()
@@ -17,6 +21,8 @@ export function StakingOptions() {
     chain: pool.chain,
     action: 'stake',
   })
+
+  const auraDisclosure = useDisclosure()
 
   return (
     <>
@@ -60,15 +66,17 @@ export function StakingOptions() {
               <Image src="/images/protocols/aura.svg" width={30} height={30} alt="balancer" />
             </Flex>
             {pool.staking && pool.staking.aura && (
-              <Button
-                as={Link}
-                target="_blank"
-                href={getAuraPoolLink(getChainId(chain), pool.staking.aura.auraPoolId)}
-                w="full"
-                variant={'secondary'}
-              >
-                Learn more
-              </Button>
+              <>
+                <Button w="full" variant={'secondary'} onClick={auraDisclosure.onOpen}>
+                  Learn more
+                </Button>
+                <PartnerRedirectModal
+                  partner={RedirectPartner.Aura}
+                  redirectUrl={getAuraPoolLink(getChainId(chain), pool.staking.aura.auraPoolId)}
+                  isOpen={auraDisclosure.isOpen}
+                  onClose={auraDisclosure.onClose}
+                />
+              </>
             )}
           </VStack>
         </Card>
