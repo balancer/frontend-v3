@@ -225,6 +225,9 @@ importers:
       '@types/react-dom':
         specifier: 18.2.6
         version: 18.2.6
+      '@types/react-syntax-highlighter':
+        specifier: ^15.5.13
+        version: 15.5.13
       '@types/tinycolor2':
         specifier: ^1.4.6
         version: 1.4.6
@@ -3837,6 +3840,9 @@ packages:
 
   '@types/react-dom@18.2.6':
     resolution: {integrity: sha512-2et4PDvg6PVCyS7fuTc4gPoksV58bW0RwSxWKcPRcHZf0PRUGq03TKcD/rUHe3azfV6/5/biUBJw+HhCQjaP0A==}
+
+  '@types/react-syntax-highlighter@15.5.13':
+    resolution: {integrity: sha512-uLGJ87j6Sz8UaBAooU0T6lWJ0dBmjZgN1PZTrj05TNql2/XpC6+4HhMT5syIdFUUt+FASfCeLLv4kBygNU+8qA==}
 
   '@types/react-transition-group@4.4.10':
     resolution: {integrity: sha512-hT/+s0VQs2ojCX823m60m5f0sL5idt9SO6Tj6Dg+rdphGPIeJbJ6CxvBYkgkGKrYeDjvIpKTR38UzmtHJOGW3Q==}
@@ -13918,6 +13924,10 @@ snapshots:
   '@types/range-parser@1.2.7': {}
 
   '@types/react-dom@18.2.6':
+    dependencies:
+      '@types/react': 18.2.34
+
+  '@types/react-syntax-highlighter@15.5.13':
     dependencies:
       '@types/react': 18.2.34
 
