@@ -16,10 +16,6 @@ function ProtocolStatItem({ title, value, isLoading }: ProtocolStatsSectionProps
     <Box position="relative" rounded="full">
       <Center>
         <picture className="picture enso">
-          {/* <source srcSet="/images/homepage/enso3.avif" type="image/avif" />
-            <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
           <source
             srcSet="/images/homepage/enso1.png"
             media={colorMode === 'dark' ? 'all' : 'none'}
@@ -71,13 +67,12 @@ export function ProtocolStatsSection() {
   const { statQuery } = useProtocolStats()
   const { toCurrency } = useCurrency()
 
-  console.log(statQuery.data?.protocolMetricsAggregated)
-
   const stats = useMemo(() => {
     const data = statQuery.data?.protocolMetricsAggregated
     const totalLiquidity = data?.totalLiquidity ?? 0
     const swapVolume24h = data?.swapVolume24h ?? 0
     const numLiquidityProviders = data?.numLiquidityProviders ?? 0
+    const swapFee24h = data?.swapFee24h ?? 0
 
     return [
       {
@@ -90,8 +85,8 @@ export function ProtocolStatsSection() {
       },
 
       {
-        title: 'Revenue 30d',
-        value: '-',
+        title: 'Swap fees 24h',
+        value: toCurrency(swapFee24h),
       },
       {
         title: 'LPs',

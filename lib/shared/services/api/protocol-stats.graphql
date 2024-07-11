@@ -3,5 +3,6 @@ query GetProtocolStats($chains: [GqlChain!]) {
     totalLiquidity
     numLiquidityProviders
     swapVolume24h
+    swapFee24h
   }
 }
