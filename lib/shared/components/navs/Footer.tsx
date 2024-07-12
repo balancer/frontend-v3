@@ -22,9 +22,15 @@ function CardContent() {
       links: [
         { label: 'Home', href: '/' },
         { label: 'Balancer v3', href: '/build/v3' },
+
         { label: 'v3 Docs', href: 'https://docs-v3.balancer.fi', isExternal: true },
-        { label: 'v2 Docs', href: 'https://docs.balancer.fi', isExternal: true },
+        {
+          label: 'Prototype on v3',
+          href: 'https://github.com/balancer/scaffold-balancer-v3',
+          isExternal: true,
+        },
         { label: 'Grants', href: 'https://grants.balancer.community', isExternal: true },
+        { label: 'v2 Docs', href: 'https://docs.balancer.fi', isExternal: true },
       ],
     },
     {
@@ -72,10 +78,10 @@ function CardContent() {
       <VStack color="font.primary" align="start" spacing="lg" maxW="96">
         <BalancerLogoType width="120px" />
         <VStack align="start" spacing="sm">
-          <Text fontSize="4xl" fontWeight="bold">
+          <Text variant="secondary" fontSize="4xl" fontWeight="500" letterSpacing="-0.4px">
             AMMs made easy
           </Text>
-          <Text>
+          <Text variant="secondary" sx={{ textWrap: 'balance' }}>
             Balancer is a battle-tested toolkit for true AMM experimentation and innovation.
           </Text>
         </VStack>
@@ -88,8 +94,8 @@ function CardContent() {
         spacing={{ base: 'lg', lg: 'md' }}
       >
         {linkSections.map(section => (
-          <VStack key={section.title} align="start" spacing={{ base: 'sm', lg: 'md' }}>
-            <Text fontSize="lg" fontWeight="bold">
+          <VStack key={section.title} align="start" spacing={{ base: 'sm', lg: 'sm' }}>
+            <Text fontWeight="bold" fontSize={{ base: 'md', md: 'lg' }}>
               {section.title}
             </Text>
             <VStack align="start" spacing={{ base: 'xs', lg: 'sm' }}>
@@ -102,8 +108,14 @@ function CardContent() {
                   flexBasis="row"
                   flex="auto"
                 >
-                  <HStack>
-                    <Box>{link.label}</Box>
+                  <HStack gap="xxs">
+                    <Box
+                      fontWeight="medium"
+                      letterSpacing="-0.25px"
+                      fontSize={{ base: 'sm', md: 'md' }}
+                    >
+                      {link.label}
+                    </Box>
                     {link.isExternal && (
                       <Box color="grayText">
                         <ArrowUpRight size={12} />
@@ -124,12 +136,8 @@ function SocialLinks() {
   const { getSocialLinks } = useNav()
 
   return (
-    <HStack
-      justify={{ base: 'space-around', lg: 'space-between' }}
-      spacing="md"
-      w={{ base: 'full', lg: 'auto' }}
-    >
-      {getSocialLinks(16).map(({ href, icon }) => (
+    <HStack spacing="ms" w={{ base: 'full', lg: 'auto' }}>
+      {getSocialLinks(24).map(({ href, icon }) => (
         <IconButton
           as={Link}
           key={href}
@@ -139,6 +147,8 @@ function SocialLinks() {
           isRound
           rounded="full"
           isExternal
+          w="44px"
+          h="44px"
         >
           {icon}
         </IconButton>
@@ -160,12 +170,18 @@ function LegalLinks() {
     <HStack
       w="full"
       justify={{ base: 'start', lg: 'end' }}
-      spacing={{ base: 'sm', lg: 'lg' }}
+      spacing={{ base: 'sm', lg: 'md' }}
       wrap="wrap"
       p={{ base: 'sm', lg: '0' }}
     >
       {legalLinks.map(link => (
-        <Link color="grayText" fontSize="sm" key={link.href} href={link.href} as={NextLink}>
+        <Link
+          color="font.secondary"
+          fontSize={{ base: 'xs', md: 'sm' }}
+          key={link.href}
+          href={link.href}
+          as={NextLink}
+        >
           {link.label}
         </Link>
       ))}
@@ -189,6 +205,7 @@ export function Footer() {
             align="start"
             direction={{ base: 'column', lg: 'row' }}
             justify="space-between"
+            alignItems={{ base: 'none', lg: 'center' }}
             gap="md"
             as={motion.div}
             variants={staggeredFadeIn}
