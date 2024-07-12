@@ -1,9 +1,8 @@
 'use client'
 
 import NextLink from 'next/link'
-import { Stack, Text, Box, Card, VStack, HStack, Link, Button, IconButton } from '@chakra-ui/react'
-import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
-import { isProd } from '@/lib/config/app.config'
+import { Stack, Text, Box, Card, VStack, HStack, Link, IconButton } from '@chakra-ui/react'
+import { staggeredFadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
 import { DefaultPageContainer } from '../containers/DefaultPageContainer'
 import { useBreakpoints } from '../../hooks/useBreakpoints'
@@ -65,10 +64,10 @@ function CardContent() {
 
   return (
     <Stack
-      direction={{ base: 'column', md: 'row' }}
+      direction={{ base: 'column', lg: 'row' }}
       justify="space-between"
-      p="lg"
-      spacing={{ base: 'xl', md: 'md' }}
+      p={{ base: 'sm', lg: 'lg' }}
+      spacing={{ base: 'xl', lg: 'md' }}
     >
       <VStack color="font.primary" align="start" spacing="lg" maxW="96">
         <BalancerLogoType width="120px" />
@@ -82,18 +81,18 @@ function CardContent() {
         </VStack>
       </VStack>
       <Stack
-        direction={{ base: 'column', md: 'row' }}
+        direction={{ base: 'column', lg: 'row' }}
         w="full"
         justify="space-around"
         align="start"
-        spacing={{ base: 'lg', md: 'md' }}
+        spacing={{ base: 'lg', lg: 'md' }}
       >
         {linkSections.map(section => (
-          <VStack key={section.title} align="start" spacing={{ base: 'sm', md: 'md' }}>
+          <VStack key={section.title} align="start" spacing={{ base: 'sm', lg: 'md' }}>
             <Text fontSize="lg" fontWeight="bold">
               {section.title}
             </Text>
-            <VStack align="start" spacing={{ base: 'xs', md: 'sm' }}>
+            <VStack align="start" spacing={{ base: 'xs', lg: 'sm' }}>
               {section.links.map(link => (
                 <Link
                   as={NextLink}
@@ -126,9 +125,9 @@ function SocialLinks() {
 
   return (
     <HStack
-      justify={{ base: 'space-around', md: 'space-between' }}
+      justify={{ base: 'space-around', lg: 'space-between' }}
       spacing="md"
-      w={{ base: 'full', md: 'auto' }}
+      w={{ base: 'full', lg: 'auto' }}
     >
       {getSocialLinks(16).map(({ href, icon }) => (
         <IconButton
@@ -140,7 +139,6 @@ function SocialLinks() {
           isRound
           rounded="full"
           isExternal
-          size="lg"
         >
           {icon}
         </IconButton>
@@ -159,13 +157,19 @@ function LegalLinks() {
   ]
 
   return (
-    <Stack w="full" direction={{ base: 'column', md: 'row' }} justify="end" spacing="lg">
+    <HStack
+      w="full"
+      justify={{ base: 'start', lg: 'end' }}
+      spacing={{ base: 'sm', lg: 'lg' }}
+      wrap="wrap"
+      p={{ base: 'sm', lg: '0' }}
+    >
       {legalLinks.map(link => (
         <Link color="grayText" fontSize="sm" key={link.href} href={link.href} as={NextLink}>
           {link.label}
         </Link>
       ))}
-    </Stack>
+    </HStack>
   )
 }
 
@@ -183,7 +187,7 @@ export function Footer() {
           </CardComponent>
           <Stack
             align="start"
-            direction={{ base: 'column', md: 'row' }}
+            direction={{ base: 'column', lg: 'row' }}
             justify="space-between"
             gap="md"
             as={motion.div}
