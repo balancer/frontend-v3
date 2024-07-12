@@ -18,13 +18,12 @@ import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
 import { hasNestedPools, isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getUserTotalBalance } from '../../user-balance.helpers'
+import { getUserWalletBalance } from '../../user-balance.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -50,7 +49,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const maxHumanBptIn: HumanAmount = getUserTotalBalance(pool)
+  const maxHumanBptIn: HumanAmount = getUserWalletBalance(pool)
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toFixed() as HumanAmount
