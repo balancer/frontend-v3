@@ -17,6 +17,7 @@ import {
 import Section from '@/lib/shared/components/layout/Section'
 import Link from 'next/link'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import NextLink from 'next/link'
 
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
@@ -711,14 +712,13 @@ export default function Home() {
             <ProtocolStatsSection />
           </Box>
 
-            {/* Replace with Ecosystem Activity Chart */}
-            <Box>
-              <Center bg="background.level4" h="520px" w="full">
-                <Text variant="secondary">[Ecosystem activity chart]</Text>
-              </Center>
-            </Box>
+          {/* Replace with Ecosystem Activity Chart */}
+          <Box>
+            <Center bg="background.level4" h="520px" w="full">
+              <Text variant="secondary">[Ecosystem activity chart]</Text>
+            </Center>
           </Box>
-        </FadeInOnView>
+        </Box>
       </Section>
     </Box>
   )
