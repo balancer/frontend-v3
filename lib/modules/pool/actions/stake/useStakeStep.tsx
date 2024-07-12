@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
@@ -59,7 +60,7 @@ export function useStakeStep(pool: Pool, rawDepositAmount: bigint): TransactionS
 
   const onSuccess = useCallback(() => {
     refetchPool()
-  }, [refetchPool])
+  }, [])
 
   const step: TransactionStep = useMemo(
     () => ({
