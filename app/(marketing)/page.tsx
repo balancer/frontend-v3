@@ -4,6 +4,7 @@ import {
   Card,
   Center,
   Divider,
+  IconButton,
   Grid,
   Heading,
   Text,
@@ -26,6 +27,8 @@ import { CronIcon } from '@/lib/shared/components/icons/logos/CronIcon'
 import { XaveIcon } from '@/lib/shared/components/icons/logos/XaveIcon'
 import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
 import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
+import { CloseIcon } from '@chakra-ui/icons'
+import { ArrowUpRight } from 'react-feather'
 
 export default function Home() {
   return (
@@ -122,15 +125,184 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>100+</span> protocol builders
                     </Text>
+
                     <Button
                       variant="secondary"
-                      as={Link}
-                      href="/build/v3"
-                      prefetch={true}
                       size="lg"
+                      className="btn-popover"
+                      popovertarget="disclose"
+                      popovertargetaction="toggle"
+                      overflow="hidden"
+                      whiteSpace="nowrap"
                     >
                       Start building
                     </Button>
+
+                    <div popover="auto" id="disclose" className="disclosure">
+                      <FadeInOnView>
+                        <Box>
+                          <header>
+                            <Flex
+                              position="relative"
+                              justifyContent="space-between"
+                              background="background.button.secondary"
+                              px="md"
+                              alignItems="center"
+                              height="48px"
+                            >
+                              <Text
+                                fontWeight="bold"
+                                fontSize="lg"
+                                m="0"
+                                p="0"
+                                overflow="hidden"
+                                whiteSpace="nowrap"
+                                color="font.dark"
+                              >
+                                Start building
+                              </Text>
+
+                              {/* <Button popovertarget="disclose" popovertargetaction="close">
+                              <Box position="relative" top="-4px" right="-4px">
+                                <IconButton size="xs" icon={<CloseIcon />} />
+                              </Box>
+                            </Button> */}
+                            </Flex>
+                          </header>
+                          <Box className="content">
+                            <div className="actions">
+                              <VStack alignItems="flex-start" gap="0">
+                                <Box role="group" px="md" py="sm" w="full" display="block">
+                                  <Link as={NextLink} href="/build/v3" prefetch={true}>
+                                    <Text
+                                      fontWeight="bold"
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                    >
+                                      Balancer v3
+                                    </Text>
+                                    <Text
+                                      fontSize="sm"
+                                      variant="secondary"
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                    >
+                                      Learn about the key benefits
+                                    </Text>
+                                  </Link>
+                                </Box>
+
+                                <Box role="group" px="md" py="sm" w="full" display="block">
+                                  <Link href="https://docs-v3.balancer.fi/">
+                                    <Flex alignItems="center" gap="xxs">
+                                      <Text
+                                        fontWeight="bold"
+                                        whiteSpace="nowrap"
+                                        overflow="hidden"
+                                        transition="all 0.2s ease-out 0.1s"
+                                        _groupHover={{ color: 'font.maxContrast' }}
+                                      >
+                                        v3 Docs
+                                      </Text>
+                                      <ArrowUpRight display="inline" size={12} />
+                                    </Flex>
+                                    <Text
+                                      fontSize="sm"
+                                      variant="secondary"
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                    >
+                                      Go deep down the rabbithole
+                                    </Text>
+                                  </Link>
+                                </Box>
+                                <Box role="group" px="md" py="sm" w="full" display="block">
+                                  <Link href="https://github.com/balancer/scaffold-balancer-v3">
+                                    <Flex alignItems="center" gap="xxs">
+                                      <Text
+                                        fontWeight="bold"
+                                        whiteSpace="nowrap"
+                                        overflow="hidden"
+                                        transition="all 0.2s ease-out 0.1s"
+                                        _groupHover={{ color: 'font.maxContrast' }}
+                                      >
+                                        Scaffold Balancer v3
+                                      </Text>
+                                      <ArrowUpRight display="inline" size={12} />
+                                    </Flex>
+                                    <Text
+                                      fontSize="sm"
+                                      variant="secondary"
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                    >
+                                      Prototyping tool for Balancer v3
+                                    </Text>
+                                  </Link>
+                                </Box>
+                                <Box role="group" px="md" py="sm" w="full" display="block">
+                                  <Link href="https://docs.balancer.fi/">
+                                    <Flex alignItems="center" gap="xxs">
+                                      <Text
+                                        fontWeight="bold"
+                                        transition="all 0.2s ease-out 0.1s"
+                                        _groupHover={{ color: 'font.maxContrast' }}
+                                      >
+                                        v2 Docs
+                                      </Text>
+                                      <ArrowUpRight display="inline" size={12} />
+                                    </Flex>
+
+                                    <Text
+                                      fontSize="sm"
+                                      variant="secondary"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                    >
+                                      Build on battle-tested smart contracts
+                                    </Text>
+                                  </Link>
+                                </Box>
+                                <Box role="group" px="md" py="sm" w="full" display="block">
+                                  <Link href="https://grants.balancer.community/">
+                                    <Flex alignItems="center" gap="xxs">
+                                      <Text
+                                        fontWeight="bold"
+                                        transition="all 0.2s ease-out 0.1s"
+                                        _groupHover={{ color: 'font.maxContrast' }}
+                                      >
+                                        Get a Grant
+                                      </Text>
+                                      <ArrowUpRight display="inline" size={12} />
+                                    </Flex>
+                                    <Text
+                                      fontSize="sm"
+                                      variant="secondary"
+                                      whiteSpace="nowrap"
+                                      overflow="hidden"
+                                      transition="all 0.2s ease-out 0.1s"
+                                      _groupHover={{ color: 'font.maxContrast' }}
+                                    >
+                                      Help to get you set up
+                                    </Text>
+                                  </Link>
+                                </Box>
+                              </VStack>
+                            </div>
+                          </Box>
+                        </Box>
+                      </FadeInOnView>
+                    </div>
                   </Box>
                 </Box>
               </FadeInOnView>
@@ -224,6 +396,8 @@ export default function Home() {
               <Heading
                 pb="md"
                 w="full"
+                as="h2"
+                size="2xl"
                 sx={{
                   textWrap: 'balance',
                 }}
@@ -252,159 +426,169 @@ export default function Home() {
               variant="level2"
               gridArea={{ base: 'auto', md: '1 / 1 / 2 / 3', lg: '1 / 1 / 3 / 3' }}
             >
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
+              <FadeInOnView>
+                <Flex direction="column" justify="flex-end" h="100%">
+                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                    <picture className="picture">
+                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
+                      {/* <source srcSet="image.webp" type="image/webp" />
             <source srcSet="large.png" media="(min-width: 75em)" />
             <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/pools.png"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
-                  pb="sm"
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Code less. Build more.
-                </Heading>
-                <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Focus on innovation rather than low level tasks like accounting and security.
-                  Simply supply custom AMM logic, and harness the full benefit of an optimized,
-                  battle-tested tech stack.
-                </Text>
-              </Flex>
+                      <img
+                        src="/images/homepage/pools.png"
+                        alt="Plugged into Balancer vault"
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    </picture>
+                  </Box>
+                  <Heading
+                    as="h5"
+                    size="h5"
+                    pb="sm"
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Code less. Build more.
+                  </Heading>
+                  <Text
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Focus on innovation rather than low level tasks like accounting and security.
+                    Simply supply custom AMM logic, and harness the full benefit of an optimized,
+                    battle-tested tech stack.
+                  </Text>
+                </Flex>
+              </FadeInOnView>
             </Card>
 
             <Card>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
+              <FadeInOnView>
+                <Flex direction="column" justify="flex-end" h="100%">
+                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                    <picture className="picture">
+                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
+                      {/* <source srcSet="image.webp" type="image/webp" />
             <source srcSet="large.png" media="(min-width: 75em)" />
             <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/pools.png"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
-                  pb="sm"
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Booststrap liquidity
-                </Heading>
-                <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Plug into Balancer&lsquo;s veBAL incentive mechanism and grants framework to
-                  bootstrap AMM liquidity.
-                </Text>
-              </Flex>
+                      <img
+                        src="/images/homepage/feature2.jpg"
+                        alt="Plugged into Balancer vault"
+                        loading="lazy"
+                        decoding="async"
+                        width="100%"
+                        height="100%"
+                        object-fit="cover"
+                      />
+                    </picture>
+                  </Box>
+                  <Heading
+                    as="h5"
+                    size="h5"
+                    pb="sm"
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Booststrap liquidity
+                  </Heading>
+                  <Text
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Plug into Balancer&lsquo;s veBAL incentive mechanism and grants framework to
+                    bootstrap AMM liquidity.
+                  </Text>
+                </Flex>
+              </FadeInOnView>
             </Card>
+
             <Card>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
+              <FadeInOnView>
+                <Flex direction="column" justify="flex-end" h="100%">
+                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                    <picture className="picture">
+                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
+                      {/* <source srcSet="image.webp" type="image/webp" />
             <source srcSet="large.png" media="(min-width: 75em)" />
             <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/pools.png"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
-                  pb="sm"
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Launch your product faster
-                </Heading>
-                <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Eliminate the cold start AMM problem entirely with streamlined aggregator
-                  integrations, a prebuilt UI.
-                </Text>
-              </Flex>
+                      <img
+                        src="/images/homepage/feature3.jpg"
+                        alt="Plugged into Balancer vault"
+                        loading="lazy"
+                        decoding="async"
+                        width="100%"
+                        height="100%"
+                        object-fit="cover"
+                      />
+                    </picture>
+                  </Box>
+                  <Heading
+                    as="h5"
+                    size="h5"
+                    pb="sm"
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Launch your product faster
+                  </Heading>
+                  <Text
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Eliminate the cold start AMM problem entirely with streamlined aggregator
+                    integrations, a prebuilt UI.
+                  </Text>
+                </Flex>
+              </FadeInOnView>
             </Card>
+
             <Card gridArea={{ base: 'auto', md: '3 / 1 / 4 / 3', lg: '1 / 4 / 3 / 5' }}>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
+              <FadeInOnView>
+                <Flex direction="column" justify="flex-end" h="100%">
+                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                    <picture className="picture">
+                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
+                      {/* <source srcSet="image.webp" type="image/webp" />
             <source srcSet="large.png" media="(min-width: 75em)" />
             <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/pools.png"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
-                  pb="sm"
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Join the largest AMM network
-                </Heading>
-                <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Unlock an extensive network of AMM expertise, audit pipelines, and partnership
-                  connections.
-                </Text>
-              </Flex>
+                      <img
+                        src="/images/homepage/feature4.jpg"
+                        alt="Plugged into Balancer vault"
+                        loading="lazy"
+                        decoding="async"
+                        width="100%"
+                        height="100%"
+                        object-fit="cover"
+                      />
+                    </picture>
+                  </Box>
+                  <Heading
+                    as="h5"
+                    size="h5"
+                    pb="sm"
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Join the largest AMM network
+                  </Heading>
+                  <Text
+                    sx={{
+                      textWrap: 'balance',
+                    }}
+                  >
+                    Unlock an extensive network of AMM expertise, audit pipelines, and partnership
+                    connections.
+                  </Text>
+                </Flex>
+              </FadeInOnView>
             </Card>
           </Grid>
         </Box>
@@ -419,90 +603,98 @@ export default function Home() {
             m="auto"
             textAlign={{ base: 'left', md: 'center' }}
           >
-            <Text pb="lg" variant="eyebrow" w="full">
-              For Protocols
-            </Text>
-            <Heading
-              pb="md"
-              w="full"
-              sx={{
-                textWrap: 'balance',
-              }}
-            >
-              Plug in to bootstrap liquidity
-            </Heading>
-            <Text
-              sx={{
-                textWrap: 'balance',
-              }}
-            >
-              Launch your token with confidence by plugging into the Balancer vault and ecosystem.
-              Find product market fit and revenue faster with day 1 liquidity and community.
-            </Text>
+            <FadeInOnView>
+              <Text pb="lg" variant="eyebrow" w="full">
+                For Protocols
+              </Text>
+              <Heading
+                pb="md"
+                w="full"
+                as="h2"
+                size="2xl"
+                sx={{
+                  textWrap: 'balance',
+                }}
+              >
+                Plug in to bootstrap liquidity
+              </Heading>
+              <Text
+                sx={{
+                  textWrap: 'balance',
+                }}
+              >
+                Launch your token with confidence by plugging into the Balancer vault and ecosystem.
+                Find product market fit and revenue faster with day 1 liquidity and community.
+              </Text>
+            </FadeInOnView>
           </Box>
         </Box>
 
         <Box maxW="maxContent" m="0 auto">
-          <picture className="picture">
-            <source
-              srcSet="/images/homepage/bootstrap-liquidity-portrait.png"
-              type="image/png"
-              media="(orientation: portrait)"
-            />
-            <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" />
-            {/* <source srcSet="image.webp" type="image/webp" />
+          <FadeInOnView>
+            <picture className="picture">
+              <source
+                srcSet="/images/homepage/bootstrap-liquidity-portrait.png"
+                type="image/png"
+                media="(orientation: portrait)"
+              />
+              <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" />
+              {/* <source srcSet="image.webp" type="image/webp" />
             <source srcSet="large.png" media="(min-width: 75em)" />
             <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-            <img
-              src="/images/homepage/bootstrap-liquidity.png"
-              alt="Plugged into Balancer vault"
-              loading="lazy"
-              decoding="async"
-              height="100%"
-              object-fit="cover"
-            />
-          </picture>
+              <img
+                src="/images/homepage/bootstrap-liquidity.png"
+                alt="Plugged into Balancer vault"
+                loading="lazy"
+                decoding="async"
+                height="100%"
+                object-fit="cover"
+              />
+            </picture>
+          </FadeInOnView>
         </Box>
 
         <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
-          <SimpleGrid columns={{ base: 2, md: 4 }} spacing={{ base: 8, md: 8, xl: '12' }} py="xl">
-            <Box>
-              <Heading variant="h5" as="h5" size="h5" pb="sm">
-                Get swaps on day 1
-              </Heading>
-              <Text>
-                Access to the Balancer vault for smart swap routing via your pools. Plus, fast track
-                inclusion to aggregator partners.
-              </Text>
-            </Box>
-            <Box>
-              <Heading variant="h5" as="h5" size="h5" pb="sm">
-                Liquidity incentives
-              </Heading>
-              <Text>
-                In addition to your own points / token, boost your liquidity by utilizing the veBAL
-                system for BAL and AURA incentives.
-              </Text>
-            </Box>
-            <Box>
-              <Heading variant="h5" as="h5" size="h5" pb="sm">
-                Access Balancer&lsquo;s community
-              </Heading>
-              <Text>
-                By building on Balancer, LPs and swappers can find and / or interact with your AMM /
-                pools via the ecosystem app.
-              </Text>
-            </Box>
-            <Box>
-              <Heading variant="h5" as="h5" size="h5" pb="sm">
-                ve8020 tokenomics
-              </Heading>
-              <Text>
-                Enable community staking & governance without sacrificing the liquidity of your
-                token in a specialized 80/20 pool.
-              </Text>
-            </Box>
-          </SimpleGrid>
+          <FadeInOnView>
+            <SimpleGrid columns={{ base: 2, md: 4 }} spacing={{ base: 8, md: 8, xl: '12' }} py="xl">
+              <Box>
+                <Heading variant="h5" as="h5" size="h5" pb="sm">
+                  Get swaps on day 1
+                </Heading>
+                <Text>
+                  Access to the Balancer vault for smart swap routing via your pools. Plus, fast
+                  track inclusion to aggregator partners.
+                </Text>
+              </Box>
+              <Box>
+                <Heading variant="h5" as="h5" size="h5" pb="sm">
+                  Liquidity incentives
+                </Heading>
+                <Text>
+                  In addition to your own points / token, boost your liquidity by utilizing the
+                  veBAL system for BAL and AURA incentives.
+                </Text>
+              </Box>
+              <Box>
+                <Heading variant="h5" as="h5" size="h5" pb="sm">
+                  Access Balancer&lsquo;s community
+                </Heading>
+                <Text>
+                  By building on Balancer, LPs and swappers can find and / or interact with your AMM
+                  / pools via the ecosystem app.
+                </Text>
+              </Box>
+              <Box>
+                <Heading variant="h5" as="h5" size="h5" pb="sm">
+                  ve8020 tokenomics
+                </Heading>
+                <Text>
+                  Enable community staking & governance without sacrificing the liquidity of your
+                  token in a specialized 80/20 pool.
+                </Text>
+              </Box>
+            </SimpleGrid>
+          </FadeInOnView>
         </Box>
       </Section>
 
@@ -519,13 +711,14 @@ export default function Home() {
             <ProtocolStatsSection />
           </Box>
 
-          {/* Replace with Ecosystem Activity Chart */}
-          <Box>
-            <Center bg="background.level4" h="520px" w="full">
-              <Text variant="secondary">[Ecosystem activity chart]</Text>
-            </Center>
+            {/* Replace with Ecosystem Activity Chart */}
+            <Box>
+              <Center bg="background.level4" h="520px" w="full">
+                <Text variant="secondary">[Ecosystem activity chart]</Text>
+              </Center>
+            </Box>
           </Box>
-        </Box>
+        </FadeInOnView>
       </Section>
     </Box>
   )
