@@ -10,6 +10,7 @@ export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
 export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
+  const [onSuccessCalled, setOnSuccessCalled] = useState<boolean>(false)
   const { getTransaction } = useTransactionState()
   const [playGong] = useSound('/sounds/gong.mp3')
 
@@ -33,8 +34,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // when it's complete. e.g. so approvals can refetch to check correct
   // allowance has been given.
   useEffect(() => {
-    if (currentTransaction?.result.isSuccess) {
+    if (!onSuccessCalled && currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
+      setOnSuccessCalled(true)
     }
   }, [currentTransaction?.result.isSuccess, currentStep?.onSuccess])
 
