@@ -68,8 +68,43 @@
   border: 0;
   anchor-name: --control;
   background: var(--starting);
-
   padding: 0;
+  background-color: var(--chakra-colors-background-base);
+  height: 48px;
+  padding-left: 16px;
+  padding-right: 16px;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.btn-popover {
+  color: var(--chakra-colors-font-dark);
+  background: var(--chakra-colors-background-button-secondary);
+  box-shadow: var(--chakra-shadows-md);
+  border-radius: var(--chakra-radii-lg);
+  letter-spacing: -0.02em;
+}
+
+.btn-popover:hover {
+  box-shadow: var(--chakra-shadows-sm);
+}
+
+.btn-popover:disabled {
+  background: var(--chakra-colors-background-level3);
+  border: 1px solid var(--chakra-colors-border-base);
+  color: var(--chakra-colors-grayText);
+}
+
+.btn-popover:hover:disabled {
+  background: var(--chakra-colors-background-level3);
+}
+
+@media (max-width: 48em) {
+  .btn-popover {
+    height: 40px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
 }
 
 #disclose {
@@ -79,7 +114,7 @@
   width: anchor-size(width);
   height: anchor-size(height);
 
-  background-color: var(--chakra-colors-background-base);
+  border-color: var(--chakra-colors-background-base);
 
   overflow: hidden;
 

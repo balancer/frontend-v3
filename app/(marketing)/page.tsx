@@ -127,9 +127,7 @@ export default function Home() {
                       Join <span>100+</span> protocol builders
                     </Text>
 
-                    <Button
-                      variant="secondary"
-                      size="lg"
+                    <button
                       className="btn-popover"
                       popovertarget="disclose"
                       popovertargetaction="toggle"
@@ -137,7 +135,7 @@ export default function Home() {
                       whiteSpace="nowrap"
                     >
                       Start building
-                    </Button>
+                    </button>
 
                     <div popover="auto" id="disclose" className="disclosure">
                       <FadeInOnView>
