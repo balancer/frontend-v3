@@ -13,7 +13,7 @@ import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManaged
 import { useBalTokenRewards } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { useClaimableBalances } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { useHasApprovedRelayer } from '@/lib/modules/relayer/useHasApprovedRelayer'
@@ -95,13 +95,17 @@ export function useClaimAndUnstakeStep({
 
   const isComplete = () => transaction?.result.isSuccess || false
 
+  const onSuccess = useCallback(() => {
+    refetchPoolBalances()
+  }, [])
+
   const step = useMemo(
     (): TransactionStep => ({
       id: claimAndUnstakeStepId,
       stepType: 'claimAndUnstake',
       labels,
       isComplete,
-      onSuccess: () => refetchPoolBalances(),
+      onSuccess,
       renderAction: () => <ManagedTransactionButton id={claimAndUnstakeStepId} {...props} />,
     }),
     [transaction, data, props]
