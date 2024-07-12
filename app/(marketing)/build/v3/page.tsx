@@ -111,8 +111,8 @@ export default function Home() {
                     }}
                   >
                     Balancer v3 powers the next generation of AMM innovation. Simplified pool
-                    creation with an optimized vault. Plug in audited reusable hooks to import
-                    additional functionality.
+                    creation with an optimized vault. Plug in audited reusable hooks for additional
+                    functionality.
                   </Text>
                   <Box>
                     <Flex

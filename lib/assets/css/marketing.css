@@ -1,4 +1,6 @@
-@media (min-height: 680px) {
+@import url('./popover.css');
+
+@media (height >= 680px) {
   .build .hero {
     padding-bottom: 0;
   }
@@ -15,14 +17,14 @@
   min-width: 40px;
 }
 
-@media (min-width: 780px) {
+@media (width >= 780px) {
   .feature-table td,
   .feature-table th {
     min-width: 40px;
   }
 }
 
-@media (orientation: landscape) and (min-height: 780px) {
+@media (orientation: landscape) and (height >= 780px) {
   .hero-container {
     height: calc(100vh - 214px);
   }
@@ -48,4 +50,3 @@
   }
 }
 
-@import url('./popover.css');

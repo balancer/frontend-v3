@@ -1,5 +1,4 @@
 'use client'
-
 import {
   Button,
   Card,
@@ -20,10 +19,9 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
-import Link from 'next/link'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import NextLink from 'next/link'
-
+import { Link } from '@chakra-ui/react'
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
 import { AuraIcon } from '@/lib/shared/components/icons/logos/AuraIcon'
@@ -32,6 +30,7 @@ import { GyroIcon } from '@/lib/shared/components/icons/logos/GyroIcon'
 import { CronIcon } from '@/lib/shared/components/icons/logos/CronIcon'
 import { XaveIcon } from '@/lib/shared/components/icons/logos/XaveIcon'
 import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
+import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
 import { CloseIcon } from '@chakra-ui/icons'
 import { ArrowUpRight } from 'react-feather'
 
@@ -81,8 +80,7 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>227,456</span> Liquidity Providers
                     </Text>
-
-                    <Button size="lg" as={Link} href="/pools" prefetch={true} variant="primary">
+                    <Button size="lg" as={NextLink} href="/pools" prefetch={true} variant="primary">
                       Explore pools
                     </Button>
                   </Box>
@@ -132,19 +130,13 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>100+</span> protocol builders
                     </Text>
-
-                    <Button
-                      variant="secondary"
-                      size="lg"
+                    <button
                       className="btn-popover"
                       popovertarget="disclose"
                       popovertargetaction="toggle"
-                      overflow="hidden"
-                      whiteSpace="nowrap"
                     >
                       Start building
-                    </Button>
-
+                    </button>
                     <div popover="auto" id="disclose" className="disclosure">
                       <FadeInOnView>
                         <Box>
@@ -706,221 +698,25 @@ export default function Home() {
       </Section>
 
       <Section className="activity">
-        <FadeInOnView>
-          <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
-            <Box pb="xl" w="full" maxW="4xl" m="auto" textAlign={{ base: 'left', md: 'center' }}>
-              <Text pb="lg" variant="eyebrow" w="full">
-                Ecosystem activity
-              </Text>
-              <Heading w="full" pb="2xl" as="h2" size="2xl">
-                Building together across networks
-              </Heading>
+        <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
+          <Box pb="xl" w="full" maxW="4xl" m="auto" textAlign={{ base: 'left', md: 'center' }}>
+            <Text pb="lg" variant="eyebrow" w="full">
+              Ecosystem activity
+            </Text>
+            <Heading w="full" pb="2xl">
+              Building together across networks
+            </Heading>
 
-              <SimpleGrid
-                columns={{ base: 2, md: 4 }}
-                spacing={{ base: 4, md: 8 }}
-                maxW={{ base: '500px', md: '100%' }}
-              >
-                <Box position="relative" rounded="full">
-                  <Center>
-                    <picture className="picture enso">
-                      {/* <source srcSet="/images/homepage/enso3.avif" type="image/avif" />
-                        <source srcSet="image.webp" type="image/webp" />
-                        <source srcSet="large.png" media="(min-width: 75em)" />
-                        <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <source
-                        srcSet="/images/homepage/enso1.png"
-                        media={colorMode === 'dark' ? 'all' : 'none'}
-                      />
-
-                      <img
-                        src="/images/homepage/enso3.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
-                        border-radius="100%"
-                      />
-                    </picture>
-
-                    <Box
-                      textAlign="center"
-                      position="absolute"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%,-50%)"
-                      zIndex="10"
-                    >
-                      <Box>
-                        <Text color={colorMode === 'dark' ? 'white' : 'font.dark'}>TVL</Text>
-                      </Box>
-                      <Box>
-                        <Text
-                          fontSize="2xl"
-                          fontWeight="bold"
-                          color={colorMode === 'dark' ? 'white' : 'font.dark'}
-                        >
-                          $1.5b
-                        </Text>
-                      </Box>
-                    </Box>
-                  </Center>
-                </Box>
-
-                <Box position="relative" rounded="full">
-                  <Center>
-                    <picture className="picture enso">
-                      {/* <source srcSet="/images/homepage/enso3.avif" type="image/avif" />
-                        <source srcSet="image.webp" type="image/webp" />
-                        <source srcSet="large.png" media="(min-width: 75em)" />
-                        <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <source
-                        srcSet="/images/homepage/enso1.png"
-                        media={colorMode === 'dark' ? 'all' : 'none'}
-                      />
-
-                      <img
-                        src="/images/homepage/enso3.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
-                        border-radius="100%"
-                      />
-                    </picture>
-
-                    <Box
-                      textAlign="center"
-                      position="absolute"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%,-50%)"
-                      zIndex="10"
-                    >
-                      <Box>
-                        <Text color={colorMode === 'dark' ? 'white' : 'font.dark'}>TVL</Text>
-                      </Box>
-                      <Box>
-                        <Text
-                          fontSize="2xl"
-                          fontWeight="bold"
-                          color={colorMode === 'dark' ? 'white' : 'font.dark'}
-                        >
-                          $1.5b
-                        </Text>
-                      </Box>
-                    </Box>
-                  </Center>
-                </Box>
-                <Box position="relative" rounded="full">
-                  <Center>
-                    <picture className="picture enso">
-                      {/* <source srcSet="/images/homepage/enso3.avif" type="image/avif" />
-                        <source srcSet="image.webp" type="image/webp" />
-                        <source srcSet="large.png" media="(min-width: 75em)" />
-                        <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <source
-                        srcSet="/images/homepage/enso1.png"
-                        media={colorMode === 'dark' ? 'all' : 'none'}
-                      />
-
-                      <img
-                        src="/images/homepage/enso3.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
-                        border-radius="100%"
-                      />
-                    </picture>
-
-                    <Box
-                      textAlign="center"
-                      position="absolute"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%,-50%)"
-                      zIndex="10"
-                    >
-                      <Box>
-                        <Text color={colorMode === 'dark' ? 'white' : 'font.dark'}>TVL</Text>
-                      </Box>
-                      <Box>
-                        <Text
-                          fontSize="2xl"
-                          fontWeight="bold"
-                          color={colorMode === 'dark' ? 'white' : 'font.dark'}
-                        >
-                          $1.5b
-                        </Text>
-                      </Box>
-                    </Box>
-                  </Center>
-                </Box>
-                <Box position="relative" rounded="full">
-                  <Center>
-                    <picture className="picture enso">
-                      {/* <source srcSet="/images/homepage/enso3.avif" type="image/avif" />
-                        <source srcSet="image.webp" type="image/webp" />
-                        <source srcSet="large.png" media="(min-width: 75em)" />
-                        <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <source
-                        srcSet="/images/homepage/enso1.png"
-                        media={colorMode === 'dark' ? 'all' : 'none'}
-                      />
-
-                      <img
-                        src="/images/homepage/enso3.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
-                        border-radius="100%"
-                      />
-                    </picture>
-
-                    <Box
-                      textAlign="center"
-                      position="absolute"
-                      top="50%"
-                      left="50%"
-                      transform="translate(-50%,-50%)"
-                      zIndex="10"
-                    >
-                      <Box>
-                        <Text color={colorMode === 'dark' ? 'white' : 'font.dark'}>TVL</Text>
-                      </Box>
-                      <Box>
-                        <Text
-                          fontSize="2xl"
-                          fontWeight="bold"
-                          color={colorMode === 'dark' ? 'white' : 'font.dark'}
-                        >
-                          $1.5b
-                        </Text>
-                      </Box>
-                    </Box>
-                  </Center>
-                </Box>
-              </SimpleGrid>
-            </Box>
-
-            {/* Replace with Ecosystem Activity Chart */}
-            <Box>
-              <Center bg="background.level4" h="520px" w="full">
-                <Text variant="secondary">[Ecosystem activity chart]</Text>
-              </Center>
-            </Box>
+            <ProtocolStatsSection />
           </Box>
-        </FadeInOnView>
+
+          {/* Replace with Ecosystem Activity Chart */}
+          <Box>
+            <Center bg="background.level4" h="520px" w="full">
+              <Text variant="secondary">[Ecosystem activity chart]</Text>
+            </Center>
+          </Box>
+        </Box>
       </Section>
     </Box>
   )
