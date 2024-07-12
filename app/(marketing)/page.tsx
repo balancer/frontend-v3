@@ -3,14 +3,18 @@ import {
   Button,
   Card,
   Center,
+  useColorMode,
   Divider,
   IconButton,
   Grid,
+  GridItem,
   Heading,
   Text,
+  Stack,
   VStack,
   Flex,
   Box,
+  Image,
   Circle,
   SimpleGrid,
 } from '@chakra-ui/react'
@@ -18,7 +22,6 @@ import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import NextLink from 'next/link'
 import { Link } from '@chakra-ui/react'
-
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
 import { AuraIcon } from '@/lib/shared/components/icons/logos/AuraIcon'
@@ -32,6 +35,8 @@ import { CloseIcon } from '@chakra-ui/icons'
 import { ArrowUpRight } from 'react-feather'
 
 export default function Home() {
+  const { colorMode } = useColorMode()
+
   return (
     <Box className="homepage">
       <Box className="hero">
@@ -75,7 +80,6 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>227,456</span> Liquidity Providers
                     </Text>
-
                     <Button size="lg" as={NextLink} href="/pools" prefetch={true} variant="primary">
                       Explore pools
                     </Button>
@@ -126,7 +130,6 @@ export default function Home() {
                     <Text variant="secondary" pb="lg">
                       Join <span>100+</span> protocol builders
                     </Text>
-
                     <button
                       className="btn-popover"
                       popovertarget="disclose"
@@ -134,7 +137,6 @@ export default function Home() {
                     >
                       Start building
                     </button>
-
                     <div popover="auto" id="disclose" className="disclosure">
                       <FadeInOnView>
                         <Box>
