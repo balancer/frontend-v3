@@ -36,7 +36,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     if (currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
     }
-  }, [currentTransaction?.result.isSuccess, currentStep])
+  }, [currentTransaction?.result.isSuccess, currentStep?.onSuccess])
 
   // Control step flow here.
   useEffect(() => {
