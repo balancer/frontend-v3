@@ -1,0 +1,133 @@
+/* Popover API css */
+
+:root {
+  --duration: 0.3s;
+  --padding: 0.675rem;
+  --radius: 0.5rem;
+  --ease: linear(
+    0 0%,
+    0.0036 9.62%,
+    0.0185 16.66%,
+    0.0489 23.03%,
+    0.0962 28.86%,
+    0.1705 34.93%,
+    0.269 40.66%,
+    0.3867 45.89%,
+    0.5833 52.95%,
+    0.683 57.05%,
+    0.7829 62.14%,
+    0.8621 67.46%,
+    0.8991 70.68%,
+    0.9299 74.03%,
+    0.9545 77.52%,
+    0.9735 81.21%,
+    0.9865 85%,
+    0.9949 89.15%,
+    1 100%
+  );
+
+  --ease-out: linear(
+    0 0%,
+    0.4322 6.7%,
+    0.5876 9.63%,
+    0.7165 12.53%,
+    0.8238 15.53%,
+    0.9087 18.63%,
+    0.9731 21.89%,
+    1.0188 25.4%,
+    1.0377 27.67%,
+    1.0507 30.11%,
+    1.058 32.77%,
+    1.0598 35.74%,
+    1.0528 41.1%,
+    1.0164 56.54%,
+    1.004 65.49%,
+    0.998 78.52%,
+    1 100%
+  );
+
+  --sh: 48px;
+  --ew: 280px;
+  --eh: 324px;
+
+  --speed: 0.3s;
+  --starting: color-mix(in lch, canvas, canvasText 20%);
+  --text: canvasText;
+}
+
+.disclosure {
+  transition-property: width, height, border-radius;
+  transition-duration: var(--duration);
+  transition-timing-function: var(--ease);
+}
+
+.btn-popover {
+  position: absolute;
+  width: max-content;
+  height: var(--sh);
+  border: 0;
+  anchor-name: --control;
+  background: var(--starting);
+
+  padding: 0;
+}
+
+#disclose {
+  padding: 0;
+  position-anchor: --control;
+  inset-area: var(--inset, center);
+  width: anchor-size(width);
+  height: anchor-size(height);
+
+  background-color: var(--chakra-colors-background-base);
+
+  overflow: hidden;
+
+  transition-property: display, overlay, height, width, border-radius, box-shadow, background-color,
+    border-color, color;
+  transition-behavior: allow-discrete;
+  transition-duration: var(--speed);
+  transition-timing-function: var(--ease);
+
+  &:popover-open {
+    height: var(--eh);
+    width: var(--ew);
+    border-radius: 0.5rem;
+    background-color: var(--chakra-colors-background-level2);
+    transition-duration: calc(2 * var(--speed));
+    transition-timing-function: var(--ease-out);
+  }
+
+  @starting-style {
+    &:popover-open {
+      background-color: var(--starting);
+      width: anchor-size(--control width);
+      height: anchor-size(--control height);
+      border-radius: 0.5rem;
+      box-shadow: 0 0 0 0 #0000;
+    }
+  }
+}
+
+[popover]:-internal-popover-in-top-layer::backdrop {
+  transition: all 0.3s ease-out;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.content {
+  opacity: 0;
+  filter: blur(4px);
+  transition: opacity var(--speed), filter var(--speed);
+}
+
+#disclose:popover-open .content {
+  opacity: 1;
+  filter: blur(0);
+}
+
+@starting-style {
+  #disclose:popover-open .content {
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
