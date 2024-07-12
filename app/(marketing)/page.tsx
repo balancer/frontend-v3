@@ -172,13 +172,22 @@ export default function Home() {
                             <div className="actions">
                               <VStack alignItems="flex-start" gap="0">
                                 <Box role="group" px="md" py="sm" w="full" display="block">
-                                  <Link as={NextLink} href="/build/v3" prefetch={true}>
+                                  <Link
+                                    as={NextLink}
+                                    href="/build/v3"
+                                    prefetch={true}
+                                    _groupHover={{
+                                      textDecoration: 'none',
+                                    }}
+                                  >
                                     <Text
                                       fontWeight="bold"
                                       whiteSpace="nowrap"
                                       overflow="hidden"
                                       transition="all 0.2s ease-out 0.1s"
-                                      _groupHover={{ color: 'font.maxContrast' }}
+                                      _groupHover={{
+                                        color: 'font.maxContrast',
+                                      }}
                                     >
                                       Balancer v3
                                     </Text>
@@ -196,7 +205,12 @@ export default function Home() {
                                 </Box>
 
                                 <Box role="group" px="md" py="sm" w="full" display="block">
-                                  <Link href="https://docs-v3.balancer.fi/">
+                                  <Link
+                                    href="https://docs-v3.balancer.fi/"
+                                    _groupHover={{
+                                      textDecoration: 'none',
+                                    }}
+                                  >
                                     <Flex alignItems="center" gap="xxs">
                                       <Text
                                         fontWeight="bold"
@@ -222,7 +236,12 @@ export default function Home() {
                                   </Link>
                                 </Box>
                                 <Box role="group" px="md" py="sm" w="full" display="block">
-                                  <Link href="https://github.com/balancer/scaffold-balancer-v3">
+                                  <Link
+                                    href="https://github.com/balancer/scaffold-balancer-v3"
+                                    _groupHover={{
+                                      textDecoration: 'none',
+                                    }}
+                                  >
                                     <Flex alignItems="center" gap="xxs">
                                       <Text
                                         fontWeight="bold"
@@ -248,7 +267,12 @@ export default function Home() {
                                   </Link>
                                 </Box>
                                 <Box role="group" px="md" py="sm" w="full" display="block">
-                                  <Link href="https://docs.balancer.fi/">
+                                  <Link
+                                    href="https://docs.balancer.fi/"
+                                    _groupHover={{
+                                      textDecoration: 'none',
+                                    }}
+                                  >
                                     <Flex alignItems="center" gap="xxs">
                                       <Text
                                         fontWeight="bold"
@@ -273,7 +297,12 @@ export default function Home() {
                                   </Link>
                                 </Box>
                                 <Box role="group" px="md" py="sm" w="full" display="block">
-                                  <Link href="https://grants.balancer.community/">
+                                  <Link
+                                    href="https://grants.balancer.community/"
+                                    _groupHover={{
+                                      textDecoration: 'none',
+                                    }}
+                                  >
                                     <Flex alignItems="center" gap="xxs">
                                       <Text
                                         fontWeight="bold"
