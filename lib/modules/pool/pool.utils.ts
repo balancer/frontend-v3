@@ -167,8 +167,7 @@ export function getPoolTypeLabel(type: GqlPoolType): string {
 }
 
 // Maps GraphQL pool category enum to human readable label for UI.
-const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
-  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
+const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]?: string } = {
   [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
   [GqlPoolFilterCategory.Lrt]: 'LRT',
   [GqlPoolFilterCategory.Points]: 'Points',
