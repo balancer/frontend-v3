@@ -15,9 +15,9 @@ import {
   SimpleGrid,
 } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
-import Link from 'next/link'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import NextLink from 'next/link'
+import { Link } from '@chakra-ui/react'
 
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
@@ -76,7 +76,7 @@ export default function Home() {
                       Join <span>227,456</span> Liquidity Providers
                     </Text>
 
-                    <Button size="lg" as={Link} href="/pools" prefetch={true} variant="primary">
+                    <Button size="lg" as={NextLink} href="/pools" prefetch={true} variant="primary">
                       Explore pools
                     </Button>
                   </Box>
@@ -131,8 +131,6 @@ export default function Home() {
                       className="btn-popover"
                       popovertarget="disclose"
                       popovertargetaction="toggle"
-                      overflow="hidden"
-                      whiteSpace="nowrap"
                     >
                       Start building
                     </button>
