@@ -414,7 +414,7 @@ fragment PriceRateProviderDataFields on GqlPriceRateProviderData {
     entryPoint
     implementationReviewed
   }
-  reviewFile
+  reviewUrl
   factory
 }
 
