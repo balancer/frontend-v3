@@ -22,18 +22,11 @@ import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import NextLink from 'next/link'
 import { Link } from '@chakra-ui/react'
-import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
-import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
-import { AuraIcon } from '@/lib/shared/components/icons/logos/AuraIcon'
-import { CowIcon } from '@/lib/shared/components/icons/logos/CowIcon'
-import { GyroIcon } from '@/lib/shared/components/icons/logos/GyroIcon'
-import { CronIcon } from '@/lib/shared/components/icons/logos/CronIcon'
-import { XaveIcon } from '@/lib/shared/components/icons/logos/XaveIcon'
-import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
 import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
 import { CloseIcon } from '@chakra-ui/icons'
 import { ArrowUpRight } from 'react-feather'
 import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
+import { HomeCaseStudies } from '@/lib/shared/components/marketing/HomeCaseStudies'
 import { Picture } from '@/lib/shared/components/other/Picture'
 
 export default function Home() {
@@ -342,69 +335,7 @@ export default function Home() {
 
         <Section>
           <FadeInOnView>
-            <Center py={['xl', 'xl']} px={['ms', 'md']}>
-              <VStack gap="md">
-                <Text>Top DeFi protocols build on Balancer</Text>
-                <SimpleGrid columns={{ base: 4, sm: 8 }} spacing="sm" color="brown.200">
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <CowIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <AuraIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <BeetsIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <AaveIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <GyroIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <XaveIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <CronIcon />
-                  </Circle>
-                  <Circle
-                    background="background.level2"
-                    _dark={{ background: 'background.level0' }}
-                    size="60px"
-                  >
-                    <FjordIcon />
-                  </Circle>
-                </SimpleGrid>
-              </VStack>
-            </Center>
+            <HomeCaseStudies />
             <Divider />
           </FadeInOnView>
         </Section>
