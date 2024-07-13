@@ -40,6 +40,8 @@ function ProtocolStatItem({ title, value, isLoading }: ProtocolStatsSectionProps
           left="50%"
           transform="translate(-50%,-50%)"
           zIndex="10"
+          width="full"
+          px="ms"
         >
           <Box>
             <Text color={colorMode === 'dark' ? 'white' : 'font.dark'}>{title}</Text>
