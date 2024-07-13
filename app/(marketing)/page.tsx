@@ -33,6 +33,8 @@ import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
 import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
 import { CloseIcon } from '@chakra-ui/icons'
 import { ArrowUpRight } from 'react-feather'
+import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
+import { Picture } from '@/lib/shared/components/other/Picture'
 
 export default function Home() {
   const { colorMode } = useColorMode()
@@ -457,18 +459,20 @@ export default function Home() {
               <FadeInOnView>
                 <Flex direction="column" justify="flex-end" h="100%">
                   <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <picture className="picture">
-                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                      {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <img
-                        src="/images/homepage/pools.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
+                    <ParallaxImage
+                      scaleStart="100%"
+                      scaleEnd="120%"
+                      yStart="-10%"
+                      yEnd="30%"
+                      transformOrigin="bottom"
+                    >
+                      <Picture
+                        imgName="pools"
+                        altText="Liquidity pools"
+                        defaultImgType="png"
+                        imgPng={true}
                       />
-                    </picture>
+                    </ParallaxImage>
                   </Box>
                   <Heading
                     as="h5"
@@ -497,21 +501,20 @@ export default function Home() {
               <FadeInOnView>
                 <Flex direction="column" justify="flex-end" h="100%">
                   <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <picture className="picture">
-                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                      {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <img
-                        src="/images/homepage/feature2.jpg"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
+                    <ParallaxImage
+                      scaleStart="100%"
+                      scaleEnd="120%"
+                      yStart="-10%"
+                      yEnd="30%"
+                      transformOrigin="bottom"
+                    >
+                      <Picture
+                        imgName="feature2"
+                        altText="Liquidity pools"
+                        defaultImgType="jpg"
+                        imgJpg={true}
                       />
-                    </picture>
+                    </ParallaxImage>
                   </Box>
                   <Heading
                     as="h5"
@@ -539,21 +542,20 @@ export default function Home() {
               <FadeInOnView>
                 <Flex direction="column" justify="flex-end" h="100%">
                   <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <picture className="picture">
-                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                      {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <img
-                        src="/images/homepage/feature3.jpg"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
+                    <ParallaxImage
+                      scaleStart="100%"
+                      scaleEnd="120%"
+                      yStart="-10%"
+                      yEnd="30%"
+                      transformOrigin="bottom"
+                    >
+                      <Picture
+                        imgName="feature3"
+                        altText="Aggregator integrations like CoW, 1inch and Paraswap"
+                        defaultImgType="jpg"
+                        imgJpg={true}
                       />
-                    </picture>
+                    </ParallaxImage>
                   </Box>
                   <Heading
                     as="h5"
@@ -581,21 +583,20 @@ export default function Home() {
               <FadeInOnView>
                 <Flex direction="column" justify="flex-end" h="100%">
                   <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <picture className="picture">
-                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                      {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <img
-                        src="/images/homepage/feature4.jpg"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                        width="100%"
-                        height="100%"
-                        object-fit="cover"
+                    <ParallaxImage
+                      scaleStart="100%"
+                      scaleEnd="120%"
+                      yStart="-10%"
+                      yEnd="30%"
+                      transformOrigin="bottom"
+                    >
+                      <Picture
+                        imgName="feature4"
+                        altText="The Balancer network"
+                        defaultImgType="jpg"
+                        imgJpg={true}
                       />
-                    </picture>
+                    </ParallaxImage>
                   </Box>
                   <Heading
                     as="h5"
@@ -660,25 +661,16 @@ export default function Home() {
 
         <Box maxW="maxContent" m="0 auto">
           <FadeInOnView>
-            <picture className="picture">
-              <source
-                srcSet="/images/homepage/bootstrap-liquidity-portrait.png"
-                type="image/png"
-                media="(orientation: portrait)"
+            <ParallaxImage>
+              <Picture
+                imgName="bootstrap-liquidity"
+                altText="Pools plugged into Balancer vault"
+                defaultImgType="png"
+                imgAvif={true}
+                imgPng={true}
+                imgAvifPortrait={true}
               />
-              <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" />
-              {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-              <img
-                src="/images/homepage/bootstrap-liquidity.png"
-                alt="Plugged into Balancer vault"
-                loading="lazy"
-                decoding="async"
-                height="100%"
-                object-fit="cover"
-              />
-            </picture>
+            </ParallaxImage>
           </FadeInOnView>
         </Box>
 
