@@ -1,6 +1,13 @@
-import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+'use client'
+
+import { ReactLenis, useLenis } from 'lenis/react'
+
 import { PropsWithChildren } from 'react'
 
 export default function MarketingLayout({ children }: PropsWithChildren) {
-  return <div>{children}</div>
+  return (
+    <ReactLenis root options={{ lerp: 0.1, duration: 1.5, smoothTouch: true }}>
+      <div>{children}</div>
+    </ReactLenis>
+  )
 }
