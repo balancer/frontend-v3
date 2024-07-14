@@ -27,6 +27,7 @@ import { CloseIcon } from '@chakra-ui/icons'
 import { ArrowUpRight } from 'react-feather'
 import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
 import { HomeCaseStudies } from '@/lib/shared/components/marketing/HomeCaseStudies'
+import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
 import { Picture } from '@/lib/shared/components/other/Picture'
 
 export default function Home() {
@@ -333,12 +334,16 @@ export default function Home() {
           </Flex>
         </Flex>
 
-        <Section>
+        <Box>
           <FadeInOnView>
             <HomeCaseStudies />
             <Divider />
           </FadeInOnView>
-        </Section>
+        </Box>
+      </Box>
+
+      <Box height={{ base: '100px', md: '200px' }}>
+        <AnimatedSVG />
       </Box>
 
       <Section className="builders">
