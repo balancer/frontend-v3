@@ -87,7 +87,7 @@ export function useClaimAndUnstakeStep({
     labels,
     chainId,
     args: [data],
-    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer, //&& data.length > 0,
+    enabled: !!pool && !isLoadingRelayerApproval && hasApprovedRelayer && data.length > 0,
     txSimulationMeta,
   }
 
