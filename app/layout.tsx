@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Metadata } from 'next'
 import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
@@ -14,11 +15,7 @@ const iconUrl = `/images/icons/${projectId}.ico`
 
 export const metadata: Metadata = {
   title: `${projectName} DeFi Liquidity Pools`,
-  description: `
-    Explore DeFi liquidity pools or create your own.
-    Provide liquidity to accumulate yield from swap fees
-    while retaining your token exposure as prices move.
-  `,
+  description: `Explore DeFi liquidity pools and swap tokens. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move.`,
   icons: {
     icon: [{ url: iconUrl }],
     shortcut: [iconUrl],
