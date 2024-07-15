@@ -32,8 +32,6 @@ export function RateProviderInfoPopOver({
 }: RateProviderInfoPopOverProps) {
   const warnings = getRateProviderWarnings(data.warnings || [])
 
-  console.log({ data })
-
   return (
     <Popover trigger="hover">
       <PopoverTrigger>{children}</PopoverTrigger>
