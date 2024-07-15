@@ -173,7 +173,7 @@ export function usePoolListQueryState() {
   )
 
   const mappedPoolCategories = uniq(
-    (poolCategories.length > 0 ? poolCategories : Object.keys(POOL_CATEGORY_MAP))
+    (poolCategories.length > 0 ? poolCategories : [])
       .map(poolCategory => POOL_CATEGORY_MAP[poolCategory as keyof typeof POOL_CATEGORY_MAP])
       .flat()
   )
