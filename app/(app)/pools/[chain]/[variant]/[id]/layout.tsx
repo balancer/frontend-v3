@@ -41,7 +41,7 @@ export async function generateMetadata({
 
   if (!pool) return {}
 
-  const poolTokenString = arrayToSentence(pool.poolTokens.map(token => token.symbol))
+  const poolTokenString = arrayToSentence(pool.displayTokens.map(token => token.symbol))
 
   return {
     title: `Liquidity Pool (${variant}): ${pool.name}`,
