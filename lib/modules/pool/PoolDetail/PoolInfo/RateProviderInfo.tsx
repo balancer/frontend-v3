@@ -11,8 +11,6 @@ import {
   Text,
   Heading,
   Box,
-  UnorderedList,
-  ListItem,
   Icon,
 } from '@chakra-ui/react'
 import Link from 'next/link'
@@ -79,13 +77,9 @@ export function RateProviderInfoPopOver({
                   </Text>
                 </VStack>
                 <VStack alignItems="flex-start">
-                  <Text color="grayText">Warnings</Text>1
+                  <Text color="grayText">Warnings</Text>
                   {warnings.length > 0 ? (
-                    <UnorderedList>
-                      {warnings.map((warning, index) => (
-                        <ListItem key={index}>{warning}</ListItem>
-                      ))}
-                    </UnorderedList>
+                    <Text>Yes, see review details</Text>
                   ) : (
                     <Text>
                       None except{' '}
@@ -100,12 +94,7 @@ export function RateProviderInfoPopOver({
                 <VStack alignItems="flex-start">
                   <Text color="grayText">Upgradeable components</Text>
                   {data.upgradeableComponents && data.upgradeableComponents.length > 0 ? (
-                    data.upgradeableComponents.map((component, index) => (
-                      <HStack w="full" key={index}>
-                        <Text>{component?.entryPoint}</Text>
-                        <Text ml="auto">{component?.implementationReviewed}</Text>
-                      </HStack>
-                    ))
+                    <Text>Yes, see review details</Text>
                   ) : (
                     <Text>None</Text>
                   )}
@@ -114,8 +103,11 @@ export function RateProviderInfoPopOver({
                   <Text color="grayText">Rate provider factory</Text>
                   <Text>{data.factory ?? 'None'}</Text>
                 </VStack>
-                {data.reviewUrl && (
-                  <Link href={data.reviewUrl} target="_blank">
+                {data.reviewFile && (
+                  <Link
+                    href={`https://github.com/balancer/code-review/blob/main/rate-providers/${data.reviewFile}`}
+                    target="_blank"
+                  >
                     <HStack>
                       <Text color="font.link">View review details</Text>
                       <Icon as={ArrowUpRight} size={12} color="font.link" />
