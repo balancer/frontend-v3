@@ -2,12 +2,13 @@
 import { Card, Center, Grid, Heading, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
+
 import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
 import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
 import { Picture } from '@/lib/shared/components/other/Picture'
 import { HomeHero } from '@/lib/shared/components/marketing/HomeHero'
 import { EcosystemActivityChart } from './components/EcosystemActivityChart'
+import { ProtocolStatsSection } from '@/lib/modules/marketing/ProtocolStatsSection'
 
 export default function Home() {
   return (
@@ -332,7 +333,7 @@ export default function Home() {
 
           {/* Replace with Ecosystem Activity Chart */}
           <Box>
-            <Center bg="background.level4" h="520px" w="full">
+            <Center bg="background.level4" w="full">
               <EcosystemActivityChart />
             </Center>
           </Box>

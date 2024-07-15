@@ -5,6 +5,7 @@ import {
   Box,
   Card,
   Divider,
+  Flex,
   HStack,
   Heading,
   Skeleton,
@@ -77,7 +78,7 @@ export function EcosystemActivityChart() {
               </Text>
             </VStack>
 
-            <Stack direction="row" spacing="2">
+            <Flex flexWrap="wrap" gap="2">
               <ButtonGroup
                 currentOption={activeTab}
                 options={tabsList}
@@ -94,7 +95,7 @@ export function EcosystemActivityChart() {
                   setActiveNetwork(network)
                 }}
               />
-            </Stack>
+            </Flex>
           </Stack>
           <Box>
             <ReactECharts
@@ -107,7 +108,7 @@ export function EcosystemActivityChart() {
           <AnimateOpacity>
             <Divider pt="2" mb="4" />
 
-            <HStack spacing="4" px={['1', '2']}>
+            <Flex flexWrap="wrap" gap={['1', '1', '4']} px={['1', '2']}>
               {legendTabs.map((tab, index) => (
                 <HStack alignItems="center" key={index} gap="2">
                   <Box
@@ -123,7 +124,7 @@ export function EcosystemActivityChart() {
                   </Text>
                 </HStack>
               ))}
-            </HStack>
+            </Flex>
           </AnimateOpacity>
         </Box>
       </Box>

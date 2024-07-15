@@ -160,9 +160,14 @@ const getDefaultPoolActivityChartOptions = (
       },
     },
     yAxis: {
-      show: false,
+      show: true,
       offset: 10,
       type: 'value',
+      axisLabel: {
+        formatter: (value: number) => {
+          return currencyFormatter(value)
+        },
+      },
       axisLine: { show: false },
       minorSplitLine: { show: false },
       splitLine: { show: false },
