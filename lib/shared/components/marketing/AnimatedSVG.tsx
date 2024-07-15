@@ -1,10 +1,11 @@
 import React, { useRef } from 'react'
-import { Box } from '@chakra-ui/react'
+import { Box, useToken } from '@chakra-ui/react'
 import { motion, useScroll, useTransform, MotionValue } from 'framer-motion'
 
 interface AnimatedSVGProps {}
 
 export const AnimatedSVG: React.FC<AnimatedSVGProps> = () => {
+  const [bgColor] = useToken('colors', ['background.level2'])
   const containerRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -21,7 +22,7 @@ export const AnimatedSVG: React.FC<AnimatedSVGProps> = () => {
   return (
     <Box ref={containerRef} w="100%" h="400px" position="relative">
       <svg width="100%" height="100%" viewBox="0 0 100 10" preserveAspectRatio="none">
-        <motion.path fill="white" d={pathD} style={{ pathLength }} strokeWidth={0.1} />
+        <motion.path fill={bgColor} d={pathD} style={{ pathLength }} strokeWidth={0.1} />
       </svg>
     </Box>
   )
