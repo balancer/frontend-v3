@@ -48,7 +48,6 @@
   --ew: 280px;
   --eh: 324px;
   --speed: 0.3s;
-  --starting: color-mix(in lch, canvas, canvasText 20%);
   --text: canvasText;
 }
 
@@ -59,7 +58,6 @@
 }
 
 .btn-popover {
-  position: absolute;
   width: max-content;
   border: 0;
   anchor-name: --control;
@@ -74,6 +72,8 @@
   box-shadow: var(--chakra-shadows-md);
   border-radius: var(--chakra-radii-lg);
   letter-spacing: -0.02em;
+  overflow: 'hidden';
+  white-space: 'nowrap';
 }
 
 .btn-popover:hover {
@@ -124,11 +124,9 @@
 
   @starting-style {
     &:popover-open {
-      background-color: var(--starting);
       width: anchor-size(--control width);
       height: anchor-size(--control height);
       border-radius: 0.5rem;
-      box-shadow: 0 0 0 0 #0000;
     }
   }
 }

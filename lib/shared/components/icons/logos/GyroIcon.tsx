@@ -19,8 +19,8 @@ export function GyroIcon() {
           y2="21.101"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="currentColor" />
-          <stop offset="1" stop-color="currentColor" stop-opacity="0" />
+          <stop stopColor="currentColor" />
+          <stop offset="1" stopColor="currentColor" stop-opacity="0" />
         </linearGradient>
       </defs>
     </svg>

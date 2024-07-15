@@ -6,7 +6,19 @@ import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { Box, Skeleton } from '@chakra-ui/react'
+import { Metadata } from 'next'
 import { Suspense } from 'react'
+
+const { projectName } = getProjectConfig()
+
+export const metadata: Metadata = {
+  title: `${projectName} DeFi Liquidity Pools`,
+  description: `
+    Explore DeFi liquidity pools or create your own.
+    Provide liquidity to accumulate yield from swap fees
+    while retaining your token exposure as prices move.
+  `,
+}
 
 export default async function Pools() {
   const { supportedNetworks } = getProjectConfig()

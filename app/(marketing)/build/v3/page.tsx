@@ -30,7 +30,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 import { X, Check } from 'react-feather'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
-import SandPatterns from '../../components/SandPatterns'
+import { Picture } from '@/lib/shared/components/other/Picture'
 
 export default function Home() {
   const { colorMode } = useColorMode()
@@ -194,43 +194,35 @@ export default function Home() {
               variant="level2"
               gridArea={{ base: 'auto', md: '1 / 1 / 2 / 3', lg: '1 / 1 / 3 / 3' }}
             >
-              <FadeInOnView>
-                <Flex direction="column" justify="flex-end" h="100%">
-                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <picture className="picture">
-                      {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                      {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                      <img
-                        src="/images/homepage/pools.png"
-                        alt="Plugged into Balancer vault"
-                        loading="lazy"
-                        decoding="async"
-                      />
-                    </picture>
-                  </Box>
-                  <Heading
-                    as="h5"
-                    size="h5"
-                    pb="sm"
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Simplified pools
-                  </Heading>
-                  <Text
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Focus on innovation rather than low level tasks like accounting and security.
-                    Simply supply custom AMM logic, and harness the full benefit of an optimized,
-                    battle-tested tech stack.
-                  </Text>
-                </Flex>
-              </FadeInOnView>
+              <Flex direction="column" justify="flex-end" h="100%">
+                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                  <Picture
+                    imgName="pools"
+                    altText="Pools plugged into Balancer vault"
+                    defaultImgType="png"
+                    imgPng={true}
+                  />
+                </Box>
+                <Heading
+                  as="h5"
+                  size="h5"
+                  pb="sm"
+                  sx={{
+                    textWrap: 'balance',
+                  }}
+                >
+                  Simplified pools
+                </Heading>
+                <Text
+                  sx={{
+                    textWrap: 'balance',
+                  }}
+                >
+                  Focus on innovation rather than low level tasks like accounting and security.
+                  Simply supply custom AMM logic, and harness the full benefit of an optimized,
+                  battle-tested tech stack.
+                </Text>
+              </Flex>
             </Card>
 
             <Card>
@@ -693,7 +685,7 @@ export default function Home() {
                                       reusable hooks."
                             >
                               <Circle
-                                bg="background.level4"
+                                bg="red.600"
                                 size="5"
                                 transition="all 0.2s ease-out"
                                 _hover={{
