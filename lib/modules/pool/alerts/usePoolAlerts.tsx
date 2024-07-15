@@ -13,7 +13,6 @@ import { shouldMigrateStake } from '../user-balance.helpers'
 import { PoolAlertButton } from './PoolAlertButton'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
-import { getRateProviderWarnings } from '../pool.helpers'
 
 export type PoolAlert = {
   identifier: string
@@ -72,8 +71,6 @@ export function usePoolAlerts(pool: Pool) {
         })
       }
 
-      const warnings = getRateProviderWarnings(token.priceRateProviderData?.warnings || [])
-
       const isPriceRateProviderLegit =
         isNil(token.priceRateProvider) || // if null, we consider rate provider as zero address
         token.priceRateProvider === zeroAddress ||
@@ -99,20 +96,6 @@ export function usePoolAlerts(pool: Pool) {
           // eslint-disable-next-line max-len
           title: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
           status: 'error',
-          isSoftWarning: true,
-        })
-      }
-
-      if (
-        hasReviewedRateProvider(token) &&
-        token.priceRateProviderData?.summary === 'safe' &&
-        warnings.length > 0
-      ) {
-        alerts.push({
-          identifier: `PriceProviderWithWarnings-${token.symbol}`,
-          // eslint-disable-next-line max-len
-          title: `The rate provider for ${token.symbol} has been reviewed as ‘safe’ but with warnings. Please review in the Pool contracts section.`,
-          status: 'warning',
           isSoftWarning: true,
         })
       }

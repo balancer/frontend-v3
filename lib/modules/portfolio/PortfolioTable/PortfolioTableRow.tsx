@@ -13,7 +13,6 @@ import {
 } from '../../pool/user-balance.helpers'
 import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
 import { Protocol } from '../../protocols/useProtocols'
-import { Pool } from '../../pool/PoolProvider'
 import { ExpandedPoolInfo, ExpandedPoolType } from './useExpandedPools'
 
 interface Props extends GridProps {
@@ -44,6 +43,7 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
   const vebalBoostValue = veBalBoostMap?.[pool.id]
 
   const stakingText = getStakingText(pool.poolType)
+  const isStakedOnAura = hasAuraStakedBalance(pool)
 
   return (
     <Box
@@ -99,13 +99,17 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
             </Text>
           </GridItem>
           <GridItem justifySelf="end">
-            <MemoizedMainAprTooltip
-              aprItems={pool.dynamicData.aprItems}
-              poolId={pool.id}
-              textProps={{ fontWeight: 'medium' }}
-              vebalBoost={vebalBoostValue}
-              pool={pool}
-            />
+            {isStakedOnAura ? (
+              '-'
+            ) : (
+              <MemoizedMainAprTooltip
+                aprItems={pool.dynamicData.aprItems}
+                poolId={pool.id}
+                textProps={{ fontWeight: 'medium' }}
+                vebalBoost={vebalBoostValue}
+                pool={pool}
+              />
+            )}
           </GridItem>
         </Grid>
       </Link>
