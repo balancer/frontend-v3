@@ -41,6 +41,11 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
 
 // Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
+  /*
+    Using alternative rpc url as the default one (cloudflare-eth.com) is leading to 429 rate limit issues:
+    1. Lower request limit
+    2. 429s are difficult to handle (due to CORS): https://community.cloudflare.com/t/cors-on-rate-limit-429/270010/11
+  */
   [GqlChain.Mainnet]: 'https://ethereum-rpc.publicnode.com',
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
