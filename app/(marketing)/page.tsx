@@ -3,18 +3,13 @@ import {
   Button,
   Card,
   Center,
-  useColorMode,
   Divider,
-  IconButton,
   Grid,
-  GridItem,
   Heading,
   Text,
-  Stack,
   VStack,
   Flex,
   Box,
-  Image,
   Circle,
   SimpleGrid,
 } from '@chakra-ui/react'
@@ -30,13 +25,12 @@ import { GyroIcon } from '@/lib/shared/components/icons/logos/GyroIcon'
 import { CronIcon } from '@/lib/shared/components/icons/logos/CronIcon'
 import { XaveIcon } from '@/lib/shared/components/icons/logos/XaveIcon'
 import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
-import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
-import { CloseIcon } from '@chakra-ui/icons'
+import { ProtocolStatsSection } from '@/lib/modules/marketing/ProtocolStatsSection'
+
 import { ArrowUpRight } from 'react-feather'
+import { EcosystemActivityChart } from './components/EcosystemActivityChart'
 
 export default function Home() {
-  const { colorMode } = useColorMode()
-
   return (
     <Box className="homepage">
       <Box className="hero">
@@ -699,10 +693,14 @@ export default function Home() {
 
       <Section className="activity">
         <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
-          <Box pb="xl" w="full" maxW="4xl" m="auto" textAlign={{ base: 'left', md: 'center' }}>
-            <Text pb="lg" variant="eyebrow" w="full">
-              Ecosystem activity
-            </Text>
+          <Box
+            pb="xl"
+            w="full"
+            maxW="4xl"
+            m="auto"
+            mb="20"
+            textAlign={{ base: 'left', md: 'center' }}
+          >
             <Heading w="full" pb="2xl">
               Building together across networks
             </Heading>
@@ -713,7 +711,7 @@ export default function Home() {
           {/* Replace with Ecosystem Activity Chart */}
           <Box>
             <Center bg="background.level4" h="520px" w="full">
-              <Text variant="secondary">[Ecosystem activity chart]</Text>
+              <EcosystemActivityChart />
             </Center>
           </Box>
         </Box>
