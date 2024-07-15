@@ -1,35 +1,12 @@
 'use client'
-import {
-  Button,
-  Card,
-  Center,
-  useColorMode,
-  Divider,
-  IconButton,
-  Grid,
-  GridItem,
-  Heading,
-  Text,
-  Stack,
-  VStack,
-  Flex,
-  Box,
-  Image,
-  Circle,
-  SimpleGrid,
-  useToken,
-} from '@chakra-ui/react'
-import Section from '@/lib/shared/components/layout/Section'
+import { Button, Heading, Text, VStack, Flex, Box, useToken } from '@chakra-ui/react'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import NextLink from 'next/link'
 import { Link } from '@chakra-ui/react'
-import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
-import { CloseIcon } from '@chakra-ui/icons'
+
 import { ArrowUpRight } from 'react-feather'
-import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
+
 import { HomeCaseStudies } from '@/lib/shared/components/marketing/HomeCaseStudies'
-import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
-import { Picture } from '@/lib/shared/components/other/Picture'
 
 export function HomeHero() {
   const [bgColor] = useToken('colors', ['background.level1'])

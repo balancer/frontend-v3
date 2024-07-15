@@ -1,4 +1,3 @@
-import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useProtocolStats } from '@/lib/shared/hooks/useProtocolStats'
 import { Center, Box, Text, useColorMode, SimpleGrid, Skeleton } from '@chakra-ui/react'
 import { useMemo } from 'react'

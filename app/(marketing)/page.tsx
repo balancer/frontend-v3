@@ -1,15 +1,5 @@
 'use client'
-import {
-  Card,
-  Center,
-  useColorMode,
-  Grid,
-  Heading,
-  Text,
-  Flex,
-  Box,
-  SimpleGrid,
-} from '@chakra-ui/react'
+import { Card, Center, Grid, Heading, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
