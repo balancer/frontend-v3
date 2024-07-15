@@ -2,11 +2,13 @@
 import { Card, Center, Grid, Heading, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { ProtocolStatsSection } from '@/lib/modules/msrketing/ProtocolStatsSection'
+
 import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
 import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
 import { Picture } from '@/lib/shared/components/other/Picture'
 import { HomeHero } from '@/lib/shared/components/marketing/HomeHero'
+import { EcosystemActivityChart } from './components/EcosystemActivityChart'
+import { ProtocolStatsSection } from '@/lib/modules/marketing/ProtocolStatsSection'
 
 export default function Home() {
   return (
@@ -322,9 +324,6 @@ export default function Home() {
       <Section className="activity">
         <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
           <Box pb="xl" w="full" maxW="4xl" m="auto" textAlign={{ base: 'left', md: 'center' }}>
-            <Text pb="lg" variant="eyebrow" w="full">
-              Ecosystem activity
-            </Text>
             <Heading w="full" pb="xl">
               Building together across networks
             </Heading>
@@ -334,8 +333,8 @@ export default function Home() {
 
           {/* Replace with Ecosystem Activity Chart */}
           <Box>
-            <Center bg="background.level4" h="520px" w="full">
-              <Text variant="secondary">[Ecosystem activity chart]</Text>
+            <Center bg="background.level4" w="full">
+              <EcosystemActivityChart />
             </Center>
           </Box>
         </Box>

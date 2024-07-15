@@ -470,6 +470,7 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    chain
     userAddress
     ... on GqlPoolSwapEventV3 {
       tokenIn {
