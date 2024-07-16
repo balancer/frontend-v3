@@ -165,7 +165,7 @@ const getDefaultPoolActivityChartOptions = (
       type: 'value',
       axisLabel: {
         formatter: (value: number) => {
-          return currencyFormatter(value)
+          return currencyFormatter(value ** 2)
         },
       },
       axisLine: { show: false },
@@ -198,7 +198,7 @@ const getDefaultPoolActivityChartOptions = (
         const typeStr =
           metaData.type === GqlPoolEventType.Add
             ? 'Add'
-            : GqlPoolEventType.Remove
+            : metaData.type === GqlPoolEventType.Remove
             ? 'Remove'
             : 'Swap'
 
