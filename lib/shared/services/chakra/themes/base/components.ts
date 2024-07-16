@@ -811,11 +811,45 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     },
     Alert: {
       baseStyle: {
+        icon: {
+          color: 'black',
+          _dark: {
+            color: 'white',
+          },
+        },
+        link: {
+          color: 'black',
+          _dark: {
+            color: 'white',
+          },
+        },
         container: {
           rounded: 'md',
           alignItems: 'start',
+          "&[data-status='info']": {
+            background: 'var(--chakra-colors-purple-200)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-purple-300)',
+            },
+          },
+          "&[data-status='warning']": {
+            background: 'var(--chakra-colors-orange-200)',
+            _dark: {
+              background: 'var(--chakra-colors-orange-300)',
+            },
+          },
+          "&[data-status='success']": {
+            backgroundColor: 'var(--chakra-colors-green-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-green-400)',
+            },
+          },
           "&[data-status='error']": {
             border: '1px solid red',
+            backgroundColor: 'var(--chakra-colors-red-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-red-400)',
+            },
           },
         },
         title: {

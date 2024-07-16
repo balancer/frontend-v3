@@ -1,26 +1,22 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
+import { BalAlertTitle } from '@/lib/shared/components/alerts/BalAlertTitle'
 import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { AlertStatus, Box, HStack, Tooltip } from '@chakra-ui/react'
 import { isNil } from 'lodash'
-import { hasReviewedRateProvider } from '../pool.helpers'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zeroAddress } from 'viem'
 import { Pool } from '../PoolProvider'
 import { migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { hasReviewedRateProvider } from '../pool.helpers'
 import { shouldMigrateStake } from '../user-balance.helpers'
-import { PoolAlertButton } from './PoolAlertButton'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
+import { BalAlertProps } from '@/lib/shared/components/alerts/BalAlert'
 
 export type PoolAlert = {
   identifier: string
-  title: string | ReactNode
-  learnMoreLink?: string
-  status: AlertStatus
-  isSoftWarning: boolean
-}
+} & BalAlertProps
 
 export function usePoolAlerts(pool: Pool) {
   const pathname = usePathname()
@@ -109,15 +105,14 @@ export function usePoolAlerts(pool: Pool) {
 
     function MigrateStakeTitle() {
       return (
-        <HStack w="full">
-          <Box>Migrate to the new veBAL staking gauge for future BAL liquidity incentives</Box>
-          <Tooltip label={migrateStakeTooltipLabel}>
-            <InfoOutlineIcon fontSize="sm" />
-          </Tooltip>
-          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)} top={-3}>
+        <BalAlertTitle
+          title="Migrate to the new veBAL staking gauge for future BAL liquidity incentives"
+          tooltipLabel={migrateStakeTooltipLabel}
+        >
+          <BalAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
             Migrate
-          </PoolAlertButton>
-        </HStack>
+          </BalAlertButton>
+        </BalAlertTitle>
       )
     }
 
