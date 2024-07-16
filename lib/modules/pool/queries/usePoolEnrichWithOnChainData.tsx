@@ -7,7 +7,7 @@ import { weightedPoolV3Abi } from '../../web3/contracts/abi/weightedPoolV3Abi'
 import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { safeSum } from '@/lib/shared/utils/numbers'
+import { bn, safeSum } from '@/lib/shared/utils/numbers'
 import { getVaultConfig, isV3Pool } from '../pool.helpers'
 import { getChainId } from '@/lib/config/app.config'
 import {
@@ -18,15 +18,15 @@ import { isComposableStablePool } from '../pool.utils'
 
 export function usePoolEnrichWithOnChainData(pool: Pool) {
   const { priceFor } = useTokens()
-
   const { isLoading, poolTokenBalances, totalSupply, refetch } = usePoolOnchainData(pool)
-
   const clone = enrichPool({ isLoading, pool, priceFor, poolTokenBalances, totalSupply })
+
   return { isLoading, pool: clone, refetch }
 }
 
 function usePoolOnchainData(pool: Pool) {
   const v2Query = useV2PoolOnchainData(pool)
+
   const v2Result = {
     ...v2Query,
     poolTokenBalances: v2Query.data?.[0][1],
@@ -34,6 +34,7 @@ function usePoolOnchainData(pool: Pool) {
   }
 
   const v3Query = useV3PoolOnchainData(pool)
+
   const v3Result = {
     ...v3Query,
     poolTokenBalances: v3Query.data?.[0][2],
@@ -45,7 +46,6 @@ function usePoolOnchainData(pool: Pool) {
 
 function useV3PoolOnchainData(pool: Pool) {
   const { vaultAddress } = getVaultConfig(pool)
-
   const chainId = getChainId(pool.chain)
 
   return useReadContracts({
@@ -74,9 +74,7 @@ function useV3PoolOnchainData(pool: Pool) {
 
 function useV2PoolOnchainData(pool: Pool) {
   const { vaultAddress } = getVaultConfig(pool)
-
   const chainId = getChainId(pool.chain)
-
   const isComposableStable = isComposableStablePool(pool)
 
   return useReadContracts({
@@ -123,6 +121,7 @@ function enrichPool({ isLoading, pool, priceFor, poolTokenBalances, totalSupply 
     if (!poolTokenBalances) return
     const tokenBalance = formatUnits(poolTokenBalances[index], token.decimals)
     token.balance = tokenBalance
+    token.balanceUSD = bn(tokenBalance).times(priceFor(token.address, pool.chain)).toString()
   })
 
   clone.dynamicData.totalLiquidity = safeSum(
