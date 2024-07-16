@@ -213,8 +213,8 @@ function isSmallAmount(value: Numberish): boolean {
   return !isZero(value) && bn(value).lt(AMOUNT_LOWER_THRESHOLD)
 }
 
-function isMoreThanAmount(value: Numberish, amount: Numberish): boolean {
-  return !isZero(value) && bn(value).gt(bn(amount))
+function isMoreThanOrEqualToAmount(value: Numberish, amount: Numberish): boolean {
+  return !isZero(value) && bn(value).gte(bn(amount))
 }
 
 function isSmallPercentage(
