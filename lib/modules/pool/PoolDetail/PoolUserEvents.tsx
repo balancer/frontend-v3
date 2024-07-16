@@ -221,7 +221,7 @@ export default function PoolUserEvents() {
             )}
           </Box>
           <Divider />
-          <HStack spacing="4">
+          <HStack spacing="4" mt="auto">
             <Text variant="secondary" fontSize="0.85rem">
               {`${stakedPercentage} ${getShareTitle()}`}
             </Text>
