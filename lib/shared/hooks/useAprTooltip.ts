@@ -3,24 +3,27 @@ import { useThemeColorMode } from '../services/chakra/useThemeColorMode'
 import { bn } from '../utils/numbers'
 import BigNumber from 'bignumber.js'
 
-export const swapFeesTooltipText = `LPs get swap fees anytime a swap is routed through this pool. 
+export const swapFeesTooltipText = `LPs get swap fees anytime a swap is routed through this pool.
 These fees automatically accumulate into the LP's position, so there is no need to periodically claim.`
 
-export const inherentTokenYieldTooltipText = `Inherent token yield, 
- acccounting for the token's share of the overall pool,
+export const inherentTokenYieldTooltipText = `Inherent token yield,
+ accounting for the token's share of the overall pool,
  minus any protocol fees.`
 
-export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield. 
+export const merklIncentivesTooltipText = `Merkl is a platform that allows 3rd party Incentive Providers
+ to offer campaigns with additional yield for Liquidity Providers.`
+
+export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield.
 The more veBAL held, the higher the boost.`
 
-export const lockingIncentivesTooltipText = `Special incentives for liquidity providers who lock 
+export const lockingIncentivesTooltipText = `Special incentives for liquidity providers who lock
 their Balancer ve8020 pool tokens.`
 
-export const votingIncentivesTooltipText = `To get voting incentives from Hidden Hand, 
-you must hold veBAL and have active votes for vote-incentivized pools in the weekly gauge vote. 
+export const votingIncentivesTooltipText = `To get voting incentives from Hidden Hand,
+you must hold veBAL and have active votes for vote-incentivized pools in the weekly gauge vote.
 The APR listed is the average. Your incentives will be based on your veBAL voting weight vs other voters.`
 
-const stakingBalTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting). 
+const stakingBalTooltipText = `The base APR all stakers in this pool get (determined by weekly gauge voting).
 In addition, veBAL holders can get an extra boost of up to 2.5x.`
 
 const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
@@ -96,6 +99,18 @@ export function useAprTooltip({
   const lockingApr = filteredAprItems.find(item => item.type === GqlPoolAprItemType.Locking)
   const lockingAprDisplayed = numberFormatter(lockingApr ? lockingApr.apr.toString() : '0')
 
+  // Merkl incentives
+  const merklIncentives = filteredAprItems.filter(item => {
+    return item.type === GqlPoolAprItemType.Merkl
+  })
+
+  const hasMerklIncentives = merklIncentives.length > 0
+
+  const merklIncentivesAprDisplayed = merklIncentives.reduce(
+    (acc, item) => acc.plus(item.apr),
+    bn(0)
+  )
+
   // Bal Reward
   const balReward = filteredAprItems.find(item => item.title === 'BAL reward APR')
 
@@ -153,6 +168,8 @@ export function useAprTooltip({
     maxVeBalDisplayed,
     yieldBearingTokensDisplayed,
     stakingIncentivesDisplayed,
+    merklIncentivesAprDisplayed,
+    hasMerklIncentives,
     votingAprDisplayed,
     lockingAprDisplayed,
     isVotingPresent,

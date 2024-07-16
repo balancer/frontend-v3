@@ -16,6 +16,7 @@ import {
   extraBalTooltipText,
   lockingIncentivesTooltipText,
   votingIncentivesTooltipText,
+  merklIncentivesTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
 import { TooltipAprItem } from './TooltipAprItem'
 import BigNumber from 'bignumber.js'
@@ -82,6 +83,8 @@ function BaseAprTooltip({
     extraBalAprDisplayed,
     yieldBearingTokensAprDisplayed,
     stakingIncentivesAprDisplayed,
+    merklIncentivesAprDisplayed,
+    hasMerklIncentives,
     swapFeesDisplayed,
     isSwapFeePresent,
     isYieldPresent,
@@ -170,6 +173,17 @@ function BaseAprTooltip({
           )
         })}
       </TooltipAprItem>
+      {hasMerklIncentives && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Merkl.xyz incentives"
+          apr={merklIncentivesAprDisplayed}
+          aprOpacity={1}
+          tooltipText={merklIncentivesTooltipText}
+          bg="background.level3"
+        />
+      )}
       <Divider />
       <TooltipAprItem
         {...basePopoverAprItemProps}
