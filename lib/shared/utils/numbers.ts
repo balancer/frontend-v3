@@ -20,7 +20,7 @@ export const INTEGER_FORMAT = '0,0'
 export const FIAT_FORMAT_A = '0,0.00a'
 export const FIAT_FORMAT_3_DECIMALS = '0,0.000a'
 export const FIAT_FORMAT = '0,0.00'
-export const FIAT_FORMAT_ABOVE_100K = '0,0'
+export const FIAT_FORMAT_WITHOUT_CENTS = '0,0'
 export const TOKEN_FORMAT_A = '0,0.[0000]a'
 // Uses 2 decimals then value is > thousand
 export const TOKEN_FORMAT_A_BIG = '0,0.[00]a'
@@ -84,8 +84,8 @@ function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): st
   if (requiresThreeDecimals(val)) return formatWith3Decimals(val)
   const format = abbreviated
     ? FIAT_FORMAT_A
-    : isMoreThanAmount(val, FIAT_VALUE_THRESHOLD)
-    ? FIAT_FORMAT_ABOVE_100K
+    : isMoreThanOrEqualToAmount(val, FIAT_VALUE_THRESHOLD)
+    ? FIAT_FORMAT_WITHOUT_CENTS
     : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
 }
