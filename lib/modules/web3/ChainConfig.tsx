@@ -49,7 +49,7 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: 'https://ethereum-rpc.publicnode.com',
   [GqlChain.Arbitrum]: undefined,
   [GqlChain.Base]: undefined,
-  [GqlChain.Avalanche]: undefined,
+  [GqlChain.Avalanche]: 'https://avalanche-c-chain-rpc.publicnode.com',
   [GqlChain.Fantom]: undefined,
   [GqlChain.Gnosis]: undefined,
   [GqlChain.Optimism]: undefined,
