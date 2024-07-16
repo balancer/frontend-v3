@@ -18,6 +18,7 @@ import PoolUserEvents from './PoolUserEvents'
 import { hasTotalBalance } from '../user-balance.helpers'
 import { usePoolEvents } from '../usePoolEvents'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+import { usePoolCategories } from '../categories/PoolCategoriesProvider'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
@@ -35,7 +36,11 @@ export function PoolDetail() {
     userAddress,
   })
 
+  const { getPoolCategories } = usePoolCategories()
+
   useEffect(() => {
+    console.log('pool categories', getPoolCategories(pool))
+
     startPolling(120000)
     return () => stopPolling()
     // eslint-disable-next-line react-hooks/exhaustive-deps
