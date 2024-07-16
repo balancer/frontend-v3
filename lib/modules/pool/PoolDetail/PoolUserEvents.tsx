@@ -171,8 +171,8 @@ export default function PoolUserEvents() {
 
   return (
     <Card h={height}>
-      {isLoading && !poolEvents.length && <Skeleton w="full" h="full" />}
-      {!isLoading && poolEvents.length && (
+      {isLoading && <Skeleton w="full" h="full" />}
+      {!isLoading && (
         <VStack spacing="md" w="full" h="full" alignItems="flex-start">
           <Heading
             bg="font.special"
