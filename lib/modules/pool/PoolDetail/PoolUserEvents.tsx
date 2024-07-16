@@ -171,8 +171,8 @@ export default function PoolUserEvents() {
 
   return (
     <Card h={height}>
-      {isLoading && !poolEvents.length && <Skeleton w="full" h="full" />}
-      {!isLoading && poolEvents.length && (
+      {isLoading && <Skeleton w="full" h="full" />}
+      {!isLoading && (
         <VStack spacing="md" w="full" h="full" alignItems="flex-start">
           <Heading
             bg="font.special"
@@ -221,7 +221,7 @@ export default function PoolUserEvents() {
             )}
           </Box>
           <Divider />
-          <HStack spacing="4">
+          <HStack spacing="4" mt="auto">
             <Text variant="secondary" fontSize="0.85rem">
               {`${stakedPercentage} ${getShareTitle()}`}
             </Text>
