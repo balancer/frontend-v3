@@ -231,12 +231,7 @@ function AddLiquidityMainForm() {
           )}
         </VStack>
       </Card>
-      <AddLiquidityModal
-        finalFocusRef={nextBtn}
-        isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
-        onClose={previewModalDisclosure.onClose}
-      />
+      <AddLiquidityModal finalFocusRef={nextBtn} />
       {!!validTokens.length && (
         <NativeAssetSelectModal
           chain={validTokens[0].chain}

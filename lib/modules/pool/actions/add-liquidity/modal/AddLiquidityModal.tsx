@@ -2,7 +2,7 @@
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { usePool } from '../../../PoolProvider'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 // eslint-disable-next-line max-len
@@ -21,28 +21,31 @@ import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 
 type Props = {
-  isOpen: boolean
-  onClose(): void
-  onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
 }
 
 export function AddLiquidityModal({
-  isOpen,
-  onClose,
   finalFocusRef,
   ...rest
-}: Props & Omit<ModalProps, 'children'>) {
+}: Props & Omit<ModalProps, 'children' | 'isOpen' | 'onClose'>) {
+  const [modalHeight, setModalHeight] = useState(0)
+  const modalRef = useRef<HTMLDivElement>(null)
+
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash, hasQuoteContext, setInitialHumanAmountsIn } =
-    useAddLiquidity()
+  const {
+    previewModalDisclosure,
+    transactionSteps,
+    addLiquidityTxHash,
+    hasQuoteContext,
+    setInitialHumanAmountsIn,
+  } = useAddLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const isMounted = useIsMounted()
   const { userAddress } = useUserAccount()
 
-  useResetStepIndexOnOpen(isOpen, transactionSteps)
+  useResetStepIndexOnOpen(previewModalDisclosure.isOpen, transactionSteps)
 
   useEffect(() => {
     if (addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)) {
@@ -53,15 +56,23 @@ export function AddLiquidityModal({
   useEffect(() => {
     if (isMounted) {
       setInitialHumanAmountsIn()
-      onClose()
+      previewModalDisclosure.onClose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress])
 
+  // Set modal height to prevent content from jumping when changing to success state.
+  useEffect(() => {
+    if (modalHeight === 0 && modalRef.current) {
+      setModalHeight(modalRef.current.clientHeight)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalRef.current])
+
   return (
     <Modal
-      isOpen={isOpen}
-      onClose={onClose}
+      isOpen={previewModalDisclosure.isOpen}
+      onClose={previewModalDisclosure.onClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
@@ -69,7 +80,11 @@ export function AddLiquidityModal({
     >
       <SuccessOverlay startAnimation={!!addLiquidityTxHash && hasQuoteContext} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
+      <ModalContent
+        ref={modalRef}
+        minH={modalRef.current ? `${modalHeight}px` : 'auto'}
+        {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}
+      >
         {isDesktop && hasQuoteContext && (
           <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
         )}

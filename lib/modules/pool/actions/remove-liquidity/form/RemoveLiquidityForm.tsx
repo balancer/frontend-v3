@@ -173,12 +173,7 @@ export function RemoveLiquidityForm() {
             </Tooltip>
           </VStack>
         </Card>
-        <RemoveLiquidityModal
-          finalFocusRef={nextBtn}
-          isOpen={previewModalDisclosure.isOpen}
-          onOpen={previewModalDisclosure.onOpen}
-          onClose={onModalClose}
-        />
+        <RemoveLiquidityModal finalFocusRef={nextBtn} onClose={onModalClose} />
       </Box>
     </TokenBalancesProvider>
   )

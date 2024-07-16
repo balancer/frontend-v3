@@ -1,7 +1,7 @@
 'use client'
 
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
-import { RefObject, useEffect, useRef } from 'react'
+import { RefObject, useEffect, useRef, useState } from 'react'
 import { usePool } from '../../../PoolProvider'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
@@ -21,27 +21,28 @@ import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 
 type Props = {
-  isOpen: boolean
-  onClose(): void
-  onOpen(): void
   finalFocusRef?: RefObject<HTMLInputElement>
+  onClose: () => void
 }
 
 export function RemoveLiquidityModal({
-  isOpen,
-  onClose,
   finalFocusRef,
+  onClose,
   ...rest
-}: Props & Omit<ModalProps, 'children'>) {
+}: Props & Omit<ModalProps, 'children' | 'isOpen'>) {
+  const [modalHeight, setModalHeight] = useState(0)
+  const modalRef = useRef<HTMLDivElement>(null)
+
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
+  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext, previewModalDisclosure } =
+    useRemoveLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
   const isMounted = useIsMounted()
 
-  useResetStepIndexOnOpen(isOpen, transactionSteps)
+  useResetStepIndexOnOpen(previewModalDisclosure.isOpen, transactionSteps)
 
   useEffect(() => {
     if (removeLiquidityTxHash && !window.location.pathname.includes(removeLiquidityTxHash)) {
@@ -54,9 +55,17 @@ export function RemoveLiquidityModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress])
 
+  // Set modal height to prevent content from jumping when changing to success state.
+  useEffect(() => {
+    if (modalHeight === 0 && modalRef.current) {
+      setModalHeight(modalRef.current.clientHeight)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modalRef.current])
+
   return (
     <Modal
-      isOpen={isOpen}
+      isOpen={previewModalDisclosure.isOpen}
       onClose={onClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
@@ -65,7 +74,11 @@ export function RemoveLiquidityModal({
     >
       <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+      <ModalContent
+        ref={modalRef}
+        minH={modalRef.current ? `${modalHeight}px` : 'auto'}
+        {...getStylesForModalContentWithStepTracker(isDesktop)}
+      >
         {isDesktop && hasQuoteContext && (
           <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
         )}
