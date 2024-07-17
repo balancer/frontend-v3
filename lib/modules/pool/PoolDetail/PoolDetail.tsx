@@ -54,8 +54,8 @@ export function PoolDetail() {
     router.prefetch(`${pathname}/add-liquidity`)
     if (userHasLiquidity) {
       router.prefetch(`${pathname}/remove-liquidity`)
-      router.prefetch(`${pathname}/stake-liquidity`)
-      router.prefetch(`${pathname}/unstake-liquidity`)
+      router.prefetch(`${pathname}/stake`)
+      router.prefetch(`${pathname}/unstake`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
