@@ -11,6 +11,7 @@ import {
   Heading,
   Icon,
   Link,
+  Divider,
   Text,
   Tooltip,
   VStack,
@@ -72,7 +73,7 @@ export function PoolContracts({ ...props }: CardProps) {
   const contracts = useMemo(() => {
     const contracts = [
       {
-        label: 'Pool',
+        label: 'Pool address',
         address: pool.address,
         explorerLink: poolExplorerLink,
       },
@@ -80,7 +81,7 @@ export function PoolContracts({ ...props }: CardProps) {
 
     if (hasGaugeAddress) {
       contracts.push({
-        label: 'Gauge',
+        label: 'veBAL gauge',
         address: gaugeAddress,
         explorerLink: gaugeExplorerLink,
       })
@@ -105,14 +106,15 @@ export function PoolContracts({ ...props }: CardProps) {
         <Heading variant="h4" fontSize="xl">
           Pool contracts
         </Heading>
+        <Divider />
         {contracts.map((contract, index) => (
           <Grid key={index} templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
             <GridItem>
-              <Text variant="secondary">{contract.label}</Text>
+              <Text minW="120px" variant="secondary">{contract.label}:</Text>
             </GridItem>
             <GridItem>
               <Link target="_blank" href={contract.explorerLink} variant="link">
-                <HStack>
+                <HStack gap="xxs">
                   <Text color="link">{abbreviateAddress(contract.address)}</Text>
                   <ArrowUpRight size={12} />
                 </HStack>
@@ -128,7 +130,7 @@ export function PoolContracts({ ...props }: CardProps) {
                 label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
                 fontSize="sm"
               >
-                <Text variant="secondary">Rate provider(s)</Text>
+                <Text minW="120px" variant="secondary">Rate provider(s):</Text>
               </Tooltip>
             </GridItem>
             <GridItem>
@@ -155,7 +157,7 @@ export function PoolContracts({ ...props }: CardProps) {
                           )}
                           variant="link"
                         >
-                          <HStack>
+                          <HStack gap="xxs">
                             <Text color="link">
                               {abbreviateAddress(provider.priceRateProviderData.address)}
                             </Text>
