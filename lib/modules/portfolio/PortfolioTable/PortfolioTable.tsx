@@ -17,6 +17,7 @@ import { getTotalApr } from '../../pool/pool.utils'
 import { ExpandedPoolInfo, ExpandedPoolType, useExpandedPools } from './useExpandedPools'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { ConnectWallet } from '../../web3/ConnectWallet'
+import { getCanStake } from '../../pool/actions/stake.helpers'
 
 export type PortfolioTableSortingId = 'staking' | 'vebal' | 'liquidity' | 'apr'
 export interface PortfolioSortingData {
@@ -58,14 +59,20 @@ const rowProps = {
 }
 
 const generateStakingWeightForSort = (pool: ExpandedPoolInfo) => {
-  return (
-    Number(pool.poolType === ExpandedPoolType.Locked) * 100 +
-    Number(pool.poolType === ExpandedPoolType.Unlocked) * 50 +
-    Number(pool.poolType === ExpandedPoolType.Staked) * 20 +
-    Number(pool.poolType === ExpandedPoolType.Unstaked) * 10 +
-    Number(hasAuraStakedBalance(pool)) * 2 +
-    Number(hasBalancerStakedBalance(pool))
-  )
+  const canStake = getCanStake(pool)
+
+  if (canStake) {
+    return (
+      Number(pool.poolType === ExpandedPoolType.Locked) * 100 +
+      Number(pool.poolType === ExpandedPoolType.Unlocked) * 50 +
+      Number(pool.poolType === ExpandedPoolType.Staked) * 20 +
+      Number(pool.poolType === ExpandedPoolType.Unstaked) * 10 +
+      Number(hasAuraStakedBalance(pool)) * 2 +
+      Number(hasBalancerStakedBalance(pool))
+    )
+  } else {
+    return 0 // send all pools without staking to the bottom of the table
+  }
 }
 
 export function PortfolioTable() {

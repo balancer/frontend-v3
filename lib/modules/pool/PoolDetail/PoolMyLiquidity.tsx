@@ -43,7 +43,7 @@ import {
   calcUserShareOfPool,
 } from '../pool.helpers'
 
-import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { getCanStake, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
@@ -209,8 +209,7 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
-  const canStake = pool.staking && !hasNonPreferentialBalance
+  const canStake = getCanStake(pool)
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasGaugeStakedBalance = bn(calcGaugeStakedBalance(pool)).gt(0)
   const shareOfPool = calcUserShareOfPool(pool)
