@@ -811,17 +811,11 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     },
     Alert: {
       baseStyle: {
-        icon: {
-          color: 'black',
-          _dark: {
-            color: 'white',
-          },
+        button: {
+          background: 'green',
         },
-        link: {
-          color: 'black',
-          _dark: {
-            color: 'white',
-          },
+        icon: {
+          color: 'font.dark',
         },
         container: {
           rounded: 'md',
@@ -845,7 +839,6 @@ export function getComponents(tokens: any, primaryTextColor: string) {
             },
           },
           "&[data-status='error']": {
-            border: '1px solid red',
             backgroundColor: 'var(--chakra-colors-red-300)',
             _dark: {
               backgroundColor: 'var(--chakra-colors-red-400)',
@@ -855,10 +848,29 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         title: {
           letterSpacing: '-0.25px',
           mb: 'xs',
+          color: 'font.dark',
+          button: {
+            color: 'font.dark',
+            borderColor: 'font.dark',
+            _hover: {
+              transform: 'scale(1.05)',
+            },
+          },
+          a: {
+            color: 'font.dark',
+            borderColor: 'font.dark',
+            _hover: {
+              transform: 'scale(1.05)',
+              color: 'font.dark',
+              borderColor: 'font.dark',
+              backgroundColor: 'transparent',
+            },
+          },
         },
         description: {
-          fontWeight: 'medium',
           letterSpacing: '-0.25px',
+          fontWeight: 'medium',
+          color: 'font.dark',
         },
       },
       variants: {},

@@ -3,9 +3,14 @@
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
 import { BalAlertTitle } from '@/lib/shared/components/alerts/BalAlertTitle'
-import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { Button, Link, VStack, transform } from '@chakra-ui/react'
-import { ArrowUpRight } from 'react-feather'
+import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
+import { VStack } from '@chakra-ui/react'
+
+const exceptionTitle = 'Error fetching swap'
+const exceptionDescription = `Execution reverted for an unknown reason. Raw Call Arguments:
+to:0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5
+Docs: https://viem.sh/docs/contract/simulateContract Details: execution reverted Version:
+viem@2.16.3`
 
 export default function Page() {
   return (
@@ -17,47 +22,42 @@ export default function Page() {
       <BalAlert
         title="Warning alert with close button (soft warning)"
         status="warning"
-        isSoftWarning={true}
+        isSoftWarning
       />
-      <BalAlert title="Error alert with learnMoreLink" status="error" learnMoreLink="alerts" />
       <BalAlert
-        title={<TitleWithLink title="Error alert with alternative learn more link" href="alerts" />}
+        title="Error alert with learn more button link"
+        learnMoreLink="https://balancer.fi"
         status="error"
       />
+      <BalAlert
+        title={
+          <BalAlertTitle
+            title="Info alert with very very very very very very
+              very very very very very very very very very
+              very very very very very very very very very
+              very very very very very very very very very
+              very very very very very very very very very
+              very very very very very very very very very
+              very very very very very very very very very
+              very very very long title"
+          >
+            <BalAlertButton onClick={() => console.log('Clicked')}>Click me</BalAlertButton>
+          </BalAlertTitle>
+        }
+        status="info"
+      />
+
+      <ErrorAlert title={exceptionTitle} maxWidth="500">
+        {exceptionDescription}
+      </ErrorAlert>
     </VStack>
   )
 }
 
 function TitleWithButton({ title }: { title: string }) {
   return (
-    <BalAlertTitle title={title}>
+    <BalAlertTitle title={title} description="Optional description" tooltipLabel="Optional tooltip">
       <BalAlertButton onClick={() => console.log('Clicked')}>Click me</BalAlertButton>
-    </BalAlertTitle>
-  )
-}
-
-// TODO: alternative implementation of link inside alert
-function TitleWithLink({ title, href }: { title: string; href: string }) {
-  const colorMode = useThemeColorMode()
-  const isDark = colorMode === 'dark'
-
-  return (
-    <BalAlertTitle title={title}>
-      <Button
-        as={Link}
-        target="_blank"
-        href={href}
-        width="auto"
-        variant="outline"
-        h="24px"
-        py="md"
-        my="-2"
-        borderColor={isDark ? 'white' : 'black'}
-        _hover={{ transform: 'scale(1.05)' }}
-        rightIcon={<ArrowUpRight />}
-      >
-        Learn more
-      </Button>
     </BalAlertTitle>
   )
 }
