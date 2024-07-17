@@ -16,10 +16,12 @@ export function BalAlertTitle({
   description,
 }: PropsWithChildren<AlertTitleProps>) {
   return (
-    <HStack w="full">
-      <HStack w="full">
-        <Box>{title}</Box>
-        {description && <Box fontWeight="normal">{description}</Box>}
+    <HStack w="full" flexWrap="wrap" justifyContent="space-between">
+      <HStack maxWidth="80%" flexWrap="wrap">
+        <HStack>
+          <Box>{title}</Box>
+          {description && <Box fontWeight="normal">{description}</Box>}
+        </HStack>
         {tooltipLabel && (
           <Box>
             <Tooltip label={tooltipLabel}>
@@ -28,7 +30,7 @@ export function BalAlertTitle({
           </Box>
         )}
       </HStack>
-      {children}
+      <Box>{children}</Box>
     </HStack>
   )
 }
