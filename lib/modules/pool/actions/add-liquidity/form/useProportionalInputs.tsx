@@ -46,11 +46,14 @@ export function useProportionalInputs() {
     )
   }, [wethIsEth, isBalancesLoading])
 
-  function clearAmountsIn(changedAmount: HumanTokenAmountWithAddress) {
+  function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(
       humanAmountsIn.map(({ tokenAddress }) => {
         // Keeps user inputs like '0' or '0.' instead of replacing them with ''
-        if (isSameAddress(changedAmount.tokenAddress, tokenAddress)) return changedAmount
+        if (changedAmount && isSameAddress(changedAmount.tokenAddress, tokenAddress)) {
+          return changedAmount
+        }
+
         return { tokenAddress, humanAmount: '' }
       })
     )
