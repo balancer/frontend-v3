@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {
   Center,
   Heading,
@@ -46,20 +47,20 @@ const useCaseInfo: UseCaseInfo = {
   [UseCase.BoostedPools]: {
     title: '100% Boosted Pools',
     description:
-      'Balancer v3 introduces 100% boosted pools, which allow liquidity providers to earn more fees and BAL rewards.',
-    url: 'https://balancer.finance',
+      'Balancer v3 introduces 100% Boosted Pools, enhancing capital efficiency for passive LPs. These pools deposit idle liquidity in trusted platforms like Aave, providing LPs exposure to an additional layer of sustainable yield. Unlike v2, v3 registers yield-bearing tokens directly with the pool, using Buffers to facilitate gas-efficient swaps. Buffers act as simple two-token liquidity pools that hold a yield bearing token (waUSDC) and it’s underlying counterpart (USDC), minimizing external calls and providing LPs with full yield exposure while optimizing gas usage.',
+    url: 'https://docs-v3.balancer.fi/concepts/explore-available-balancer-pools/boosted-pool.html#advantages-of-boosted-pools',
   },
   [UseCase.Stablesurge]: {
-    title: 'Stablesurge hooks',
+    title: 'Custom Pools and Hooks',
     description:
-      'Balancer v3 introduces stablesurge hooks, which allow liquidity providers to earn more fees and BAL rewards.',
-    url: 'https://balancer.finance',
+      'Balancer v3 is a platform for AMM experimentation and innovation, allowing custom pools to iterate on existing or define entirely new swap invariants. With the v3 vault handling much of the responsibility that was previously delegated to the pool contract, internally developed pools are significantly less complex. By shifting core design patterns out of the pool and into the vault, v3 produces a 10x improvement in pool developer experience.\n\nAdditionally, v3 introduces a hooks framework that allows developers to easily extend existing pool types at various key points throughout the pool’s lifecycle, unlocking an infinite design space.',
+    url: 'https://docs-v3.balancer.fi/concepts/core-concepts/hooks.html',
   },
   [UseCase.LVRMitigation]: {
-    title: 'LVR mitigation',
+    title: 'LVR / MEV Mitigation',
     description:
-      'Balancer v3 introduces LVR mitigation, which allows liquidity providers to earn more fees and BAL rewards.',
-    url: 'https://balancer.finance',
+      'Balancer v3 focuses on minimizing MEV and maximizing LP profitability by collaborating with intent-centric projects like CowSwap. v3 leverages custom AMM logic and a hooks framework to enable third-party teams easily to develop MEV mitigation strategies. Supported by Balancer DAO, this approach aims to help bolster MEV innovation for LPs, enhancing fairness and profitability in on-chain interactions for the future to come.',
+    url: 'https://docs-v3.balancer.fi/',
   },
 }
 
@@ -73,7 +74,7 @@ function UseCaseModal({ useCase, isOpen, onClose }: ModalProps) {
         <ModalHeader>{info.title}</ModalHeader>
         <ModalCloseButton />
         <ModalBody color="grayText">
-          <Text>{info.description}</Text>
+          <Text whiteSpace="pre-wrap">{info.description}</Text>
         </ModalBody>
 
         <ModalFooter>
