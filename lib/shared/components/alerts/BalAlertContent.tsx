@@ -4,22 +4,24 @@ import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { Box, HStack, Tooltip } from '@chakra-ui/react'
 import { PropsWithChildren, ReactNode } from 'react'
 
-type AlertTitleProps = {
-  title: string
+type AlertContentProps = {
+  title?: string
   description?: ReactNode | string
   tooltipLabel?: string
 }
-export function BalAlertTitle({
-  tooltipLabel,
-  children,
+
+// Utility component to display a title, description, optional tooltip and other nested components (buttons, links...) within an alert
+export function BalAlertContent({
   title,
   description,
-}: PropsWithChildren<AlertTitleProps>) {
+  tooltipLabel,
+  children,
+}: PropsWithChildren<AlertContentProps>) {
   return (
     <HStack w="full" flexWrap="wrap" justifyContent="space-between">
       <HStack maxWidth="80%" flexWrap="wrap">
         <HStack>
-          <Box>{title}</Box>
+          {title && <Box>{title}</Box>}
           {description && <Box fontWeight="normal">{description}</Box>}
         </HStack>
         {tooltipLabel && (

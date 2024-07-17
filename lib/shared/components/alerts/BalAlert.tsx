@@ -4,26 +4,28 @@ import { AlertTriangle, Check, Info, Loader, XOctagon } from 'react-feather'
 import { BalAlertButtonLink } from './BalAlertButtonLink'
 
 export type BalAlertProps = {
-  title: ReactNode | string
+  content: ReactNode | string
   learnMoreLink?: string
   status: AlertStatus
   isSoftWarning?: boolean
+  isNavAlert?: boolean
   onClose?: MouseEventHandler
 }
 
 export function BalAlert({
-  title,
+  content,
   status,
   learnMoreLink,
   isSoftWarning = false,
+  isNavAlert = false,
   onClose,
 }: BalAlertProps) {
   return (
-    <Alert status={status}>
+    <Alert status={status} rounded={isNavAlert ? 'none' : 'default'}>
       <AlertIcon as={getAlertIcon(status)} />
 
       <AlertTitle gap={1} display="flex" w="full">
-        {title}
+        {content}
       </AlertTitle>
       {learnMoreLink && <BalAlertButtonLink href={learnMoreLink}>Learn more</BalAlertButtonLink>}
       {isSoftWarning && (

@@ -2,9 +2,10 @@
 
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
-import { BalAlertTitle } from '@/lib/shared/components/alerts/BalAlertTitle'
+import { BalAlertContent } from '@/lib/shared/components/alerts/BalAlertContent'
+import { useGlobalAlerts } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
-import { VStack } from '@chakra-ui/react'
+import { Button, VStack } from '@chakra-ui/react'
 
 const exceptionTitle = 'Error fetching swap'
 const exceptionDescription = `Execution reverted for an unknown reason. Raw Call Arguments:
@@ -13,34 +14,50 @@ Docs: https://viem.sh/docs/contract/simulateContract Details: execution reverted
 viem@2.16.3`
 
 export default function Page() {
+  const { addAlert } = useGlobalAlerts()
   return (
     <VStack width="full">
-      <BalAlert title={<TitleWithButton title="Info alert" />} status="info" />
-      <BalAlert title={<TitleWithButton title="Warning alert" />} status="warning" />
-      <BalAlert title={<TitleWithButton title="Error alert" />} status="error" />
-      <BalAlert title={<TitleWithButton title="Success alert" />} status="success" />
+      <BalAlert content={<TitleWithButton title="Info alert" />} status="info" />
+      <BalAlert content={<TitleWithButton title="Warning alert" />} status="warning" />
+      <BalAlert content={<TitleWithButton title="Error alert" />} status="error" />
+      <BalAlert content={<TitleWithButton title="Success alert" />} status="success" />
       <BalAlert
-        title="Warning alert with close button (soft warning)"
+        content="Warning alert with close button (soft warning)"
         status="warning"
         isSoftWarning
       />
       <BalAlert
-        title="Error alert with learn more button link"
+        content="Error alert with learn more button link"
         learnMoreLink="https://balancer.fi"
         status="error"
       />
-
       <ErrorAlert title={exceptionTitle} maxWidth="500">
         {exceptionDescription}
       </ErrorAlert>
+      <Button
+        onClick={() =>
+          addAlert({
+            id: 'debugAlert',
+            title: 'Global warning alert:',
+            description: 'with global description',
+            status: 'warning',
+          })
+        }
+      >
+        Show global warning alert
+      </Button>
     </VStack>
   )
 }
 
 function TitleWithButton({ title }: { title: string }) {
   return (
-    <BalAlertTitle title={title} description="Optional description" tooltipLabel="Optional tooltip">
+    <BalAlertContent
+      title={title}
+      description="Optional description"
+      tooltipLabel="Optional tooltip"
+    >
       <BalAlertButton onClick={() => console.log('Clicked')}>Click me</BalAlertButton>
-    </BalAlertTitle>
+    </BalAlertContent>
   )
 }

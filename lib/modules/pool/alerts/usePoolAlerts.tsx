@@ -1,6 +1,6 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
-import { BalAlertTitle } from '@/lib/shared/components/alerts/BalAlertTitle'
+import { BalAlertContent } from '@/lib/shared/components/alerts/BalAlertContent'
 import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { isNil } from 'lodash'
 import { usePathname, useRouter } from 'next/navigation'
@@ -44,7 +44,7 @@ export function usePoolAlerts(pool: Pool) {
 
       return {
         identifier: issue,
-        title: vulnerabilityData.jsxTitle,
+        content: vulnerabilityData.jsxTitle,
         learnMoreLink: vulnerabilityData.learnMoreLink,
         status: 'error',
         isSoftWarning: false,
@@ -61,7 +61,7 @@ export function usePoolAlerts(pool: Pool) {
       if (!token.isAllowed) {
         alerts.push({
           identifier: `TokenNotAllowed-${token.symbol}`,
-          title: `The token ${token.symbol} is currently not supported.`,
+          content: `The token ${token.symbol} is currently not supported.`,
           status: 'error',
           isSoftWarning: false,
         })
@@ -80,7 +80,7 @@ export function usePoolAlerts(pool: Pool) {
         alerts.push({
           identifier: `PriceProviderNotReviewed-${token.symbol}`,
           // eslint-disable-next-line max-len
-          title: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
+          content: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
           status: 'error',
           isSoftWarning: true,
         })
@@ -90,7 +90,7 @@ export function usePoolAlerts(pool: Pool) {
         alerts.push({
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
-          title: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
+          content: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
           status: 'error',
           isSoftWarning: true,
         })
@@ -103,23 +103,23 @@ export function usePoolAlerts(pool: Pool) {
   const getUserAlerts = (pool: Pool): PoolAlert[] => {
     const alerts: PoolAlert[] = []
 
-    function MigrateStakeTitle() {
+    function MigrateStakeContent() {
       return (
-        <BalAlertTitle
+        <BalAlertContent
           title="Migrate to the new veBAL staking gauge for future BAL liquidity incentives"
           tooltipLabel={migrateStakeTooltipLabel}
         >
           <BalAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
             Migrate
           </BalAlertButton>
-        </BalAlertTitle>
+        </BalAlertContent>
       )
     }
 
     if (shouldMigrateStake(pool)) {
       alerts.push({
         identifier: 'shouldMigrateStake',
-        title: MigrateStakeTitle(),
+        content: MigrateStakeContent(),
         status: 'warning',
         isSoftWarning: false,
       })
