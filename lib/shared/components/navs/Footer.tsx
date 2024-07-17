@@ -1,11 +1,10 @@
 'use client'
 
 import NextLink from 'next/link'
-import { Stack, Divider, Text, Box, Card, VStack, HStack, Link, IconButton } from '@chakra-ui/react'
+import { Stack, Divider, Text, Box, VStack, HStack, Link, IconButton } from '@chakra-ui/react'
 import { staggeredFadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
 import { DefaultPageContainer } from '../containers/DefaultPageContainer'
-import { useBreakpoints } from '../../hooks/useBreakpoints'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { ArrowUpRight } from 'react-feather'
 import { useNav } from './useNav'

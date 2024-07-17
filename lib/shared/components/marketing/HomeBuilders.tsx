@@ -1,5 +1,4 @@
-'use client'
-import { Card, Center, Grid, Heading, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
+import { Card, Grid, Heading, Text, Flex, Box } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 

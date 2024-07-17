@@ -1,6 +1,8 @@
+/* eslint-disable max-len */
+
 import { MotionValue, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
 import { useRef } from 'react'
-import { Box, Flex, Text, VStack, Center } from '@chakra-ui/react'
+import { Box, Flex, Text, VStack } from '@chakra-ui/react'
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
 import { AuraIcon } from '@/lib/shared/components/icons/logos/AuraIcon'

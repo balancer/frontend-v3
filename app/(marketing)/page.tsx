@@ -1,5 +1,5 @@
 'use client'
-import { Card, Center, Grid, Heading, Text, Flex, Box, SimpleGrid } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 
 import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
 
