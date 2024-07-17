@@ -28,7 +28,7 @@ test('Token approval title when approving 0 USDT', () => {
     requiredRawAmount: 0n,
   }
   const result = buildTokenApprovalLabels(args)
-  expect(result.title).toBe('Approve 0 WETH')
+  expect(result.title).toBe('Approve WETH')
 })
 
 test('Token approval labels for unapprove', () => {
