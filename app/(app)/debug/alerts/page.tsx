@@ -29,23 +29,6 @@ export default function Page() {
         learnMoreLink="https://balancer.fi"
         status="error"
       />
-      <BalAlert
-        title={
-          <BalAlertTitle
-            title="Info alert with very very very very very very
-              very very very very very very very very very
-              very very very very very very very very very
-              very very very very very very very very very
-              very very very very very very very very very
-              very very very very very very very very very
-              very very very very very very very very very
-              very very very long title"
-          >
-            <BalAlertButton onClick={() => console.log('Clicked')}>Click me</BalAlertButton>
-          </BalAlertTitle>
-        }
-        status="info"
-      />
 
       <ErrorAlert title={exceptionTitle} maxWidth="500">
         {exceptionDescription}
