@@ -78,7 +78,12 @@ export function HomeCaseStudies() {
           pt="sm"
         >
           {logos.map((logo, i) => (
-            <SmallIcon key={i} Icon={logo.icon} name={logo.name} />
+            <SmallIcon
+              key={i}
+              Icon={logo.icon}
+              name={logo.name}
+              onClick={() => openRedirectModal(logo.partner)}
+            />
           ))}
         </Flex>
       </VStack>
@@ -150,7 +155,11 @@ function AppIcon({
   )
 }
 
-function SmallIcon({ Icon, name }: { Icon: React.ComponentType; name: string }) {
+function SmallIcon({
+  Icon,
+  name,
+  ...rest
+}: { Icon: React.ComponentType; name: string } & BoxProps) {
   return (
     <Box
       aspectRatio={1}
@@ -182,11 +191,7 @@ function SmallIcon({ Icon, name }: { Icon: React.ComponentType; name: string }) 
       alignItems="center"
       justifyContent="center"
       title={name}
-      //   sx={{
-      //     '& svg': {
-      //       transform: 'scale(0.8)',
-      //     },
-      //   }}
+      {...rest}
     >
       <Icon />
     </Box>
