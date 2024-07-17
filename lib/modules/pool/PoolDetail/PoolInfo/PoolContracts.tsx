@@ -110,7 +110,9 @@ export function PoolContracts({ ...props }: CardProps) {
         {contracts.map((contract, index) => (
           <Grid key={index} templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
             <GridItem>
-              <Text minW="120px" variant="secondary">{contract.label}:</Text>
+              <Text minW="120px" variant="secondary">
+                {contract.label}:
+              </Text>
             </GridItem>
             <GridItem>
               <Link target="_blank" href={contract.explorerLink} variant="link">
@@ -130,7 +132,9 @@ export function PoolContracts({ ...props }: CardProps) {
                 label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
                 fontSize="sm"
               >
-                <Text minW="120px" variant="secondary">Rate provider(s):</Text>
+                <Text minW="120px" variant="secondary">
+                  Rate provider(s):
+                </Text>
               </Tooltip>
             </GridItem>
             <GridItem>
