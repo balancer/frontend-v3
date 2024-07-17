@@ -18,7 +18,14 @@ export function _usePoolCategories(categories: PoolCategory[] | undefined) {
     )
   }
 
-  return { hasCategories, categories, getPoolCategories }
+  function getCategoryIconSrc(category: PoolCategory): string | undefined {
+    if (category.id.includes('points')) return '/images/categories/points.svg'
+    if (category.id.includes('ve8020')) return '/images/categories/ve8020.svg'
+
+    return undefined
+  }
+
+  return { hasCategories, categories, getPoolCategories, getCategoryIconSrc }
 }
 
 export function PoolCategoriesProvider({

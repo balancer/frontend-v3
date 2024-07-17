@@ -20,12 +20,19 @@ export function PoolHeader() {
   }
 
   return (
-    <Stack w="full" justify="space-between" spacing="md" direction={{ base: 'column', sm: 'row' }}>
+    <Stack w="full" justify="space-between" spacing="md" direction={{ base: 'column', md: 'row' }}>
       <PoolMetaBadges />
-      <PoolCategories />
-      <Button onClick={handleClick} variant="primary" size="lg" isDisabled={isAddLiquidityBlocked}>
-        Add liquidity
-      </Button>
+      <Stack spacing="md" direction={{ base: 'column', md: 'row' }}>
+        <PoolCategories />
+        <Button
+          onClick={handleClick}
+          variant="primary"
+          size="lg"
+          isDisabled={isAddLiquidityBlocked}
+        >
+          Add liquidity
+        </Button>
+      </Stack>
     </Stack>
   )
 }
