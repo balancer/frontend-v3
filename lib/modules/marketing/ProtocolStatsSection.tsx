@@ -1,43 +1,35 @@
 import { useProtocolStats } from '@/lib/shared/hooks/useProtocolStats'
-import { Center, Box, Text, useColorMode, SimpleGrid, Skeleton } from '@chakra-ui/react'
+import { Center, Box, Text, SimpleGrid, Skeleton } from '@chakra-ui/react'
 import { useMemo } from 'react'
 import { AnimatedNumber } from '@/lib/shared/components/marketing/AnimatedNumber'
+import { Picture } from '@/lib/shared/components/other/Picture'
 import { ParallaxImage } from '@/lib/shared/components/marketing/ParallaxImage'
 
 type ProtocolStatsSectionProps = {
   title: string
+  imgName: string
   value: string
   isLoading?: boolean
 }
-function ProtocolStatItem({ title, value, isLoading }: ProtocolStatsSectionProps) {
-  const { colorMode } = useColorMode()
-
+function ProtocolStatItem({ title, value, imgName, isLoading }: ProtocolStatsSectionProps) {
   const formatValue = (v: number) => {
     if (title === 'LPs') return v.toLocaleString()
     return '$' + abbreviateNumber(v)
   }
 
   return (
-    <ParallaxImage yStart="0%" yEnd="-2%" transformOrigin="top" overflow="none">
+    <ParallaxImage yStart="0%" yEnd="-2%" transformOrigin="top" overflow="none" scaleStart="95">
       <Box position="relative" rounded="full">
         <Center>
-          <picture className="picture enso">
-            <source
-              srcSet="/images/homepage/enso1.png"
-              media={colorMode === 'dark' ? 'all' : 'none'}
+          <Box rounded="full" className="enso">
+            <Picture
+              imgName={imgName}
+              altText="Liquidity pools"
+              defaultImgType="png"
+              imgPngDark={true}
+              imgPng={true}
             />
-
-            <img
-              src="/images/homepage/enso3.png"
-              alt="Plugged into Balancer vault"
-              loading="lazy"
-              decoding="async"
-              width="100%"
-              height="100%"
-              object-fit="cover"
-              border-radius="100%"
-            />
-          </picture>
+          </Box>
 
           <Box
             textAlign="center"
@@ -50,10 +42,7 @@ function ProtocolStatItem({ title, value, isLoading }: ProtocolStatsSectionProps
             px="ms"
           >
             <Box pb="xxs">
-              <Text
-                fontSize={{ base: 'sm', md: 'md' }}
-                color={colorMode === 'dark' ? 'white' : 'font.dark'}
-              >
+              <Text fontSize={{ base: 'sm', md: 'md' }} color="font.dark">
                 {title}
               </Text>
             </Box>
@@ -61,11 +50,7 @@ function ProtocolStatItem({ title, value, isLoading }: ProtocolStatsSectionProps
               {isLoading ? (
                 <Skeleton height="8" w="16" />
               ) : (
-                <Text
-                  fontSize={{ base: 'xl', md: '2xl' }}
-                  fontWeight="bold"
-                  color={colorMode === 'dark' ? 'white' : 'font.dark'}
-                >
+                <Text fontSize={{ base: 'xl', md: '2xl' }} fontWeight="bold" color="font.dark">
                   <AnimatedNumber
                     value={parseFloat(value.replace(/[^0-9.-]+/g, ''))}
                     formatValue={formatValue}
@@ -94,18 +79,22 @@ export function ProtocolStatsSection() {
       {
         title: 'TVL',
         value: totalLiquidity,
+        imgName: 'enso1',
       },
       {
         title: 'Vol 24h',
         value: swapVolume24h,
+        imgName: 'enso2',
       },
       {
         title: 'Swap fees 24h',
         value: swapFee24h,
+        imgName: 'enso3',
       },
       {
         title: 'LPs',
         value: numLiquidityProviders,
+        imgName: 'enso4',
       },
     ]
   }, [statQuery.data])
@@ -121,6 +110,7 @@ export function ProtocolStatsSection() {
           key={index}
           title={stat.title}
           value={stat.value.toString()}
+          imgName={stat.imgName}
           isLoading={statQuery.loading}
         />
       ))}

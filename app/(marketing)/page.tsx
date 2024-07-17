@@ -57,171 +57,186 @@ export default function Home() {
           </Box>
 
           <FadeInOnView>
-            <Grid
-              templateRows={{ base: 'repeat(4, 1fr', md: 'repeat(3, 1fr', lg: 'repeat(2, 1fr' }}
-              templateColumns={{ base: 'repeat(1, 1fr', md: 'repeat(2, 1fr', lg: 'repeat(4, 1fr' }}
-              gap={4}
-            >
-              <Card
-                variant="level2"
-                gridArea={{ base: 'auto', md: '1 / 1 / 2 / 3', lg: '1 / 1 / 3 / 3' }}
+            <Box maxW={{ base: '720px', lg: '100%' }} mx="auto">
+              <Grid
+                templateRows={{ base: 'repeat(4, 1fr', md: 'repeat(3, 1fr', lg: 'repeat(2, 1fr' }}
+                templateColumns={{
+                  base: 'repeat(1, 1fr',
+                  md: 'repeat(2, 1fr',
+                  lg: 'repeat(4, 1fr',
+                }}
+                gap={4}
               >
-                <Flex direction="column" justify="flex-end" h="100%">
-                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <ParallaxImage
-                      scaleStart="100%"
-                      scaleEnd="120%"
-                      yStart="-10%"
-                      yEnd="30%"
-                      transformOrigin="bottom"
+                <Card
+                  variant="level2"
+                  gridArea={{ base: 'auto', md: '1 / 1 / 2 / 3', lg: '1 / 1 / 3 / 3' }}
+                >
+                  <Flex direction="column" justify="flex-end" h="100%">
+                    <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                      <ParallaxImage
+                        scaleStart="100%"
+                        scaleEnd="120%"
+                        yStart="-10%"
+                        yEnd="30%"
+                        transformOrigin="bottom"
+                      >
+                        <Picture
+                          imgName="build"
+                          altText="Liquidity pools"
+                          defaultImgType="jpg"
+                          imgJpg={true}
+                          imgAvif={true}
+                          imgAvifDark={true}
+                        />
+                      </ParallaxImage>
+                    </Box>
+                    <Heading
+                      as="h5"
+                      size="h5"
+                      pb="sm"
+                      sx={{
+                        textWrap: 'balance',
+                      }}
                     >
-                      <Picture
-                        imgName="pools"
-                        altText="Liquidity pools"
-                        defaultImgType="png"
-                        imgPng={true}
-                      />
-                    </ParallaxImage>
-                  </Box>
-                  <Heading
-                    as="h5"
-                    size="h5"
-                    pb="sm"
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Code less. Build more.
-                  </Heading>
-                  <Text
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Focus on innovation rather than low level tasks like accounting and security.
-                    Simply supply custom AMM logic, and harness the full benefit of an optimized,
-                    battle-tested tech stack.
-                  </Text>
-                </Flex>
-              </Card>
+                      Code less. Build more.
+                    </Heading>
+                    <Text
+                      sx={{
+                        textWrap: 'balance',
+                      }}
+                    >
+                      Focus on innovation rather than low level tasks like accounting and security.
+                      Simply supply custom AMM logic, and harness the full benefit of an optimized,
+                      battle-tested tech stack.
+                    </Text>
+                  </Flex>
+                </Card>
 
-              <Card>
-                <Flex direction="column" justify="flex-end" h="100%">
-                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <ParallaxImage
-                      scaleStart="100%"
-                      scaleEnd="120%"
-                      yStart="-10%"
-                      yEnd="30%"
-                      transformOrigin="bottom"
+                <Card>
+                  <Flex direction="column" justify="flex-end" h="100%">
+                    <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                      <ParallaxImage
+                        scaleStart="100%"
+                        scaleEnd="120%"
+                        yStart="-10%"
+                        yEnd="30%"
+                        transformOrigin="bottom"
+                      >
+                        <Picture
+                          imgName="vebal"
+                          altText="veBAL tokens"
+                          defaultImgType="jpg"
+                          imgJpg={true}
+                          imgJpgDark={true}
+                        />
+                      </ParallaxImage>
+                    </Box>
+                    <Heading
+                      as="h5"
+                      size="h5"
+                      pb="sm"
+                      sx={{
+                        textWrap: 'balance',
+                      }}
                     >
-                      <Picture
-                        imgName="feature2"
-                        altText="Liquidity pools"
-                        defaultImgType="jpg"
-                        imgJpg={true}
-                      />
-                    </ParallaxImage>
-                  </Box>
-                  <Heading
-                    as="h5"
-                    size="h5"
-                    pb="sm"
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Booststrap liquidity
-                  </Heading>
-                  <Text
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Plug into Balancer&lsquo;s veBAL incentive mechanism and grants framework to
-                    bootstrap AMM liquidity.
-                  </Text>
-                </Flex>
-              </Card>
+                      Booststrap liquidity
+                    </Heading>
+                    <Text
+                      sx={{
+                        textWrap: 'balance',
+                      }}
+                    >
+                      Plug into Balancer&lsquo;s veBAL incentive mechanism and grants framework to
+                      bootstrap AMM liquidity.
+                    </Text>
+                  </Flex>
+                </Card>
 
-              <Card>
-                <Flex direction="column" justify="flex-end" h="100%">
-                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <ParallaxImage
-                      scaleStart="100%"
-                      scaleEnd="120%"
-                      yStart="-10%"
-                      yEnd="30%"
-                      transformOrigin="bottom"
+                <Card>
+                  <Flex direction="column" justify="flex-end" h="100%">
+                    <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                      <ParallaxImage
+                        scaleStart="100%"
+                        scaleEnd="120%"
+                        yStart="-10%"
+                        yEnd="30%"
+                        transformOrigin="bottom"
+                      >
+                        <Picture
+                          imgName="aggregators"
+                          altText="Aggregator integrations like CoW, 1inch and Paraswap"
+                          defaultImgType="jpg"
+                          imgJpg={true}
+                          imgJpgDark={true}
+                        />
+                      </ParallaxImage>
+                    </Box>
+                    <Heading
+                      as="h5"
+                      size="h5"
+                      pb="sm"
+                      sx={{
+                        textWrap: 'balance',
+                      }}
                     >
-                      <Picture
-                        imgName="feature3"
-                        altText="Aggregator integrations like CoW, 1inch and Paraswap"
-                        defaultImgType="jpg"
-                        imgJpg={true}
-                      />
-                    </ParallaxImage>
-                  </Box>
-                  <Heading
-                    as="h5"
-                    size="h5"
-                    pb="sm"
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Launch your product faster
-                  </Heading>
-                  <Text
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Eliminate the cold start AMM problem entirely with streamlined aggregator
-                    integrations, a prebuilt UI.
-                  </Text>
-                </Flex>
-              </Card>
+                      Launch your product faster
+                    </Heading>
+                    <Text
+                      sx={{
+                        textWrap: 'balance',
+                      }}
+                    >
+                      Eliminate the cold start AMM problem with streamlined aggregator integrations
+                      and a prebuilt UI.
+                    </Text>
+                  </Flex>
+                </Card>
 
-              <Card gridArea={{ base: 'auto', md: '3 / 1 / 4 / 3', lg: '1 / 4 / 3 / 5' }}>
-                <Flex direction="column" justify="flex-end" h="100%">
-                  <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                    <ParallaxImage
-                      scaleStart="100%"
-                      scaleEnd="120%"
-                      yStart="-10%"
-                      yEnd="30%"
-                      transformOrigin="bottom"
+                <Card gridArea={{ base: 'auto', md: '3 / 1 / 4 / 3', lg: '1 / 4 / 3 / 5' }}>
+                  <Flex direction="column" justify="flex-end" h="100%">
+                    <Box overflow="hidden" pb="md" rounded="lg" h="100%">
+                      <ParallaxImage
+                        scaleStart="100%"
+                        scaleEnd="120%"
+                        yStart="-10%"
+                        yEnd="30%"
+                        transformOrigin="bottom"
+                      >
+                        <Picture
+                          imgName="network"
+                          altText="The Balancer network"
+                          defaultImgType="jpg"
+                          imgAvif={true}
+                          imgAvifDark={true}
+                          imgAvifPortrait={true}
+                          imgAvifPortraitDark={true}
+                          imgJpgDark={true}
+                          imgJpg={true}
+                        />
+                      </ParallaxImage>
+                    </Box>
+                    <Heading
+                      as="h5"
+                      size="h5"
+                      pb="sm"
+                      sx={{
+                        textWrap: 'balance',
+                      }}
                     >
-                      <Picture
-                        imgName="feature4"
-                        altText="The Balancer network"
-                        defaultImgType="jpg"
-                        imgJpg={true}
-                      />
-                    </ParallaxImage>
-                  </Box>
-                  <Heading
-                    as="h5"
-                    size="h5"
-                    pb="sm"
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Join the largest AMM network
-                  </Heading>
-                  <Text
-                    sx={{
-                      textWrap: 'balance',
-                    }}
-                  >
-                    Unlock an extensive network of AMM expertise, audit pipelines, and partnership
-                    connections.
-                  </Text>
-                </Flex>
-              </Card>
-            </Grid>
+                      Join the largest AMM network
+                    </Heading>
+                    <Text
+                      sx={{
+                        textWrap: 'balance',
+                      }}
+                    >
+                      Unlock an extensive network of AMM expertise, audit pipelines, and partnership
+                      connections.
+                    </Text>
+                  </Flex>
+                </Card>
+              </Grid>
+            </Box>
           </FadeInOnView>
         </Box>
       </Section>
@@ -328,7 +343,9 @@ export default function Home() {
               Building together across networks
             </Heading>
 
-            <ProtocolStatsSection />
+            <Box pt="md" pb="lg">
+              <ProtocolStatsSection />
+            </Box>
           </Box>
 
           <EcosystemActivityChart />

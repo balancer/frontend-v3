@@ -1,7 +1,7 @@
 'use client'
 
 import NextLink from 'next/link'
-import { Stack, Text, Box, Card, VStack, HStack, Link, IconButton } from '@chakra-ui/react'
+import { Stack, Divider, Text, Box, Card, VStack, HStack, Link, IconButton } from '@chakra-ui/react'
 import { staggeredFadeIn } from '@/lib/shared/utils/animations'
 import { motion } from 'framer-motion'
 import { DefaultPageContainer } from '../containers/DefaultPageContainer'
@@ -64,6 +64,11 @@ function CardContent() {
         },
         { label: 'Dune Analytics', href: 'https://dune.com/balancer', isExternal: true },
         { label: 'Defilytica', href: 'https://balancer.defilytica.com', isExternal: true },
+        {
+          label: 'Brand assets',
+          href: 'https://github.com/balancer/brand-assets',
+          isExternal: true,
+        },
       ],
     },
   ]
@@ -72,10 +77,11 @@ function CardContent() {
     <Stack
       direction={{ base: 'column', lg: 'row' }}
       justify="space-between"
-      p={{ base: 'sm', lg: 'lg' }}
+      py={{ base: 'sm', lg: 'md' }}
       spacing={{ base: 'xl', lg: 'md' }}
+      w="full"
     >
-      <VStack color="font.primary" align="start" spacing="lg" maxW="96">
+      <VStack color="font.primary" align="start" spacing="lg" width={{ base: 'auto', md: '70%' }}>
         <BalancerLogoType width="120px" />
         <VStack align="start" spacing="sm">
           <Text variant="secondary" fontSize="4xl" fontWeight="500" letterSpacing="-0.4px">
@@ -89,13 +95,13 @@ function CardContent() {
       <Stack
         direction={{ base: 'column', lg: 'row' }}
         w="full"
-        justify="space-around"
+        justify="space-between"
         align="start"
         spacing={{ base: 'lg', lg: 'md' }}
       >
         {linkSections.map(section => (
-          <VStack key={section.title} align="start" spacing={{ base: 'sm', lg: 'sm' }}>
-            <Text fontWeight="bold" fontSize={{ base: 'md', md: 'lg' }}>
+          <VStack key={section.title} align="start" spacing={{ base: 'sm', lg: 'ms' }}>
+            <Text variant="eyebrow" fontSize={{ base: 'xs', md: 'xs' }} color="font.secondary">
               {section.title}
             </Text>
             <VStack align="start" spacing={{ base: 'xs', lg: 'sm' }}>
@@ -149,6 +155,7 @@ function SocialLinks() {
           isExternal
           w="44px"
           h="44px"
+          bg="background.level2"
         >
           {icon}
         </IconButton>
@@ -190,17 +197,12 @@ function LegalLinks() {
 }
 
 export function Footer() {
-  const { isMobile } = useBreakpoints()
-
-  const CardComponent = isMobile ? Box : Card
-
   return (
     <Box as="footer" background="background.level0" shadow="innerLg">
-      <DefaultPageContainer>
-        <VStack align="start" spacing="lg">
-          <CardComponent>
-            <CardContent />
-          </CardComponent>
+      <DefaultPageContainer py="xl">
+        <VStack align="start" spacing="lg" pt="md">
+          <CardContent />
+          <Divider />
           <Stack
             align="start"
             direction={{ base: 'column', lg: 'row' }}

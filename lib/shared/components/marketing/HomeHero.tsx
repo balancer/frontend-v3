@@ -109,7 +109,7 @@ export function HomeHero() {
                   <Link href="/build/v3">
                     <Flex>
                       <Text background="font.special" backgroundClip="text" variant="eyebrow">
-                        Balancer protocol: v3 in audit&nbsp;
+                        Balancer protocol: v3 Soon&nbsp;
                       </Text>
                       <Text variant="eyebrow" display="none" opacity="0" visibility="hidden">
                         Learn more

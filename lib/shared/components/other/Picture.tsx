@@ -1,4 +1,5 @@
 import React from 'react'
+import { useColorMode } from '@chakra-ui/react'
 
 interface PictureProps {
   imgName: string
@@ -7,8 +8,11 @@ interface PictureProps {
   imgAvif?: boolean
   imgWebp?: boolean
   imgPng?: boolean
+  imgPngDark?: boolean
   imgJpg?: boolean
+  imgJpgDark?: boolean
   imgAvifPortrait?: boolean
+  imgAvifPortraitDark?: boolean
   imgAvifDark?: boolean
   imgAvifMedium?: boolean
   imgAvifLarge?: boolean
@@ -22,8 +26,11 @@ export const Picture: React.FC<PictureProps> = ({
   imgAvif = false,
   imgWebp = false,
   imgPng = false,
+  imgPngDark = false,
   imgJpg = false,
+  imgJpgDark = false,
   imgAvifPortrait = false,
+  imgAvifPortraitDark = false,
   imgAvifDark = false,
   imgAvifMedium = false,
   imgAvifLarge = false,
@@ -31,13 +38,22 @@ export const Picture: React.FC<PictureProps> = ({
 }) => {
   const imagePath = `${directory}${imgName}`
 
+  const { colorMode } = useColorMode()
+
   return (
     <picture className="picture">
       {imgAvifDark && (
         <source
           srcSet={`${imagePath}-dark.avif`}
           type="image/avif"
-          media="(prefers-color-scheme: dark)"
+          media={colorMode === 'dark' ? 'all' : 'none'}
+        />
+      )}
+      {imgAvifPortraitDark && (
+        <source
+          srcSet={`${imagePath}-portrait-dark.avif`}
+          type="image/avif"
+          media={colorMode === 'dark' ? 'all' : 'none'}
         />
       )}
       {imgAvifPortrait && (
@@ -56,6 +72,21 @@ export const Picture: React.FC<PictureProps> = ({
       {imgAvif && <source srcSet={`${imagePath}.avif`} type="image/avif" />}
       {imgWebp && <source srcSet={`${imagePath}.webp`} type="image/webp" />}
       {imgPng && <source srcSet={`${imagePath}.png`} type="image/png" />}
+      {imgPngDark && (
+        <source
+          srcSet={`${imagePath}-dark.png`}
+          type="image/png"
+          media={colorMode === 'dark' ? 'all' : 'none'}
+        />
+      )}
+
+      {imgJpgDark && (
+        <source
+          srcSet={`${imagePath}-dark.jpg`}
+          type="image/jpg"
+          media={colorMode === 'dark' ? 'all' : 'none'}
+        />
+      )}
       {imgJpg && <source srcSet={`${imagePath}.jpg`} type="image/jpg" />}
       <img
         src={`${imagePath}.${defaultImgType}`}
