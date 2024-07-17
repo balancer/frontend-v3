@@ -39,7 +39,6 @@ import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
 import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
-import { useModalWithPoolRedirect } from '../../../useModalWithPoolRedirect'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 
@@ -70,6 +69,7 @@ function AddLiquidityMainForm() {
     setWethIsEth,
     nativeAsset,
     wNativeAsset,
+    previewModalDisclosure,
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
@@ -89,8 +89,6 @@ function AddLiquidityMainForm() {
     priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
-
-  const previewModalDisclosure = useModalWithPoolRedirect(pool, addLiquidityTxHash)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
