@@ -1,8 +1,8 @@
 /* eslint-disable max-len */
 
 import { MotionValue, motion, useMotionValue, useSpring, useTransform } from 'framer-motion'
-import { useRef } from 'react'
-import { Box, Flex, Text, VStack } from '@chakra-ui/react'
+import { useRef, useState } from 'react'
+import { Box, BoxProps, Flex, Text, useDisclosure, VStack } from '@chakra-ui/react'
 import { BeetsIcon } from '@/lib/shared/components/icons/logos/BeetsIcon'
 import { AaveIcon } from '@/lib/shared/components/icons/logos/AaveIcon'
 import { AuraIcon } from '@/lib/shared/components/icons/logos/AuraIcon'
@@ -11,19 +11,29 @@ import { GyroIcon } from '@/lib/shared/components/icons/logos/GyroIcon'
 import { CronIcon } from '@/lib/shared/components/icons/logos/CronIcon'
 import { XaveIcon } from '@/lib/shared/components/icons/logos/XaveIcon'
 import { FjordIcon } from '@/lib/shared/components/icons/logos/FjordIcon'
+import { PartnerRedirectModal, RedirectPartner } from '../modals/PartnerRedirectModal'
+
 export function HomeCaseStudies() {
+  const [redirectPartner, setRedirectPartner] = useState<RedirectPartner>(RedirectPartner.Aura)
   const mouseX = useMotionValue(Infinity)
 
+  const partnerRedirectDisclosure = useDisclosure()
+
   const logos = [
-    { icon: CowIcon, name: 'Cow' },
-    { icon: AuraIcon, name: 'Aura' },
-    { icon: BeetsIcon, name: 'Beets' },
-    { icon: AaveIcon, name: 'Aave' },
-    { icon: GyroIcon, name: 'Gyro' },
-    { icon: XaveIcon, name: 'Xave' },
-    { icon: CronIcon, name: 'Cron' },
-    { icon: FjordIcon, name: 'Fjord' },
+    { icon: CowIcon, name: 'Cow', partner: RedirectPartner.CoW },
+    { icon: AuraIcon, name: 'Aura', partner: RedirectPartner.Aura },
+    { icon: BeetsIcon, name: 'Beets', partner: RedirectPartner.Beets },
+    { icon: AaveIcon, name: 'Aave', partner: RedirectPartner.Aave },
+    { icon: GyroIcon, name: 'Gyro', partner: RedirectPartner.Gyro },
+    { icon: XaveIcon, name: 'Xave', partner: RedirectPartner.Xave },
+    { icon: CronIcon, name: 'Cron', partner: RedirectPartner.Cron },
+    { icon: FjordIcon, name: 'Fjord', partner: RedirectPartner.Fjord },
   ]
+
+  function openRedirectModal(partner: RedirectPartner) {
+    setRedirectPartner(partner)
+    partnerRedirectDisclosure.onOpen()
+  }
 
   return (
     <Box overflowX="hidden">
@@ -49,7 +59,13 @@ export function HomeCaseStudies() {
               flexWrap="wrap"
             >
               {logos.map((logo, i) => (
-                <AppIcon mouseX={mouseX} key={i} Icon={logo.icon} name={logo.name} />
+                <AppIcon
+                  mouseX={mouseX}
+                  key={i}
+                  Icon={logo.icon}
+                  name={logo.name}
+                  onClick={() => openRedirectModal(logo.partner)}
+                />
               ))}
             </Box>
           </Box>
@@ -66,6 +82,11 @@ export function HomeCaseStudies() {
           ))}
         </Flex>
       </VStack>
+      <PartnerRedirectModal
+        partner={redirectPartner}
+        isOpen={partnerRedirectDisclosure.isOpen}
+        onClose={partnerRedirectDisclosure.onClose}
+      />
     </Box>
   )
 }
@@ -74,11 +95,12 @@ function AppIcon({
   mouseX,
   Icon,
   name,
+  ...rest
 }: {
   mouseX: MotionValue
   Icon: React.ComponentType
   name: string
-}) {
+} & BoxProps) {
   const ref = useRef<HTMLDivElement>(null)
 
   const distance = useTransform(mouseX, val => {
@@ -121,6 +143,7 @@ function AppIcon({
       alignItems="center"
       justifyContent="center"
       title={name}
+      {...rest}
     >
       <Icon />
     </Box>
