@@ -347,11 +347,8 @@ export default function Home() {
               <ProtocolStatsSection />
             </Box>
           </Box>
-          <Box>
-            <Center w="full">
-              <EcosystemActivityChart />
-            </Center>
-          </Box>
+
+          <EcosystemActivityChart />
         </Box>
       </Section>
     </Box>
