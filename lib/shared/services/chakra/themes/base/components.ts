@@ -296,6 +296,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         color: 'font.link',
         transition: tokens.transition.default,
         fontSize: ['sm', 'md'],
+        fontWeight: 'medium',
         _hover: {
           color: 'font.linkHover',
         },
