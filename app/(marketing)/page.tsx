@@ -331,12 +331,7 @@ export default function Home() {
             <ProtocolStatsSection />
           </Box>
 
-          {/* Replace with Ecosystem Activity Chart */}
-          <Box>
-            <Center bg="background.level4" w="full">
-              <EcosystemActivityChart />
-            </Center>
-          </Box>
+          <EcosystemActivityChart />
         </Box>
       </Section>
     </Box>
