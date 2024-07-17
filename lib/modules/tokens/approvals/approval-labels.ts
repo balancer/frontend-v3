@@ -15,14 +15,12 @@ export type TokenApprovalLabelArgs = {
 }
 
 export const buildTokenApprovalLabels: BuildTransactionLabels = ({
-  requiredRawAmount,
   actionType,
   symbol,
 }: TokenApprovalLabelArgs) => {
   return {
     init: initApprovalLabelFor(actionType, symbol),
-    // requiredRawAmount === 0n is an edge-case for tokens like USDT
-    title: requiredRawAmount > 0n ? `Approve ${symbol}` : `Approve 0 ${symbol}`,
+    title: `Approve ${symbol}`,
     description: descriptionFor(actionType, symbol),
     confirming: actionType === 'Unapprove' ? `Unapproving ${symbol}...` : `Approving ${symbol}...`,
     confirmed: `${symbol} ${actionType === 'Unapprove' ? 'unapproved' : 'approved!'}`,
