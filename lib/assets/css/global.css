@@ -21,7 +21,7 @@ body {
   overscroll-behavior: none;
 }
 
-body::before {
+/* body::before {
   background: url('/images/patterns/noise.svg');
   content: '';
   position: absolute;
@@ -31,9 +31,9 @@ body::before {
   height: 100%;
   opacity: 1;
   z-index: -1;
-}
+} */
 
-body.chakra-ui-dark::before {
+/* body.chakra-ui-dark::before {
   background: url('/images/background-noise.png');
   content: '';
   position: absolute;
@@ -43,7 +43,7 @@ body.chakra-ui-dark::before {
   height: 100%;
   opacity: 0.02;
   z-index: -1;
-}
+} */
 
 .hide-scrollbar {
   -ms-overflow-style: none;
