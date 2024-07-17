@@ -52,7 +52,7 @@ export function useClaimAndUnstakeStep({
     title: 'Claim & unstake',
     description: 'Claim rewards and unstake LP tokens from gauge.',
     confirming: 'Confirming claim & unstake...',
-    confirmed: `Claimed & withdrawn!`,
+    confirmed: `Claimed & unstaked!`,
     tooltip: 'Claim rewards and unstake LP tokens from gauge.',
   }
 
