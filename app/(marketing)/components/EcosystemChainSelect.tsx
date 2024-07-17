@@ -60,7 +60,7 @@ export function EcosystemChainSelect({ value, onChange }: Props) {
   useEffect(() => setChainValue(networkOptions.find(option => option.value === value)), [value])
 
   return (
-    <Box as={motion.div} animate={pulseOnceWithDelay} w="200px" zIndex="10">
+    <Box data-lenis-prevent as={motion.div} animate={pulseOnceWithDelay} w="200px" zIndex="10">
       <Select<ChainOption, false, GroupBase<ChainOption>>
         // width="300px"
         instanceId="chain-select"
