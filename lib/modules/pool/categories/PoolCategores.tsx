@@ -11,11 +11,12 @@ import {
   VStack,
   Image,
   Button,
+  Link,
 } from '@chakra-ui/react'
 import { PoolCategory } from './getPoolCategories'
 import { usePool } from '../PoolProvider'
 import { usePoolCategories } from './PoolCategoriesProvider'
-import Link from 'next/link'
+import NextLink from 'next/link'
 
 function PoolCategoryBadge({ category }: { category: PoolCategory }) {
   const { getCategoryIconSrc } = usePoolCategories()
@@ -73,15 +74,15 @@ function PoolCategoryBadge({ category }: { category: PoolCategory }) {
                 {category.name}
               </Text>
               {category.url && (
-                <Text color="grayText" fontSize="sm">
+                <Link color="grayText" fontSize="sm" href={category.url} isExternal>
                   {category.url}
-                </Text>
+                </Link>
               )}
             </VStack>
             <Text>{category.description}</Text>
             {category.url && (
               <Button
-                as={Link}
+                as={NextLink}
                 href={category.url}
                 variant="secondary"
                 w="full"
