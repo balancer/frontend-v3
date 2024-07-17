@@ -50,7 +50,7 @@ export const PERCENTAGE_LOWER_THRESHOLD = 0.0001
 export const SMALL_PERCENTAGE_LABEL = '<0.01%'
 
 // fiat value threshold for displaying the fiat format without cents
-export const FIAT_VALUE_THRESHOLD = '100000'
+export const FIAT_CENTS_THRESHOLD = '100000'
 
 const NUMERAL_DECIMAL_LIMIT = 9
 
@@ -84,7 +84,7 @@ function fiatFormat(val: Numberish, { abbreviated = true }: FormatOpts = {}): st
   if (requiresThreeDecimals(val)) return formatWith3Decimals(val)
   const format = abbreviated
     ? FIAT_FORMAT_A
-    : isMoreThanOrEqualToAmount(val, FIAT_VALUE_THRESHOLD)
+    : isMoreThanOrEqualToAmount(val, FIAT_CENTS_THRESHOLD)
     ? FIAT_FORMAT_WITHOUT_DECIMALS
     : FIAT_FORMAT
   return numeral(toSafeValue(val)).format(format)
