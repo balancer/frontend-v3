@@ -12,6 +12,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     type
     chain
     protocolVersion
+    tags
     dynamicData {
       poolId
       swapEnabled
