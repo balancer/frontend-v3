@@ -2,17 +2,7 @@
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import {
-  Alert,
-  AlertIcon,
-  Card,
-  HStack,
-  Spacer,
-  VStack,
-  Text,
-  Box,
-  Tooltip,
-} from '@chakra-ui/react'
+import { Card, HStack, Spacer, VStack, Text, Box, Tooltip } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { XOctagon } from 'react-feather'
 import { useAddLiquidity } from '../AddLiquidityProvider'

@@ -9,7 +9,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
-import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlert'
+import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
