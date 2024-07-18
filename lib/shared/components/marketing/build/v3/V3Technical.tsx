@@ -43,7 +43,7 @@ export function V3Technical() {
           <FadeInOnView>
             <Box maxW="4xl" m="auto">
               <Text pb="lg" variant="eyebrow" w="full">
-                Technical
+                Code
               </Text>
               <Heading
                 pb="md"
@@ -70,7 +70,7 @@ export function V3Technical() {
           </FadeInOnView>
 
           <FadeInOnView>
-            <Box mb="2xl">
+            <Box mb="xl">
               <Box bg="background.level2" my="lg" p="md" textAlign="left" rounded="xl" shadow="xl">
                 <SyntaxHighlighter
                   language="solidity"

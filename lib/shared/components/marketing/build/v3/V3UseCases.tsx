@@ -155,6 +155,7 @@ export function V3UseCases() {
                     className="enso"
                     transition="transform 0.3s ease-out"
                     _hover={{ transform: 'scale(1.1)' }}
+                    role="group"
                   >
                     <Picture
                       imgName="use-case-1"

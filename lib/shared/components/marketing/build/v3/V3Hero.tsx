@@ -1,4 +1,4 @@
-import { Button, Heading, Text, Link, Card, Flex, Box } from '@chakra-ui/react'
+import { Button, Heading, Text, Link, Flex, Box } from '@chakra-ui/react'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export function V3Hero() {
@@ -88,48 +88,6 @@ export function V3Hero() {
           </Flex>
         </Flex>
       </Flex>
-
-      <FadeInOnView>
-        <Box
-          py={{ base: 'lg', md: '2xl' }}
-          pb={{ base: 'md', md: 'lg' }}
-          w="full"
-          maxW="4xl"
-          m="auto"
-          textAlign={{ base: 'left', md: 'center' }}
-        >
-          <Box mb="md" sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
-            <iframe
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-              }}
-              src="https://www.youtube.com/embed/2lInvpCt2o4?si=47Utep5ANNQv_HDk"
-              title="YouTube video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          </Box>
-          <Text fontWeight="bold" fontSize="lg" pb="sm">
-            Tutorial: Write a pool contract
-          </Text>
-          <Text
-            pb="lg"
-            color="font.secondary"
-            sx={{
-              textWrap: 'balance',
-            }}
-          >
-            Learn how to write a liquidity pool contract and get set up on Scafold Balancer—the new
-            streamlined developer prototyping tool for creating custom AMMs on Balancer v3.
-          </Text>
-        </Box>
-      </FadeInOnView>
 
       {/* </SandPatterns> */}
     </Box>

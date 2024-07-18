@@ -1,9 +1,6 @@
 import {
-  Card,
-  Grid,
   Heading,
   Text,
-  Flex,
   Box,
   Accordion,
   AccordionItem,
@@ -12,12 +9,10 @@ import {
   AccordionIcon,
 } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
-import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Picture } from '@/lib/shared/components/other/Picture'
 
 export function V3About() {
   return (
-    <Section className="builders">
+    <Section className="about-v3">
       <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
         <Box
           pb={{ base: 'lg', md: '2xl' }}
@@ -27,7 +22,7 @@ export function V3About() {
           textAlign={{ base: 'left', md: 'center' }}
         >
           <Text pb="lg" variant="eyebrow" w="full">
-            About v3
+            Core Features
           </Text>
           <Heading
             pb="md"
