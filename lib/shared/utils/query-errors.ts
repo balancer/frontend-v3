@@ -240,7 +240,7 @@ function shouldIgnore(e: Error): boolean {
   /*
     Frequent error in rainbowkit + wagmi that does not mean a real crash
   */
-  if (e.message.includes('ConnectorNotConnectedError: Connector not connected')) return true
+  if (e.message.includes('Connector not connected')) return true
 
   if (isUserRejectedError(e)) return true
 
