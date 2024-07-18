@@ -43,7 +43,7 @@ export function HomeCaseStudies() {
         px={['ms', 'md']}
         alignItems={{ base: 'flex-start', md: 'center' }}
       >
-        <Text>Top DeFi protocols building with Balancer</Text>
+        <Text>Top DeFi protocols build with Balancer</Text>
         <Flex display={{ base: 'none', md: 'flex' }} justifyContent="center">
           <Box position="relative" h="54px"></Box>
           <Box position="absolute" bottom="20px">

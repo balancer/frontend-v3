@@ -44,6 +44,7 @@ export function HomeActivity() {
             justify={{ base: 'start', md: 'center' }}
             width="max-content"
             m={{ base: 'none', md: 'auto' }}
+            px={{ base: 'md', lg: '0' }}
           >
             <Button
               flex="1"

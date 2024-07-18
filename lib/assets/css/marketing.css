@@ -102,3 +102,9 @@
     letter-spacing: -0.03rem;
   }
 }
+
+@media (min-width: 768px) {
+  .syntax-highlighter {
+    padding-left: 40px !important;
+  }
+}

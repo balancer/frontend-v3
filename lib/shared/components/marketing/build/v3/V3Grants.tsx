@@ -1,6 +1,7 @@
-import { Button, Heading, Text, Link, Flex, Box } from '@chakra-ui/react'
+import { Button, Heading, Text, Flex, Box } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import NextLink from 'next/link'
 
 export function V3Grants() {
   return (
@@ -47,7 +48,7 @@ export function V3Grants() {
             >
               <Button
                 size="lg"
-                as={Link}
+                as={NextLink}
                 href="https://grants.balancer.community"
                 variant="primary"
                 flex="1"
@@ -57,7 +58,7 @@ export function V3Grants() {
 
               <Button
                 size="lg"
-                as={Link}
+                as={NextLink}
                 href="https://docs-v3.balancer.fi/"
                 variant="secondary"
                 flex="1"
