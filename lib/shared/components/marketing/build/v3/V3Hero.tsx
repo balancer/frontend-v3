@@ -98,19 +98,7 @@ export function V3Hero() {
           m="auto"
           textAlign={{ base: 'left', md: 'center' }}
         >
-          <Heading textAlign={{ base: 'left', md: 'center' }} w="full" display="block" pb="lg">
-            Tutorial: Write a pool contract
-          </Heading>
-          <Text
-            pb="lg"
-            sx={{
-              textWrap: 'balance',
-            }}
-          >
-            Learn how to write a liquidity pool contract and get set up on Scafold Balancer—the new
-            streamlined developer prototyping tool for creating custom AMMs on Balancer v3.
-          </Text>
-          <Box mb="2xl" sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
+          <Box mb="md" sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
             <iframe
               style={{
                 position: 'absolute',
@@ -127,6 +115,19 @@ export function V3Hero() {
               allowFullScreen
             ></iframe>
           </Box>
+          <Text fontWeight="bold" fontSize="lg" pb="sm">
+            Tutorial: Write a pool contract
+          </Text>
+          <Text
+            pb="lg"
+            color="font.secondary"
+            sx={{
+              textWrap: 'balance',
+            }}
+          >
+            Learn how to write a liquidity pool contract and get set up on Scafold Balancer—the new
+            streamlined developer prototyping tool for creating custom AMMs on Balancer v3.
+          </Text>
         </Box>
       </FadeInOnView>
 
