@@ -120,7 +120,9 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
 }
 
 function StakingIcons({ pool }: { pool: ExpandedPoolInfo }) {
-  const shouldHideBalAndAuraIcon = pool.poolType === ExpandedPoolType.Unstaked
+  const canStake = getCanStake(pool)
+
+  const shouldHideBalAndAuraIcon = pool.poolType === ExpandedPoolType.Unstaked || !canStake
 
   const showAuraIcon = hasAuraStakedBalance(pool) && !shouldHideBalAndAuraIcon
 
