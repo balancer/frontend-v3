@@ -52,6 +52,8 @@ export function HomeProtocols() {
             <Picture
               imgName="bootstrap-liquidity"
               altText="Pools plugged into Balancer vault"
+              width="1320"
+              height="775"
               defaultImgType="png"
               imgAvif={true}
               imgPng={true}

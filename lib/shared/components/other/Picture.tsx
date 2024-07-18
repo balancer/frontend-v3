@@ -17,6 +17,8 @@ interface PictureProps {
   imgAvifMedium?: boolean
   imgAvifLarge?: boolean
   directory?: string
+  width?: string | number
+  height?: string | number
 }
 
 export const Picture: React.FC<PictureProps> = ({
@@ -35,6 +37,8 @@ export const Picture: React.FC<PictureProps> = ({
   imgAvifMedium = false,
   imgAvifLarge = false,
   directory = '/images/homepage/',
+  width,
+  height,
 }) => {
   const imagePath = `${directory}${imgName}`
 
@@ -93,7 +97,8 @@ export const Picture: React.FC<PictureProps> = ({
         alt={altText}
         loading="lazy"
         decoding="async"
-        height="100%"
+        height={height || '100%'}
+        width={width}
         style={{ objectFit: 'cover' }}
       />
     </picture>

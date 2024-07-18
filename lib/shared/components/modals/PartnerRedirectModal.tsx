@@ -137,6 +137,8 @@ export function PartnerRedirectModal({ partner, redirectUrl, isOpen, onClose }: 
               <Picture
                 imgName={info.imageName}
                 altText={info.shortName}
+                width="400"
+                height="156"
                 defaultImgType="jpg"
                 directory="/images/partners/headers/"
                 imgAvif={true}
