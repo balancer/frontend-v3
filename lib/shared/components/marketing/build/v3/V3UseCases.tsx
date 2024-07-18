@@ -150,13 +150,8 @@ export function V3UseCases() {
                 cursor="pointer"
                 onClick={() => openModal(UseCase.BoostedPools)}
               >
-                <Center>
-                  <Box
-                    className="enso"
-                    transition="transform 0.3s ease-out"
-                    _hover={{ transform: 'scale(1.1)' }}
-                    role="group"
-                  >
+                <Center transition="transform 0.3s ease-out" _hover={{ transform: 'scale(1.1)' }}>
+                  <Box className="enso" role="group">
                     <Picture
                       imgName="use-case-1"
                       altText="100% boosted pools"
@@ -183,6 +178,7 @@ export function V3UseCases() {
                         color="white"
                         position="relative"
                         top={{ base: '0', md: '0' }}
+                        fontSize={{ base: 'md', lg: 'xl' }}
                       >
                         100% Boosted Pools
                       </Text>
@@ -196,12 +192,8 @@ export function V3UseCases() {
                 cursor="pointer"
                 onClick={() => openModal(UseCase.Stablesurge)}
               >
-                <Center>
-                  <Box
-                    className="enso"
-                    transition="transform 0.3s ease-out"
-                    _hover={{ transform: 'scale(1.1)' }}
-                  >
+                <Center transition="transform 0.3s ease-out" _hover={{ transform: 'scale(1.1)' }}>
+                  <Box className="enso">
                     <Picture
                       imgName="use-case-2"
                       altText="100% boosted pools"
@@ -228,6 +220,7 @@ export function V3UseCases() {
                         color="white"
                         position="relative"
                         top={{ base: '0', md: '0' }}
+                        fontSize={{ base: 'md', lg: 'xl' }}
                       >
                         Custom Pools and Hooks
                       </Text>
@@ -242,12 +235,8 @@ export function V3UseCases() {
                 cursor="pointer"
                 onClick={() => openModal(UseCase.LVRMitigation)}
               >
-                <Center>
-                  <Box
-                    className="enso"
-                    transition="transform 0.3s ease-out"
-                    _hover={{ transform: 'scale(1.1)' }}
-                  >
+                <Center transition="transform 0.3s ease-out" _hover={{ transform: 'scale(1.1)' }}>
+                  <Box className="enso">
                     <Picture
                       imgName="use-case-3"
                       altText="100% boosted pools"
@@ -274,6 +263,7 @@ export function V3UseCases() {
                         color="white"
                         position="relative"
                         top={{ base: '0', md: '0' }}
+                        fontSize={{ base: 'md', lg: 'xl' }}
                       >
                         LVR mitigation
                       </Text>
