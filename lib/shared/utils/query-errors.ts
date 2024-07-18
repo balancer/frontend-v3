@@ -229,6 +229,12 @@ export function shouldIgnoreError(e: Error) {
 function shouldIgnore(e: Error): boolean {
   if (e.message.includes('.getAccounts is not a function')) return true
 
+  /*
+    Error thrown by Library detector chrome extension:
+    https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
+  */
+  if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+
   if (isUserRejectedError(e)) return true
 
   return false
