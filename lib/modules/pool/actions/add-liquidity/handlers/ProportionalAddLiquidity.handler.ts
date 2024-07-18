@@ -5,6 +5,7 @@ import {
   AddLiquidity,
   AddLiquidityKind,
   AddLiquidityProportionalInput,
+  HumanAmount,
   InputAmount,
   Slippage,
   calculateProportionalAmounts,
@@ -34,7 +35,8 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   public async simulate(
-    humanAmountsIn: HumanTokenAmountWithAddress[]
+    humanAmountsIn: HumanTokenAmountWithAddress[],
+    slippagePercent: string
   ): Promise<SdkQueryAddLiquidityOutput> {
     // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
     const humanAmountIn = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
@@ -43,6 +45,18 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       this.helpers.poolStateWithBalances,
       humanAmountIn
     )
+
+    if (slippagePercent) {
+      // We need to subtract slippage from the bpt amount to ensure the
+      // transaction can be successful. If we don't do this and the user has
+      // maxxed out one of their balances, it's very likely that the transaction
+      // will fail because if there is any slippage then the transaction would
+      // require more than one of their token balances as an amount in.
+      bptAmount.rawAmount = Slippage.fromPercentage(slippagePercent as HumanAmount).applyTo(
+        bptAmount.rawAmount,
+        -1
+      )
+    }
 
     const addLiquidity = new AddLiquidity()
 

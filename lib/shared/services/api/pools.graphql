@@ -19,6 +19,7 @@ query GetPools(
     createTime
     decimals
     protocolVersion
+    tags
     displayTokens {
       id
       address

@@ -12,6 +12,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     type
     chain
     protocolVersion
+    tags
     dynamicData {
       poolId
       swapEnabled
@@ -470,6 +471,7 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    chain
     userAddress
     ... on GqlPoolSwapEventV3 {
       tokenIn {

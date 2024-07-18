@@ -27,7 +27,7 @@ export default function SwapLayout({ params: { slug }, children }: Props) {
   const initTokens = getTokensByChain(initChain)
 
   return (
-    <DefaultPageContainer>
+    <DefaultPageContainer minH="100vh">
       <TransactionStateProvider>
         <RelayerSignatureProvider>
           <TokenInputsValidationProvider>

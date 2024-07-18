@@ -1,6 +1,5 @@
 /* eslint-disable max-len */
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 
@@ -12,5 +11,5 @@ export const metadata: Metadata = {
 }
 
 export default function MarketingLayout({ children }: PropsWithChildren) {
-  return <DefaultPageContainer>{children}</DefaultPageContainer>
+  return <>{children}</>
 }
