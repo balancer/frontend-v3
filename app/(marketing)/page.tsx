@@ -1,22 +1,24 @@
 'use client'
+import { Box } from '@chakra-ui/react'
 
-import { Button, Center, Heading, VStack } from '@chakra-ui/react'
-import Link from 'next/link'
-import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
+
+import { HomeHero } from '@/lib/shared/components/marketing/HomeHero'
+
+import { HomeBuilders } from '@/lib/shared/components/marketing/HomeBuilders'
+import { HomeProtocols } from '@/lib/shared/components/marketing/HomeProtocols'
+import { HomeActivity } from '@/lib/shared/components/marketing/HomeActivity'
 
 export default function Home() {
   return (
-    <FadeInOnView>
-      <Center>
-        <VStack spacing="lg">
-          <Heading size="2xl" variant="special">
-            Balancer V3
-          </Heading>
-          <Button size="lg" as={Link} href="/pools" prefetch={true} variant="primary">
-            Explore pools
-          </Button>
-        </VStack>
-      </Center>
-    </FadeInOnView>
+    <Box className="homepage" overflowX="hidden">
+      <HomeHero />
+      <Box height={{ base: '100px', md: '200px' }} zIndex="-1" position="relative">
+        <AnimatedSVG />
+      </Box>
+      <HomeBuilders />
+      <HomeProtocols />
+      <HomeActivity />
+    </Box>
   )
 }

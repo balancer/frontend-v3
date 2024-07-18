@@ -139,7 +139,7 @@ function NavActions() {
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   return (
-    <Box w="full" {...rest}>
+    <Box w="full" {...rest} background="background.level1">
       <HStack padding={{ base: 'sm', md: 'md' }} justify="space-between" as="nav">
         <HStack
           spacing="lg"
