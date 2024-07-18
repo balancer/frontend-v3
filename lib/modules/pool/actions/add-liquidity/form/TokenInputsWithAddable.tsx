@@ -19,6 +19,7 @@ import { useAddLiquidity } from '../AddLiquidityProvider'
 import { TokenInputs } from './TokenInputs'
 import { useProportionalInputs } from './useProportionalInputs'
 import { useMaximumInputs } from './useMaximumInputs'
+import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -91,10 +92,7 @@ export function TokenInputsWithAddable({
   return (
     <VStack spacing="md" w="full">
       {requiresProportionalInput && (
-        <Alert status="info">
-          <AlertIcon />
-          This pool requires liquidity to be added proportionally
-        </Alert>
+        <BalAlert status="info" content="This pool requires liquidity to be added proportionally" />
       )}
       {isConnected && (
         <Card variant="subSection" w="full" p={['sm', 'ms']}>
