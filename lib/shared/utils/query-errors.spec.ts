@@ -4,6 +4,7 @@ import {
   sentryMetaForRemoveLiquidityHandler,
   captureSentryError,
   sentryMetaForWagmiSimulation,
+  shouldIgnoreError,
 } from '@/lib/shared/utils/query-errors'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import * as Sentry from '@sentry/nextjs'
@@ -141,5 +142,24 @@ describe('Captures sentry error', () => {
         "tokenSymbol": "BAL",
       }
     `)
+  })
+})
+
+describe('shouldIgnoreError', () => {
+  it('Ignores errors', () => {
+    expect(shouldIgnoreError(new Error('e.getAccounts is not a function'))).toBeTruthy()
+    expect(shouldIgnoreError(new Error('foo bar baz'))).toBeFalsy()
+    expect(shouldIgnoreError(new Error('foo bar baz'))).toBeFalsy()
+  })
+  it('when error does not have message', () => {
+    class TestError extends Error {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      constructor(message: string) {
+        super(undefined)
+        this.name = 'TestError'
+      }
+    }
+
+    expect(shouldIgnoreError(new TestError('e.getAccounts is not a function'))).toBeFalsy()
   })
 })
