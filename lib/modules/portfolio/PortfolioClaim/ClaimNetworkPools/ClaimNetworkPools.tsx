@@ -1,6 +1,6 @@
 'use client'
 
-import { Heading, Stack, Skeleton, SimpleGrid } from '@chakra-ui/react'
+import { Heading, Stack, Skeleton, SimpleGrid, Center, Text } from '@chakra-ui/react'
 import { usePortfolio } from '../../PortfolioProvider'
 import { ClaimNetworkBlock } from './ClaimNetworkBlock'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -38,6 +38,10 @@ export function ClaimNetworkPools() {
 
   const poolsWithChain = Object.entries(poolsByChainMap)
 
+  const hasChainRewards = poolsWithChain.length > 0
+
+  const noRewards = !hasProtocolRewards && !hasChainRewards
+
   return (
     <FadeInOnView>
       <Stack gap={5}>
@@ -51,9 +55,13 @@ export function ClaimNetworkPools() {
           </SimpleGrid>
         ) : (
           <>
+            {hasMerklRewards && <MerklAlert />}
+            {noRewards && (
+              <Center h="85px" border="1px dashed" borderColor="border.base" rounded="lg">
+                <Text>No rewards to claim</Text>
+              </Center>
+            )}
             <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
-              {hasMerklRewards && <MerklAlert />}
-
               {poolsWithChain.map(([chain, pools], index) => (
                 <motion.div
                   key={chain}
