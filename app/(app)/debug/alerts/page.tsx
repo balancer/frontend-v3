@@ -4,14 +4,21 @@ import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
 import { BalAlertContent } from '@/lib/shared/components/alerts/BalAlertContent'
 import { useGlobalAlerts } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
-import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
+import { GenericError } from '@/lib/shared/components/errors/GenericError'
 import { Button, VStack } from '@chakra-ui/react'
 
-const exceptionTitle = 'Error fetching swap'
-const exceptionDescription = `Execution reverted for an unknown reason. Raw Call Arguments:
+const exceptionName = 'Error fetching swap'
+const exceptionMessage = `Execution reverted for an unknown reason. Raw Call Arguments:
 to:0xE39B5e3B6D74016b2F6A9673D7d7493B6DF549d5
 Docs: https://viem.sh/docs/contract/simulateContract Details: execution reverted Version:
 viem@2.16.3`
+
+class TestError extends Error {
+  constructor(name: string, message: string) {
+    super(message)
+    this.name = name
+  }
+}
 
 export default function Page() {
   const { addAlert } = useGlobalAlerts()
@@ -31,9 +38,11 @@ export default function Page() {
         learnMoreLink="https://balancer.fi"
         status="error"
       />
-      <ErrorAlert title={exceptionTitle} maxWidth="500">
-        {exceptionDescription}
-      </ErrorAlert>
+      <GenericError
+        error={new TestError(exceptionName, exceptionMessage)}
+        maxWidth="500"
+      ></GenericError>
+
       <Button
         onClick={() =>
           addAlert({
