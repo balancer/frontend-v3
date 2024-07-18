@@ -46,8 +46,17 @@ export function useProportionalInputs() {
     )
   }, [wethIsEth, isBalancesLoading])
 
-  function clearAmountsIn() {
-    setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
+  function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
+    setHumanAmountsIn(
+      humanAmountsIn.map(({ tokenAddress }) => {
+        // Keeps user inputs like '0' or '0.' instead of replacing them with ''
+        if (changedAmount && isSameAddress(changedAmount.tokenAddress, tokenAddress)) {
+          return changedAmount
+        }
+
+        return { tokenAddress, humanAmount: '' }
+      })
+    )
   }
 
   function handleMaximizeUserAmounts() {
@@ -64,7 +73,7 @@ export function useProportionalInputs() {
 
     setIsMaximized(isMaximizing)
 
-    if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn()
+    if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn({ tokenAddress, humanAmount })
 
     const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
       tokenAddress,
