@@ -143,7 +143,7 @@ export function V3UseCases() {
             </Text>
           </FadeInOnView>
           <FadeInOnView>
-            <Flex gap="lg" pt={{ base: '0', md: 'md' }}>
+            <Flex gap={{ base: 'md', md: 'lg', lg: 'xl' }} pt={{ base: '0', md: 'md' }}>
               <Box
                 position="relative"
                 rounded="full"
@@ -151,7 +151,11 @@ export function V3UseCases() {
                 onClick={() => openModal(UseCase.BoostedPools)}
               >
                 <Center>
-                  <Box className="enso">
+                  <Box
+                    className="enso"
+                    transition="transform 0.3s ease-out"
+                    _hover={{ transform: 'scale(1.1)' }}
+                  >
                     <Picture
                       imgName="use-case-1"
                       altText="100% boosted pools"
@@ -192,7 +196,11 @@ export function V3UseCases() {
                 onClick={() => openModal(UseCase.Stablesurge)}
               >
                 <Center>
-                  <Box className="enso">
+                  <Box
+                    className="enso"
+                    transition="transform 0.3s ease-out"
+                    _hover={{ transform: 'scale(1.1)' }}
+                  >
                     <Picture
                       imgName="use-case-2"
                       altText="100% boosted pools"
@@ -220,7 +228,7 @@ export function V3UseCases() {
                         position="relative"
                         top={{ base: '0', md: '0' }}
                       >
-                        Stablesurge hooks
+                        Custom Pools and Hooks
                       </Text>
                     </Box>
                   </Box>
@@ -234,7 +242,11 @@ export function V3UseCases() {
                 onClick={() => openModal(UseCase.LVRMitigation)}
               >
                 <Center>
-                  <Box className="enso">
+                  <Box
+                    className="enso"
+                    transition="transform 0.3s ease-out"
+                    _hover={{ transform: 'scale(1.1)' }}
+                  >
                     <Picture
                       imgName="use-case-3"
                       altText="100% boosted pools"

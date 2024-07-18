@@ -134,7 +134,7 @@ export function PartnerRedirectModal({ partner, redirectUrl, isOpen, onClose }: 
         <ModalBody color="grayText">
           {info.imageName && (
             <Box mb={4} shadow="md" borderRadius="lg" w="full" overflow="hidden">
-              <Picture                
+              <Picture
                 imgName={info.imageName}
                 altText={info.shortName}
                 defaultImgType="jpg"

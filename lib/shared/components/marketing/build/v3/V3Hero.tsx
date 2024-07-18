@@ -1,11 +1,11 @@
-import { Button, Heading, Text, Link, Flex, Box } from '@chakra-ui/react'
+import { Button, Heading, Text, Link, Card, Flex, Box } from '@chakra-ui/react'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 export function V3Hero() {
   return (
     <Box className="hero" pb="2xl">
       {/* <SandPatterns> */}
-      <Flex direction="column" justify="center" className="hero-container">
+      <Flex direction="column" justify="center" pb="2xl">
         <Flex
           direction={{ base: 'column', md: 'row' }}
           alignItems={{ base: 'null', md: 'center' }}
@@ -14,7 +14,6 @@ export function V3Hero() {
           <Flex
             direction="column"
             w="full"
-            height="100%"
             justifyContent="center"
             alignItems={{ base: 'start', md: 'center' }}
             px={['ms', 'md']}
@@ -89,6 +88,48 @@ export function V3Hero() {
           </Flex>
         </Flex>
       </Flex>
+
+      <FadeInOnView>
+        <Box
+          py={{ base: 'lg', md: '2xl' }}
+          pb={{ base: 'md', md: 'lg' }}
+          w="full"
+          maxW="4xl"
+          m="auto"
+          textAlign={{ base: 'left', md: 'center' }}
+        >
+          <Heading textAlign={{ base: 'left', md: 'center' }} w="full" display="block" pb="lg">
+            Tutorial: Write a pool contract
+          </Heading>
+          <Text
+            pb="lg"
+            sx={{
+              textWrap: 'balance',
+            }}
+          >
+            Learn how to write a liquidity pool contract and get set up on Scafold Balancer—the new
+            streamlined developer prototyping tool for creating custom AMMs on Balancer v3.
+          </Text>
+          <Box mb="2xl" sx={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
+            <iframe
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+              }}
+              src="https://www.youtube.com/embed/2lInvpCt2o4?si=47Utep5ANNQv_HDk"
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            ></iframe>
+          </Box>
+        </Box>
+      </FadeInOnView>
+
       {/* </SandPatterns> */}
     </Box>
   )

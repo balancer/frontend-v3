@@ -1,4 +1,16 @@
-import { Card, Grid, Heading, Text, Flex, Box } from '@chakra-ui/react'
+import {
+  Card,
+  Grid,
+  Heading,
+  Text,
+  Flex,
+  Box,
+  Accordion,
+  AccordionItem,
+  AccordionButton,
+  AccordionPanel,
+  AccordionIcon,
+} from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { Picture } from '@/lib/shared/components/other/Picture'
@@ -8,7 +20,7 @@ export function V3About() {
     <Section className="builders">
       <Box maxW="maxContent" m="0 auto" px={{ base: 'md', xl: '0' }}>
         <Box
-          pb={{ base: 'md', md: 'lg' }}
+          pb={{ base: 'lg', md: '2xl' }}
           w="full"
           maxW="4xl"
           m="auto"
@@ -40,172 +52,247 @@ export function V3About() {
           </Text>
         </Box>
 
-        <Grid
-          templateRows={{ base: 'repeat(4, 1fr', md: 'repeat(3, 1fr', lg: 'repeat(2, 1fr' }}
-          templateColumns={{ base: 'repeat(1, 1fr', md: 'repeat(2, 1fr', lg: 'repeat(4, 1fr' }}
-          gap={4}
-        >
-          <Card
-            variant="level2"
-            gridArea={{ base: 'auto', md: '1 / 1 / 2 / 3', lg: '1 / 1 / 3 / 3' }}
-          >
-            <Flex direction="column" justify="flex-end" h="100%">
-              <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                <Picture
-                  imgName="pools"
-                  altText="Pools plugged into Balancer vault"
-                  defaultImgType="png"
-                  imgPng={true}
-                />
-              </Box>
-              <Heading
-                as="h5"
-                size="h5"
-                pb="sm"
-                sx={{
-                  textWrap: 'balance',
-                }}
-              >
-                Simplified pools
-              </Heading>
-              <Text
-                sx={{
-                  textWrap: 'balance',
-                }}
-              >
-                Focus on innovation rather than low level tasks like accounting and security. Simply
-                supply custom AMM logic, and harness the full benefit of an optimized, battle-tested
-                tech stack.
-              </Text>
-            </Flex>
-          </Card>
-
-          <Card>
-            <FadeInOnView>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/feature2.jpg"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
-                  pb="sm"
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Reusable hooks
-                </Heading>
+        <Box w="full" maxW="2xl" m="auto">
+          <Accordion allowMultiple>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Simplified AMM Deployment </Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
                 <Text
                   sx={{
-                    textWrap: 'balance',
+                    textWrap: 'pretty',
                   }}
                 >
-                  Plug into Balancer&lsquo;s veBAL incentive mechanism and grants framework to
-                  bootstrap AMM liquidity.
+                  Remove low-level tasks. Supply custom AMM logic, and harness the full benefit of
+                  an optimised tech stack
                 </Text>
-              </Flex>
-            </FadeInOnView>
-          </Card>
+              </AccordionPanel>
+            </AccordionItem>
 
-          <Card>
-            <FadeInOnView>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/feature3.jpg"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Reusable Hooks</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
                   pb="sm"
                   sx={{
-                    textWrap: 'balance',
+                    textWrap: 'pretty',
                   }}
                 >
-                  Optimized vault
-                </Heading>
+                  Easily extend existing pool types at various key points throughout the pool’s
+                  lifecycle to unlock an infinite design space.
+                </Text>{' '}
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Optimized Vault</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
                 <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Eliminate the cold start AMM problem entirely with streamlined aggregator
-                  integrations, a prebuilt UI.
-                </Text>
-              </Flex>
-            </FadeInOnView>
-          </Card>
-
-          <Card gridArea={{ base: 'auto', md: '3 / 1 / 4 / 3', lg: '1 / 4 / 3 / 5' }}>
-            <FadeInOnView>
-              <Flex direction="column" justify="flex-end" h="100%">
-                <Box overflow="hidden" pb="md" rounded="lg" h="100%">
-                  <picture className="picture">
-                    {/* <source srcSet="/images/homepage/bootstrap-liquidity.avif" type="image/avif" /> */}
-                    {/* <source srcSet="image.webp" type="image/webp" />
-            <source srcSet="large.png" media="(min-width: 75em)" />
-            <source srcSet="medium.png" media="(min-width: 40em)" /> */}
-                    <img
-                      src="/images/homepage/feature4.jpg"
-                      alt="Plugged into Balancer vault"
-                      loading="lazy"
-                      decoding="async"
-                      width="100%"
-                      height="100%"
-                      object-fit="cover"
-                    />
-                  </picture>
-                </Box>
-                <Heading
-                  as="h5"
-                  size="h5"
                   pb="sm"
                   sx={{
-                    textWrap: 'balance',
+                    textWrap: 'pretty',
                   }}
                 >
-                  Transient accounting
-                </Heading>
-                <Text
-                  sx={{
-                    textWrap: 'balance',
-                  }}
-                >
-                  Unlock an extensive network of AMM expertise, audit pipelines, and partnership
-                  connections.
+                  Repeated custom pool design patterns are shifted into the vault, ensuring
+                  consistency across all pools and removing sources of significant complexity from
+                  the pool contract.
                 </Text>
-              </Flex>
-            </FadeInOnView>
-          </Card>
-        </Grid>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Decimal Scaling</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  To alleviate the challenges of managing tokens with variable decimals, the vault
+                  provides the pool with token balances and input values scaled to 18 decimals.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Rate Scaling</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  v3 abstracts the complexity of managing LSTs by moving all rate scaling into the
+                  vault, providing pools with uniform rate-scaled balances and input values by
+                  default, ensuring that yield from yield-bearing tokens is not captured by
+                  arbitrage traders.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Liquidity Invariant Approximation</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  Supports unbalanced add/remove liquidity operations across all pool types,
+                  dramatically enhancing user experience, as users are not forced to add liquidity
+                  in proportional amounts.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Transient Accounting</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  EIP-1153&rsquo;s transient op-codes unlock a new, expressive design, the “Till”
+                  pattern. This allows the vault to efficiently enforce contract-level invariants in
+                  the scope of a callback, supporting design patterns that were previously not
+                  possible.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">ERC20MultiToken</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  Ensures atomic updates to pool token balances and total supply within the vault,
+                  reducing risks of read-only reentrancy attack vectors.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Swap Fee Management</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  Standardizes swap fee implementation within the vault for consistent interfaces
+                  across pools, while allowing flexibility at the hook level.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Pool Creator Fee</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  Introduces a permissionless mechanism for external pool developers to earn a share
+                  of swap fees and yield, incentivizing innovative AMM creation.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+            <AccordionItem>
+              <h2>
+                <AccordionButton>
+                  <Box as="span" flex="1" textAlign="left" py="ms">
+                    <Text fontWeight="bold">Pool Pause Manager</Text>
+                  </Box>
+                  <AccordionIcon />
+                </AccordionButton>
+              </h2>
+              <AccordionPanel pb={4} pr="xl">
+                <Text
+                  pb="sm"
+                  sx={{
+                    textWrap: 'pretty',
+                  }}
+                >
+                  The pool can define its pause window on registration, relying on the vault to
+                  enforce the time window and manage authentication.
+                </Text>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
+        </Box>
       </Box>
     </Section>
   )
