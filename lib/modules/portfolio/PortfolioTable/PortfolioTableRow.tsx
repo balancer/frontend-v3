@@ -14,6 +14,7 @@ import {
 import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
 import { Protocol } from '../../protocols/useProtocols'
 import { ExpandedPoolInfo, ExpandedPoolType } from './useExpandedPools'
+import { getCanStake } from '../../pool/actions/stake.helpers'
 
 interface Props extends GridProps {
   pool: ExpandedPoolInfo
@@ -40,9 +41,10 @@ function getStakingText(poolType: ExpandedPoolType) {
 
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
-  const vebalBoostValue = veBalBoostMap?.[pool.id]
 
-  const stakingText = getStakingText(pool.poolType)
+  const vebalBoostValue = veBalBoostMap?.[pool.id]
+  const canStake = getCanStake(pool)
+  const stakingText = canStake ? getStakingText(pool.poolType) : 'No staking'
   const isStakedOnAura = hasAuraStakedBalance(pool)
 
   return (
@@ -118,7 +120,9 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
 }
 
 function StakingIcons({ pool }: { pool: ExpandedPoolInfo }) {
-  const shouldHideBalAndAuraIcon = pool.poolType === ExpandedPoolType.Unstaked
+  const canStake = getCanStake(pool)
+
+  const shouldHideBalAndAuraIcon = pool.poolType === ExpandedPoolType.Unstaked || !canStake
 
   const showAuraIcon = hasAuraStakedBalance(pool) && !shouldHideBalAndAuraIcon
 
