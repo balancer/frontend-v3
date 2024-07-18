@@ -24,6 +24,7 @@ export default function NetworkClaim() {
     poolRewardsMap,
     totalFiatClaimableBalanceByChain,
     isLoadingClaimPoolData,
+    refetchClaimPoolData,
   } = usePortfolio()
 
   const gqlChain = slugToChainMap[chain as ChainSlug]
@@ -115,7 +116,13 @@ export default function NetworkClaim() {
           <ClaimProvider pools={modalPools}>
             <ClaimModal
               isOpen={modalPools.length > 0}
-              onClose={() => setModalPools([])}
+              onClose={(isSuccess: boolean) => {
+                if (isSuccess) {
+                  refetchClaimPoolData()
+                }
+
+                setModalPools([])
+              }}
               chain={gqlChain}
             />
           </ClaimProvider>
