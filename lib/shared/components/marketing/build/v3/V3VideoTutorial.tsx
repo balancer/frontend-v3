@@ -19,6 +19,7 @@ export function V3VideoTutorial() {
           </Text>
           <Box mb="md" position="relative" paddingTop="56.25%" width="100%">
             <iframe
+              className="youtube"
               style={{
                 position: 'absolute',
                 top: 0,
