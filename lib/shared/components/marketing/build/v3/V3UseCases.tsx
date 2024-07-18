@@ -138,8 +138,8 @@ export function V3UseCases() {
                 textWrap: 'balance',
               }}
             >
-              v3 enables the next wave of DeFi products to come to market. Learn about the new types
-              of things that can be built on Balancer v3.
+              v3 enables the next wave of DeFi products to come to market. Discover what can be
+              built on Balancer v3.
             </Text>
           </FadeInOnView>
           <FadeInOnView>

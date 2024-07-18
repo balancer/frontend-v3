@@ -41,9 +41,8 @@ export function V3About() {
               textWrap: 'balance',
             }}
           >
-            To simplify the developer experience, the core focus is to remove complexity from the
-            creation of new AMMs and custom pools by optimizing the vault and creating a new hooks
-            framework.
+            To simplify the developer experience, v3 removes complexity from the creation of new
+            AMMs and custom pools by optimizing the vault and creating a new hooks framework.
           </Text>
         </Box>
 
