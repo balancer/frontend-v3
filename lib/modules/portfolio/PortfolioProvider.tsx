@@ -2,7 +2,7 @@
 
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, useMemo } from 'react'
+import { createContext, useCallback, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
@@ -134,9 +134,8 @@ function _usePortfolio() {
   }, [poolsWithOnchainUserBalances, isConnected, userAddress])
 
   // Bal token rewards
-  const { balRewardsData, isLoadingBalRewards, isLoadedBalRewards } = useBalTokenRewards(
-    portfolioData.stakedPools || []
-  )
+  const { balRewardsData, refetchBalRewards, isLoadingBalRewards, isLoadedBalRewards } =
+    useBalTokenRewards(portfolioData.stakedPools || [])
 
   // Protocol rewards
   const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
@@ -144,6 +143,7 @@ function _usePortfolio() {
   // Other tokens rewards
   const {
     claimableRewards,
+    refetchClaimableRewards,
     claimableRewardsByPoolMap,
     isLoadingClaimableRewards,
     isLoadedClaimableRewards,
@@ -219,6 +219,11 @@ function _usePortfolio() {
     }, bn(0))
   }, [protocolRewardsData])
 
+  const refetchClaimPoolData = useCallback(() => {
+    refetchBalRewards()
+    refetchClaimableRewards()
+  }, [refetchBalRewards, refetchClaimableRewards])
+
   return {
     portfolioData,
     balRewardsData,
@@ -231,6 +236,7 @@ function _usePortfolio() {
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,
     rewardsByChainMap,
+    refetchClaimPoolData,
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
