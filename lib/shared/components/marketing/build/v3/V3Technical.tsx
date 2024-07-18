@@ -1,28 +1,29 @@
 /* eslint-disable max-len */
-import { Button, Heading, Text, Link, Flex, Box } from '@chakra-ui/react'
+import { Button, Heading, Text, Flex, Box } from '@chakra-ui/react'
 import Section from '@/lib/shared/components/layout/Section'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import NextLink from 'next/link'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export function V3Technical() {
   const code = `
-      function onSwap(PoolSwapParams calldata params)
-        external
-        pure
-        returns (uint256 amountCalculatedScaled18) 
-      {
-          uint256 poolBalancetokenOut = 
-            params.balancesScaled18[params.indexOut]; // Y
-          uint256 poolBalancetokenIn =
-            params.balancesScaled18[params.indexIn]; // X
-          uint256 amountTokenIn =
-            params.amountGivenScaled18; // dx
+function onSwap(PoolSwapParams calldata params)
+  external
+  pure
+  returns (uint256 amountCalculatedScaled18) 
+{
+    uint256 poolBalancetokenOut = 
+      params.balancesScaled18[params.indexOut]; // Y
+    uint256 poolBalancetokenIn =
+      params.balancesScaled18[params.indexIn]; // X
+    uint256 amountTokenIn =
+      params.amountGivenScaled18; // dx
 
-          amountCalculatedScaled18 =
-            (poolBalancetokenOut * amountTokenIn) /
-            (poolBalancetokenIn + amountTokenIn); // dy
-      }`
+    amountCalculatedScaled18 =
+      (poolBalancetokenOut * amountTokenIn) /
+      (poolBalancetokenIn + amountTokenIn); // dy
+}`
 
   return (
     <Section className="technical">
@@ -69,6 +70,7 @@ export function V3Technical() {
                 <SyntaxHighlighter
                   language="solidity"
                   style={vscDarkPlus}
+                  className="syntax-highlighter"
                   customStyle={{
                     margin: 0,
                     padding: '16px',
@@ -76,7 +78,7 @@ export function V3Technical() {
                   }}
                   codeTagProps={{
                     style: {
-                      fontSize: '13px',
+                      fontSize: '12px',
                     },
                   }}
                 >
@@ -95,7 +97,7 @@ export function V3Technical() {
             >
               <Button
                 size="lg"
-                as={Link}
+                as={NextLink}
                 href="https://docs-v3.balancer.fi/"
                 variant="primary"
                 flex="1"
@@ -105,7 +107,7 @@ export function V3Technical() {
 
               <Button
                 size="lg"
-                as={Link}
+                as={NextLink}
                 href="https://github.com/balancer/scaffold-balancer-v3"
                 variant="secondary"
                 flex="1"

@@ -1,5 +1,6 @@
-import { Button, Heading, Text, Link, Flex, Box } from '@chakra-ui/react'
+import { Button, Heading, Text, Flex, Box } from '@chakra-ui/react'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import NextLink from 'next/link'
 
 export function V3Hero() {
   return (
@@ -64,7 +65,7 @@ export function V3Hero() {
                   >
                     <Button
                       size="lg"
-                      as={Link}
+                      as={NextLink}
                       href="https://docs-v3.balancer.fi/"
                       variant="primary"
                       flex="1"
@@ -74,7 +75,7 @@ export function V3Hero() {
 
                     <Button
                       size="lg"
-                      as={Link}
+                      as={NextLink}
                       href="https://github.com/balancer/scaffold-balancer-v3"
                       variant="secondary"
                       flex="1"
@@ -82,7 +83,7 @@ export function V3Hero() {
                       Prototype on v3
                     </Button>
                   </Flex>
-                </Box>
+              </Box>
               </FadeInOnView>
             </Box>
           </Flex>
