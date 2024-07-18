@@ -51,6 +51,7 @@ export function SwapForm() {
     simulationQuery,
     swapAction,
     swapTxHash,
+    transactionSteps,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -100,6 +101,7 @@ export function SwapForm() {
     if (swapTxHash) {
       resetSwapAmounts()
       replaceUrlPath()
+      transactionSteps.resetTransactionSteps()
     }
   }
 
