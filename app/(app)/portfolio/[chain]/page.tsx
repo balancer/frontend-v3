@@ -23,7 +23,7 @@ export default function NetworkClaim() {
     poolsByChainMap,
     poolRewardsMap,
     totalFiatClaimableBalanceByChain,
-    isLoadingClaimPoolData,
+    isLoadingRewards,
     refetchClaimPoolData,
   } = usePortfolio()
 
@@ -58,7 +58,7 @@ export default function NetworkClaim() {
           </Heading>
         </HStack>
         <Stack py="4" gap="md">
-          {isLoadingClaimPoolData ? (
+          {isLoadingRewards ? (
             <Skeleton height="126px" />
           ) : pools && pools.length > 0 ? (
             pools?.map(

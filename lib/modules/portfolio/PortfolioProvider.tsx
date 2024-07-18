@@ -134,8 +134,9 @@ function _usePortfolio() {
   }, [poolsWithOnchainUserBalances, isConnected, userAddress])
 
   // Bal token rewards
-  const { balRewardsData, refetchBalRewards, isLoadingBalRewards, isLoadedBalRewards } =
-    useBalTokenRewards(portfolioData.stakedPools || [])
+  const { balRewardsData, refetchBalRewards, isLoadingBalRewards } = useBalTokenRewards(
+    portfolioData.stakedPools || []
+  )
 
   // Protocol rewards
   const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
@@ -146,7 +147,6 @@ function _usePortfolio() {
     refetchClaimableRewards,
     claimableRewardsByPoolMap,
     isLoadingClaimableRewards,
-    isLoadedClaimableRewards,
   } = useClaimableBalances(portfolioData.stakedPools || [])
 
   const poolRewardsMap = useMemo(() => {
@@ -242,8 +242,7 @@ function _usePortfolio() {
     isLoadingClaimableRewards,
     isLoadingPortfolio:
       isLoadingPoolsUserAddress || isLoadingOnchainUserBalances || isLoadingPoolsId,
-    isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,
-    isLoadedClaimPoolData: isLoadedBalRewards && isLoadedClaimableRewards,
+    isLoadingRewards: isLoadingBalRewards || isLoadingClaimableRewards || isLoadingProtocolRewards,
   }
 }
 
