@@ -24,6 +24,7 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useEffect, useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
+import { useRouter } from 'next/navigation'
 
 type Props = {
   isOpen: boolean
@@ -37,6 +38,8 @@ export function ClaimModal({
   chain,
   ...rest
 }: Props & Omit<ModalProps, 'children' | 'onClose'>) {
+  const router = useRouter()
+
   const [quoteRewards, setQuoteRewards] = useState<HumanTokenAmountWithAddress[]>([])
   const [quoteTotalUsd, setQuoteTotalUsd] = useState<string>('0')
 
@@ -108,6 +111,7 @@ export function ClaimModal({
           returnLabel="Return to portfolio"
           returnAction={() => {
             onClose(!!claimTxHash)
+            router.push('/portfolio')
           }}
         />
       </ModalContent>
