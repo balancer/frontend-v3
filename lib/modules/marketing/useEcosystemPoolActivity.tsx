@@ -162,9 +162,13 @@ const getDefaultPoolActivityChartOptions = (
     yAxis: {
       show: true,
       offset: 10,
-      type: 'value',
+      min: 'dataMin',
+      max: 'dataMax',
+      type: 'log',
+      logBase: 2,
       axisLabel: {
         formatter: (value: number) => {
+          console.log('currencyFormatter(value ** 2)', currencyFormatter(value ** 2))
           return currencyFormatter(value ** 2)
         },
       },
