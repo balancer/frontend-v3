@@ -23,6 +23,7 @@ export function useProtocolRewards() {
     data: protocolRewardsData = [],
     isLoading: isLoadingProtocolRewards,
     error: protocolRewardsError,
+    status,
   } = useReadContract({
     chainId: networkConfigs.MAINNET.chainId,
     address: networkConfigs.MAINNET.contracts.feeDistributor,
@@ -53,5 +54,6 @@ export function useProtocolRewards() {
     protocolRewardsData,
     isLoadingProtocolRewards,
     protocolRewardsError,
+    hasLoadedProtocolRewards: status === 'success',
   }
 }

@@ -1,5 +1,6 @@
 'use client'
-import { Flex, Heading, Stack } from '@chakra-ui/react'
+
+import { Heading, Stack, Skeleton, SimpleGrid, Center, Text } from '@chakra-ui/react'
 import { usePortfolio } from '../../PortfolioProvider'
 import { ClaimNetworkBlock } from './ClaimNetworkBlock'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -11,6 +12,7 @@ import { useRouter } from 'next/navigation'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { useHasMerklRewards } from '../../merkl/useHasMerklRewards'
 import { MerklAlert } from '../../merkl/MerklAlert'
+import { motion } from 'framer-motion'
 
 export function ClaimNetworkPools() {
   const {
@@ -18,7 +20,8 @@ export function ClaimNetworkPools() {
     protocolRewardsBalance,
     totalFiatClaimableBalanceByChain,
     poolsWithOnchainUserBalances,
-    isLoadedClaimPoolData,
+    isLoadingRewards,
+    isLoadingPortfolio,
   } = usePortfolio()
 
   const [isOpenedProtocolRevenueModal, setIsOpenedProtocolRevenueModal] = useState(false)
@@ -29,43 +32,74 @@ export function ClaimNetworkPools() {
 
   const { hasMerklRewards } = useHasMerklRewards(poolsWithOnchainUserBalances)
 
-  if (!isConnected || !isLoadedClaimPoolData) {
+  if (!isConnected) {
     return null
   }
+
+  const poolsWithChain = Object.entries(poolsByChainMap)
+
+  const hasChainRewards = poolsWithChain.length > 0
+
+  const noRewards = !hasProtocolRewards && !hasChainRewards
 
   return (
     <FadeInOnView>
       <Stack gap={5}>
         <Heading size="lg">Claimable incentives</Heading>
 
-        <Flex flexDirection={['column', 'column', 'column', 'row']} gap={6} flexWrap="wrap">
-          {hasMerklRewards && <MerklAlert />}
+        {isLoadingRewards || isLoadingPortfolio ? (
+          <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
+            <Skeleton height="85px" w="full" />
+            <Skeleton height="85px" w="full" />
+            <Skeleton height="85px" w="full" />
+          </SimpleGrid>
+        ) : (
+          <>
+            {hasMerklRewards && <MerklAlert />}
+            {noRewards && (
+              <Center h="85px" border="1px dashed" borderColor="border.base" rounded="lg">
+                <Text>No rewards to claim</Text>
+              </Center>
+            )}
+            <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
+              {poolsWithChain.map(([chain, pools], index) => (
+                <motion.div
+                  key={chain}
+                  initial={{ opacity: 0, translateX: 5 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.2 }}
+                >
+                  <ClaimNetworkBlock
+                    chain={pools[0].chain}
+                    networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
+                      pools[0].chain
+                    ].toNumber()}
+                    onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
+                  />
+                </motion.div>
+              ))}
 
-          {Object.entries(poolsByChainMap).map(([chain, pools]) => (
-            <ClaimNetworkBlock
-              key={chain}
-              chain={pools[0].chain}
-              networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
-                pools[0].chain
-              ].toNumber()}
-              onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
+              {hasProtocolRewards && (
+                <motion.div
+                  initial={{ opacity: 0, translateX: 5 }}
+                  animate={{ opacity: 1, translateX: 0 }}
+                  transition={{ duration: 0.5, delay: poolsWithChain.length * 0.2 }}
+                >
+                  <ClaimNetworkBlock
+                    chain={GqlChain.Mainnet}
+                    networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
+                    title="Balancer protocol revenue"
+                    onClick={() => setIsOpenedProtocolRevenueModal(true)}
+                  />
+                </motion.div>
+              )}
+            </SimpleGrid>
+            <ClaimProtocolRevenueModal
+              isOpen={isOpenedProtocolRevenueModal}
+              onClose={() => setIsOpenedProtocolRevenueModal(false)}
             />
-          ))}
-
-          {hasProtocolRewards && (
-            <ClaimNetworkBlock
-              chain={GqlChain.Mainnet}
-              networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
-              title="Balancer protocol revenue"
-              onClick={() => setIsOpenedProtocolRevenueModal(true)}
-            />
-          )}
-        </Flex>
-
-        <ClaimProtocolRevenueModal
-          isOpen={isOpenedProtocolRevenueModal}
-          onClose={() => setIsOpenedProtocolRevenueModal(false)}
-        />
+          </>
+        )}
       </Stack>
     </FadeInOnView>
   )
