@@ -31,7 +31,7 @@ describe('When adding proportional liquidity for a gyro pool', () => {
       { humanAmount: '1', tokenAddress: usdcAddress },
     ]
 
-    const result = await handler.simulate(humanAmountsIn)
+    const result = await handler.simulate(humanAmountsIn, '0.005')
 
     expect(result.bptOut.amount).toBeGreaterThan(0n)
     const usdcAmountIn = result.sdkQueryOutput.amountsIn[0]
@@ -51,7 +51,7 @@ describe('When adding proportional liquidity for a gyro pool', () => {
     const handler = selectProportionalHandler(gyroPoolMock)
 
     // Store query response in handler instance
-    const queryOutput = await handler.simulate(humanAmountsIn)
+    const queryOutput = await handler.simulate(humanAmountsIn, '0.005')
 
     const result = await handler.buildCallData({
       humanAmountsIn,

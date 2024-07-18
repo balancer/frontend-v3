@@ -18,7 +18,10 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 export interface AddLiquidityHandler {
   // Query the expected output of adding liquidity and store it inside the handler instance
   // Also returns bptOut to be used by the UI
-  simulate(humanAmountsIn: HumanTokenAmountWithAddress[]): Promise<QueryAddLiquidityOutput>
+  simulate(
+    humanAmountsIn: HumanTokenAmountWithAddress[],
+    slippagePercent?: string
+  ): Promise<QueryAddLiquidityOutput>
 
   // Calculate the price impact of adding liquidity
   getPriceImpact(humanAmountsIn: HumanTokenAmountWithAddress[]): Promise<number>
