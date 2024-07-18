@@ -20,9 +20,8 @@ export function HomeActivity() {
                 textWrap: 'balance',
               }}
             >
-              Balancer is a vibrant ecosystem. Here&rsquo;s the latest aggregate activity on
-              Ethereum Mainnet and the other L2 network supported by Balancer, including Optimism
-              and Arbitrum.
+              Balancer is a vibrant ecosystem. Explore the latest activity across all Balancer
+              deployments including Ethereum, Arbitrum, Avalanche, and other L2 deployments.
             </Text>
 
             <Box pt="md" pb="lg">

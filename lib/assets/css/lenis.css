@@ -15,6 +15,6 @@ html.lenis body {
   overflow: hidden;
 }
 
-.lenis.lenis-smooth iframe {
+.lenis.lenis-smooth iframe:not([src*='youtube.com']) {
   pointer-events: none;
 }

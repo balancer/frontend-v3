@@ -38,9 +38,9 @@ export function HomeBuilders() {
                 textWrap: 'balance',
               }}
             >
-              Build innovative AMMs and custom liquidity pools without restriction on Balancer smart
-              contracts. Balancer is the one protocol with a track record of enabling true AMM
-              experimentation and innovation.
+              Balancer is a Decentralized Finance (DeFi) protocol that provides permissionless
+              technology to streamline AMM development for developers and empower liquidity
+              providers with an ever-expanding DEX product suite.
             </Text>
           </FadeInOnView>
         </Box>

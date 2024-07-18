@@ -39,7 +39,8 @@ export function HomeProtocols() {
               }}
             >
               Launch your token with confidence by plugging into the Balancer vault and ecosystem.
-              Find product market fit and revenue faster with day 1 liquidity and community.
+              Find product market fit and generate revenue faster with liquidity and community from
+              day 1.
             </Text>
           </FadeInOnView>
         </Box>
