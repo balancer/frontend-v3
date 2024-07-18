@@ -227,7 +227,7 @@ export function shouldIgnoreError(e: Error) {
 }
 
 function shouldIgnore(e: Error): boolean {
-  if (!e.message) return false
+  if (!e?.message) return false
 
   if (e.message.includes('.getAccounts is not a function')) return true
 
@@ -236,6 +236,11 @@ function shouldIgnore(e: Error): boolean {
     https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
   */
   if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+
+  /*
+    Frequent error in rainbowkit + wagmi that does not mean a real crash
+  */
+  if (e.message.includes('ConnectorNotConnectedError: Connector not connected')) return true
 
   if (isUserRejectedError(e)) return true
 
