@@ -157,9 +157,10 @@ describe('shouldIgnoreError', () => {
       constructor(message: string) {
         super(undefined)
         this.name = 'TestError'
+        // @ts-expect-error we want to test when error does not have message
+        this.message = undefined
       }
     }
-
     expect(shouldIgnoreError(new TestError('e.getAccounts is not a function'))).toBeFalsy()
   })
 })
