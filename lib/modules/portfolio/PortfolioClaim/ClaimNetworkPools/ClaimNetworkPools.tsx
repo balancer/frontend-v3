@@ -18,18 +18,18 @@ export function ClaimNetworkPools() {
     protocolRewardsBalance,
     totalFiatClaimableBalanceByChain,
     poolsWithOnchainUserBalances,
+    isLoadedClaimPoolData,
   } = usePortfolio()
 
   const [isOpenedProtocolRevenueModal, setIsOpenedProtocolRevenueModal] = useState(false)
   const { isConnected } = useUserAccount()
   const router = useRouter()
 
-  const emptyChainMap = Object.keys(poolsByChainMap).length === 0
   const hasProtocolRewards = protocolRewardsBalance && protocolRewardsBalance.isGreaterThan(0)
 
   const { hasMerklRewards } = useHasMerklRewards(poolsWithOnchainUserBalances)
 
-  if (!isConnected || (emptyChainMap && !hasProtocolRewards)) {
+  if (!isConnected || !isLoadedClaimPoolData) {
     return null
   }
 
