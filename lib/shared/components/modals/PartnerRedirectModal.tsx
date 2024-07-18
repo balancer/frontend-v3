@@ -99,7 +99,7 @@ const partnerInfo: PartnerInfo = {
     category: 'FX Market Infrastructure',
     description:
       'Xave Finance (pronounced “Save Finance”) builds the on chain infrastructure to enable financial services companies (such as fintechs and neobanks) to leverage DeFi for actual use cases, such as real time remittance transfers and high yield consumer savings.\n\nXave aims to eventually disrupt existing FX services available for overseas money transfers by enabling instant stablecoin trades at FX accurate rates for traders and extremely competitive returns for LPs.',
-    url: 'https://gyro.finance',
+    url: 'https://www.xave.co/',
     imageName: 'xave',
   },
   [RedirectPartner.Cron]: {
