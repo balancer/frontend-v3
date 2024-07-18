@@ -6,29 +6,23 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export function V3Technical() {
-  const code = `contract ConstantProductPool is IBasePool, BalancerPoolToken {
-    
-  /**
-   * @notice Execute a swap in the pool.
-   * @param params Swap parameters
-   * @return amountCalculated Calculated amount for the swap
-   */
-  
-  function onSwap(PoolSwapParams calldata params)
-    external
-    view
-    returns (uint256 amountCalculatedScaled18)
-  {
-    amountCalculatedScaled18 = 
-      params.balancesScaled[params.indexIn] *
-      params.amountGivenScaled18 /
-      (params.balancesScaled[params.indexIn] +
-      params.amountGivenScaled18);
-  }
+  const code = `
+      function onSwap(PoolSwapParams calldata params)
+        external
+        pure
+        returns (uint256 amountCalculatedScaled18) 
+      {
+          uint256 poolBalancetokenOut = 
+            params.balancesScaled18[params.indexOut]; // Y
+          uint256 poolBalancetokenIn =
+            params.balancesScaled18[params.indexIn]; // X
+          uint256 amountTokenIn =
+            params.amountGivenScaled18; // dx
 
-  /** Add your own further customizations **/
-
-}`
+          amountCalculatedScaled18 =
+            (poolBalancetokenOut * amountTokenIn) /
+            (poolBalancetokenIn + amountTokenIn); // dy
+      }`
 
   return (
     <Section className="technical">
