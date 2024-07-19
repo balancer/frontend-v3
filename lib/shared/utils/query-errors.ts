@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError, shouldIgnoreExecutionError } from './error-filters'
+import { isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -199,7 +199,7 @@ export function captureSentryError(
   { context, errorMessage, errorName }: SentryMetadata
 ) {
   const causeError = ensureError(e)
-  if (shouldIgnoreExecutionError(causeError)) return
+  if (isUserRejectedError(causeError)) return
 
   // Adding the root cause message to the top level message makes slack alerts more useful
   const errorMessageWithCause = errorMessage + `\n\nCause: \n` + causeError.message
