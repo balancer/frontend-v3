@@ -11,7 +11,7 @@ export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const [onSuccessCalled, setOnSuccessCalled] = useState<boolean>(false)
-  const { getTransaction } = useTransactionState()
+  const { getTransaction, resetTransactionState } = useTransactionState()
   const [playGong] = useSound('/sounds/gong.mp3')
 
   const currentStep = steps?.[currentStepIndex]
@@ -28,6 +28,12 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
+  }
+
+  function resetTransactionSteps() {
+    setCurrentStepIndex(0)
+    setOnSuccessCalled(false)
+    resetTransactionState()
   }
 
   // Trigger side effects on transaction completion. The step itself decides
@@ -83,5 +89,6 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransactionConfirmingOrConfirmed,
     isLastStep,
     setCurrentStepIndex,
+    resetTransactionSteps,
   }
 }
