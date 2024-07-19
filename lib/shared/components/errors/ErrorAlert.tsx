@@ -13,7 +13,7 @@ export function ErrorAlert({ title, children, ...rest }: PropsWithChildren<Props
     <Alert rounded="md" status="error" mb="0" {...rest}>
       <AlertIcon as={XCircle} boxSize="1.5em" />
       <Box ml="md" maxHeight="160" overflowY="auto" paddingRight="2">
-        <AlertTitle>{title}</AlertTitle>
+        <AlertTitle color="black">{title}</AlertTitle>
         <AlertDescription>{children}</AlertDescription>
       </Box>
     </Alert>

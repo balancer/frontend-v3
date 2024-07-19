@@ -1,7 +1,8 @@
 'use client'
 
-import { Box, Button, ButtonProps, Link } from '@chakra-ui/react'
+import { Box, Button, ButtonProps } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
+import NextLink from 'next/link'
 import { ArrowUpRight } from 'react-feather'
 
 export function BalAlertButtonLink({
@@ -11,16 +12,18 @@ export function BalAlertButtonLink({
   return (
     <Box>
       <Button
-        as={Link}
+        as={NextLink}
         target="_blank"
         href={href}
         width="auto"
         variant="outline"
-        h="24px"
-        py="md"
+        h="32px"
+        py="ms"
+        px="sm"
         my="-1"
         color="font.dark"
         borderColor="font.dark"
+        fontSize="sm"
         _hover={{
           transform: 'scale(1.05)',
           color: 'font.dark',
@@ -31,7 +34,7 @@ export function BalAlertButtonLink({
           borderColor: 'font.dark',
           color: 'green',
         }}
-        rightIcon={<ArrowUpRight />}
+        rightIcon={<ArrowUpRight size="14" />}
       >
         {children}
       </Button>

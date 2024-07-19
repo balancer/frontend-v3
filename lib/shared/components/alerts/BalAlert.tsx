@@ -24,10 +24,10 @@ export function BalAlert({
     <Alert status={status} rounded={isNavAlert ? 'none' : 'default'}>
       <AlertIcon as={getAlertIcon(status)} />
 
-      <AlertTitle gap={1} display="flex" w="full">
+      <AlertTitle gap={1} display="flex" w="full" color="black">
         {content}
       </AlertTitle>
-      {learnMoreLink && <BalAlertButtonLink href={learnMoreLink}>Learn more</BalAlertButtonLink>}
+      {learnMoreLink && <BalAlertButtonLink href={learnMoreLink}>More</BalAlertButtonLink>}
       {isSoftWarning && (
         <CloseButton
           onClick={onClose}

@@ -848,11 +848,19 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
         title: {
           letterSpacing: '-0.25px',
-          mb: 'xs',
+          fontSize: ['sm', 'md'],
+          lineHeight: '1.3',
           color: 'font.dark',
+          mr: '0',
           button: {
+            height: '28px',
+            fontSize: 'sm',
+            px: 'sm',
             color: 'font.dark',
+            position: 'relative',
+            top: '-4px',
             borderColor: 'font.dark',
+            borderRadius: 'md',
             _hover: {
               transform: 'scale(1.05)',
             },
