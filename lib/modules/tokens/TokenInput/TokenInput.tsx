@@ -203,6 +203,8 @@ export const TokenInput = forwardRef(
     }: InputProps & Props,
     ref
   ) => {
+    const { isBalancesLoading } = useTokenBalances()
+
     const [inputTitle, setInputTitle] = useState<string>('')
 
     const { colors } = useTheme()
@@ -224,9 +226,11 @@ export const TokenInput = forwardRef(
     const boxShadow = hasValidationError(token) ? `0 0 0 1px ${colors.red[500]}` : undefined
 
     useEffect(() => {
-      validateInput(value || '')
-      setInputTitle(value || '')
-    }, [value, token?.address])
+      if (!isBalancesLoading) {
+        validateInput(value || '')
+        setInputTitle(value || '')
+      }
+    }, [value, token?.address, isBalancesLoading])
 
     return (
       <Box
