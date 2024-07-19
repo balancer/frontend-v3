@@ -229,6 +229,8 @@ export function shouldIgnoreError(e: Error) {
 function shouldIgnore(e: Error): boolean {
   if (!e?.message) return false
 
+  if (isUserRejectedError(e)) return true
+
   if (e.message.includes('.getAccounts is not a function')) return true
 
   /*
