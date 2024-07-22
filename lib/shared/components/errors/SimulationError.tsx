@@ -1,4 +1,4 @@
-import { Alert } from '@chakra-ui/react'
+import { GenericError } from './GenericError'
 
 type Props = {
   simulationQuery: {
@@ -9,9 +9,5 @@ type Props = {
 export function SimulationError({ simulationQuery }: Props) {
   if (!simulationQuery.isError) return
 
-  return (
-    <Alert rounded="md" status="error">
-      {simulationQuery.error?.shortMessage || 'Simulation error'}
-    </Alert>
-  )
+  return <GenericError error={simulationQuery.error}></GenericError>
 }
