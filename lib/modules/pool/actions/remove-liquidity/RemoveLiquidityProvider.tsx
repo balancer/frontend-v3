@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -73,13 +73,14 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokenFilter = hasNestedPools(pool)
-    ? (token: GqlPoolTokenExpanded) => !token.isNested
-    : (token: GqlPoolTokenExpanded) => isGyro(pool.type) || token.isMainToken
+  function getPoolTokens() {
+    if (pool.type === GqlPoolType.Stable) return pool.poolTokens
+    if (hasNestedPools(pool)) return pool.allTokens.filter(token => !token.isNested)
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
+  }
 
-  const tokens = pool.allTokens
-    .filter(tokenFilter)
-    .map(token => getToken(token.address, pool.chain))
+  const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
 
   function tokensToShow() {
     // for single token we show both the native asset AND the wrapped native asset in the ui

@@ -2,7 +2,7 @@
 'use client'
 
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -79,12 +79,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     ])
   }
 
-  const tokens = pool.allTokens
-    .filter(token => {
-      if (isGyro(pool.type)) return true
-      return token.isMainToken
-    })
-    .map(token => getToken(token.address, chain))
+  function getPoolTokens() {
+    if (isGyro(pool.type)) return pool.allTokens.filter(token => token.isMainToken)
+    if (pool.type === GqlPoolType.Stable) return pool.poolTokens
+    return pool.allTokens
+  }
+
+  const tokens = getPoolTokens().map(token => getToken(token.address, chain))
 
   let isWrappedNativeAssetInPool = false
   const tokensWithNativeAsset = tokens.map(token => {
