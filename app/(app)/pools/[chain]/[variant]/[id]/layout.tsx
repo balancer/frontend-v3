@@ -26,7 +26,7 @@ async function getPoolQuery(chain: ChainSlug, id: string) {
     variables,
     context: {
       fetchOptions: {
-        next: { revalidate: 30 },
+        next: { revalidate: 1800 },
       },
     },
   })
