@@ -21,7 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro } from '../../pool.helpers'
+import { isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -79,12 +79,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     ])
   }
 
-  const tokens = pool.allTokens
-    .filter(token => {
-      if (isGyro(pool.type)) return true
-      return token.isMainToken
-    })
-    .map(token => getToken(token.address, chain))
+  function getPoolTokens() {
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
+  }
+
+  const tokens = getPoolTokens().map(token => getToken(token.address, chain))
 
   let isWrappedNativeAssetInPool = false
   const tokensWithNativeAsset = tokens.map(token => {
