@@ -90,6 +90,9 @@ export default function Debug() {
         <Link as={NextLink} href="/debug/wallet-check">
           Wallet check
         </Link>
+        <Link as={NextLink} href="/debug/alerts">
+          Alerts
+        </Link>
       </VStack>
     </FadeInOnView>
   )

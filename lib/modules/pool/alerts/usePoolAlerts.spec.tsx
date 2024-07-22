@@ -11,18 +11,18 @@ describe('Creates pool alerts for', () => {
     expect(result.current.poolAlerts).toMatchInlineSnapshot(`
       [
         {
+          "content": "The token MTLSTR is currently not supported.",
           "identifier": "TokenNotAllowed-MTLSTR",
           "isSoftWarning": false,
           "status": "error",
-          "title": "The token MTLSTR is currently not supported.",
         },
         {
+          "content": "The token EGX is currently not supported.",
           "identifier": "TokenNotAllowed-EGX",
           "isSoftWarning": false,
           "status": "error",
-          "title": "The token EGX is currently not supported.",
         },
-      ]  
+      ]
     `)
   })
 
@@ -30,27 +30,27 @@ describe('Creates pool alerts for', () => {
     const { result } = testHook(() => usePoolAlerts(recoveryPoolMock))
 
     expect(result.current.poolAlerts).toMatchInlineSnapshot(`
-    [
-      {
-        "identifier": "eulerRecoveryModeWarning",
-        "isSoftWarning": false,
-        "learnMoreLink": "https://docs.balancer.fi/concepts/governance/emergency.html",
-        "status": "error",
-        "title": <React.Fragment>
-          Due to an exploit on Euler, this pool has been set to recovery mode by the Emergency multisig
-          . Proportional withdrawals are enabled in the UI and you are encouraged to withdraw as soon as possible.
-        </React.Fragment>,
-      },
-      {
-        "identifier": "cspPoolVulnWarning",
-        "isSoftWarning": false,
-        "learnMoreLink": "https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1",
-        "status": "error",
-        "title": <React.Fragment>
-          A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.
-        </React.Fragment>,
-      },
-    ]
-  `)
+      [
+        {
+          "content": <React.Fragment>
+            Due to an exploit on Euler, this pool has been set to recovery mode by the Emergency multisig
+            . Proportional withdrawals are enabled in the UI and you are encouraged to withdraw as soon as possible.
+          </React.Fragment>,
+          "identifier": "eulerRecoveryModeWarning",
+          "isSoftWarning": false,
+          "learnMoreLink": "https://docs.balancer.fi/concepts/governance/emergency.html",
+          "status": "error",
+        },
+        {
+          "content": <React.Fragment>
+            A vulnerability has been discovered that affects this pool. Existing liquidity providers should remove liquidity immediately.
+          </React.Fragment>,
+          "identifier": "cspPoolVulnWarning",
+          "isSoftWarning": false,
+          "learnMoreLink": "https://forum.balancer.fi/t/vulnerability-found-in-some-pools/5102/1",
+          "status": "error",
+        },
+      ]
+    `)
   })
 })
