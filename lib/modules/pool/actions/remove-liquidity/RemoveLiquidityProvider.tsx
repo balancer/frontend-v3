@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -17,7 +17,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { hasNestedPools, isGyro } from '../../pool.helpers'
+import { hasNestedPools, isGyro, isStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
@@ -74,8 +74,8 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
   function getPoolTokens() {
-    if (pool.type === GqlPoolType.Stable) return pool.poolTokens
     if (hasNestedPools(pool)) return pool.allTokens.filter(token => !token.isNested)
+    if (isStable(pool.type)) return pool.poolTokens
     if (isGyro(pool.type)) return pool.allTokens
     return pool.allTokens.filter(token => token.isMainToken)
   }

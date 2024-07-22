@@ -2,7 +2,7 @@
 'use client'
 
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -21,7 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro } from '../../pool.helpers'
+import { isGyro, isStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -80,9 +80,9 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   }
 
   function getPoolTokens() {
-    if (isGyro(pool.type)) return pool.allTokens.filter(token => token.isMainToken)
-    if (pool.type === GqlPoolType.Stable) return pool.poolTokens
-    return pool.allTokens
+    if (isStable(pool.type)) return pool.poolTokens
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
   }
 
   const tokens = getPoolTokens().map(token => getToken(token.address, chain))
