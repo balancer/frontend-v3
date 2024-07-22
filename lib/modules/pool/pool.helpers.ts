@@ -39,6 +39,10 @@ export function isStable(poolType: GqlPoolType): boolean {
   )
 }
 
+export function isNonComposableStable(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.Stable || poolType === GqlPoolType.MetaStable
+}
+
 export function isMetaStable(poolType: GqlPoolType): boolean {
   return poolType === GqlPoolType.MetaStable
 }

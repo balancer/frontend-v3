@@ -17,7 +17,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { hasNestedPools, isGyro, isStable } from '../../pool.helpers'
+import { hasNestedPools, isGyro, isNonComposableStable, isStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
@@ -75,7 +75,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   function getPoolTokens() {
     if (hasNestedPools(pool)) return pool.allTokens.filter(token => !token.isNested)
-    if (isStable(pool.type)) return pool.poolTokens
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
     if (isGyro(pool.type)) return pool.allTokens
     return pool.allTokens.filter(token => token.isMainToken)
   }

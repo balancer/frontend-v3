@@ -21,7 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro, isStable } from '../../pool.helpers'
+import { isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -80,7 +80,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   }
 
   function getPoolTokens() {
-    if (isStable(pool.type)) return pool.poolTokens
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
     if (isGyro(pool.type)) return pool.allTokens
     return pool.allTokens.filter(token => token.isMainToken)
   }
