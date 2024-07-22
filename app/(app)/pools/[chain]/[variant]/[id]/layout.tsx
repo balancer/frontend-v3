@@ -19,7 +19,7 @@ const { projectName } = getProjectConfig()
 
 async function getPoolQuery(chain: ChainSlug, id: string) {
   const _chain = slugToChainMap[chain]
-  const variables = { id, chain: _chain }
+  const variables = { id: id.toLowerCase(), chain: _chain }
 
   return await getApolloServerClient().query({
     query: GetPoolDocument,
