@@ -18,6 +18,7 @@ import { FiatFxRatesProvider } from '../../hooks/FxRatesProvider'
 import { getFxRates } from '../../utils/currencies'
 import { getPoolCategories } from '@/lib/modules/pool/categories/getPoolCategories'
 import { PoolCategoriesProvider } from '@/lib/modules/pool/categories/PoolCategoriesProvider'
+import { mins } from '../../utils/time'
 
 export const revalidate = 60
 
@@ -33,7 +34,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     variables: tokensQueryVariables,
     context: {
       fetchOptions: {
-        next: { revalidate: 1200 }, // 20 minutes
+        next: { revalidate: mins(20).toSecs() },
       },
     },
   })
@@ -45,7 +46,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     },
     context: {
       fetchOptions: {
-        next: { revalidate: 600 }, // 10 minutes
+        next: { revalidate: mins(10).toSecs() },
       },
     },
   })
