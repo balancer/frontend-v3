@@ -1,7 +1,7 @@
 import { getChainId, getNativeAsset, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { GqlChain, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -23,12 +23,14 @@ import {
   hasNestedPools,
   isAffectedByCspIssue,
   isComposableStableV1,
+  isCowAmmPool,
   isGyro,
   isV3Pool,
 } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
+  isNativeOrWrappedNative,
   isWrappedNativeAsset,
   swapNativeWithWrapped,
 } from '../../tokens/token.helpers'
@@ -201,7 +203,7 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
 }
 
 export function requiresProportionalInput(poolType: GqlPoolType): boolean {
-  return isGyro(poolType)
+  return isGyro(poolType) || isCowAmmPool(poolType)
 }
 
 type ProtocolVersion = PoolState['protocolVersion']
@@ -269,4 +271,11 @@ export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], max
 
 export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
   return pool.poolTokens.map(token => TokenAmount.fromHumanAmount(token as unknown as Token, '0'))
+}
+
+export function shouldShowNativeWrappedSelector(token: GqlToken, poolType: GqlPoolType) {
+  return (
+    !isCowAmmPool(poolType) && // Cow AMM pools don't support wethIsEth
+    isNativeOrWrappedNative(token.address as Address, token.chain)
+  )
 }

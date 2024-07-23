@@ -21,7 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro, isNonComposableStable } from '../../pool.helpers'
+import { isCowAmmPool, isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -99,7 +99,12 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
 
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
   validTokens =
-    isWrappedNativeAssetInPool && nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+    isWrappedNativeAssetInPool &&
+    nativeAsset &&
+    // Cow AMM pools don't support wethIsEth
+    !isCowAmmPool(pool.type)
+      ? [nativeAsset, ...validTokens]
+      : validTokens
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 

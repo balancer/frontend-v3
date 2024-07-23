@@ -17,7 +17,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { hasNestedPools, isGyro, isNonComposableStable, isStable } from '../../pool.helpers'
+import { hasNestedPools, isCowAmmPool, isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
@@ -83,6 +83,9 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
 
   function tokensToShow() {
+    // Cow AMM pools don't support wethIsEth
+    if (isCowAmmPool(pool.type)) return tokens
+
     // for single token we show both the native asset AND the wrapped native asset in the ui
     if (includesWrappedNativeAsset && isSingleToken && nativeAsset) return [...tokens, nativeAsset]
 
