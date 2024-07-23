@@ -58,8 +58,8 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
 
 function getVariant(pool: Pool | PoolListItem): PoolVariant {
   // if a pool has certain properties return a custom variant
-  if (pool.type === GqlPoolType.CowAmm) return BaseVariant.v3
-  if (pool.protocolVersion === 3) return PartnerVariant.cow
+  if (pool.type === GqlPoolType.CowAmm) return PartnerVariant.cow
+  if (pool.protocolVersion === 3) return BaseVariant.v3
 
   // default variant
   return BaseVariant.v2
