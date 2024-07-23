@@ -151,7 +151,7 @@ type Params = {
   totalSupply: bigint | undefined
 }
 function enrichPool({ isLoading, pool, priceFor, poolTokenBalances, totalSupply }: Params) {
-  if (isLoading) return pool
+  if (isLoading || !poolTokenBalances) return pool
 
   const clone = cloneDeep(pool)
 
