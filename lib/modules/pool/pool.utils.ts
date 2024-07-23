@@ -7,7 +7,14 @@ import {
   GqlPoolAprItem,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import {
+  BaseVariant,
+  FetchPoolProps,
+  PartnerVariant,
+  PoolAction,
+  PoolListItem,
+  PoolVariant,
+} from './pool.types'
 import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -51,7 +58,8 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
 
 function getVariant(pool: Pool | PoolListItem): PoolVariant {
   // if a pool has certain properties return a custom variant
-  if (pool.protocolVersion === 3) return BaseVariant.v3
+  if (pool.type === GqlPoolType.CowAmm) return BaseVariant.v3
+  if (pool.protocolVersion === 3) return PartnerVariant.cow
 
   // default variant
   return BaseVariant.v2
