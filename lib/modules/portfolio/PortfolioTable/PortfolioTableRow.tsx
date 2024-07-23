@@ -6,11 +6,7 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
-import {
-  hasAuraStakedBalance,
-  hasBalancerStakedBalance,
-  hasVeBalStaking,
-} from '../../pool/user-balance.helpers'
+import { hasAuraStakedBalance } from '../../pool/user-balance.helpers'
 import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
 import { Protocol } from '../../protocols/useProtocols'
 import { ExpandedPoolInfo, ExpandedPoolType } from './useExpandedPools'
@@ -26,7 +22,8 @@ const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 function getStakingText(poolType: ExpandedPoolType) {
   switch (poolType) {
-    case ExpandedPoolType.Staked:
+    case ExpandedPoolType.StakedBal:
+    case ExpandedPoolType.StakedAura:
       return 'Staked'
     case ExpandedPoolType.Unstaked:
       return 'Unstaked'
@@ -122,12 +119,16 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
 function StakingIcons({ pool }: { pool: ExpandedPoolInfo }) {
   const canStake = getCanStake(pool)
 
-  const shouldHideBalAndAuraIcon = pool.poolType === ExpandedPoolType.Unstaked || !canStake
+  const shouldHideIcon = pool.poolType === ExpandedPoolType.Unstaked || !canStake
 
-  const showAuraIcon = hasAuraStakedBalance(pool) && !shouldHideBalAndAuraIcon
+  if (shouldHideIcon) {
+    return null
+  }
+
+  const showAuraIcon = pool.poolType === ExpandedPoolType.StakedAura
 
   const showBalIcon =
-    !shouldHideBalAndAuraIcon && (hasBalancerStakedBalance(pool) || hasVeBalStaking(pool))
+    pool.poolType === ExpandedPoolType.StakedBal || pool.poolType === ExpandedPoolType.Locked
 
   return (
     <>

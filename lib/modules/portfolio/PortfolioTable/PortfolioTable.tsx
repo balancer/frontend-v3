@@ -65,7 +65,8 @@ const generateStakingWeightForSort = (pool: ExpandedPoolInfo) => {
     return (
       Number(pool.poolType === ExpandedPoolType.Locked) * 100 +
       Number(pool.poolType === ExpandedPoolType.Unlocked) * 50 +
-      Number(pool.poolType === ExpandedPoolType.Staked) * 20 +
+      Number(pool.poolType === ExpandedPoolType.StakedAura) * 20 +
+      Number(pool.poolType === ExpandedPoolType.StakedBal) * 15 +
       Number(pool.poolType === ExpandedPoolType.Unstaked) * 10 +
       Number(hasAuraStakedBalance(pool)) * 2 +
       Number(hasBalancerStakedBalance(pool))

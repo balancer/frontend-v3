@@ -83,7 +83,7 @@ export function V3Hero() {
                       Prototype on v3
                     </Button>
                   </Flex>
-              </Box>
+                </Box>
               </FadeInOnView>
             </Box>
           </Flex>
