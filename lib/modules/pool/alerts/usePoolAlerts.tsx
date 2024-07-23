@@ -86,11 +86,11 @@ export function usePoolAlerts(pool: Pool) {
         })
       }
 
-      if (token.priceRateProviderData?.summary !== 'safe') {
+      if (token.priceRateProviderData && token.priceRateProviderData?.summary !== 'safe') {
         alerts.push({
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
-          content: `The rate provider for ${token.symbol} has been reviewed as ‘unsafe’. For your safety, you can’t interact with this pool on this UI. `,
+          content: `The rate provider for ${token.symbol} has been reviewed as 'unsafe'. For your safety, you can't interact with this pool on this UI. `,
           status: 'error',
           isSoftWarning: true,
         })

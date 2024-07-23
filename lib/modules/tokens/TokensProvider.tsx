@@ -40,8 +40,10 @@ export function _useTokens(
     GetTokenPricesDocument,
     {
       variables,
-      initialFetchPolicy: 'cache-only',
-      nextFetchPolicy: 'cache-first',
+      // The server provides us with an initial data set, but we immediately reload the potentially
+      // stale data to ensure the prices we show are up to date. Every 3 mins, we requery token prices
+      initialFetchPolicy: 'no-cache',
+      nextFetchPolicy: 'cache-and-network',
       pollInterval: mins(3).toMs(),
       notifyOnNetworkStatusChange: true,
     }
