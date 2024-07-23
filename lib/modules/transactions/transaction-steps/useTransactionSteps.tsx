@@ -10,7 +10,17 @@ export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
 export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
-  const [onSuccessCalled, setOnSuccessCalled] = useState<boolean>(false)
+  const [onSuccessCalled, setOnSuccessCalled] = useState<{ [stepId: string]: boolean }>({})
+
+  const updateOnSuccessCalled = (stepId: string, value: boolean) => {
+    setOnSuccessCalled(prevState => ({
+      ...prevState,
+      [stepId]: value,
+    }))
+  }
+
+  const isOnSuccessCalled = (stepId: string) => !!onSuccessCalled[stepId]
+
   const { getTransaction, resetTransactionState } = useTransactionState()
   const [playGong] = useSound('/sounds/gong.mp3')
 
@@ -32,7 +42,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
 
   function resetTransactionSteps() {
     setCurrentStepIndex(0)
-    setOnSuccessCalled(false)
+    setOnSuccessCalled({})
     resetTransactionState()
   }
 
@@ -40,9 +50,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // when it's complete. e.g. so approvals can refetch to check correct
   // allowance has been given.
   useEffect(() => {
-    if (!onSuccessCalled && currentTransaction?.result.isSuccess) {
+    if (!isOnSuccessCalled(currentStep.id) && currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
-      setOnSuccessCalled(true)
+      updateOnSuccessCalled(currentStep.id, true)
     }
   }, [currentTransaction?.result.isSuccess, currentStep?.onSuccess])
 
