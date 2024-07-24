@@ -279,3 +279,37 @@ export function shouldShowNativeWrappedSelector(token: GqlToken, poolType: GqlPo
     isNativeOrWrappedNative(token.address as Address, token.chain)
   )
 }
+
+export function replaceWrappedWithNativeAsset(
+  validTokens: GqlToken[],
+  nativeAsset: GqlToken | undefined
+) {
+  if (!nativeAsset) return validTokens
+  return validTokens.map(token => {
+    if (isWrappedNativeAsset(token.address as Address, nativeAsset.chain)) {
+      return nativeAsset
+    } else {
+      return token
+    }
+  })
+}
+
+export function injectNativeAsset(
+  validTokens: GqlToken[],
+  nativeAsset: GqlToken | undefined,
+  pool: Pool
+) {
+  const isWrappedNativeAssetInPool = validTokens.find(token =>
+    isWrappedNativeAsset(token.address as Address, pool.chain)
+  )
+
+  if (
+    isWrappedNativeAssetInPool &&
+    nativeAsset &&
+    // Cow AMM pools don't support wethIsEth
+    !isCowAmmPool(pool.type)
+  ) {
+    return [nativeAsset, ...validTokens]
+  }
+  return validTokens
+}
