@@ -17,7 +17,7 @@ export function useSignRelayerStep(chain: GqlChain): TransactionStep {
   const chainId = getChainId(chain)
   const { isConnected } = useUserAccount()
   const { signRelayer, signRelayerState, isLoading, isDisabled, buttonLabel, error } =
-    useSignRelayerApproval()
+    useSignRelayerApproval(chainId)
   const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
     useChainSwitch(chainId)
 
