@@ -47,6 +47,7 @@ import { defaultDebounceMs } from '@/lib/shared/utils/queries'
 import { motion, AnimatePresence } from 'framer-motion'
 import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
 import { getChainShortName } from '@/lib/config/app.config'
+import { usePoolList } from './PoolListProvider'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -289,6 +290,7 @@ export function PoolListFilters() {
   const { isConnected } = useUserAccount()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const { resetFilters, totalFilterCount } = usePoolListQueryState()
+  const { isFixedPoolType } = usePoolList()
 
   return (
     <VStack w="full">
@@ -357,12 +359,14 @@ export function PoolListFilters() {
                         </Heading>
                         <PoolNetworkFilters />
                       </Box>
-                      <Box as={motion.div} variants={staggeredFadeInUp}>
-                        <Heading as="h3" size="sm" my="sm">
-                          Pool types
-                        </Heading>
-                        <PoolTypeFilters />
-                      </Box>
+                      {!isFixedPoolType && (
+                        <Box as={motion.div} variants={staggeredFadeInUp}>
+                          <Heading as="h3" size="sm" my="sm">
+                            Pool types
+                          </Heading>
+                          <PoolTypeFilters />
+                        </Box>
+                      )}
                       <Box as={motion.div} variants={staggeredFadeInUp}>
                         <Heading as="h3" size="sm" my="sm">
                           Pool categories
