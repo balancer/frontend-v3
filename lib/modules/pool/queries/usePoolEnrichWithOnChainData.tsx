@@ -38,7 +38,7 @@ function usePoolOnchainData(pool: Pool) {
   if (isV2Pool(pool)) return v2Result
   if (isV3Pool(pool)) return v3Result
 
-  throw new Error(`Unsupported pool (Version ${pool.protocolVersion}, type ${pool.type}`)
+  throw new Error(`Unsupported pool: protocolVersion ${pool.protocolVersion}, type ${pool.type}`)
 }
 
 function useV3PoolOnchainData(pool: Pool) {
