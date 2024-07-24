@@ -1,10 +1,10 @@
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { HumanAmount, isSameAddress } from '@balancer/sdk'
 import { Address } from 'viem'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { VStack } from '@chakra-ui/react'
 import { usePool } from '../../../PoolProvider'
+import { shouldShowNativeWrappedSelector } from '../../LiquidityActionHelpers'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -52,7 +52,7 @@ export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Pr
               setAmountIn(token.address as Address, e.currentTarget.value as HumanAmount)
             }
             toggleTokenSelect={
-              isNativeOrWrappedNative(token.address as Address, token.chain)
+              shouldShowNativeWrappedSelector(token, pool.type)
                 ? tokenSelectDisclosureOpen
                 : undefined
             }

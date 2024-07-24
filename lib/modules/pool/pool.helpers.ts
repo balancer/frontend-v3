@@ -117,6 +117,10 @@ export function isVebalPool(poolId: string): boolean {
   )
 }
 
+export function isCowAmmPool(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.CowAmm
+}
+
 export function noInitLiquidity(pool: GqlPoolBase): boolean {
   // Uncomment to DEBUG
   // if (
@@ -298,6 +302,14 @@ export function getVaultConfig(pool: Pool) {
   const balancerVaultAbi = pool.protocolVersion === 3 ? balancerV3VaultAbi : balancerV2VaultAbi
 
   return { vaultAddress, balancerVaultAbi }
+}
+
+export function isV1Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 1
+}
+
+export function isV2Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 2
 }
 
 export function isV3Pool(pool: Pool): boolean {

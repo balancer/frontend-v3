@@ -69,6 +69,7 @@ export const poolTypeFilters = [
   GqlPoolType.Stable,
   GqlPoolType.LiquidityBootstrapping,
   GqlPoolType.Gyro,
+  // GqlPoolType.CowAmm,
 ] as const
 export type PoolFilterType = (typeof poolTypeFilters)[number]
 // We need to map toggalable pool types to their corresponding set of GqlPoolTypes.
@@ -77,6 +78,7 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   [GqlPoolType.Stable]: [GqlPoolType.Stable, GqlPoolType.ComposableStable, GqlPoolType.MetaStable],
   [GqlPoolType.LiquidityBootstrapping]: [GqlPoolType.LiquidityBootstrapping],
   [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
+  // [GqlPoolType.CowAmm]: [GqlPoolType.CowAmm],
 }
 
 export const poolCategoryFilters = ['INCENTIVIZED', 'VE8020', 'POINTS', 'SUPERFEST'] as const
