@@ -97,14 +97,20 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     }
   })
 
+  function injectNativeAsset(validTokens: GqlToken[]): GqlToken[] {
+    if (
+      isWrappedNativeAssetInPool &&
+      nativeAsset &&
+      // Cow AMM pools don't support wethIsEth
+      !isCowAmmPool(pool.type)
+    ) {
+      return [nativeAsset, ...validTokens]
+    }
+    return validTokens
+  }
+
   let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens =
-    isWrappedNativeAssetInPool &&
-    nativeAsset &&
-    // Cow AMM pools don't support wethIsEth
-    !isCowAmmPool(pool.type)
-      ? [nativeAsset, ...validTokens]
-      : validTokens
+  validTokens = injectNativeAsset(validTokens)
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
