@@ -30,11 +30,12 @@ export function usePoolEnrichWithOnChainData(pool: Pool) {
   but only one query will be executed (the one with enabled: true)
 */
 function usePoolOnchainData(pool: Pool) {
-  const v1Result = useV1PoolOnchainData(pool)
+  const cowAmmResult = useCowPoolOnchainData(pool)
   const v2Result = useV2PoolOnchainData(pool)
   const v3Result = useV3PoolOnchainData(pool)
 
-  if (isV1Pool(pool)) return v1Result
+  // The only V1 pools that we support are CoW AMM pools
+  if (isV1Pool(pool)) return cowAmmResult
   if (isV2Pool(pool)) return v2Result
   return v3Result
 }
@@ -107,7 +108,7 @@ function useV2PoolOnchainData(pool: Pool) {
   }
 }
 
-function useV1PoolOnchainData(pool: Pool) {
+function useCowPoolOnchainData(pool: Pool) {
   const chainId = getChainId(pool.chain)
 
   const balanceContracts = pool.poolTokens.map(token => {
@@ -120,7 +121,7 @@ function useV1PoolOnchainData(pool: Pool) {
     } as const
   })
 
-  const v1Query = useReadContracts({
+  const cowQuery = useReadContracts({
     query: {
       enabled: isV1Pool(pool),
     },
@@ -137,9 +138,9 @@ function useV1PoolOnchainData(pool: Pool) {
   })
 
   return {
-    ...v1Query,
-    totalSupply: v1Query.data?.at(-1),
-    poolTokenBalances: v1Query.data?.slice(0, -1),
+    ...cowQuery,
+    totalSupply: cowQuery.data?.at(-1),
+    poolTokenBalances: cowQuery.data?.slice(0, -1),
   }
 }
 
