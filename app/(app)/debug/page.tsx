@@ -74,6 +74,15 @@ export default function Debug() {
         </Link>
         <Link
           as={NextLink}
+          href="pools/fraxtal/v2/0x33251abecb0364df98a27a8d5d7b5ccddc774c42000000000000000000000008"
+        >
+          Pool with Merkl APR items (Fraxtal)
+        </Link>
+        <Link as={NextLink} href="pools/sepolia/v2/0xd1bdc51decb61ee0c98e47fe17217c58be525180">
+          CoW AMM Pool (Sepolia)
+        </Link>
+        <Link
+          as={NextLink}
           href="pools/ethereum/v2/0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0"
         >
           Bricked Composable Stable Pool in recovery mode and paused
