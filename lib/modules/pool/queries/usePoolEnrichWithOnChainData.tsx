@@ -8,7 +8,7 @@ import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
-import { getVaultConfig, isV1Pool, isV2Pool, isV3Pool } from '../pool.helpers'
+import { getVaultConfig, isCowAmmPool, isV1Pool, isV2Pool, isV3Pool } from '../pool.helpers'
 import { getChainId } from '@/lib/config/app.config'
 import {
   balancerV2ComposableStablePoolV5Abi,
@@ -34,8 +34,7 @@ function usePoolOnchainData(pool: Pool) {
   const v2Result = useV2PoolOnchainData(pool)
   const v3Result = useV3PoolOnchainData(pool)
 
-  // The only V1 pools that we support are CoW AMM pools
-  if (isV1Pool(pool)) return cowAmmResult
+  if (isCowAmmPool(pool.type)) return cowAmmResult
   if (isV2Pool(pool)) return v2Result
   return v3Result
 }
@@ -108,6 +107,10 @@ function useV2PoolOnchainData(pool: Pool) {
   }
 }
 
+/*
+  We need a custom useReadContracts for cow AMM pools because they are v1 pools
+  There's no vault in V1 so we get the balances from the pool contract)
+*/
 function useCowPoolOnchainData(pool: Pool) {
   const chainId = getChainId(pool.chain)
 
