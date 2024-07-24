@@ -14,7 +14,7 @@ export function useShouldSignRelayerApproval(chainId: SupportedChainId, relayerM
   return relayerMode === 'signRelayer' && !hasApprovedRelayer
 }
 
-export function useSignRelayerApproval() {
+export function useSignRelayerApproval(chainId: SupportedChainId) {
   const toast = useToast()
   const { userAddress } = useUserAccount()
 
@@ -38,7 +38,7 @@ export function useSignRelayerApproval() {
     setError(undefined)
 
     try {
-      const signature = await signRelayerApproval(userAddress, walletClient)
+      const signature = await signRelayerApproval(userAddress, chainId, walletClient)
 
       if (signature) {
         setSignRelayerState(SignRelayerState.Completed)
