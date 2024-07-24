@@ -36,12 +36,7 @@ import {
   shouldMigrateStake,
   calcGaugeStakedBalance,
 } from '../user-balance.helpers'
-import {
-  hasNestedPools,
-  isVebalPool,
-  shouldBlockAddLiquidity,
-  calcUserShareOfPool,
-} from '../pool.helpers'
+import { isVebalPool, shouldBlockAddLiquidity, calcUserShareOfPool } from '../pool.helpers'
 
 import { getCanStake, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
@@ -216,11 +211,6 @@ export default function PoolMyLiquidity() {
   const shareofPoolLabel = bn(shareOfPool).gt(0) ? fNum('sharePercent', shareOfPool) : <>&mdash;</>
   const chainId = getChainId(chain)
 
-  const displayTokens = hasNestedPools(pool)
-    ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
-      pool.poolTokens
-    : pool.displayTokens
-
   const options = useMemo(() => {
     return tabs.map(tab => ({
       ...tab,
@@ -288,7 +278,7 @@ export default function PoolMyLiquidity() {
                 />
               </HStack>
             ) : (
-              displayTokens.map(token => {
+              pool.displayTokens.map(token => {
                 return (
                   <TokenRow
                     chain={chain}

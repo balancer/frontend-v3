@@ -74,7 +74,6 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
   function getPoolTokens() {
-    if (hasNestedPools(pool)) return pool.allTokens.filter(token => !token.isNested)
     if (isNonComposableStable(pool.type)) return pool.poolTokens
     if (isGyro(pool.type)) return pool.allTokens
     return pool.allTokens.filter(token => token.isMainToken)
