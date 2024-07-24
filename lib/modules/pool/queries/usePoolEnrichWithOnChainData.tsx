@@ -36,7 +36,9 @@ function usePoolOnchainData(pool: Pool) {
 
   if (isCowAmmPool(pool.type)) return cowAmmResult
   if (isV2Pool(pool)) return v2Result
-  return v3Result
+  if (isV3Pool(pool)) return v3Result
+
+  throw new Error(`Unsupported pool (Version ${pool.protocolVersion}, type ${pool.type}`)
 }
 
 function useV3PoolOnchainData(pool: Pool) {
