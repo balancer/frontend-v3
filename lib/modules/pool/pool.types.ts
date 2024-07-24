@@ -85,7 +85,14 @@ export const poolCategoryFilters = ['INCENTIVIZED', 'VE8020', 'POINTS', 'SUPERFE
 export type PoolCategoryType = (typeof poolCategoryFilters)[number]
 export const POOL_CATEGORY_MAP: { [key in PoolCategoryType]: string[] } = {
   INCENTIVIZED: ['INCENTIVIZED'],
-  POINTS: ['POINTS_EIGENLAYER', 'POINTS_GYRO', 'POINTS_KELP', 'POINTS_RENZO', 'POINTS_SWELL'],
+  POINTS: [
+    'POINTS_EIGENLAYER',
+    'POINTS_GYRO',
+    'POINTS_KELP',
+    'POINTS_RENZO',
+    'POINTS_SWELL',
+    'POINTS_MODE',
+  ],
   SUPERFEST: ['SUPERFEST'],
   VE8020: ['VE8020'],
 }
