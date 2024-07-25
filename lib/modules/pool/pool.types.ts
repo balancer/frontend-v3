@@ -5,7 +5,6 @@ import {
   GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import {
   parseAsArrayOf,

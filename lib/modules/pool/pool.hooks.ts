@@ -24,11 +24,15 @@ export function usePoolRedirect(pool: Pool) {
   return { redirectToPoolPage }
 }
 
+export function getVariantConfig(variant: PartnerVariant) {
+  const { variantConfig } = getProjectConfig()
+  return variantConfig?.[variant] || {}
+}
+
 export function usePoolVariant() {
   const { variant } = useParams<{ variant: PartnerVariant }>()
 
-  const { variantConfig } = getProjectConfig()
-  const config = variantConfig?.[variant] || {}
+  const config = getVariantConfig(variant)
 
   return {
     variant,
