@@ -145,3 +145,41 @@ div[id^='bkln'] {
   background-color: rgb(255 255 255 / 5%);
   animation-delay: 2s;
 }
+
+/* Featured pools animation */
+
+@keyframes rotatePath {
+  0% {
+    transform: rotate(0deg) translate(0, 0px) scale(0.5);
+    opacity: 0;
+  }
+  100% {
+    transform: rotate(360deg) translate(0, 0) scale(1);
+    opacity: 1;
+  }
+}
+
+.path1,
+.path2,
+.path3 {
+  transform-origin: center;
+  animation: rotatePath 1s var(--ease-out-cubic) both 0.15s;
+  filter: drop-shadow(var(--chakra-shadows-2xl));
+}
+
+.path2 {
+  animation-delay: 0.15s;
+}
+
+.path3 {
+  animation-delay: 0.3s;
+}
+
+.featured-pool-svg {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.2));
+}
+
+.chakra-ui-dark .featured-pool-svg {
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.4));
+}
+

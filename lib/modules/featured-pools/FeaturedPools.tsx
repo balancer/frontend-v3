@@ -36,11 +36,19 @@ export function FeaturedPools({
         position="relative"
       >
         <Box position="absolute" top="0">
-          <Text color="font.secondary" variant="eyebrow" px="4" py="1.5" fontSize="11px">
+          <Text
+            color="font.secondary"
+            variant="eyebrow"
+            px="4"
+            py="1.5"
+            top="-2px"
+            fontSize="11px"
+            position="relative"
+          >
             Featured pools
           </Text>
         </Box>
-        <HStack w="full" pt="2">
+        <HStack w="full" pt="2" gap="md">
           {featuredPools.slice(0, 3).map((featured, index) => {
             return (
               <FeaturePoolCard
@@ -50,6 +58,7 @@ export function FeaturedPools({
                 featuredReason={featured.description}
                 isSmall
                 bgSize="300px"
+                svgIndex={index + 1}
               />
             )
           })}
