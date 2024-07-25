@@ -65,8 +65,6 @@ export function useAprTooltip({
     return true
   })
 
-  console.log({ filteredAprItems })
-
   // Swap fees
   const swapFee = filteredAprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
   const swapFeesDisplayed = numberFormatter(swapFee ? swapFee.apr.toString() : '0')
