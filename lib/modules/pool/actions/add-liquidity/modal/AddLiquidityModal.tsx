@@ -65,6 +65,7 @@ export function AddLiquidityModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!addLiquidityTxHash && hasQuoteContext} />

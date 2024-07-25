@@ -39,7 +39,7 @@ export function VeBalLink({ triggerEl, ...props }: VebalRedirectModalProps) {
 
 export function VebalRedirectModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>veBAL redirect</ModalHeader>
