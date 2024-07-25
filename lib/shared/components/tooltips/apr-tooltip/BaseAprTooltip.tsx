@@ -182,7 +182,7 @@ function BaseAprTooltip({
         <TooltipAprItem
           {...basePopoverAprItemProps}
           displayValueFormatter={usedDisplayValueFormatter}
-          title="Surplus TBD"
+          title="Surplus incentives"
           apr={surplusIncentivesAprDisplayed}
           tooltipText={surplusIncentivesTooltipText}
         />
