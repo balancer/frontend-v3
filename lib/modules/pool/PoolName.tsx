@@ -9,6 +9,11 @@ interface PoolNameProps extends TextProps {
   isCarousel?: boolean
 }
 
+// Type guard function to check if pool is FeaturedPool
+function isFeaturedPool(pool: PoolListItem | Pool | FeaturedPool): pool is FeaturedPool {
+  return (pool as FeaturedPool).dynamicData !== undefined
+}
+
 export function PoolName({ pool, MemoizedMainAprTooltip, isCarousel, ...rest }: PoolNameProps) {
   const displayTokens = pool.displayTokens
 
@@ -27,7 +32,7 @@ export function PoolName({ pool, MemoizedMainAprTooltip, isCarousel, ...rest }: 
           </HStack>
         )
       })}
-      {MemoizedMainAprTooltip && (
+      {isFeaturedPool(pool) && MemoizedMainAprTooltip && (
         <Box
           width="0"
           transform="scale(0.9)"
