@@ -13,6 +13,8 @@ export const inherentTokenYieldTooltipText = `Inherent token yield,
 export const merklIncentivesTooltipText = `Merkl is a platform that allows 3rd party Incentive Providers
  to offer campaigns with additional yield for Liquidity Providers.`
 
+export const surplusIncentivesTooltipText = `Surplus TBD`
+
 export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield.
 The more veBAL held, the higher the boost.`
 
@@ -100,16 +102,14 @@ export function useAprTooltip({
   const lockingAprDisplayed = numberFormatter(lockingApr ? lockingApr.apr.toString() : '0')
 
   // Merkl incentives
-  const merklIncentives = filteredAprItems.filter(item => {
-    return item.type === GqlPoolAprItemType.Merkl
-  })
-
+  const merklIncentives = filterByType(filteredAprItems, GqlPoolAprItemType.Merkl)
   const hasMerklIncentives = merklIncentives.length > 0
+  const merklIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(merklIncentives)
 
-  const merklIncentivesAprDisplayed = merklIncentives.reduce(
-    (acc, item) => acc.plus(item.apr),
-    bn(0)
-  )
+  // Surplus incentives
+  const surplusIncentives = filterByType(filteredAprItems, GqlPoolAprItemType.Surplus)
+  const hasSurplusIncentives = surplusIncentives.length > 0
+  const surplusIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(surplusIncentives)
 
   // Bal Reward
   const balReward = filteredAprItems.find(item => item.title === 'BAL reward APR')
@@ -123,8 +123,7 @@ export function useAprTooltip({
     GqlPoolAprItemType.IbYield,
     GqlPoolAprItemType.Staking,
     GqlPoolAprItemType.Merkl,
-    // Coming in a new PR soon
-    // GqlPoolAprItemType.Surplus,
+    GqlPoolAprItemType.Surplus,
   ]
 
   const totalBase = filteredAprItems
@@ -178,6 +177,8 @@ export function useAprTooltip({
     stakingIncentivesDisplayed,
     merklIncentivesAprDisplayed,
     hasMerklIncentives,
+    surplusIncentivesAprDisplayed,
+    hasSurplusIncentives,
     votingAprDisplayed,
     lockingAprDisplayed,
     isVotingPresent,
@@ -189,4 +190,14 @@ export function useAprTooltip({
     totalCombined,
     totalCombinedDisplayed,
   }
+}
+
+function filterByType(aprItems: GqlPoolAprItem[], type: GqlPoolAprItemType) {
+  return aprItems.filter(item => {
+    return item.type === type
+  })
+}
+
+function calculateSingleIncentivesAprDisplayed(aprItems: GqlPoolAprItem[]) {
+  return aprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
 }
