@@ -1,7 +1,14 @@
+'use client'
+
 import { BoxProps, Card, Box, Text, HStack } from '@chakra-ui/react'
 import { FeaturePoolCard } from './FeaturePoolCard'
 import { GetFeaturedPoolsQuery } from '@/lib/shared/services/api/generated/graphql'
 import { PoolCarousel } from './PoolCarousel'
+import {
+  FeaturedPool1SVG,
+  FeaturedPool2SVG,
+  FeaturedPool3SVG,
+} from '@/lib/shared/components/imgs/FeaturedPoolSvgs'
 
 export const commonNoisyCardProps: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -20,12 +27,39 @@ export function FeaturedPools({
 }: {
   featuredPools: GetFeaturedPoolsQuery['featuredPools']
 }) {
+  const getGraphicCarousel = (index: number) => {
+    switch (index) {
+      case 0:
+        return <FeaturedPool1SVG key="featured-pool-carousel-1" />
+      case 1:
+        return <FeaturedPool2SVG key="featured-pool-carousel-2" />
+      case 2:
+        return <FeaturedPool3SVG key="featured-pool-carousel-3" />
+      default:
+        return null
+    }
+  }
+
+  const getGraphic = (index: number) => {
+    switch (index) {
+      case 0:
+        return <FeaturedPool1SVG key="featured-pool-1" />
+      case 1:
+        return <FeaturedPool2SVG key="featured-pool-2" />
+      case 2:
+        return <FeaturedPool3SVG key="featured-pool-3" />
+      default:
+        return null
+    }
+  }
+
   return (
     <>
       <PoolCarousel
         featuredPools={featuredPools}
         display={{ base: 'block', md: 'none' }}
         w="full"
+        getGraphic={getGraphicCarousel}
       />
       <Card
         display={{ base: 'none', md: 'flex' }}
@@ -58,7 +92,7 @@ export function FeaturedPools({
                 featuredReason={featured.description}
                 isSmall
                 bgSize="300px"
-                svgIndex={index + 1}
+                graphic={getGraphic(index)}
               />
             )
           })}

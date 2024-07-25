@@ -10,12 +10,7 @@ import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import { motion } from 'framer-motion'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
-import { memo } from 'react'
-import {
-  FeaturedPool1SVG,
-  FeaturedPool2SVG,
-  FeaturedPool3SVG,
-} from '@/lib/shared/components/imgs/FeaturedPoolSvgs'
+import { memo, ReactNode } from 'react'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 interface Props {
@@ -27,7 +22,7 @@ interface Props {
   carouselDirection?: 'left' | 'right'
   carouselIndex?: number
   featuredReason?: string
-  svgIndex: number
+  graphic: ReactNode
 }
 
 const slideVariants = {
@@ -64,24 +59,11 @@ export function FeaturePoolCard({
   isCarousel = false,
   carouselDirection = 'left',
   carouselIndex = 1,
-  svgIndex,
+  graphic,
 }: Props) {
   const router = useRouter()
 
   const MemoizedMainAprTooltip = memo(MainAprTooltip)
-
-  const renderSVG = () => {
-    switch (svgIndex) {
-      case 1:
-        return <FeaturedPool1SVG />
-      case 2:
-        return <FeaturedPool2SVG />
-      case 3:
-        return <FeaturedPool3SVG />
-      default:
-        return null
-    }
-  }
 
   const anim = isCarousel
     ? {
@@ -147,7 +129,7 @@ export function FeaturePoolCard({
                   transition="transform 0.2s var(--ease-out-cubic)"
                   _groupHover={{ transform: 'scale(1.1) rotate(60deg)' }}
                 >
-                  {renderSVG()}
+                  {graphic}
                 </Box>
 
                 <Box
