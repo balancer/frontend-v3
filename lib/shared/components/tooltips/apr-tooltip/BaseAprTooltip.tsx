@@ -119,7 +119,13 @@ function BaseAprTooltip({
     : totalBaseText
 
   const popoverContent = customPopoverContent || (
-    <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
+    <PopoverContent
+      w="fit-content"
+      shadow="3xl"
+      overflow="hidden"
+      minWidth={['100px', '300px']}
+      p="0"
+    >
       <TooltipAprItem
         {...basePopoverAprItemProps}
         displayValueFormatter={usedDisplayValueFormatter}
