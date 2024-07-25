@@ -5,6 +5,8 @@ import { Skeleton } from '@chakra-ui/react'
 import { Suspense } from 'react'
 import { CowBanner } from './CowBanner'
 import { Metadata } from 'next'
+import { CowFooter } from './CowFooter'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 
 export const metadata: Metadata = {
   title: `CoWAMM DeFi Liquidity Pools`,
@@ -18,12 +20,16 @@ export const metadata: Metadata = {
 export default function PoolsPage() {
   return (
     <>
-      <CowBanner />
-      <FadeInOnView animateOnce={false}>
-        <Suspense fallback={<Skeleton w="full" h="500px" />}>
-          <PoolList fixedPoolTypes={[GqlPoolType.CowAmm]} />
-        </Suspense>
-      </FadeInOnView>
+      <DefaultPageContainer>
+        <CowBanner />
+        <FadeInOnView animateOnce={false}>
+          <Suspense fallback={<Skeleton w="full" h="500px" />}>
+            <PoolList fixedPoolTypes={[GqlPoolType.CowAmm]} />
+          </Suspense>
+        </FadeInOnView>
+      </DefaultPageContainer>
+
+      <CowFooter />
     </>
   )
 }

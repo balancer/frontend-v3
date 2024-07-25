@@ -1,6 +1,7 @@
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
+import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
@@ -23,7 +24,7 @@ export default async function PoolsPage() {
   const featuredPools = featuredPoolsQuery.data.featuredPools || []
 
   return (
-    <>
+    <DefaultPageContainer>
       <FadeInOnView animateOnce={false}>
         <Box mb={{ base: '2xl', sm: '3xl' }}>
           <FeaturedPools featuredPools={featuredPools} />
@@ -34,6 +35,6 @@ export default async function PoolsPage() {
           <PoolList />
         </Suspense>
       </FadeInOnView>
-    </>
+    </DefaultPageContainer>
   )
 }
