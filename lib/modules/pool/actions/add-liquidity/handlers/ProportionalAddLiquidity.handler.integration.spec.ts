@@ -87,7 +87,9 @@ describe.skip('When adding proportional liquidity for a CoW AMM pool', async () 
   const daiAddress = '0xb77eb1a70a96fdaaeb31db1b42f2b8b5846b2613' as const
 
   const cowAMMPoolId = '0xd1bdc51decb61ee0c98e47fe17217c58be525180'
-  const cowAmmPool = await getPoolMock(cowAMMPoolId, GqlChain.Sepolia)
+  // Un-skip when CoW AMM pools are ready in production API
+  // const cowAmmPool = await getPoolMock(cowAMMPoolId, GqlChain.Sepolia)
+  const cowAmmPool = gyroPoolMock
 
   test('has zero price impact', async () => {
     const handler = selectProportionalHandler(cowAmmPool)
