@@ -1,16 +1,6 @@
 'use client'
 
-import {
-  Box,
-  Card,
-  Divider,
-  HStack,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
+import { Card, Divider, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'

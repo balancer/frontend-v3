@@ -1,8 +1,6 @@
 import { CircularProgress, CircularProgressLabel, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
-import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { signRelayerStepTitle } from '../useSignRelayerStep'
 import { ManagedResult } from '../lib'
 import { useTransactionState } from '../TransactionStateProvider'
 

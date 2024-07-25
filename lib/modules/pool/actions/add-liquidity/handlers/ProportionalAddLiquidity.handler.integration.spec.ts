@@ -7,8 +7,6 @@ import { Pool } from '../../../PoolProvider'
 import { ProportionalAddLiquidityHandler } from './ProportionalAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getPoolMock } from '../../../__mocks__/getPoolMock'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function selectProportionalHandler(pool: Pool) {
   return selectAddLiquidityHandler(pool) as ProportionalAddLiquidityHandler
