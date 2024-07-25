@@ -44,6 +44,7 @@ function AuraAprTooltip({ auraApr }: Props) {
         apr={bn(auraApr)}
         aprOpacity={auraApr ? 1 : 0.5}
         bg="background.level3"
+        tooltipText="Visit Aura to get a full breakdown of this current APR and the projected APR for next week."
       />
       <Divider />
       <TooltipAprItem
