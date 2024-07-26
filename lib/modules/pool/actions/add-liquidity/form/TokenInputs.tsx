@@ -4,7 +4,7 @@ import { Address } from 'viem'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { VStack } from '@chakra-ui/react'
 import { usePool } from '../../../PoolProvider'
-import { shouldShowNativeWrappedSelector } from '../../LiquidityActionHelpers'
+import { hasNoLiquidity, shouldShowNativeWrappedSelector } from '../../LiquidityActionHelpers'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -56,6 +56,7 @@ export function TokenInputs({ tokenSelectDisclosureOpen, customSetAmountIn }: Pr
                 ? tokenSelectDisclosureOpen
                 : undefined
             }
+            isDisabled={hasNoLiquidity(pool)}
           />
         )
       })}

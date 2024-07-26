@@ -142,9 +142,6 @@ function AddLiquidityMainForm() {
     }
   }, [addLiquidityTxHash])
 
-  const requiresProportionalInputAndHasNoLiquidity =
-    requiresProportionalInput(pool.type) && hasNoLiquidity(pool)
-
   return (
     <Box w="full" maxW="lg" mx="auto">
       <Card>
@@ -154,97 +151,93 @@ function AddLiquidityMainForm() {
             <TransactionSettings size="sm" />
           </HStack>
         </CardHeader>
-
-        {requiresProportionalInputAndHasNoLiquidity ? (
-          <VStack spacing="md" w="full">
+        <VStack spacing="md" align="start" w="full">
+          {hasNoLiquidity(pool) && (
             <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
-          </VStack>
-        ) : (
-          <VStack spacing="md" align="start" w="full">
-            {supportsProportionalAdds(pool) ? (
-              <TokenInputsWithAddable
-                tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
-                requiresProportionalInput={requiresProportionalInput(pool.type)}
-                totalUSDValue={totalUSDValue}
-              />
-            ) : (
-              <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
-            )}
-            <VStack spacing="sm" align="start" w="full">
-              <PriceImpactAccordion
-                isDisabled={!priceImpactQuery.data}
-                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
-                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-                accordionButtonComponent={
-                  <HStack>
-                    <Text variant="secondary" fontSize="sm" color="gray.400">
-                      Price impact:{' '}
-                    </Text>
-                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                      {priceImpactLabel}
-                    </Text>
-                  </HStack>
-                }
-                accordionPanelComponent={
-                  <PoolActionsPriceImpactDetails
-                    totalUSDValue={totalUSDValue}
-                    bptAmount={simulationQuery.data?.bptOut.amount}
-                    isAddLiquidity
-                  />
-                }
-              />
-            </VStack>
-            <Grid w="full" templateColumns="1fr 1fr" gap="sm">
-              <GridItem>
-                <Card minHeight="full" variant="subSection" w="full" p={['sm', 'ms']}>
-                  <VStack align="start" gap="sm">
-                    <Text fontSize="sm" lineHeight="16px" fontWeight="500">
-                      Total
-                    </Text>
-                    <Text fontSize="md" lineHeight="16px" fontWeight="700">
-                      {totalUSDValue !== '0'
-                        ? toCurrency(totalUSDValue, { abbreviated: false })
-                        : '-'}
-                    </Text>
-                  </VStack>
-                </Card>
-              </GridItem>
-              <GridItem>
-                <AddLiquidityAprTooltip
-                  aprItems={pool.dynamicData.aprItems}
-                  totalUsdValue={totalUSDValue}
-                  weeklyYield={weeklyYield}
-                  pool={pool}
+          )}
+          {supportsProportionalAdds(pool) ? (
+            <TokenInputsWithAddable
+              tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
+              requiresProportionalInput={requiresProportionalInput(pool.type)}
+              totalUSDValue={totalUSDValue}
+            />
+          ) : (
+            <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
+          )}
+          <VStack spacing="sm" align="start" w="full">
+            <PriceImpactAccordion
+              isDisabled={!priceImpactQuery.data}
+              cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+              setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+              accordionButtonComponent={
+                <HStack>
+                  <Text variant="secondary" fontSize="sm" color="gray.400">
+                    Price impact:{' '}
+                  </Text>
+                  <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                    {priceImpactLabel}
+                  </Text>
+                </HStack>
+              }
+              accordionPanelComponent={
+                <PoolActionsPriceImpactDetails
+                  totalUSDValue={totalUSDValue}
+                  bptAmount={simulationQuery.data?.bptOut.amount}
+                  isAddLiquidity
                 />
-              </GridItem>
-            </Grid>
-            {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-            {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
-            {simulationQuery.isError && (
-              <GenericError
-                customErrorName={'Error in query simulation'}
-                error={simulationQuery.error}
-              ></GenericError>
-            )}
-            {isConnected ? (
-              <Tooltip label={isDisabled ? disabledReason : ''}>
-                <Button
-                  ref={nextBtn}
-                  variant="secondary"
-                  w="full"
-                  size="lg"
-                  isDisabled={isDisabled}
-                  isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
-                  onClick={() => !isDisabled && onModalOpen()}
-                >
-                  Next
-                </Button>
-              </Tooltip>
-            ) : (
-              <ConnectWallet variant="primary" w="full" size="lg" />
-            )}
+              }
+            />
           </VStack>
-        )}
+          <Grid w="full" templateColumns="1fr 1fr" gap="sm">
+            <GridItem>
+              <Card minHeight="full" variant="subSection" w="full" p={['sm', 'ms']}>
+                <VStack align="start" gap="sm">
+                  <Text fontSize="sm" lineHeight="16px" fontWeight="500">
+                    Total
+                  </Text>
+                  <Text fontSize="md" lineHeight="16px" fontWeight="700">
+                    {totalUSDValue !== '0'
+                      ? toCurrency(totalUSDValue, { abbreviated: false })
+                      : '-'}
+                  </Text>
+                </VStack>
+              </Card>
+            </GridItem>
+            <GridItem>
+              <AddLiquidityAprTooltip
+                aprItems={pool.dynamicData.aprItems}
+                totalUsdValue={totalUSDValue}
+                weeklyYield={weeklyYield}
+                pool={pool}
+              />
+            </GridItem>
+          </Grid>
+          {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
+          {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
+          {simulationQuery.isError && (
+            <GenericError
+              customErrorName={'Error in query simulation'}
+              error={simulationQuery.error}
+            ></GenericError>
+          )}
+          {isConnected ? (
+            <Tooltip label={isDisabled ? disabledReason : ''}>
+              <Button
+                ref={nextBtn}
+                variant="secondary"
+                w="full"
+                size="lg"
+                isDisabled={isDisabled}
+                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
+                onClick={() => !isDisabled && onModalOpen()}
+              >
+                Next
+              </Button>
+            </Tooltip>
+          ) : (
+            <ConnectWallet variant="primary" w="full" size="lg" />
+          )}
+        </VStack>
       </Card>
       <AddLiquidityModal
         finalFocusRef={nextBtn}
