@@ -240,9 +240,15 @@ function shouldIgnore(e: Error): boolean {
   if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
 
   /*
-    Frequent error in rainbowkit + wagmi that does not mean a real crash
+    Frequent errors in rainbowkit + wagmi that do not mean a real crash
   */
   if (e.message.includes('Connector not connected')) return true
+  if (e.message.includes('Provider not found')) return true
+
+  /*
+    More info: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+  */
+  if (e.message.includes('ResizeObserver loop limit exceeded')) return true
 
   if (isUserRejectedError(e)) return true
 
