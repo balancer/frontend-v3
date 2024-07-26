@@ -6,12 +6,10 @@ import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Repeat } from 'react-feather'
 import { PoolListTokenPills } from '../../PoolList/PoolListTokenPills'
-import { GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { shouldHideSwapFee } from '../../pool.utils'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
-
-  const shouldHideSwapFee = pool.type === GqlPoolType.CowAmm
 
   return (
     <Flex gap={{ base: 'xs', sm: 'sm' }} alignItems="center" wrap="wrap">
@@ -32,7 +30,7 @@ export default function PoolMetaBadges() {
         />
       </Badge>
       <PoolListTokenPills pool={pool} py="2" px="sm" />
-      {!shouldHideSwapFee && (
+      {!shouldHideSwapFee(pool.type) && (
         <Tooltip label="Swap fee">
           <Badge
             fontWeight="normal"
