@@ -9,7 +9,7 @@ import { DefaultPageContainer } from '@/lib/shared/components/containers/Default
 import { CowHeader } from './CowHeader'
 
 export const metadata: Metadata = {
-  title: `CoWAMM DeFi Liquidity Pools`,
+  title: `CoW AMM DeFi Liquidity Pools`,
   description: `
     CoW AMM protects LPs from LVR so they can provide liquidity
     with less risk and more return.

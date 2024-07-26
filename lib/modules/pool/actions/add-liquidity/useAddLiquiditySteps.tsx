@@ -9,6 +9,8 @@ import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
+import { Address } from 'viem'
+import { isCowAmmPool } from '../../pool.helpers'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -34,7 +36,7 @@ export function useAddLiquiditySteps({
 
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: vaultAddress,
+      spenderAddress: isCowAmmPool(pool.type) ? (pool.address as Address) : vaultAddress,
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',
