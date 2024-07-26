@@ -28,9 +28,10 @@ interface PopoverAprItemProps extends BoxProps {
 export function TooltipAprItem({
   title,
   apr,
-  aprOpacity,
+  aprOpacity = 1,
   displayValueFormatter,
   boxBackground,
+  bg = 'background.level3',
   textBackground,
   textBackgroundClip,
   children,
@@ -45,7 +46,7 @@ export function TooltipAprItem({
   const tootltipTextDecorationColor = colorMode === 'light' ? 'font.secondaryAlpha50' : 'gray.500'
 
   return (
-    <Box fontSize="sm" background={boxBackground} {...props}>
+    <Box fontSize="sm" background={boxBackground} bg={bg} {...props}>
       <HStack justifyContent="space-between">
         <Text
           fontWeight={fontWeight}

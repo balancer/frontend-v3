@@ -24,7 +24,11 @@ import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSett
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../PoolProvider'
-import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
+import {
+  hasNoLiquidity,
+  requiresProportionalInput,
+  supportsProportionalAdds,
+} from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
@@ -41,6 +45,7 @@ import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
+import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -147,6 +152,9 @@ function AddLiquidityMainForm() {
           </HStack>
         </CardHeader>
         <VStack spacing="md" align="start" w="full">
+          {hasNoLiquidity(pool) && (
+            <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
+          )}
           {supportsProportionalAdds(pool) ? (
             <TokenInputsWithAddable
               tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
