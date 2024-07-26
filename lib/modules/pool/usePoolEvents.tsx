@@ -29,9 +29,11 @@ export function usePoolEvents({
   typeIn,
   userAddress,
 }: PoolEventsProps) {
+  const poolIds = (poolIdIn || []).map(id => id.toLowerCase())
+
   return useQuery(GetPoolEventsDocument, {
     variables: {
-      poolIdIn: poolIdIn || [],
+      poolIdIn: poolIds,
       chainIn: chainIn || [],
       first,
       skip,
