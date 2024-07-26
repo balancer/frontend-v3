@@ -80,7 +80,13 @@ export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   // [GqlPoolType.CowAmm]: [GqlPoolType.CowAmm],
 }
 
-export const poolCategoryFilters = ['INCENTIVIZED', 'VE8020', 'POINTS', 'SUPERFEST'] as const
+export const poolCategoryFilters = [
+  'INCENTIVIZED',
+  'VE8020',
+  'POINTS',
+  'SUPERFEST',
+  'ARBITRUM_GRANTS',
+] as const
 export type PoolCategoryType = (typeof poolCategoryFilters)[number]
 export const POOL_CATEGORY_MAP: { [key in PoolCategoryType]: string[] } = {
   INCENTIVIZED: ['INCENTIVIZED'],
@@ -94,6 +100,7 @@ export const POOL_CATEGORY_MAP: { [key in PoolCategoryType]: string[] } = {
   ],
   SUPERFEST: ['SUPERFEST'],
   VE8020: ['VE8020'],
+  ARBITRUM_GRANTS: ['ARBITRUM_GRANTS'],
 }
 
 export type SortingState = PoolsColumnSort[]

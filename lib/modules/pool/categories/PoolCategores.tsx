@@ -59,7 +59,9 @@ function PoolCategoryBadge({ category }: { category: PoolCategory }) {
             {category.iconUrl ? (
               <Image src={category.iconUrl} alt={category.name} w={6} h={6} rounded="full" />
             ) : (
-              <Text fontWeight="medium">{category.name}</Text>
+              <Text fontWeight="bold" fontSize="xs" textTransform="uppercase" px="sm">
+                {category.name}
+              </Text>
             )}
           </Badge>
         </HStack>
