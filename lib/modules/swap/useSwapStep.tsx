@@ -15,7 +15,6 @@ import { swapActionPastTense } from './swap.helpers'
 import { SwapAction } from './swap.types'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useUserAccount } from '../web3/UserAccountProvider'
-import { GenericError } from '@/lib/shared/components/errors/GenericError'
 
 export const swapStepId = 'swap'
 
@@ -86,16 +85,12 @@ export function useSwapStep({
       onSuccess: () => refetchBalances(),
       renderAction: () => (
         <VStack w="full">
-          {buildSwapQuery.error ? (
-            <GenericError error={buildSwapQuery.error}></GenericError>
-          ) : (
-            <ManagedSendTransactionButton
-              id={swapStepId}
-              labels={labels}
-              txConfig={buildSwapQuery.data}
-              gasEstimationMeta={gasEstimationMeta}
-            />
-          )}
+          <ManagedSendTransactionButton
+            id={swapStepId}
+            labels={labels}
+            txConfig={buildSwapQuery.data}
+            gasEstimationMeta={gasEstimationMeta}
+          />
         </VStack>
       ),
     }),
