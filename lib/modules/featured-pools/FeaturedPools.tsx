@@ -57,7 +57,10 @@ export function FeaturedPools({
     <>
       <PoolCarousel
         featuredPools={featuredPools}
-        display={{ base: 'block', md: 'none' }}
+        display="block"
+        visibility={{ base: 'visible', md: 'hidden' }}
+        opacity={{ base: '1', md: '0' }}
+        position={{ base: 'relative', md: 'absolute' }}
         w="full"
         getGraphic={getGraphicCarousel}
       />
