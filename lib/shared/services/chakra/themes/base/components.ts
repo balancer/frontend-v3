@@ -812,20 +812,74 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     },
     Alert: {
       baseStyle: {
+        button: {
+          background: 'green',
+        },
+        icon: {
+          color: 'font.dark',
+        },
         container: {
           rounded: 'md',
           alignItems: 'start',
+          "&[data-status='info']": {
+            background: 'var(--chakra-colors-purple-200)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-purple-300)',
+            },
+          },
+          "&[data-status='warning']": {
+            background: 'var(--chakra-colors-orange-200)',
+            _dark: {
+              background: 'var(--chakra-colors-orange-300)',
+            },
+          },
+          "&[data-status='success']": {
+            backgroundColor: 'var(--chakra-colors-green-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-green-400)',
+            },
+          },
           "&[data-status='error']": {
-            border: '1px solid red',
+            backgroundColor: 'var(--chakra-colors-red-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-red-400)',
+            },
           },
         },
         title: {
           letterSpacing: '-0.25px',
-          mb: 'xs',
+          fontSize: ['sm', 'md'],
+          lineHeight: '1.3',
+          color: 'font.dark',
+          mr: '0',
+          button: {
+            height: '28px',
+            fontSize: 'sm',
+            px: 'sm',
+            color: 'font.dark',
+            position: 'relative',
+            top: '-4px',
+            borderColor: 'font.dark',
+            borderRadius: 'md',
+            _hover: {
+              transform: 'scale(1.05)',
+            },
+          },
+          a: {
+            color: 'font.dark',
+            borderColor: 'font.dark',
+            _hover: {
+              transform: 'scale(1.05)',
+              color: 'font.dark',
+              borderColor: 'font.dark',
+              backgroundColor: 'transparent',
+            },
+          },
         },
         description: {
-          fontWeight: 'medium',
           letterSpacing: '-0.25px',
+          fontWeight: 'medium',
+          color: 'font.dark',
         },
       },
       variants: {},

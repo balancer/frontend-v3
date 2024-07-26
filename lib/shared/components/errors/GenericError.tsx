@@ -18,7 +18,7 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
   const errorMessage = error?.shortMessage || error.message
   return (
     <ErrorAlert title={errorName} {...rest}>
-      <Text color="font.maxContrast" variant="secondary">
+      <Text variant="secondary" color="black">
         Error details: {errorMessage}
       </Text>
     </ErrorAlert>

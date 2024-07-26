@@ -32,6 +32,12 @@ export default function Debug() {
         </Link>
         <Link
           as={NextLink}
+          href="pools/ethereum/v2/0x3dd0843a028c86e0b760b1a76929d1c5ef93a2dd000200000000000000000249/add-liquidity"
+        >
+          Add liquidity in STABLE with BPT tokens (AuraBal 80/20 pool in Mainnet)
+        </Link>
+        <Link
+          as={NextLink}
           href="pools/optimism/v2/0x3dc09db8e571da76dd04e9176afc7feee0b89106000000000000000000000019/add-liquidity"
         >
           Add liquidity in STABLE (FRAX_USDC_MAI in Optimism)
@@ -68,6 +74,15 @@ export default function Debug() {
         </Link>
         <Link
           as={NextLink}
+          href="pools/fraxtal/v2/0x33251abecb0364df98a27a8d5d7b5ccddc774c42000000000000000000000008"
+        >
+          Pool with Merkl APR items (Fraxtal)
+        </Link>
+        <Link as={NextLink} href="pools/sepolia/v2/0xd1bdc51decb61ee0c98e47fe17217c58be525180">
+          CoW AMM Pool (Sepolia)
+        </Link>
+        <Link
+          as={NextLink}
           href="pools/ethereum/v2/0xae8535c23afedda9304b03c68a3563b75fc8f92b0000000000000000000005a0"
         >
           Bricked Composable Stable Pool in recovery mode and paused
@@ -89,6 +104,9 @@ export default function Debug() {
         </Link>
         <Link as={NextLink} href="/debug/wallet-check">
           Wallet check
+        </Link>
+        <Link as={NextLink} href="/debug/alerts">
+          Alerts
         </Link>
       </VStack>
     </FadeInOnView>

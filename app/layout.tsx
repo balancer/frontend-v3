@@ -9,6 +9,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
+import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -32,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Fathom />
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
+          <GlobalAlerts />
           <Navbar />
           {children}
           <Footer />
