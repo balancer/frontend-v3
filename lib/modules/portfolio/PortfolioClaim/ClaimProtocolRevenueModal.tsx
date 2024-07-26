@@ -7,7 +7,6 @@ import { Address } from 'viem'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '../../transactions/transaction-steps/step-tracker/MobileStepTracker'
-import { useClaimProtocolRewardsSteps } from '../useClaimProtocolRewardsSteps'
 import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
 import { bn } from '@/lib/shared/utils/numbers'
 // eslint-disable-next-line max-len
@@ -17,6 +16,7 @@ import { TokenRowGroup } from '../../tokens/TokenRow/TokenRowGroup'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
+import { useClaimVeBalRewardsStep } from '../../pool/actions/claim/useClaimVeBalRewardsStep'
 
 type Props = {
   isOpen: boolean
@@ -24,11 +24,11 @@ type Props = {
 }
 
 export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
-  const { protocolRewardsData, protocolRewardsBalance } = usePortfolio()
+  const { protocolRewardsData, protocolRewardsBalance, refetchProtocolRewards } = usePortfolio()
   const { isDesktop, isMobile } = useBreakpoints()
 
-  const { steps, isLoadingSteps } = useClaimProtocolRewardsSteps()
-  const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
+  const step = useClaimVeBalRewardsStep({ onSuccess: refetchProtocolRewards })
+  const transactionSteps = useTransactionSteps([step])
 
   const claimTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
 
@@ -61,7 +61,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
 
             <Card variant="modalSubSection">
               <TokenRowGroup
-                label="You'll get"
+                label={claimTxHash ? 'You got' : "You'll get"}
                 amounts={rewards}
                 totalUSDValue={protocolRewardsBalance.toString()}
                 chain={GqlChain.Mainnet}

@@ -23,6 +23,7 @@ export function useProtocolRewards() {
     data: protocolRewardsData = [],
     isLoading: isLoadingProtocolRewards,
     error: protocolRewardsError,
+    refetch,
     status,
   } = useReadContract({
     chainId: networkConfigs.MAINNET.chainId,
@@ -55,5 +56,6 @@ export function useProtocolRewards() {
     isLoadingProtocolRewards,
     protocolRewardsError,
     hasLoadedProtocolRewards: status === 'success',
+    refetchProtocolRewards: refetch,
   }
 }
