@@ -12,3 +12,12 @@ export const convertSnakeToTitleCase = (s: string): string =>
     .toLowerCase()
     .replace(/^[-_]*(.)/, (_, c: string) => c.toUpperCase())
     .replace(/[-_]+(.)/g, (_, c: string) => ' ' + c.toUpperCase())
+
+export function arrayToSentence(arr: string[]): string {
+  if (arr.length === 0) return ''
+  if (arr.length === 1) return arr[0]
+  if (arr.length === 2) return arr.join(' and ')
+
+  const lastElement = arr.pop()
+  return arr.join(', ') + ', and ' + lastElement
+}

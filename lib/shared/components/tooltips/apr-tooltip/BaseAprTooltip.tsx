@@ -16,6 +16,8 @@ import {
   extraBalTooltipText,
   lockingIncentivesTooltipText,
   votingIncentivesTooltipText,
+  merklIncentivesTooltipText,
+  surplusIncentivesTooltipText,
 } from '@/lib/shared/hooks/useAprTooltip'
 import { TooltipAprItem } from './TooltipAprItem'
 import BigNumber from 'bignumber.js'
@@ -82,6 +84,10 @@ function BaseAprTooltip({
     extraBalAprDisplayed,
     yieldBearingTokensAprDisplayed,
     stakingIncentivesAprDisplayed,
+    merklIncentivesAprDisplayed,
+    hasMerklIncentives,
+    hasSurplusIncentives,
+    surplusIncentivesAprDisplayed,
     swapFeesDisplayed,
     isSwapFeePresent,
     isYieldPresent,
@@ -113,7 +119,13 @@ function BaseAprTooltip({
     : totalBaseText
 
   const popoverContent = customPopoverContent || (
-    <PopoverContent w="fit-content" shadow="3xl" minWidth={['100px', '300px']} p="0">
+    <PopoverContent
+      w="fit-content"
+      shadow="3xl"
+      overflow="hidden"
+      minWidth={['100px', '300px']}
+      p="0"
+    >
       <TooltipAprItem
         {...basePopoverAprItemProps}
         displayValueFormatter={usedDisplayValueFormatter}
@@ -122,7 +134,6 @@ function BaseAprTooltip({
         apr={swapFeesDisplayed}
         aprOpacity={isSwapFeePresent ? 1 : 0.5}
         tooltipText={swapFeesTooltipText}
-        bg="background.level3"
       />
       <TooltipAprItem
         {...basePopoverAprItemProps}
@@ -130,7 +141,6 @@ function BaseAprTooltip({
         title="Staking incentives"
         apr={stakingIncentivesAprDisplayed}
         aprOpacity={isStakingPresent ? 1 : 0.5}
-        bg="background.level3"
       >
         {stakingIncentivesDisplayed.map((item, index) => {
           return (
@@ -140,9 +150,7 @@ function BaseAprTooltip({
               key={index}
               title={item.title}
               apr={item.apr}
-              aprOpacity={1}
               tooltipText={item.tooltipText}
-              bg="background.level3"
             />
           )
         })}
@@ -153,7 +161,6 @@ function BaseAprTooltip({
         title="Yield bearing tokens"
         apr={yieldBearingTokensAprDisplayed}
         aprOpacity={isYieldPresent ? 1 : 0.5}
-        bg="background.level3"
       >
         {yieldBearingTokensDisplayed.map((item, index) => {
           return (
@@ -163,13 +170,29 @@ function BaseAprTooltip({
               key={index}
               title={item.title}
               apr={item.apr}
-              aprOpacity={1}
               tooltipText={inherentTokenYieldTooltipText}
-              bg="background.level3"
             />
           )
         })}
       </TooltipAprItem>
+      {hasMerklIncentives && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Merkl.xyz incentives"
+          apr={merklIncentivesAprDisplayed}
+          tooltipText={merklIncentivesTooltipText}
+        />
+      )}
+      {hasSurplusIncentives && (
+        <TooltipAprItem
+          {...basePopoverAprItemProps}
+          displayValueFormatter={usedDisplayValueFormatter}
+          title="Surplus"
+          apr={surplusIncentivesAprDisplayed}
+          tooltipText={surplusIncentivesTooltipText}
+        />
+      )}
       <Divider />
       <TooltipAprItem
         {...basePopoverAprItemProps}
@@ -197,7 +220,6 @@ function BaseAprTooltip({
               tooltipText={lockingIncentivesTooltipText}
               apr={lockingAprDisplayed}
               aprOpacity={isLockingAprPresent ? 1 : 0.5}
-              bg="background.level3"
             />
             <TooltipAprItem
               {...basePopoverAprItemProps}
@@ -206,7 +228,6 @@ function BaseAprTooltip({
               tooltipText={votingIncentivesTooltipText}
               apr={votingAprDisplayed}
               aprOpacity={isVotingPresent ? 1 : 0.5}
-              bg="background.level3"
             />
             <Divider />
 
@@ -238,7 +259,6 @@ function BaseAprTooltip({
               title="Extra BAL (veBAL boost)"
               apr={extraBalAprDisplayed}
               tooltipText={extraBalTooltipText}
-              bg="background.level3"
             />
             <Divider />
 

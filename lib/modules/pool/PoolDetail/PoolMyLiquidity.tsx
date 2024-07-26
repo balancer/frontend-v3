@@ -14,7 +14,7 @@ import {
   Text,
   VStack,
   Tooltip,
-  Link,
+  useDisclosure,
 } from '@chakra-ui/react'
 import React, { useMemo, useState, useLayoutEffect } from 'react'
 import { usePool } from '../PoolProvider'
@@ -36,19 +36,18 @@ import {
   shouldMigrateStake,
   calcGaugeStakedBalance,
 } from '../user-balance.helpers'
-import {
-  hasNestedPools,
-  isVebalPool,
-  shouldBlockAddLiquidity,
-  calcUserShareOfPool,
-} from '../pool.helpers'
+import { isVebalPool, shouldBlockAddLiquidity, calcUserShareOfPool } from '../pool.helpers'
 
-import { hasNonPreferentialStakedBalance, migrateStakeTooltipLabel } from '../actions/stake.helpers'
+import { getCanStake, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { GqlPoolStakingType } from '@/lib/shared/services/api/generated/graphql'
 import { ArrowUpRight } from 'react-feather'
 import { getChainId } from '@/lib/config/app.config'
 import { VeBalLink } from '../../vebal/VebalRedirectModal'
+import {
+  PartnerRedirectModal,
+  RedirectPartner,
+} from '@/lib/shared/components/modals/PartnerRedirectModal'
 
 function getTabs(isVeBalPool: boolean) {
   return [
@@ -72,6 +71,7 @@ export default function PoolMyLiquidity() {
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
+  const auraDisclosure = useDisclosure()
 
   const isVeBal = isVebalPool(pool.id)
   const tabs = useMemo(() => {
@@ -106,6 +106,7 @@ export default function PoolMyLiquidity() {
     if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
       setHeight(myLiquiditySectionRef.current.offsetHeight)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   function handleTabChanged(option: ButtonGroupOption) {
@@ -141,10 +142,16 @@ export default function PoolMyLiquidity() {
   }
 
   function calcUserPoolTokenBalances() {
+    const poolTokens = pool.poolTokens.map(({ balance, decimals, address }) => ({
+      balance,
+      decimals,
+      address,
+    }))
+
     return keyBy(
       getProportionalExitAmountsFromScaledBptIn(
         getBptBalanceForTab(),
-        pool.poolTokens,
+        poolTokens,
         pool.dynamicData.totalShares
       ),
       'address'
@@ -197,18 +204,12 @@ export default function PoolMyLiquidity() {
     return poolTokenBalancesForTab[tokenAddress].amount
   }
 
-  const hasNonPreferentialBalance = hasNonPreferentialStakedBalance(pool)
-  const canStake = pool.staking && !hasNonPreferentialBalance
+  const canStake = getCanStake(pool)
   const hasUnstakedBalance = bn(getUserWalletBalance(pool)).gt(0)
   const hasGaugeStakedBalance = bn(calcGaugeStakedBalance(pool)).gt(0)
   const shareOfPool = calcUserShareOfPool(pool)
   const shareofPoolLabel = bn(shareOfPool).gt(0) ? fNum('sharePercent', shareOfPool) : <>&mdash;</>
   const chainId = getChainId(chain)
-
-  const displayTokens = hasNestedPools(pool)
-    ? // we don't have the balances for pool.displayTokens for v2 boosted pools so we show bpt tokens balance as a workaround
-      pool.poolTokens
-    : pool.displayTokens
 
   const options = useMemo(() => {
     return tabs.map(tab => ({
@@ -260,21 +261,24 @@ export default function PoolMyLiquidity() {
           <Divider />
           <VStack spacing="md" width="full" alignItems="flex-start" h={`${height - 270}px}`}>
             {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
-              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl">
+              <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl" justify="space-between">
                 <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
-                <Text color="white" ml="auto">
-                  Learn more
-                </Text>
-                <Link
-                  href={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
-                  target="_blank"
-                  color="white"
-                >
-                  <ArrowUpRight size={16} />
-                </Link>
+
+                <Button color="white" variant="outline" onClick={auraDisclosure.onOpen}>
+                  <HStack>
+                    <Text>Learn more</Text>
+                    <ArrowUpRight size={16} />
+                  </HStack>
+                </Button>
+                <PartnerRedirectModal
+                  partner={RedirectPartner.Aura}
+                  redirectUrl={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
+                  isOpen={auraDisclosure.isOpen}
+                  onClose={auraDisclosure.onClose}
+                />
               </HStack>
             ) : (
-              displayTokens.map(token => {
+              pool.displayTokens.map(token => {
                 return (
                   <TokenRow
                     chain={chain}

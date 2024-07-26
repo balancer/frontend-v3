@@ -11,8 +11,8 @@ type PoolEventList = GetPoolEventsQuery['poolEvents']
 export type PoolEventItem = PoolEventList[0]
 
 type PoolEventsProps = {
-  poolIdIn: string[]
-  chainIn: GqlChain[]
+  poolIdIn?: string[]
+  chainIn?: GqlChain[]
   first?: number
   skip?: number
   range?: GqlPoolEventsDataRange
@@ -31,8 +31,8 @@ export function usePoolEvents({
 }: PoolEventsProps) {
   return useQuery(GetPoolEventsDocument, {
     variables: {
-      poolIdIn,
-      chainIn,
+      poolIdIn: poolIdIn || [],
+      chainIn: chainIn || [],
       first,
       skip,
       range,

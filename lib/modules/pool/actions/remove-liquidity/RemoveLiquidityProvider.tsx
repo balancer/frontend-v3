@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -17,14 +17,13 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { hasNestedPools, isGyro } from '../../pool.helpers'
-import { getNativeAssetAddress, getWrappedNativeAssetAddress } from '@/lib/config/app.config'
+import { isCowAmmPool, isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getUserTotalBalance } from '../../user-balance.helpers'
+import { getUserWalletBalance } from '../../user-balance.helpers'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -50,7 +49,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const { isConnected } = useUserAccount()
   const previewModalDisclosure = useDisclosure()
 
-  const maxHumanBptIn: HumanAmount = getUserTotalBalance(pool)
+  const maxHumanBptIn: HumanAmount = getUserWalletBalance(pool)
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
     .times(humanBptInPercent / 100)
     .toFixed() as HumanAmount
@@ -74,15 +73,18 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokenFilter = hasNestedPools(pool)
-    ? (token: GqlPoolTokenExpanded) => !token.isNested
-    : (token: GqlPoolTokenExpanded) => isGyro(pool.type) || token.isMainToken
+  function getPoolTokens() {
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
+  }
 
-  const tokens = pool.allTokens
-    .filter(tokenFilter)
-    .map(token => getToken(token.address, pool.chain))
+  const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
 
   function tokensToShow() {
+    // Cow AMM pools don't support wethIsEth
+    if (isCowAmmPool(pool.type)) return tokens
+
     // for single token we show both the native asset AND the wrapped native asset in the ui
     if (includesWrappedNativeAsset && isSingleToken && nativeAsset) return [...tokens, nativeAsset]
 

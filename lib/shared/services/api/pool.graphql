@@ -12,6 +12,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     type
     chain
     protocolVersion
+    tags
     dynamicData {
       poolId
       swapEnabled
@@ -120,11 +121,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -158,11 +155,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -196,11 +189,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -236,11 +225,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -276,11 +261,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -315,11 +296,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -371,11 +348,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -413,11 +386,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
           isAllowed
           priceRateProvider
           priceRateProviderData {
-            address
-            name
-            summary
-            reviewed
-            warnings
+            ...PriceRateProviderDataFields
           }
           nestedPool {
             id
@@ -434,6 +403,20 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       }
     }
   }
+}
+
+fragment PriceRateProviderDataFields on GqlPriceRateProviderData {
+  address
+  name
+  summary
+  reviewed
+  warnings
+  upgradeableComponents {
+    entryPoint
+    implementationReviewed
+  }
+  reviewFile
+  factory
 }
 
 query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $chainId: GqlChain!) {
@@ -488,6 +471,7 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    chain
     userAddress
     ... on GqlPoolSwapEventV3 {
       tokenIn {

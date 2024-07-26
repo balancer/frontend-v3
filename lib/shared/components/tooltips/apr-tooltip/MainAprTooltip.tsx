@@ -1,4 +1,14 @@
-import { Box, Button, Center, HStack, Icon, Text, TextProps, useTheme } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Center,
+  HStack,
+  Icon,
+  PopoverContent,
+  Text,
+  TextProps,
+  useTheme,
+} from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
 import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
@@ -22,8 +32,6 @@ interface Props
   id?: string
 }
 
-const hoverColor = 'font.highlight'
-
 export const SparklesIcon = ({
   isOpen,
   pool,
@@ -35,6 +43,7 @@ export const SparklesIcon = ({
 }) => {
   const theme = useTheme()
   const { corePoolId } = getProjectConfig()
+  const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
   const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
 
@@ -81,6 +90,15 @@ function MainAprTooltip({
   ...props
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
+  const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
+
+  const customPopoverContent = isLBP(pool.type) ? (
+    <PopoverContent p="md">
+      <Text color="font.secondary" fontSize="sm">
+        LBP APRs cannot be realized by LPs.
+      </Text>
+    </PopoverContent>
+  ) : undefined
 
   return (
     <BaseAprTooltip
@@ -88,16 +106,23 @@ function MainAprTooltip({
       maxVeBalText="Max veBAL APR"
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
       totalBaseVeBalText="Total base APR"
+      customPopoverContent={customPopoverContent}
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
           <Button variant="unstyled" _focus={{ outline: 'none' }} px="0" h={height}>
             <HStack
-              _hover={{ color: 'font.link' }}
-              color={isOpen ? 'font.highlight' : 'font.primary'}
+              _hover={{ color: hoverColor }}
+              color={isOpen ? hoverColor : 'font.primary'}
+              opacity={isLBP(pool.type) ? 0.5 : 1}
             >
               {!onlySparkles && (
-                <Text {...textProps} textAlign="right" color={isOpen ? hoverColor : 'font.primary'}>
+                <Text
+                  {...textProps}
+                  textAlign="right"
+                  color={isOpen ? hoverColor : 'font.primary'}
+                  textDecoration={isLBP(pool.type) ? 'line-through' : 'none'}
+                >
                   {apr || aprToShow}
                   {aprLabel ? ' APR' : ''}
                 </Text>

@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError, shouldIgnoreExecutionError } from './error-filters'
+import { isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -199,7 +199,7 @@ export function captureSentryError(
   { context, errorMessage, errorName }: SentryMetadata
 ) {
   const causeError = ensureError(e)
-  if (shouldIgnoreExecutionError(causeError)) return
+  if (isUserRejectedError(causeError)) return
 
   // Adding the root cause message to the top level message makes slack alerts more useful
   const errorMessageWithCause = errorMessage + `\n\nCause: \n` + causeError.message
@@ -227,7 +227,22 @@ export function shouldIgnoreError(e: Error) {
 }
 
 function shouldIgnore(e: Error): boolean {
+  if (!e?.message) return false
+
+  if (isUserRejectedError(e)) return true
+
   if (e.message.includes('.getAccounts is not a function')) return true
+
+  /*
+    Error thrown by Library detector chrome extension:
+    https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
+  */
+  if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+
+  /*
+    Frequent error in rainbowkit + wagmi that does not mean a real crash
+  */
+  if (e.message.includes('Connector not connected')) return true
 
   if (isUserRejectedError(e)) return true
 

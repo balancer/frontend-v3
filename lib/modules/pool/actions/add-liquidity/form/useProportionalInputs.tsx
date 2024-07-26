@@ -10,7 +10,11 @@ import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from 
 import { useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { usePool } from '../../../PoolProvider'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  hasNoLiquidity,
+  isEmptyHumanAmount,
+} from '../../LiquidityActionHelpers'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
@@ -34,7 +38,7 @@ export function useProportionalInputs() {
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
-  const { isLoading: isPoolLoading } = usePool()
+  const { isLoading: isPoolLoading, pool } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
 
@@ -46,8 +50,17 @@ export function useProportionalInputs() {
     )
   }, [wethIsEth, isBalancesLoading])
 
-  function clearAmountsIn() {
-    setHumanAmountsIn(humanAmountsIn.map(amountIn => ({ ...amountIn, humanAmount: '' })))
+  function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
+    setHumanAmountsIn(
+      humanAmountsIn.map(({ tokenAddress }) => {
+        // Keeps user inputs like '0' or '0.' instead of replacing them with ''
+        if (changedAmount && isSameAddress(changedAmount.tokenAddress, tokenAddress)) {
+          return changedAmount
+        }
+
+        return { tokenAddress, humanAmount: '' }
+      })
+    )
   }
 
   function handleMaximizeUserAmounts() {
@@ -64,7 +77,7 @@ export function useProportionalInputs() {
 
     setIsMaximized(isMaximizing)
 
-    if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn()
+    if (isEmptyHumanAmount(humanAmount)) return clearAmountsIn({ tokenAddress, humanAmount })
 
     const proportionalHumanAmountsIn = _calculateProportionalHumanAmountsIn({
       tokenAddress,
@@ -85,7 +98,7 @@ export function useProportionalInputs() {
     (where the rest of the tokens have enough user balance for that proportional result).
   */
   const optimalToken = useMemo((): OptimalToken | undefined => {
-    if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts) return
+    if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts || hasNoLiquidity(pool)) return
 
     const humanBalanceFor = (tokenAddress: string): HumanAmount => {
       return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount

@@ -24,7 +24,11 @@ import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSett
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../PoolProvider'
-import { requiresProportionalInput, supportsProportionalAdds } from '../../LiquidityActionHelpers'
+import {
+  hasNoLiquidity,
+  requiresProportionalInput,
+  supportsProportionalAdds,
+} from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
@@ -39,9 +43,9 @@ import { PriceImpactError } from '../../../../price-impact/PriceImpactError'
 import AddLiquidityAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AddLiquidityAprTooltip'
 import { calcPotentialYieldFor } from '../../../pool.utils'
 import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
-import { useModalWithPoolRedirect } from '../../../useModalWithPoolRedirect'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
+import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -70,6 +74,7 @@ function AddLiquidityMainForm() {
     setWethIsEth,
     nativeAsset,
     wNativeAsset,
+    previewModalDisclosure,
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
@@ -89,8 +94,6 @@ function AddLiquidityMainForm() {
     priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
-
-  const previewModalDisclosure = useModalWithPoolRedirect(pool, addLiquidityTxHash)
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
@@ -149,6 +152,9 @@ function AddLiquidityMainForm() {
           </HStack>
         </CardHeader>
         <VStack spacing="md" align="start" w="full">
+          {hasNoLiquidity(pool) && (
+            <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
+          )}
           {supportsProportionalAdds(pool) ? (
             <TokenInputsWithAddable
               tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}

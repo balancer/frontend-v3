@@ -44,10 +44,10 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useDebouncedCallback } from 'use-debounce'
 import { defaultDebounceMs } from '@/lib/shared/utils/queries'
-import { getPoolCategoryLabel } from '../pool.utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
 import { getChainShortName } from '@/lib/config/app.config'
+import { usePoolList } from './PoolListProvider'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -78,7 +78,8 @@ function UserPoolFilter() {
 }
 
 function PoolCategoryFilters() {
-  const { togglePoolCategory, poolCategories, setPoolCategories } = usePoolListQueryState()
+  const { togglePoolCategory, poolCategories, setPoolCategories, poolCategoryLabel } =
+    usePoolListQueryState()
 
   // remove query param when empty
   useEffect(() => {
@@ -95,7 +96,7 @@ function PoolCategoryFilters() {
             isChecked={!!poolCategories.find(selected => selected === category)}
             onChange={e => togglePoolCategory(e.target.checked, category as PoolCategoryType)}
           >
-            <Text fontSize="sm">{getPoolCategoryLabel(category)}</Text>
+            <Text fontSize="sm">{poolCategoryLabel(category)}</Text>
           </Checkbox>
         </Box>
       ))}
@@ -289,6 +290,7 @@ export function PoolListFilters() {
   const { isConnected } = useUserAccount()
   const [isPopoverOpen, setIsPopoverOpen] = useState(false)
   const { resetFilters, totalFilterCount } = usePoolListQueryState()
+  const { isFixedPoolType } = usePoolList()
 
   return (
     <VStack w="full">
@@ -357,15 +359,17 @@ export function PoolListFilters() {
                         </Heading>
                         <PoolNetworkFilters />
                       </Box>
+                      {!isFixedPoolType && (
+                        <Box as={motion.div} variants={staggeredFadeInUp}>
+                          <Heading as="h3" size="sm" my="sm">
+                            Pool types
+                          </Heading>
+                          <PoolTypeFilters />
+                        </Box>
+                      )}
                       <Box as={motion.div} variants={staggeredFadeInUp}>
                         <Heading as="h3" size="sm" my="sm">
-                          Pool types
-                        </Heading>
-                        <PoolTypeFilters />
-                      </Box>
-                      <Box as={motion.div} variants={staggeredFadeInUp}>
-                        <Heading as="h3" size="sm" my="sm">
-                          Pool attributes
+                          Pool categories
                         </Heading>
                         <PoolCategoryFilters />
                       </Box>

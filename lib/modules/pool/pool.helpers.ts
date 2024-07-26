@@ -13,7 +13,7 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { Numberish, bn } from '@/lib/shared/utils/numbers'
 import BigNumber from 'bignumber.js'
-import { isNil } from 'lodash'
+import { isEmpty, isNil } from 'lodash'
 import { Address, getAddress, parseUnits, zeroAddress } from 'viem'
 import { BPT_DECIMALS } from './pool.constants'
 import { isNotMainnet } from '../chains/chain.utils'
@@ -37,6 +37,10 @@ export function isStable(poolType: GqlPoolType): boolean {
     poolType === GqlPoolType.MetaStable ||
     poolType === GqlPoolType.ComposableStable
   )
+}
+
+export function isNonComposableStable(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.Stable || poolType === GqlPoolType.MetaStable
 }
 
 export function isMetaStable(poolType: GqlPoolType): boolean {
@@ -111,6 +115,10 @@ export function isVebalPool(poolId: string): boolean {
   return (
     poolId.toLowerCase() === '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56000200000000000000000014'
   )
+}
+
+export function isCowAmmPool(poolType: GqlPoolType): boolean {
+  return poolType === GqlPoolType.CowAmm
 }
 
 export function noInitLiquidity(pool: GqlPoolBase): boolean {
@@ -236,8 +244,12 @@ export function allClaimableGaugeAddressesFor(pool: ClaimablePool) {
   return addresses
 }
 
-export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
-  return !!token.priceRateProvider && !token.priceRateProviderData
+export function hasReviewedRateProvider(token: GqlPoolTokenDetail): boolean {
+  return (
+    !!token.priceRateProvider &&
+    !!token.priceRateProviderData &&
+    token.priceRateProviderData.reviewed
+  )
 }
 
 /**
@@ -246,6 +258,9 @@ export function hasUnreviewedRateProvider(token: GqlPoolTokenDetail): boolean {
  */
 export function shouldBlockAddLiquidity(pool: Pool) {
   const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
+
+  // If pool is an LBP, we should block adding liquidity
+  if (isLBP(pool.type)) return true
 
   return poolTokens.some(token => {
     // if token is not allowed - we should block adding liquidity
@@ -258,7 +273,7 @@ export function shouldBlockAddLiquidity(pool: Pool) {
     if (token.priceRateProvider === token.nestedPool?.address) return false
 
     // if price rate provider is set but is not reviewed - we should block adding liquidity
-    if (hasUnreviewedRateProvider(token)) return true
+    if (!hasReviewedRateProvider(token)) return true
 
     if (token.priceRateProviderData?.summary !== 'safe') return true
 
@@ -289,6 +304,18 @@ export function getVaultConfig(pool: Pool) {
   return { vaultAddress, balancerVaultAbi }
 }
 
+export function isV1Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 1
+}
+
+export function isV2Pool(pool: Pool): boolean {
+  return pool.protocolVersion === 2
+}
+
 export function isV3Pool(pool: Pool): boolean {
   return pool.protocolVersion === 3
+}
+
+export function getRateProviderWarnings(warnings: string[]) {
+  return warnings.filter(warning => !isEmpty(warning))
 }

@@ -1,26 +1,22 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
+import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
+import { BalAlertContent } from '@/lib/shared/components/alerts/BalAlertContent'
 import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
-import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { AlertStatus, HStack, Tooltip } from '@chakra-ui/react'
 import { isNil } from 'lodash'
 import { usePathname, useRouter } from 'next/navigation'
-import { ReactNode, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { zeroAddress } from 'viem'
 import { Pool } from '../PoolProvider'
 import { migrateStakeTooltipLabel } from '../actions/stake.helpers'
-import { hasUnreviewedRateProvider } from '../pool.helpers'
+import { hasReviewedRateProvider } from '../pool.helpers'
 import { shouldMigrateStake } from '../user-balance.helpers'
-import { PoolAlertButton } from './PoolAlertButton'
 import { VulnerabilityDataMap } from './pool-issues/PoolIssue.labels'
 import { PoolIssue } from './pool-issues/PoolIssue.type'
+import { BalAlertProps } from '@/lib/shared/components/alerts/BalAlert'
 
 export type PoolAlert = {
   identifier: string
-  title: string | ReactNode
-  learnMoreLink?: string
-  status: AlertStatus
-  isSoftWarning: boolean
-}
+} & BalAlertProps
 
 export function usePoolAlerts(pool: Pool) {
   const pathname = usePathname()
@@ -48,7 +44,7 @@ export function usePoolAlerts(pool: Pool) {
 
       return {
         identifier: issue,
-        title: vulnerabilityData.jsxTitle,
+        content: vulnerabilityData.jsxTitle,
         learnMoreLink: vulnerabilityData.learnMoreLink,
         status: 'error',
         isSoftWarning: false,
@@ -65,7 +61,7 @@ export function usePoolAlerts(pool: Pool) {
       if (!token.isAllowed) {
         alerts.push({
           identifier: `TokenNotAllowed-${token.symbol}`,
-          title: `The token ${token.symbol} is currently not supported.`,
+          content: `The token ${token.symbol} is currently not supported.`,
           status: 'error',
           isSoftWarning: false,
         })
@@ -80,33 +76,25 @@ export function usePoolAlerts(pool: Pool) {
         return
       }
 
-      if (hasUnreviewedRateProvider(token)) {
+      if (!hasReviewedRateProvider(token)) {
         alerts.push({
           identifier: `PriceProviderNotReviewed-${token.symbol}`,
-          title: `The price data provider for ${token.symbol} has not been reviewed.`,
+          // eslint-disable-next-line max-len
+          content: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
           status: 'error',
-          isSoftWarning: false,
+          isSoftWarning: true,
         })
       }
 
-      if (token.priceRateProviderData?.summary !== 'safe') {
+      if (token.priceRateProviderData && token.priceRateProviderData?.summary !== 'safe') {
         alerts.push({
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
-          title: `The price data provider for ${token.symbol} is currently deemed unreliable.`,
+          content: `The rate provider for ${token.symbol} has been reviewed as 'unsafe'. For your safety, you can't interact with this pool on this UI. `,
           status: 'error',
-          isSoftWarning: false,
-        })
-      }
-
-      token.priceRateProviderData?.warnings?.forEach(warning => {
-        alerts.push({
-          identifier: `PriceProviderWarning-${token.symbol}-${warning}`,
-          title: `Attention: ${token.symbol} Price Provider Alert - ${warning}`,
-          status: 'warning',
           isSoftWarning: true,
         })
-      })
+      }
     })
 
     return alerts
@@ -115,30 +103,28 @@ export function usePoolAlerts(pool: Pool) {
   const getUserAlerts = (pool: Pool): PoolAlert[] => {
     const alerts: PoolAlert[] = []
 
-    function MigrateStakeTitle() {
+    function MigrateStakeContent() {
       return (
-        <HStack justify="space-between" w="full">
-          <HStack>
-            <div>Migrate to the new veBAL staking gauge for future BAL liquidity incentives </div>
-            <Tooltip label={migrateStakeTooltipLabel}>
-              <InfoOutlineIcon fontSize="sm" />
-            </Tooltip>
-          </HStack>
-          <PoolAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
+        <BalAlertContent
+          title="Migrate to the new veBAL staking gauge for future BAL liquidity incentives"
+          tooltipLabel={migrateStakeTooltipLabel}
+        >
+          <BalAlertButton onClick={() => router.push(`${pathname}/migrate-stake`)}>
             Migrate
-          </PoolAlertButton>
-        </HStack>
+          </BalAlertButton>
+        </BalAlertContent>
       )
     }
 
     if (shouldMigrateStake(pool)) {
       alerts.push({
         identifier: 'shouldMigrateStake',
-        title: MigrateStakeTitle(),
+        content: MigrateStakeContent(),
         status: 'warning',
         isSoftWarning: false,
       })
     }
+
     return alerts
   }
 

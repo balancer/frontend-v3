@@ -6,15 +6,11 @@ import { NetworkIcon } from '@/lib/shared/components/icons/NetworkIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { getPoolPath, getPoolTypeLabel } from '../../pool/pool.utils'
 import { PoolListTokenPills } from '../../pool/PoolList/PoolListTokenPills'
-import {
-  hasAuraStakedBalance,
-  hasBalancerStakedBalance,
-  hasVeBalStaking,
-} from '../../pool/user-balance.helpers'
 import { ProtocolIcon } from '@/lib/shared/components/icons/ProtocolIcon'
 import { Protocol } from '../../protocols/useProtocols'
-import { Pool } from '../../pool/PoolProvider'
 import { ExpandedPoolInfo, ExpandedPoolType } from './useExpandedPools'
+import { getCanStake } from '../../pool/actions/stake.helpers'
+import AuraAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AuraAprTooltip'
 
 interface Props extends GridProps {
   pool: ExpandedPoolInfo
@@ -26,7 +22,8 @@ const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
 function getStakingText(poolType: ExpandedPoolType) {
   switch (poolType) {
-    case ExpandedPoolType.Staked:
+    case ExpandedPoolType.StakedBal:
+    case ExpandedPoolType.StakedAura:
       return 'Staked'
     case ExpandedPoolType.Unstaked:
       return 'Unstaked'
@@ -41,9 +38,10 @@ function getStakingText(poolType: ExpandedPoolType) {
 
 export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Props) {
   const { toCurrency } = useCurrency()
-  const vebalBoostValue = veBalBoostMap?.[pool.id]
 
-  const stakingText = getStakingText(pool.poolType)
+  const vebalBoostValue = veBalBoostMap?.[pool.id]
+  const canStake = getCanStake(pool)
+  const stakingText = canStake ? getStakingText(pool.poolType) : 'N/A'
 
   return (
     <Box
@@ -99,13 +97,21 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
             </Text>
           </GridItem>
           <GridItem justifySelf="end">
-            <MemoizedMainAprTooltip
-              aprItems={pool.dynamicData.aprItems}
-              poolId={pool.id}
-              textProps={{ fontWeight: 'medium' }}
-              vebalBoost={vebalBoostValue}
-              pool={pool}
-            />
+            {pool.poolType === ExpandedPoolType.StakedAura ? (
+              pool.staking?.aura?.apr ? (
+                <AuraAprTooltip auraApr={pool.staking?.aura?.apr} />
+              ) : (
+                ' - '
+              )
+            ) : (
+              <MemoizedMainAprTooltip
+                aprItems={pool.dynamicData.aprItems}
+                poolId={pool.id}
+                textProps={{ fontWeight: 'medium' }}
+                vebalBoost={vebalBoostValue}
+                pool={pool}
+              />
+            )}
           </GridItem>
         </Grid>
       </Link>
@@ -114,14 +120,22 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
 }
 
 function StakingIcons({ pool }: { pool: ExpandedPoolInfo }) {
-  const shouldHideBalIcon = pool.poolType === ExpandedPoolType.Unstaked
+  const canStake = getCanStake(pool)
+
+  const shouldHideIcon = pool.poolType === ExpandedPoolType.Unstaked || !canStake
+
+  if (shouldHideIcon) {
+    return null
+  }
+
+  const showAuraIcon = pool.poolType === ExpandedPoolType.StakedAura
 
   const showBalIcon =
-    !shouldHideBalIcon && (hasBalancerStakedBalance(pool) || hasVeBalStaking(pool))
+    pool.poolType === ExpandedPoolType.StakedBal || pool.poolType === ExpandedPoolType.Locked
 
   return (
     <>
-      {hasAuraStakedBalance(pool) && <ProtocolIcon protocol={Protocol.Aura} />}
+      {showAuraIcon && <ProtocolIcon protocol={Protocol.Aura} />}
       {showBalIcon && <ProtocolIcon protocol={Protocol.Balancer} />}
     </>
   )

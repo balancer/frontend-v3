@@ -5,7 +5,6 @@ import {
   GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import {
   parseAsArrayOf,
@@ -69,26 +68,35 @@ export const poolTypeFilters = [
   GqlPoolType.Stable,
   GqlPoolType.LiquidityBootstrapping,
   GqlPoolType.Gyro,
+  // GqlPoolType.CowAmm,
 ] as const
-
 export type PoolFilterType = (typeof poolTypeFilters)[number]
-
-export const poolCategoryFilters = [
-  //GqlPoolFilterCategory.BlackListed, NOT USED
-  GqlPoolFilterCategory.Incentivized,
-] as const
-
-export type PoolCategoryType = (typeof poolCategoryFilters)[number]
-
-export type SortingState = PoolsColumnSort[]
-
 // We need to map toggalable pool types to their corresponding set of GqlPoolTypes.
 export const POOL_TYPE_MAP: { [key in PoolFilterType]: GqlPoolType[] } = {
   [GqlPoolType.Weighted]: [GqlPoolType.Weighted],
   [GqlPoolType.Stable]: [GqlPoolType.Stable, GqlPoolType.ComposableStable, GqlPoolType.MetaStable],
   [GqlPoolType.LiquidityBootstrapping]: [GqlPoolType.LiquidityBootstrapping],
   [GqlPoolType.Gyro]: [GqlPoolType.Gyro, GqlPoolType.Gyro3, GqlPoolType.Gyroe],
+  // [GqlPoolType.CowAmm]: [GqlPoolType.CowAmm],
 }
+
+export const poolCategoryFilters = ['INCENTIVIZED', 'VE8020', 'POINTS', 'SUPERFEST'] as const
+export type PoolCategoryType = (typeof poolCategoryFilters)[number]
+export const POOL_CATEGORY_MAP: { [key in PoolCategoryType]: string[] } = {
+  INCENTIVIZED: ['INCENTIVIZED'],
+  POINTS: [
+    'POINTS_EIGENLAYER',
+    'POINTS_GYRO',
+    'POINTS_KELP',
+    'POINTS_RENZO',
+    'POINTS_SWELL',
+    'POINTS_MODE',
+  ],
+  SUPERFEST: ['SUPERFEST'],
+  VE8020: ['VE8020'],
+}
+
+export type SortingState = PoolsColumnSort[]
 
 export const orderByHash: { [key: string]: string } = {
   totalLiquidity: 'TVL',

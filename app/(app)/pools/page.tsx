@@ -8,7 +8,7 @@ import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/gr
 import { Box, Skeleton } from '@chakra-ui/react'
 import { Suspense } from 'react'
 
-export default async function Pools() {
+export default async function PoolsPage() {
   const { supportedNetworks } = getProjectConfig()
 
   const featuredPoolsQuery = await getApolloServerClient().query({
@@ -25,20 +25,16 @@ export default async function Pools() {
 
   return (
     <DefaultPageContainer>
-      <Box>
-        <FadeInOnView animateOnce={false}>
-          <Box mb={{ base: '2xl', sm: '3xl' }}>
-            <FeaturedPools featuredPools={featuredPools} />
-          </Box>
-        </FadeInOnView>
-        <FadeInOnView animateOnce={false}>
-          <Suspense fallback={<Skeleton w="full" h="500px" />}>
-            <Box>
-              <PoolList />
-            </Box>
-          </Suspense>
-        </FadeInOnView>
-      </Box>
+      <FadeInOnView animateOnce={false}>
+        <Box mb={{ base: '2xl', sm: '3xl' }}>
+          <FeaturedPools featuredPools={featuredPools} />
+        </Box>
+      </FadeInOnView>
+      <FadeInOnView animateOnce={false}>
+        <Suspense fallback={<Skeleton w="full" h="500px" />}>
+          <PoolList />
+        </Suspense>
+      </FadeInOnView>
     </DefaultPageContainer>
   )
 }

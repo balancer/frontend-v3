@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Metadata } from 'next'
 import { Providers } from './providers'
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
@@ -8,17 +9,14 @@ import NextTopLoader from 'nextjs-toploader'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
+import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
 
 export const metadata: Metadata = {
   title: `${projectName} DeFi Liquidity Pools`,
-  description: `
-    Explore DeFi liquidity pools or create your own.
-    Provide liquidity to accumulate yield from swap fees
-    while retaining your token exposure as prices move.
-  `,
+  description: `Explore DeFi liquidity pools and swap tokens. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move.`,
   icons: {
     icon: [{ url: iconUrl }],
     shortcut: [iconUrl],
@@ -35,6 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Fathom />
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
+          <GlobalAlerts />
           <Navbar />
           {children}
           <Footer />

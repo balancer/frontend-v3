@@ -1,8 +1,6 @@
 import { CircularProgress, CircularProgressLabel, HStack, Text, VStack } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
-import { useSignRelayerApproval } from '@/lib/modules/relayer/signRelayerApproval.hooks'
-import { signRelayerStepTitle } from '../useSignRelayerStep'
 import { ManagedResult } from '../lib'
 import { useTransactionState } from '../TransactionStateProvider'
 
@@ -27,9 +25,7 @@ export function StepIndicator({
   transaction,
   ...props
 }: StepProps & { transaction?: ManagedResult }) {
-  const { color, isActiveLoading, status, stepNumber, title } = getStepSettings(props, transaction)
-  const { isLoading } = useSignRelayerApproval()
-  const isSignRelayerStepLoading = isLoading && title === signRelayerStepTitle
+  const { color, isActiveLoading, status, stepNumber } = getStepSettings(props, transaction)
 
   if (status === 'complete') {
     return (
@@ -50,7 +46,7 @@ export function StepIndicator({
   return (
     <CircularProgress
       value={100}
-      isIndeterminate={isActiveLoading || isSignRelayerStepLoading}
+      isIndeterminate={isActiveLoading}
       trackColor="border.base"
       thickness="8"
       size="7"

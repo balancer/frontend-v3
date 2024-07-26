@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { ManagedTransactionButton } from '@/lib/modules/transactions/transaction-steps/TransactionButton'
 import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import {
@@ -6,7 +7,7 @@ import {
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { Pool, usePool } from '../../PoolProvider'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 
@@ -57,6 +58,10 @@ export function useStakeStep(pool: Pool, rawDepositAmount: bigint): TransactionS
     [chainId, isStakeEnabled, labels, pool.staking, rawDepositAmount, txSimulationMeta]
   )
 
+  const onSuccess = useCallback(() => {
+    refetchPool()
+  }, [])
+
   const step: TransactionStep = useMemo(
     () => ({
       id: stakeStepId,
@@ -65,10 +70,10 @@ export function useStakeStep(pool: Pool, rawDepositAmount: bigint): TransactionS
       isComplete: () => transaction?.result.isSuccess || false,
       onActivated: () => setIsStakeEnabled(true),
       onDeactivated: () => setIsStakeEnabled(false),
-      onSuccess: () => refetchPool(),
+      onSuccess,
       renderAction: () => <ManagedTransactionButton id={stakeStepId} {...props} />,
     }),
-    [labels, transaction?.result.isSuccess, refetchPool, props]
+    [labels, onSuccess, transaction?.result.isSuccess, props]
   )
 
   return step

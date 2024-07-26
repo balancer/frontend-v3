@@ -47,6 +47,10 @@ export function hasNonPreferentialStakedBalance(pool: Pool): boolean {
   return filterNonPreferentialStakingWithBalance(pool).length > 0
 }
 
+export function getCanStake(pool: Pool): boolean {
+  return !!pool.staking && !hasNonPreferentialStakedBalance(pool)
+}
+
 export function findFirstNonPreferentialStakedWithBalance(
   pool: Pool
 ): GqlUserStakedBalance | undefined {

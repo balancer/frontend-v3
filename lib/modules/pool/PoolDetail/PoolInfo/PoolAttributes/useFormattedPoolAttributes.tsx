@@ -52,15 +52,15 @@ export function useFormattedPoolAttributes() {
 
     return [
       {
-        title: 'Pool name',
+        title: 'Name',
         value: name,
       },
       {
-        title: 'Pool symbol',
+        title: 'Symbol',
         value: symbol,
       },
       {
-        title: 'Pool type',
+        title: 'Type',
         value: getPoolTypeLabel(type),
       },
       {

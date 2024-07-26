@@ -130,7 +130,9 @@ export function RemoveLiquidityForm() {
                   {fNum('percentage', humanBptInPercent / 100)}
                 </Text>
               </InputWithSlider>
-              {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
+              {activeTab === TABS[0] && (
+                <RemoveLiquidityProportional tokens={tokens} poolType={pool.type} />
+              )}
               {activeTab === TABS[1] && (
                 <RemoveLiquiditySingleToken tokens={tokens} chain={pool.chain} />
               )}

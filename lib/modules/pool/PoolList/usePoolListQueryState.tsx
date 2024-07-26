@@ -5,12 +5,12 @@ import {
   GqlPoolType,
   GqlPoolOrderBy,
   GqlPoolOrderDirection,
-  GqlPoolFilterCategory,
 } from '@/lib/shared/services/api/generated/graphql'
 import { uniq } from 'lodash'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useQueryState } from 'next-usequerystate'
 import {
+  POOL_CATEGORY_MAP,
   POOL_TYPE_MAP,
   PoolCategoryType,
   PoolFilterType,
@@ -120,17 +120,23 @@ export function usePoolListQueryState() {
         return 'Liquidity Bootstrapping (LBP)'
       case GqlPoolType.Gyro:
         return 'Gyro CLP'
+      case GqlPoolType.CowAmm:
+        return 'CoW AMM'
       default:
         return poolType.toLowerCase()
     }
   }
 
-  function poolCategoryLabel(poolCategory: GqlPoolFilterCategory) {
+  function poolCategoryLabel(poolCategory: PoolCategoryType) {
     switch (poolCategory) {
-      case GqlPoolFilterCategory.BlackListed:
-        return 'Blacklisted'
-      case GqlPoolFilterCategory.Incentivized:
+      case 'INCENTIVIZED':
         return 'Incentivized'
+      case 'POINTS':
+        return 'Points'
+      case 'SUPERFEST':
+        return 'Superfest'
+      default:
+        return (poolCategory as string).toLowerCase().replace('_', ' ')
     }
   }
 
@@ -168,6 +174,12 @@ export function usePoolListQueryState() {
       .flat()
   )
 
+  const mappedPoolCategories = uniq(
+    (poolCategories.length > 0 ? poolCategories : [])
+      .map(poolCategory => POOL_CATEGORY_MAP[poolCategory as keyof typeof POOL_CATEGORY_MAP])
+      .flat()
+  )
+
   const queryVariables = {
     first,
     skip,
@@ -178,7 +190,8 @@ export function usePoolListQueryState() {
       chainIn: networks.length > 0 ? networks : getProjectConfig().supportedNetworks,
       userAddress,
       minTvl,
-      categoryIn: poolCategories.length > 0 ? poolCategories : null,
+      tagIn: mappedPoolCategories.length > 0 ? mappedPoolCategories : null,
+      tagNotIn: ['BLACK_LISTED'],
     },
     textSearch,
   }
@@ -198,7 +211,6 @@ export function usePoolListQueryState() {
     togglePoolType,
     togglePoolCategory,
     poolTypeLabel,
-    poolCategoryLabel,
     setSorting,
     setPagination,
     setSearch,
@@ -206,6 +218,7 @@ export function usePoolListQueryState() {
     setPoolTypes,
     setPoolCategories,
     resetFilters,
+    poolCategoryLabel,
     poolCategories,
     minTvl,
     searchText: textSearch,
