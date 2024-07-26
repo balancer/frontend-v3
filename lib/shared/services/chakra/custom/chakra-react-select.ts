@@ -8,6 +8,7 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
     width: 'full',
     cursor: 'pointer',
     rounded: 'md',
+    fontWeight: 'medium',
     background: 'background.level3',
     zIndex: 9,
   }),
@@ -46,7 +47,8 @@ const defaultStyles = <T>(): ChakraStylesConfig<T> => ({
       background: 'background.level3',
     },
     _selected: {
-      background: 'purple.500',
+      background: 'background.level0',
+      fontWeight: 'bold',
     },
   }),
   indicatorSeparator: provided => ({
@@ -66,6 +68,7 @@ const gradientStyles = <T>(): ChakraStylesConfig<T> => ({
     background: 'gradient.dawnDark',
     rounded: 'md',
     zIndex: 9,
+    fontWeight: 'medium',
     _focus: {
       background: 'gradient.dawnDark',
     },
@@ -108,7 +111,8 @@ const gradientStyles = <T>(): ChakraStylesConfig<T> => ({
       background: 'background.level3',
     },
     _selected: {
-      background: 'purple.500',
+      background: 'background.level0',
+      fontWeight: 'bold',
     },
   }),
   indicatorSeparator: provided => ({
