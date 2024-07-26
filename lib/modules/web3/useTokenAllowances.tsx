@@ -1,5 +1,5 @@
 import { zipObject } from 'lodash'
-import { Address, ContractFunctionParameters, ReadContractParameters, erc20Abi } from 'viem'
+import { Address, ReadContractParameters, erc20Abi } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { Erc20Abi } from './contracts/contract.types'
 import { SupportedChainId } from '@/lib/config/config.types'

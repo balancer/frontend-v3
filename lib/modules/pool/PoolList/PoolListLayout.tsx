@@ -2,16 +2,11 @@
 
 import { Heading, Stack, HStack, VStack } from '@chakra-ui/react'
 import { FilterTags, PoolListFilters } from './PoolListFilters'
-import { PoolListSortType } from './PoolListSortType'
-import { PoolListViewType } from './PoolListViewType/PoolListViewType'
-import { PoolListCards } from './PoolListCards/PoolListCards'
 import { PoolListTable } from './PoolListTable/PoolListTable'
-import { usePoolListViewType } from './PoolListViewType/usePoolListViewType'
 import { usePoolList } from './PoolListProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 
 export function PoolListLayout() {
-  const { isTableView, isCardsView } = usePoolListViewType()
   const { pools, loading, count } = usePoolList()
 
   return (
@@ -36,14 +31,9 @@ export function PoolListLayout() {
 
         <Stack direction="row" w="full" align={{ base: 'end', sm: 'center' }}>
           <PoolListFilters />
-          {/* <HStack>
-            {isCardsView && <PoolListSortType />}
-            <PoolListViewType />
-          </HStack> */}
         </Stack>
       </Stack>
       <PoolListTable pools={pools} count={count || 0} loading={loading} />
-      {/* {isCardsView && <PoolListCards pools={pools} count={count || 0} loading={loading} />} */}
     </VStack>
   )
 }

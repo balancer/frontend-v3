@@ -30,6 +30,7 @@ export function V3VideoTutorial() {
               src="https://www.youtube.com/embed/kXynS3jAu0M?si=2cs7tOnMSOzb09Xp"
               title="YouTube video player"
               frameBorder="0"
+              // eslint-disable-next-line max-len
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen

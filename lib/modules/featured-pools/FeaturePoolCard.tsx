@@ -4,12 +4,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { FeaturedPool, Pool } from '../pool/PoolProvider'
 import { useRouter } from 'next/navigation'
 import { VStack, Text, Box, HStack } from '@chakra-ui/react'
-import {
-  poolClickHandler,
-  poolMouseEnterHandler,
-  getPoolTypeLabel,
-  getTotalAprLabel,
-} from '../pool/pool.utils'
+import { poolClickHandler, poolMouseEnterHandler, getPoolTypeLabel } from '../pool/pool.utils'
 import { PoolName } from '../pool/PoolName'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { PoolZenGarden } from '@/lib/shared/components/zen/ZenGarden'

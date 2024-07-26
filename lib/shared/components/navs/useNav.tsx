@@ -5,7 +5,6 @@ import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
 import { GithubIcon } from '../icons/social/GithubIcon'
 import { useParams } from 'next/navigation'
-import { size } from 'lodash'
 
 export function useNav() {
   const pathname = usePathname()
