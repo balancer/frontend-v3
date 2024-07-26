@@ -191,6 +191,7 @@ export function usePoolListQueryState() {
       userAddress,
       minTvl,
       tagIn: mappedPoolCategories.length > 0 ? mappedPoolCategories : null,
+      tagNotIn: ['BLACK_LISTED'],
     },
     textSearch,
   }
