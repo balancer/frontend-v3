@@ -53,7 +53,7 @@ export function AddLiquidityModal({
   useEffect(() => {
     if (isMounted) {
       setInitialHumanAmountsIn()
-      onClose()
+      if (!addLiquidityTxHash) onClose()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userAddress])
