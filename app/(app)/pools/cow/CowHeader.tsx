@@ -18,11 +18,24 @@ export function CowHeader() {
       >
         <Center>
           <VStack p="xl" maxW="xl" textAlign="center" spacing="lg">
-            <Heading>The first MEV-capturing AMM</Heading>
-            <Text>
+            <Heading
+              color="#BCEC79"
+              sx={{
+                textWrap: 'balance',
+              }}
+            >
+              The first MEV-capturing AMM
+            </Heading>
+            <Text color="#BCEC79">
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more
               return.{' '}
-              <Link href="https://cow.fi/cow-amm" textDecoration="underline" isExternal>
+              <Link
+                href="https://cow.fi/cow-amm"
+                textDecoration="underline"
+                isExternal
+                color="#BCEC79"
+                _hover={{ color: '#fff' }}
+              >
                 Learn more
                 <ArrowUpRight size={16} style={{ display: 'inline' }} />
               </Link>
