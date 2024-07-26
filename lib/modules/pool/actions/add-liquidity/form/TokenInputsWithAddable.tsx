@@ -10,6 +10,8 @@ import { TokenInputs } from './TokenInputs'
 import { useProportionalInputs } from './useProportionalInputs'
 import { useMaximumInputs } from './useMaximumInputs'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
+import { hasNoLiquidity } from '../../LiquidityActionHelpers'
+import { usePool } from '../../../PoolProvider'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -36,6 +38,7 @@ export function TokenInputsWithAddable({
     setIsMaximized: setIsMaximizedForProportionalInput,
     clearAmountsIn,
   } = useProportionalInputs()
+  const { pool } = usePool()
 
   const {
     canMaximize: canMaximizeForMaximumInput,
@@ -81,7 +84,7 @@ export function TokenInputsWithAddable({
 
   return (
     <VStack spacing="md" w="full">
-      {requiresProportionalInput && (
+      {requiresProportionalInput && !hasNoLiquidity(pool) && (
         <BalAlert status="info" content="This pool requires liquidity to be added proportionally" />
       )}
       {isConnected && (

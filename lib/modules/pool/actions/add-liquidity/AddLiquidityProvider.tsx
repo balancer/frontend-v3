@@ -14,6 +14,8 @@ import {
   LiquidityActionHelpers,
   areEmptyAmounts,
   filterHumanAmountsIn,
+  injectNativeAsset,
+  replaceWrappedWithNativeAsset,
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
@@ -22,7 +24,6 @@ import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { isGyro, isNonComposableStable } from '../../pool.helpers'
-import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
@@ -85,21 +86,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     return pool.allTokens.filter(token => token.isMainToken)
   }
 
-  const tokens = getPoolTokens().map(token => getToken(token.address, chain))
+  const tokens = getPoolTokens()
+    .map(token => getToken(token.address, chain))
+    .filter((token): token is GqlToken => !!token)
 
-  let isWrappedNativeAssetInPool = false
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
-      isWrappedNativeAssetInPool = true
-      return nativeAsset
-    } else {
-      return token
-    }
-  })
+  const tokensWithNativeAsset = replaceWrappedWithNativeAsset(tokens, nativeAsset)
 
-  let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens =
-    isWrappedNativeAssetInPool && nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+  const validTokens = injectNativeAsset(tokens, nativeAsset, pool)
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
