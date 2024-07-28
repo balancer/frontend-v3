@@ -8,6 +8,7 @@ import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isAddress } from 'viem'
+import { ApiErrorAlert } from '@/lib/shared/components/errors/ApiErrorAlert'
 
 export function _usePoolList({ fixedPoolTypes }: { fixedPoolTypes?: GqlPoolType[] } = {}) {
   const { queryVariables, toggleUserAddress } = usePoolListQueryState()
@@ -58,6 +59,10 @@ export function PoolListProvider({
   children,
 }: PropsWithChildren<{ fixedPoolTypes?: GqlPoolType[] }>) {
   const hook = _usePoolList({ fixedPoolTypes })
+
+  if (hook.error) {
+    return <ApiErrorAlert />
+  }
 
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }
