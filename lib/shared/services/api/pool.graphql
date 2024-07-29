@@ -19,6 +19,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       totalLiquidity
       totalShares
       fees24h
+      surplus24h
       swapFee
       volume24h
       holdersCount

@@ -25,6 +25,7 @@ export const notAllowedPoolMock: Pool = {
     totalLiquidity: '1695622.48',
     totalShares: '73484.69228349387319176',
     fees24h: '0.00',
+    surplus24h: '0.00',
     swapFee: '0.01',
     volume24h: '0.00',
     holdersCount: '2',
