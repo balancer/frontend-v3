@@ -31,6 +31,22 @@ In addition, veBAL holders can get an extra boost of up to 2.5x.`
 
 const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
 
+// Types that must be added to the total base
+const TOTAL_BASE_APR_TYPES = [
+  GqlPoolAprItemType.SwapFee,
+  GqlPoolAprItemType.IbYield,
+  GqlPoolAprItemType.Staking,
+  GqlPoolAprItemType.Merkl,
+  GqlPoolAprItemType.Surplus,
+]
+
+// Types that must be added to the total APR
+export const TOTAL_APR_TYPES = [
+  ...TOTAL_BASE_APR_TYPES,
+  GqlPoolAprItemType.Voting,
+  GqlPoolAprItemType.Locking,
+]
+
 function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
   return aprItems.reduce((acc, item) => {
     if (item.title !== 'BAL reward APR') {
@@ -118,17 +134,8 @@ export function useAprTooltip({
   const maxVeBal = balReward ? absMaxApr(filteredAprItems, vebalBoost) : bn(0)
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
-  // Types that must be added to the total base
-  const totalBaseAprTypes = [
-    GqlPoolAprItemType.SwapFee,
-    GqlPoolAprItemType.IbYield,
-    GqlPoolAprItemType.Staking,
-    GqlPoolAprItemType.Merkl,
-    GqlPoolAprItemType.Surplus,
-  ]
-
   const totalBase = filteredAprItems
-    .filter(item => totalBaseAprTypes.includes(item.type))
+    .filter(item => TOTAL_BASE_APR_TYPES.includes(item.type))
     .reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalBaseDisplayed = numberFormatter(totalBase.toString())
 
