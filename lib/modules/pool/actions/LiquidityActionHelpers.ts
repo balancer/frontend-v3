@@ -4,7 +4,7 @@ import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
 import { GqlChain, GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, isZero } from '@/lib/shared/utils/numbers'
 import {
   HumanAmount,
   InputAmount,
@@ -312,4 +312,8 @@ export function injectNativeAsset(
     return [nativeAsset, ...validTokens]
   }
   return validTokens
+}
+
+export function hasNoLiquidity(pool: Pool): boolean {
+  return isZero(pool.dynamicData.totalShares)
 }

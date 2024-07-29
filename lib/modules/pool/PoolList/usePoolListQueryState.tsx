@@ -135,6 +135,8 @@ export function usePoolListQueryState() {
         return 'Points'
       case 'SUPERFEST':
         return 'Superfest'
+      case 'ARBITRUM_GRANTS':
+        return 'Arbitrum Grants'
       default:
         return (poolCategory as string).toLowerCase().replace('_', ' ')
     }
@@ -191,6 +193,7 @@ export function usePoolListQueryState() {
       userAddress,
       minTvl,
       tagIn: mappedPoolCategories.length > 0 ? mappedPoolCategories : null,
+      tagNotIn: ['BLACK_LISTED'],
     },
     textSearch,
   }

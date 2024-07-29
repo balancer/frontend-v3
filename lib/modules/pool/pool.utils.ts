@@ -263,3 +263,7 @@ export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string 
 export function getAuraPoolLink(chainId: number, pid: string) {
   return `https://app.aura.finance/#/${chainId}/pool/${pid}`
 }
+
+export function shouldHideSwapFee(poolType: GqlPoolType) {
+  return poolType === GqlPoolType.CowAmm
+}

@@ -4,13 +4,17 @@ import { useColorMode } from '@chakra-ui/react'
 interface PictureProps {
   imgName: string
   altText: string
-  defaultImgType: 'png' | 'jpg' | 'webp' | 'avif'
+  defaultImgType: 'png' | 'jpg' | 'webp' | 'avif' | 'svg'
   imgAvif?: boolean
   imgWebp?: boolean
   imgPng?: boolean
   imgPngDark?: boolean
   imgJpg?: boolean
   imgJpgDark?: boolean
+  imgSvg?: boolean
+  imgSvgPortrait?: boolean
+  imgSvgPortraitDark?: boolean
+  imgSvgDark?: boolean
   imgAvifPortrait?: boolean
   imgAvifPortraitDark?: boolean
   imgAvifDark?: boolean
@@ -31,6 +35,10 @@ export const Picture: React.FC<PictureProps> = ({
   imgPngDark = false,
   imgJpg = false,
   imgJpgDark = false,
+  imgSvg = false,
+  imgSvgDark = false,
+  imgSvgPortrait = false,
+  imgSvgPortraitDark = false,
   imgAvifPortrait = false,
   imgAvifPortraitDark = false,
   imgAvifDark = false,
@@ -46,6 +54,31 @@ export const Picture: React.FC<PictureProps> = ({
 
   return (
     <picture className="picture">
+      {imgSvgPortraitDark && (
+        <source
+          srcSet={`${imagePath}-portrait-dark.svg`}
+          type="image/svg+xml"
+          media={`(orientation: portrait) and ${
+            colorMode === 'dark' ? '(prefers-color-scheme: dark)' : 'none'
+          }`}
+        />
+      )}
+      {imgSvgPortrait && (
+        <source
+          srcSet={`${imagePath}-portrait.svg`}
+          type="image/svg+xml"
+          media="(orientation: portrait)"
+        />
+      )}
+      {imgSvgDark && (
+        <source
+          srcSet={`${imagePath}.svg`}
+          type="image/svg+xml"
+          media={colorMode === 'dark' ? '(prefers-color-scheme: dark)' : 'none'}
+        />
+      )}
+      {imgSvg && <source srcSet={`${imagePath}.svg`} type="image/svg+xml" />}
+
       {imgAvifDark && (
         <source
           srcSet={`${imagePath}-dark.avif`}
