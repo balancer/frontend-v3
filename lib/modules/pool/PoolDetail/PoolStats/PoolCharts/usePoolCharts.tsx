@@ -192,6 +192,19 @@ export function getPoolTabsList({
     ]
   }
 
+  if (poolType === GqlPoolType.CowAmm) {
+    return [
+      {
+        value: PoolChartTab.VOLUME,
+        label: 'Volume',
+      },
+      {
+        value: PoolChartTab.TVL,
+        label: 'TVL',
+      },
+    ]
+  }
+
   return [
     {
       value: PoolChartTab.VOLUME,

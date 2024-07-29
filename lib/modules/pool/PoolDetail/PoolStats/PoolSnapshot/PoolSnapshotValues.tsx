@@ -11,10 +11,11 @@ import { useTokens } from '../../../../tokens/TokensProvider'
 import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
+import { isCowAmmPool } from '../../../pool.helpers'
 
-export type PoolStatsValues = {
+type PoolStatsValues = {
   totalLiquidity: string
-  fees24h: string
+  income24h: string
   weeklyRewards: string
 }
 
@@ -48,12 +49,16 @@ export function PoolSnapshotValues() {
     if (pool) {
       return {
         totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false }),
-        fees24h: toCurrency(pool.dynamicData.fees24h),
+        income24h: isCowAmmPool(pool.type)
+          ? toCurrency(pool.dynamicData.surplus24h)
+          : toCurrency(pool.dynamicData.fees24h),
         weeklyRewards: toCurrency(weeklyRewards),
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
+
+  const incomeLabel = isCowAmmPool(pool.type) ? 'Surplus (24h)' : 'Fees (24h)'
 
   return (
     <>
@@ -85,10 +90,10 @@ export function PoolSnapshotValues() {
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
         <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          Fees (24h)
+          {incomeLabel}
         </Text>
         {poolStatsValues ? (
-          <Heading size="h4">{poolStatsValues.fees24h}</Heading>
+          <Heading size="h4">{poolStatsValues.income24h}</Heading>
         ) : (
           <Skeleton height="30px" w="100px" />
         )}
