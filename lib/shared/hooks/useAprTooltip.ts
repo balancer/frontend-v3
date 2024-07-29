@@ -13,8 +13,8 @@ export const inherentTokenYieldTooltipText = `Inherent token yield,
 export const merklIncentivesTooltipText = `Merkl is a platform that allows 3rd party Incentive Providers
  to offer campaigns with additional yield for Liquidity Providers.`
 
-export const surplusIncentivesTooltipText = `On a traditional AMM, LP lose money to arbitrageurs.
-CoW AMM instead prevents this loss (also called LVR), therefore increasing LPs return`
+export const surplusIncentivesTooltipText = `In a traditional AMM, LPs lose money to arbitrageurs. CoW AMM 
+prevents this loss (also called LVR), thereby increasing LP returns.`
 
 export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield.
 The more veBAL held, the higher the boost.`
