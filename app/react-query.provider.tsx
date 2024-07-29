@@ -14,7 +14,11 @@ export const queryClient = new QueryClient({
     // Global handler for every react-query error
     onError: (error, query) => {
       if (shouldIgnoreError(error)) return
-      console.log('Sentry capturing error: ', { meta: query?.meta, error })
+      console.log('Sentry capturing error: ', {
+        meta: query?.meta,
+        error,
+        queryKey: query.queryKey,
+      })
 
       if (query?.meta) return captureSentryError(error, query?.meta as SentryMetadata)
 
