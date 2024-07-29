@@ -9,7 +9,7 @@ import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { bptUsdValue, isStable } from '../../../pool.helpers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { getPoolTypeLabel } from '../../../pool.utils'
+import { getPoolTypeLabel, shouldHideSwapFee } from '../../../pool.utils'
 
 export function useFormattedPoolAttributes() {
   const { pool } = usePool()
@@ -54,7 +54,7 @@ export function useFormattedPoolAttributes() {
     if (!pool) return []
     const { name, symbol, createTime, dynamicData, type } = pool
 
-    return [
+    const attributes = [
       {
         title: 'Name',
         value: name,
@@ -104,6 +104,10 @@ export function useFormattedPoolAttributes() {
         value: toCurrency(bptUsdValue(pool, '1')),
       },
     ]
+    if (shouldHideSwapFee(pool?.type)) {
+      return attributes.filter(a => a?.title !== 'Swap fees')
+    }
+    return attributes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, poolOwnerData])
 
