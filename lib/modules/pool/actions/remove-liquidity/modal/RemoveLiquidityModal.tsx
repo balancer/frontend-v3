@@ -61,6 +61,7 @@ export function RemoveLiquidityModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />

@@ -126,7 +126,7 @@ export function PartnerRedirectModal({ partner, redirectUrl, isOpen, onClose }: 
   const info = partnerInfo[partner]
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>About {info.shortName}</ModalHeader>

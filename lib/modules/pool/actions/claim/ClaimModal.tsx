@@ -77,6 +77,7 @@ export function ClaimModal({
         onClose(!!claimTxHash)
       }}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!claimTxHash} />

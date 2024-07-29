@@ -64,6 +64,7 @@ export function SwapPreviewModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!swapTxHash && hasQuoteContext} />

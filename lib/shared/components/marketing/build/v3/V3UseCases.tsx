@@ -68,7 +68,7 @@ function UseCaseModal({ useCase, isOpen, onClose }: ModalProps) {
   const info = useCaseInfo[useCase]
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>{info.title}</ModalHeader>
