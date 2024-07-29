@@ -16,9 +16,8 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
-import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
+import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
 
 type Props = {
   isOpen: boolean
@@ -39,8 +38,6 @@ export function AddLiquidityModal({
     useAddLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
-  const isMounted = useIsMounted()
-  const { userAddress } = useUserAccount()
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -50,13 +47,10 @@ export function AddLiquidityModal({
     }
   }, [addLiquidityTxHash])
 
-  useEffect(() => {
-    if (isMounted) {
-      setInitialHumanAmountsIn()
-      onClose()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  useOnUserAccountChanged(() => {
+    setInitialHumanAmountsIn()
+    onClose()
+  })
 
   return (
     <Modal
