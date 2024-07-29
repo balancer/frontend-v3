@@ -51,6 +51,7 @@ const getDefaultPoolActivityChartOptions = (
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
+  is2xl = false,
   isExpanded = false,
   chain: GqlChain
 ): echarts.EChartsCoreOption => {
@@ -124,6 +125,7 @@ const getDefaultPoolActivityChartOptions = (
     },
     tooltip: {
       triggerOn: 'mousemove|click',
+      confine: is2xl ? false : true,
       enterable: true,
       hideDelay: 300,
       position: function (point: number[]) {
@@ -266,7 +268,7 @@ export function getPoolActivityTabsList({
 
 export function usePoolActivityChart(isExpanded: boolean) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const { isMobile } = useBreakpoints()
+  const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
   const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -504,6 +506,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
       theme,
       toCurrency,
       isMobile,
+      is2xl,
       isExpanded,
       _chain
     ),
