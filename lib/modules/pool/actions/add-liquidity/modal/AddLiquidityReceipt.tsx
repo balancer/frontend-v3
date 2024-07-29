@@ -24,6 +24,11 @@ export function AddLiquidityReceipt({ txHash }: { txHash: Hash }) {
 
   if (!isUserAddressLoading && !userAddress) return <Text>User is not connected</Text>
   if (error) return <Text>We were unable to find this transaction hash</Text>
+  if (!isLoading && !sentTokens.length) {
+    return (
+      <Text>We were unable to find logs for this transaction hash and the connected account</Text>
+    )
+  }
 
   return (
     <VStack spacing="sm" align="start">

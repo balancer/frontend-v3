@@ -165,28 +165,32 @@ export function useTransactionLogsQuery({
   const viemClient = getViemClient(chain)
   const receipt = useTransaction({ hash: txHash, chainId })
 
+  const blockHash = receipt.data?.blockHash
+
   const outgoingTransfersQuery = useQuery({
-    queryKey: ['tx.logs.outgoing', userAddress, receipt.data?.blockHash],
+    queryKey: ['tx.logs.outgoing', userAddress, blockHash],
     queryFn: () =>
       viemClient.getLogs({
-        blockHash: receipt?.data?.blockHash,
+        blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { from: userAddress },
       }),
+    enabled: !!blockHash,
   })
 
   const incomingTransfersQuery = useQuery({
-    queryKey: ['tx.logs.incoming.transfers', userAddress, receipt.data?.blockHash],
+    queryKey: ['tx.logs.incoming.transfers', userAddress, blockHash],
     queryFn: () =>
       viemClient.getLogs({
-        blockHash: receipt?.data?.blockHash,
+        blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { to: userAddress },
       }),
+    enabled: !!blockHash,
   })
 
   // Catches when the wNativeAsset is withdrawn from the vault, assumption is
@@ -201,6 +205,7 @@ export function useTransactionLogsQuery({
         event: parseAbiItem('event Withdrawal(address indexed src, uint256 wad)'),
         args: { src: networkConfig.contracts.balancer.vaultV2 },
       }),
+    enabled: !!blockHash,
   })
 
   const outgoingTransfersData = useMemo(
@@ -229,6 +234,8 @@ export function useTransactionLogsQuery({
       incomingTransfersQuery.error ||
       incomingWithdrawalsQuery.error,
     isLoading:
+      // We cannot guarantee that the transaction is in logs until blockHash is available
+      !blockHash ||
       receipt.isLoading ||
       outgoingTransfersQuery.isLoading ||
       incomingTransfersQuery.isLoading ||
