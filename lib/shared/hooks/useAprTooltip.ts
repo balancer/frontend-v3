@@ -32,7 +32,7 @@ In addition, veBAL holders can get an extra boost of up to 2.5x.`
 const stakingTokenTooltipText = '3rd party incentives (outside the veBAL system)'
 
 // Types that must be added to the total base
-const totalBaseAprTypes = [
+const TOTAL_BASE_APR_TYPES = [
   GqlPoolAprItemType.SwapFee,
   GqlPoolAprItemType.IbYield,
   GqlPoolAprItemType.Staking,
@@ -42,7 +42,7 @@ const totalBaseAprTypes = [
 
 // Types that must be added to the total APR
 export const TOTAL_APR_TYPES = [
-  ...totalBaseAprTypes,
+  ...TOTAL_BASE_APR_TYPES,
   GqlPoolAprItemType.Voting,
   GqlPoolAprItemType.Locking,
 ]
@@ -135,7 +135,7 @@ export function useAprTooltip({
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
   const totalBase = filteredAprItems
-    .filter(item => totalBaseAprTypes.includes(item.type))
+    .filter(item => TOTAL_BASE_APR_TYPES.includes(item.type))
     .reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalBaseDisplayed = numberFormatter(totalBase.toString())
 
