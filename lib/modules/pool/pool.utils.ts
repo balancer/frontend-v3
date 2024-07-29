@@ -22,7 +22,7 @@ import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { Pool } from './PoolProvider'
 import BigNumber from 'bignumber.js'
-import { totalAprTypes } from '@/lib/shared/hooks/useAprTooltip'
+import { TOTAL_APR_TYPES } from '@/lib/shared/hooks/useAprTooltip'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -114,7 +114,7 @@ export function getTotalApr(
 
   aprItems
     // Filter known APR types to avoid including new unknown API types that are not yet displayed in the APR tooltip
-    .filter(item => totalAprTypes.includes(item.type))
+    .filter(item => TOTAL_APR_TYPES.includes(item.type))
     .forEach(item => {
       if (item.title === 'BAL reward APR') {
         if (!usedBalReward) {

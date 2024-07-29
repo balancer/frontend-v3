@@ -41,7 +41,7 @@ const totalBaseAprTypes = [
 ]
 
 // Types that must be added to the total APR
-export const totalAprTypes = [
+export const TOTAL_APR_TYPES = [
   ...totalBaseAprTypes,
   GqlPoolAprItemType.Voting,
   GqlPoolAprItemType.Locking,
