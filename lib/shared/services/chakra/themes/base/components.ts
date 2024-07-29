@@ -385,6 +385,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
         md: {
           h: { base: '36px', md: '40px' },
+          fontSize: { base: '0.875rem', md: '1rem' },
           px: { base: '2', md: '3' },
         },
         lg: {
