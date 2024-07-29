@@ -215,7 +215,7 @@ export function usePoolSnapshots(
 ) {
   return useQuery(GetPoolSnapshotsDocument, {
     variables: {
-      poolId,
+      poolId: poolId.toLowerCase(),
       range,
       chainId,
     },
