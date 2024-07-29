@@ -20,7 +20,7 @@ export function GyroIcon() {
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="currentColor" />
-          <stop offset="1" stopColor="currentColor" stop-opacity="0" />
+          <stop offset="1" stopColor="currentColor" stopOpacity="0" />
         </linearGradient>
       </defs>
     </svg>
