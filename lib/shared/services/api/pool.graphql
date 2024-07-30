@@ -427,6 +427,7 @@ query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $cha
     totalLiquidity
     volume24h
     fees24h
+    surplus24h
     sharePrice
   }
 }
