@@ -142,7 +142,7 @@ export function RemoveLiquidityForm() {
                 setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
-                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                    <Text variant="secondary" fontSize="sm" color="font.secondary">
                       Price impact:{' '}
                     </Text>
                     <Text variant="secondary" fontSize="sm" color={priceImpactColor}>

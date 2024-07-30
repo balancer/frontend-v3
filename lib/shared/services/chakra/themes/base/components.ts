@@ -793,9 +793,9 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     Switch: {
       baseStyle: {
         track: {
-          bg: 'gray.500',
+          bg: 'font.secondary',
           _checked: {
-            bg: 'purple.500',
+            bg: 'font.highlight',
           },
         },
       },

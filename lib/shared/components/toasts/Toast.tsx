@@ -111,7 +111,7 @@ export function Toast({ id, status, isClosable, title, description, linkUrl }: P
           {status === 'loading' && (
             <CircularProgress
               isIndeterminate
-              color="orange.300"
+              color="font.warning"
               trackColor="border.base"
               size={5}
               mt="1"

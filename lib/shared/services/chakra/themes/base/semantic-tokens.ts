@@ -279,6 +279,10 @@ export function getSemanticTokens(tokens: any, colors: any) {
           default: tokens.colors.light.text.highlight,
           _dark: tokens.colors.dark.text.highlight,
         },
+        warning: {
+          default: tokens.colors.light.text.warning,
+          _dark: tokens.colors.dark.text.warning,
+        },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,
           _dark: tokens.colors.dark.button.background.primary,
