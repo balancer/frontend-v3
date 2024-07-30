@@ -22,6 +22,7 @@ export enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
   FEES = 'fees',
+  SURPLUS = 'surplus',
 }
 
 export type PoolChartPeriod = {
@@ -202,6 +203,10 @@ export function getPoolTabsList({
         value: PoolChartTab.TVL,
         label: 'TVL',
       },
+      {
+        value: PoolChartTab.SURPLUS,
+        label: 'Surplus',
+      },
     ]
   }
 
@@ -281,6 +286,12 @@ export function usePoolCharts() {
       }, 0)
     }
 
+    if (activeTab.value === PoolChartTab.SURPLUS) {
+      val = data?.snapshots.reduce((acc, snapshot) => {
+        return (acc += Number(snapshot.surplus24h))
+      }, 0)
+    }
+
     if (activeTab.value === PoolChartTab.VOLUME) {
       val = data?.snapshots.reduce((acc, snapshot) => {
         return (acc += Number(snapshot.volume24h))
@@ -306,6 +317,13 @@ export function usePoolCharts() {
         return [snapshot.timestamp, snapshot.fees24h]
       })
     }
+
+    if (activeTab.value === PoolChartTab.SURPLUS) {
+      chartArr = snapshots.map(snapshot => {
+        return [snapshot.timestamp, snapshot.surplus24h]
+      })
+    }
+
     if (activeTab.value === PoolChartTab.VOLUME) {
       chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.volume24h]
@@ -443,6 +461,11 @@ export function usePoolCharts() {
       },
     },
     [PoolChartTab.FEES]: {
+      type: 'bar',
+      color: defaultTheme.colors.yellow[400],
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+    [PoolChartTab.SURPLUS]: {
       type: 'bar',
       color: defaultTheme.colors.yellow[400],
       hoverColor: defaultTheme.colors.pink[500],
