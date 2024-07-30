@@ -112,7 +112,8 @@ const getDefaultPoolActivityChartOptions = (
   nextTheme: ColorMode = 'dark',
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
-  isMobile = false
+  isMobile = false,
+  is2xl = false
   // chain: GqlChain
 ): echarts.EChartsCoreOption => {
   const toolTipTheme = {
@@ -175,6 +176,7 @@ const getDefaultPoolActivityChartOptions = (
     },
     tooltip: {
       triggerOn: 'mousemove|click',
+      confine: is2xl ? false : true,
       enterable: true,
       hideDelay: 300,
       position: function (point: number[]) {
@@ -209,14 +211,14 @@ const getDefaultPoolActivityChartOptions = (
             toolTipTheme.container
           };margin-right:-15px">
             <div style="font-size: 14px; font-weight: 700;
-            display:flex;flex-wrap:wrap;justify-content:start;gap:4px;letter-spacing:-0.25px;${
+            display:flex;flex-wrap:wrap;justify-content:start;gap:0px;letter-spacing:-0.25px; padding-bottom:2px;${
               toolTipTheme.heading
             }; color: ${toolTipTheme.text}; ">
-              <span>${typeStr}</span>
-              <span>${currencyFormatter(metaData.usdValue)}</span>
+              <span>${typeStr} </span>
+              <span>&nbsp;${currencyFormatter(metaData.usdValue)}&nbsp;</span>
               <span>on ${getChainShortName(metaData.chain)}</span>
             </div>
-            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px">
+            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px";>
               ${tokens?.map((token, index) => {
                 return `
                   <div style="color: ${
@@ -235,7 +237,7 @@ const getDefaultPoolActivityChartOptions = (
                 `
               })}
             </div>
-            <a style="width:100%;display:flex;align-items:center;font-size: 0.75rem; font-weight: 500; color: ${
+            <a style="width:100%;display:flex;align-items:center;font-size: 0.75rem; padding-top:4px;font-weight: 500; color: ${
               toolTipTheme.text
             };" href=${txLink} target="_blank">
             <span style="margin-right:4px;">
@@ -306,7 +308,7 @@ const tabsList: PoolActivityChartTypeTab[] = [
 
 export function useEcosystemPoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const { isMobile } = useBreakpoints()
+  const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
   const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -428,7 +430,8 @@ export function useEcosystemPoolActivityChart() {
       nextTheme as ColorMode,
       theme,
       toCurrency,
-      isMobile
+      isMobile,
+      is2xl
     ),
     eChartsRef,
     chartData,

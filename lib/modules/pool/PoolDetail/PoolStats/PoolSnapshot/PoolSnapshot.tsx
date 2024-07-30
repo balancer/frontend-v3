@@ -71,6 +71,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
           h="full"
+          role="group"
         >
           <ButtonGroup
             size="xxs"

@@ -105,9 +105,18 @@ export function UserSnapshotValues() {
         </Text>
         {poolMyStatsValues ? (
           poolMyStatsValues.myLiquidity ? (
-            <HStack>
-              <Heading size="h4">{toCurrency(poolMyStatsValues.myLiquidity)}</Heading>
-              <Text color="font.link" onClick={handleClick} cursor="pointer">
+            <HStack onClick={handleClick}>
+              <Heading cursor="pointer" size="h4">
+                {toCurrency(poolMyStatsValues.myLiquidity)}
+              </Heading>
+              <Text
+                color="font.link"
+                cursor="pointer"
+                opacity="0"
+                fontSize="sm"
+                transition="opacity 0.2s var(--ease-out-cubic)"
+                _groupHover={{ opacity: '1' }}
+              >
                 Manage
               </Text>
             </HStack>
