@@ -69,6 +69,8 @@ export function CowPoolBanner() {
             bg="#BCEC79"
             color="#194D05"
             _hover={{ bg: '#E2F8BF' }}
+            target="_blank"
+            rel="noopener noreferrer"
           >
             How it works
           </Button>
