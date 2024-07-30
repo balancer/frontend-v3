@@ -1,6 +1,6 @@
 'use client'
 
-import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
+import { Modal, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useEffect, useRef } from 'react'
 import { usePool } from '../../../PoolProvider'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
@@ -11,13 +11,14 @@ import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
 import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
+import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
 
 type Props = {
   isOpen: boolean
@@ -34,7 +35,8 @@ export function RemoveLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
+  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext, amountsOut } =
+    useRemoveLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
@@ -73,31 +75,29 @@ export function RemoveLiquidityModal({
         />
 
         <ModalCloseButton />
-        <ModalBody>
-          <AnimatePresence mode="wait" initial={false}>
-            {removeLiquidityTxHash ? (
-              <motion.div
-                key="receipt"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <RemoveLiquidityReceipt txHash={removeLiquidityTxHash} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="preview"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <RemoveLiquidityPreview />
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </ModalBody>
+        <AnimatedModalBody>
+          {removeLiquidityTxHash && amountsOut.length > 0 ? (
+            <motion.div
+              key="receipt"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <RemoveLiquidityReceipt txHash={removeLiquidityTxHash} />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="preview"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <RemoveLiquidityPreview />
+            </motion.div>
+          )}
+        </AnimatedModalBody>
         <ActionModalFooter
           isSuccess={!!removeLiquidityTxHash}
           currentStep={transactionSteps.currentStep}
