@@ -35,23 +35,28 @@ module.exports = withSentryConfig(nextConfig, sentryOptions)
  * More info: https://help.safe.global/en/articles/40859-add-a-custom-safe-app
  */
 async function manifestHeaders() {
+  const corsHeaders = [
+    {
+      key: 'Access-Control-Allow-Origin',
+      value: '*',
+    },
+    {
+      key: 'Access-Control-Allow-Methods',
+      value: 'GET',
+    },
+    {
+      key: 'Access-Control-Allow-Headers',
+      value: 'X-Requested-With, content-type, Authorization',
+    },
+  ]
   return [
     {
       source: '/manifest.json',
-      headers: [
-        {
-          key: 'Access-Control-Allow-Origin',
-          value: '*',
-        },
-        {
-          key: 'Access-Control-Allow-Methods',
-          value: 'GET',
-        },
-        {
-          key: 'Access-Control-Allow-Headers',
-          value: 'X-Requested-With, content-type, Authorization',
-        },
-      ],
+      headers: corsHeaders,
+    },
+    {
+      source: '/pools/manifest.json',
+      headers: corsHeaders,
     },
   ]
 }
