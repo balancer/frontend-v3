@@ -12,7 +12,7 @@ export function CowFooter() {
   return (
     <Box zIndex="-1" position="relative">
       <FadeInOnView animateOnce={false}>
-        <Box maxW="maxContent" mx="auto" px={['ms', 'md']} pt="xl" zIndex="0">
+        <Box maxW="maxContent" mx="auto" px={{ base: '0', '2xl': 'md' }} pt="xl" zIndex="0">
           {banners?.footerSrc && (
             <Picture
               imgName="cow-footer"

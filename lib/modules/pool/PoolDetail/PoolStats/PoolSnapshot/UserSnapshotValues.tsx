@@ -100,7 +100,7 @@ export function UserSnapshotValues() {
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My liquidity
         </Text>
         {poolMyStatsValues ? (
@@ -128,7 +128,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My APR
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
@@ -144,7 +144,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           {`My potential weekly yield${
             poolMyStatsValues && !poolMyStatsValues.myLiquidity ? ' on $10k' : ''
           }`}
@@ -156,7 +156,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My claimable rewards
         </Text>
         {poolMyStatsValues ? (
