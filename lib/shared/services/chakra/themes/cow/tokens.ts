@@ -13,11 +13,11 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         background: {
           ...baseTokens.colors.light.background,
           level0: '#E4F9C3',
-          level1: '#EAFAD1',
+          level1: '#E6F9C4',
           level2: '#F5FDE8',
           level3: '#F9FEF1',
           level4: '#FFFFFF',
-          base: 'hsla(83, 81%, 90%, 1)',
+          base: '#E6F9C4',
           baseWithOpacity: 'hsla(83, 81%, 87%, 0.75)',
           special: colors.gradient.dawnLight,
           level0WithOpacity: 'rgba(213, 245, 163, 0.96)',
