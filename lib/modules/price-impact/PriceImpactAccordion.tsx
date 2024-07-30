@@ -70,7 +70,7 @@ export function PriceImpactAccordion({
   return (
     <Box w="full">
       <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem w="full" isDisabled={isDisabled}>
+        <AccordionItem w="full" isDisabled={isDisabled} shadow={isDisabled ? 'none' : undefined}>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
