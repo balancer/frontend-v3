@@ -202,6 +202,10 @@ export function getSemanticTokens(tokens: any, colors: any) {
           default: tokens.colors.light.border.base,
           _dark: tokens.colors.dark.border.base,
         },
+        divider: {
+          default: tokens.colors.light.border.divider,
+          _dark: tokens.colors.dark.border.divider,
+        },
         highlight: {
           default: tokens.colors.light.border.highlight,
           _dark: tokens.colors.dark.border.highlight,

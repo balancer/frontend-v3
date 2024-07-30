@@ -26,6 +26,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         border: {
           ...baseTokens.colors.light.border,
           base: '#F9FEF1',
+          divider: '#D4F7A1',
           subduedZen: 'hsla(88, 63%, 59%, 0.2)',
         },
         button: {
@@ -44,6 +45,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         },
         input: {
           ...baseTokens.colors.light.input,
+          fontDefault: '#194D05',
           fontPlaceholder: tinycolor(colors.green['900']).setAlpha(0.5),
           borderDefault: '#FDFFFA',
           borderHover: colors.green['700'],
@@ -64,6 +66,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         border: {
           ...baseTokens.colors.dark.border,
           base: '#194D05',
+          divider: '#040E01',
           subduedZen: 'hsla(83, 81%, 80%, 0.03)',
         },
         button: {
@@ -82,6 +85,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         },
         input: {
           ...baseTokens.colors.dark.input,
+          fontDefault: '#E4F9C3',
           fontPlaceholder: tinycolor(colors.green['100']).setAlpha(0.5),
           borderDefault: colors.green['900'],
           borderHover: colors.green['700'],

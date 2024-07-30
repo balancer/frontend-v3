@@ -22,6 +22,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
         },
         border: {
           base: '#FFFFFF',
+          divider: colors.brown['100'],
           highlight: colors.green['600'],
           subduedZen: 'rgba(176, 126, 67, 0.08)',
         },
@@ -104,6 +105,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
         // Border colors
         border: {
           base: '#4C5561',
+          divider: colors.gray['800'],
           highlight: colors.green['500'],
           zen: 'rgba(76, 85, 97, 0.50)',
           subduedZen: 'rgba(229, 211, 190, 0.05)',
