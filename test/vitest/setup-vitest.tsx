@@ -19,6 +19,17 @@ vi.mock('next/image', () => ({
   },
 }))
 
+vi.mock('next/navigation', async importOriginal => {
+  const actual = await importOriginal()
+  return {
+    // @ts-expect-error - Mocking next router
+    ...actual,
+    useParams: () => {
+      return { variant: 'v2' }
+    },
+  }
+})
+
 // waitFor global timeout
 // https://testing-library.com/docs/dom-testing-library/api-configuration/#asyncutiltimeout
 configure({ asyncUtilTimeout: 10_000 })
