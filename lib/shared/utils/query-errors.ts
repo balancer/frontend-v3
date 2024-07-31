@@ -254,7 +254,7 @@ function shouldIgnore(e: Error): boolean {
   */
   if (e.message.includes('Connector not connected')) return true
   if (e.message.includes('Provider not found')) return true
-  // Happens when disconnecting wallet:
+  // Happens randomly when disconnecting wallet:
   if (e.message.includes(`Cannot read properties of undefined (reading 'listenerCount')`)) {
     return true
   }
