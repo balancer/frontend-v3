@@ -793,21 +793,20 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     Switch: {
       baseStyle: {
         track: {
-          bg: 'gray.500',
+          bg: 'font.secondary',
           _checked: {
-            bg: 'purple.500',
+            bg: 'font.highlight',
           },
         },
       },
     },
     Divider: {
       baseStyle: {
-        borderColor: 'brown.100',
+        borderColor: 'border.divider',
         borderWidth: '1px',
-        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 1)',
         _dark: {
-          borderColor: 'gray.800',
-          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.1)',
+          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.15)',
         },
       },
     },

@@ -65,15 +65,14 @@ const getDefaultPoolActivityChartOptions = (
 
   return {
     grid: {
-      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '5.5%',
-      right: '2.5%',
+      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '60',
+      right: '10',
       top: '7.5%',
       bottom: !isExpanded ? '50%' : '10.5%',
       containLabel: false,
     },
     xAxis: {
       show: isExpanded,
-      offset: 10,
       type: 'time',
       minorSplitLine: { show: false },
       axisTick: { show: false },
@@ -106,7 +105,6 @@ const getDefaultPoolActivityChartOptions = (
     },
     yAxis: {
       show: isExpanded,
-      offset: 10,
       type: 'value',
       axisLine: { show: false },
       minorSplitLine: { show: false },
@@ -464,7 +462,10 @@ export function usePoolActivityChart(isExpanded: boolean) {
       }
 
       if (activeTab.value === 'all') {
-        const lastTimestamp = Math.max(firstSwapTimeStamp, firstRemoveTimeStamp, firstAddTimeStamp)
+        const timestamps = [firstAddTimeStamp, firstRemoveTimeStamp, firstSwapTimeStamp].filter(
+          Boolean
+        )
+        const lastTimestamp = Math.min(...timestamps)
         diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
       }
 
