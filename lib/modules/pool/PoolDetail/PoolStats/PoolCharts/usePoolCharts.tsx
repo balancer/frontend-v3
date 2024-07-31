@@ -15,6 +15,7 @@ import { PoolVariant, BaseVariant } from '../../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useTheme as useNextTheme } from 'next-themes'
+import { isCowAmmPool } from '../../../pool.helpers'
 
 const MIN_DISPLAY_PERIOD_DAYS = 30
 
@@ -243,6 +244,8 @@ export function usePoolSnapshots(
 
 export function usePoolCharts() {
   const { pool } = usePool()
+  const isCowPool = isCowAmmPool(pool.type)
+
   const { id: poolId, variant } = useParams()
   const { toCurrency } = useCurrency()
   const { theme: nextTheme } = useNextTheme()
@@ -433,14 +436,20 @@ export function usePoolCharts() {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
           offset: 0,
-          color: theme.semanticTokens.colors.chart.pool.bar.volume.from,
+          color: isCowPool
+            ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.from
+            : theme.semanticTokens.colors.chart.pool.bar.volume.from,
         },
         {
           offset: 1,
-          color: theme.semanticTokens.colors.chart.pool.bar.volume.to,
+          color: isCowPool
+            ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.to
+            : theme.semanticTokens.colors.chart.pool.bar.volume.to,
         },
       ]),
-      hoverColor: defaultTheme.colors.pink[500],
+      hoverColor: isCowPool
+        ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.hover
+        : defaultTheme.colors.pink[500],
     },
     [PoolChartTab.TVL]: {
       type: 'line',

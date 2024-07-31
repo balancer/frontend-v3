@@ -312,6 +312,11 @@ export function getSemanticTokens(tokens: any, colors: any) {
             volume: {
               from: 'rgba(0, 211, 149, 1)',
               to: 'rgba(0, 211, 149, 0.2)',
+              cow: {
+                from: 'rgba(111, 192, 37, 1)',
+                to: 'rgba(111, 192, 37, 0.5)',
+                hover: '#00a1ff',
+              },
             },
           },
           scatter: {
