@@ -42,7 +42,7 @@ function getRateProviderIcon(data: GqlPriceRateProviderData, token: GqlToken) {
 
   if (data.reviewed && data.summary === 'safe') {
     if (warnings.length > 0) {
-      icon = <Icon as={AlertTriangle} color="orange.500" size={16} cursor="pointer" />
+      icon = <Icon as={AlertTriangle} color="font.warning" size={16} cursor="pointer" />
       level = 1
     } else {
       icon = (

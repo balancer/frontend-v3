@@ -63,7 +63,7 @@ export function PoolSnapshotValues() {
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           TVL
         </Text>
         {poolStatsValues ? (
@@ -73,7 +73,7 @@ export function PoolSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           APR for LPs
         </Text>
         <MemoizedMainAprTooltip
@@ -89,7 +89,7 @@ export function PoolSnapshotValues() {
         />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           {incomeLabel}
         </Text>
         {poolStatsValues ? (
@@ -99,7 +99,7 @@ export function PoolSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           Weekly incentives
         </Text>
         {poolStatsValues ? (

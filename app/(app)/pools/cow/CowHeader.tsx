@@ -1,7 +1,7 @@
 'use client'
 
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Card, Center, Heading, Link, Text, VStack, Image } from '@chakra-ui/react'
+import { Box, Card, Center, Heading, Link, Text, VStack, Image } from '@chakra-ui/react'
 import { ArrowUpRight } from 'react-feather'
 
 export function CowHeader() {
@@ -35,9 +35,18 @@ export function CowHeader() {
                 isExternal
                 color="#BCEC79"
                 _hover={{ color: '#fff' }}
+                role="group"
+                position="relative"
               >
                 Learn more
-                <ArrowUpRight size={16} style={{ display: 'inline' }} />
+                <Box
+                  display="inline"
+                  position="absolute"
+                  transition="transform 0.2s var(--ease-out-cubic)"
+                  _groupHover={{ transform: 'translateX(1.5px)' }}
+                >
+                  <ArrowUpRight size={14} style={{ display: 'inline' }} />
+                </Box>
               </Link>
             </Text>
             <Image src="/images/partners/cow/cow-amm-logo.svg" alt="cow-logo" h="30px" />

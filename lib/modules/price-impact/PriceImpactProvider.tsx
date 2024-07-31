@@ -27,7 +27,7 @@ export function _usePriceImpact() {
       case 'max':
         return 'red.400'
       case 'medium':
-        return 'orange.300'
+        return 'font.warning'
       case 'low':
       default:
         return 'grayText'

@@ -13,11 +13,11 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         background: {
           ...baseTokens.colors.light.background,
           level0: '#E4F9C3',
-          level1: '#EAFAD1',
-          level2: '#F0FCDF',
-          level3: '#F7FDED',
-          level4: '#FDFFFA',
-          base: 'hsla(83, 81%, 90%, 1)',
+          level1: '#E6F9C4',
+          level2: '#F5FDE8',
+          level3: '#F9FEF1',
+          level4: '#FFFFFF',
+          base: '#E6F9C4',
           baseWithOpacity: 'hsla(83, 81%, 87%, 0.75)',
           special: colors.gradient.dawnLight,
           level0WithOpacity: 'rgba(213, 245, 163, 0.96)',
@@ -26,6 +26,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         border: {
           ...baseTokens.colors.light.border,
           base: '#F9FEF1',
+          divider: '#D4F7A1',
           subduedZen: 'hsla(88, 63%, 59%, 0.2)',
         },
         button: {
@@ -38,12 +39,14 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         text: {
           ...baseTokens.colors.light.text,
           primary: '#194D05',
-          link: colors.green['700'],
+          secondary: '#827474',
+          link: '#408A13',
           linkHover: colors.green['900'],
           special: 'linear-gradient(90deg, #194D05 0%, #30940A 100%)',
         },
         input: {
           ...baseTokens.colors.light.input,
+          fontDefault: '#194D05',
           fontPlaceholder: tinycolor(colors.green['900']).setAlpha(0.5),
           borderDefault: '#FDFFFA',
           borderHover: colors.green['700'],
@@ -64,6 +67,7 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         border: {
           ...baseTokens.colors.dark.border,
           base: '#194D05',
+          divider: '#040E01',
           subduedZen: 'hsla(83, 81%, 80%, 0.03)',
         },
         button: {
@@ -76,12 +80,14 @@ export function getCowTokens(colors: any, primaryTextColor: any) {
         text: {
           ...baseTokens.colors.dark.text,
           primary: '#E4F9C3',
-          link: colors.green['500'],
+          secondary: '#B8A7A7',
+          link: '#6FC025',
           linkHover: colors.green['300'],
           special: 'linear-gradient(90deg, #BCEC79 0%, #81C91C 100%)',
         },
         input: {
           ...baseTokens.colors.dark.input,
+          fontDefault: '#E4F9C3',
           fontPlaceholder: tinycolor(colors.green['100']).setAlpha(0.5),
           borderDefault: colors.green['900'],
           borderHover: colors.green['700'],

@@ -137,9 +137,9 @@ export default function RecentTransactions() {
               trackColor="border.base"
               thickness="8"
               size="7"
-              color="orange.300"
+              color="font.warning"
             >
-              <CircularProgressLabel fontSize="sm" fontWeight="bold" color="orange.300">
+              <CircularProgressLabel fontSize="sm" fontWeight="bold" color="font.warning">
                 {confirmingTxCount}
               </CircularProgressLabel>
             </CircularProgress>

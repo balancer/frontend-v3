@@ -136,7 +136,7 @@ function TokenInputFooter({
         <Text
           variant="secondary"
           fontSize="sm"
-          color={showPriceImpact ? priceImpactColor : 'gray.400'}
+          color={showPriceImpact ? priceImpactColor : 'font.secondary'}
         >
           {toCurrency(usdValue, { abbreviated: false })}
           {showPriceImpact &&
