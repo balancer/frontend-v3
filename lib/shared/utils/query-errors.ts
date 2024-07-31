@@ -254,6 +254,10 @@ function shouldIgnore(e: Error): boolean {
   */
   if (e.message.includes('Connector not connected')) return true
   if (e.message.includes('Provider not found')) return true
+  // Happens when disconnecting wallet:
+  if (e.message.includes(`Cannot read properties of undefined (reading 'listenerCount')`)) {
+    return true
+  }
 
   /*
     More info: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
