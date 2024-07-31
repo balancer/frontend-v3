@@ -39,6 +39,7 @@ export function PoolActionsLayout({ children }: Props) {
             shadow="lg"
             borderBottomRadius={0}
             borderTopRadius="2xl"
+            minH="calc(100vh - 80px)"
             onClick={e => e.stopPropagation()}
           >
             <PoolActionsNav />
