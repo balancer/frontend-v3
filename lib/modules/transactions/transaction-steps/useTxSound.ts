@@ -9,9 +9,8 @@ export function useTxSound() {
   const removeSoundSrc = isCowTransaction ? '/sounds/errorMoo.mp3' : '/sounds/gong.mp3'
   const [playRemoveSound] = useSound(removeSoundSrc)
 
-  function playTxSound(stepType: StepType) {
-    if (stepType === 'removeLiquidity') return playRemoveSound()
-    return playSuccessSound()
-  }
+  const playTxSound = (stepType: StepType) =>
+    stepType === 'removeLiquidity' ? playRemoveSound() : playSuccessSound()
+
   return { playTxSound }
 }
