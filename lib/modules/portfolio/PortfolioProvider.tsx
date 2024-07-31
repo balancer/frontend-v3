@@ -139,7 +139,8 @@ function _usePortfolio() {
   )
 
   // Protocol rewards
-  const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
+  const { protocolRewardsData, isLoadingProtocolRewards, refetchProtocolRewards } =
+    useProtocolRewards()
 
   // Other tokens rewards
   const {
@@ -237,6 +238,7 @@ function _usePortfolio() {
     protocolRewardsBalance,
     rewardsByChainMap,
     refetchClaimPoolData,
+    refetchProtocolRewards,
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
