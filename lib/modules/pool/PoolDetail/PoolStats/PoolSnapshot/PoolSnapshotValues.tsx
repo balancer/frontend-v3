@@ -12,7 +12,6 @@ import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { isCowAmmPool } from '../../../pool.helpers'
-import { captureErrorMessage } from '@/lib/shared/utils/errors'
 
 type PoolStatsValues = {
   totalLiquidity: string
@@ -36,22 +35,10 @@ export function PoolSnapshotValues() {
     }
   })
 
+  // In case a reward token is undefined, it's icon in TokenIconStack will be a random one
   const tokens = currentRewardsPerWeek
     .filter(reward => bn(reward.rewardPerSecond).gt(0))
-    .map(reward => {
-      const rewardToken = getToken(reward.tokenAddress, chain)
-      if (!rewardToken) {
-        captureErrorMessage(
-          `Reward token ${reward.tokenAddress} was not found in the token list.
-Probably missing in balancer/tokenlists.`,
-          {
-            level: 'fatal',
-          }
-        )
-      }
-      return rewardToken
-    })
-    .filter(token => token !== undefined) as GqlToken[]
+    .map(reward => getToken(reward.tokenAddress, chain)) as GqlToken[]
 
   const weeklyRewards = sumBy(
     currentRewardsPerWeek,
