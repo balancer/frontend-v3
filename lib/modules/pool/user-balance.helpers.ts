@@ -74,10 +74,10 @@ export function getUserTotalBalanceUsd(pool: Pool | PoolListItem): number {
 
 export function getUserTotalBalanceInt(pool: Pool): bigint {
   // On removing liquidity from a CoW pool I was left with some dust. The
-  // totalBalance returned from the API doesn't seem to be limited to 18
-  // decimals when a human amount and so it borked the whole pool page. toFixed(18) ensures the
+  // totalBalance (human amount) returned from the API doesn't seem to be limited to 18
+  // decimals and so it borked the whole pool page. toFixed(18) ensures the
   // value cannot be more than 18 decimals when passed into parseUnits.
-  const totalBalance = bn(getUserTotalBalance(pool)).toFixed(18)
+  const totalBalance = bn(getUserTotalBalance(pool)).toFixed(BPT_DECIMALS)
   return parseUnits(totalBalance, BPT_DECIMALS)
 }
 
