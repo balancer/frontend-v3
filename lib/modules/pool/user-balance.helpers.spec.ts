@@ -57,7 +57,7 @@ test('User balance helpers', () => {
   }
   pool.userBalance = userBalanceMock
 
-  expect(getUserTotalBalance(pool)).toBe('175')
+  expect(getUserTotalBalance(pool)).toBe('175.000000000000000000')
   expect(getUserTotalBalanceUsd(pool)).toBe(300)
   expect(getUserTotalBalanceInt(pool)).toBe(175000000000000000000n)
 
