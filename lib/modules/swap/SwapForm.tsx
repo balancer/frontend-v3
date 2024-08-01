@@ -82,6 +82,7 @@ export function SwapForm() {
   }
 
   function handleTokenSelect(token: GqlToken) {
+    if (!token) return
     if (tokenSelectKey === 'tokenIn') {
       setTokenIn(token.address as Address)
     } else if (tokenSelectKey === 'tokenOut') {
