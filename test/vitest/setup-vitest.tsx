@@ -27,6 +27,9 @@ vi.mock('next/navigation', async importOriginal => {
     useParams: () => {
       return { variant: 'v2' }
     },
+    usePathname: () => {
+      return 'testPathName'
+    },
   }
 })
 
