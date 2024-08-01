@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useHotkeys } from 'react-hotkeys-hook'
 import { useTokenSelectList } from './useTokenSelectList'
 import { GroupedVirtuoso, GroupedVirtuosoHandle } from 'react-virtuoso'
-import { useConnectModal } from '@rainbow-me/rainbowkit'
+// import { useConnectModal } from '@rainbow-me/rainbowkit'
 import { CoinsIcon } from '@/lib/shared/components/icons/CoinsIcon'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useTokens } from '../../TokensProvider'
@@ -112,7 +112,7 @@ export function TokenSelectList({
     pinNativeAsset,
     searchTerm
   )
-  const { openConnectModal } = useConnectModal()
+  const openConnectModal = () => console.log('TODO: open ConnectKit modal')
 
   const tokensWithBalance = isConnected
     ? orderedTokens.filter(token => balanceFor(token)?.amount)

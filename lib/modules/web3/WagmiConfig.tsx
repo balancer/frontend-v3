@@ -1,45 +1,39 @@
 'use client'
 
-import { connectorsForWallets } from '@rainbow-me/rainbowkit'
-
 import { createConfig } from 'wagmi'
 
+import { getDefaultConfig } from 'connectkit'
+
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import {
-  coinbaseWallet,
-  injectedWallet,
-  metaMaskWallet,
-  rabbyWallet,
-  rainbowWallet,
-  safeWallet,
-  walletConnectWallet,
-} from '@rainbow-me/rainbowkit/wallets'
+
+import { injected, metaMask, safe } from 'wagmi/connectors'
 import { chains } from './ChainConfig'
 import { transports } from './transports'
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
-const connectors = connectorsForWallets(
-  [
-    {
-      groupName: 'Recommended',
-      wallets: [
-        injectedWallet,
-        metaMaskWallet,
-        rabbyWallet,
-        rainbowWallet,
-        safeWallet,
-        coinbaseWallet,
-        walletConnectWallet,
-      ],
-    },
-  ],
-  { appName, projectId }
-)
+
 export type WagmiConfig = ReturnType<typeof createConfig>
-export const wagmiConfig = createConfig({
-  chains,
-  transports,
-  connectors,
-  ssr: true,
-})
+
+const connectors = [
+  injected(),
+  metaMask(),
+  safe(),
+  // walletConnect({ projectId })
+]
+
+export const wagmiConfig = createConfig(
+  getDefaultConfig({
+    chains,
+    transports,
+    connectors,
+    walletConnectProjectId: projectId,
+    appName,
+
+    // Optional App Info
+    appDescription: 'Balancer',
+    appUrl: 'https://balancer.fi',
+    // appIcon: 'https://family.co/logo.png', // your app's icon, no bigger than 1024x1024px (max. 1MB)
+    ssr: true,
+  })
+)

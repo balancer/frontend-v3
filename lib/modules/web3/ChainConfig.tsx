@@ -1,7 +1,7 @@
 'use client'
 
-import { Chain } from '@rainbow-me/rainbowkit'
 import {
+  Chain,
   arbitrum,
   avalanche,
   base,
@@ -60,25 +60,26 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: undefined,
 }
 
-const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
+//TODO: como cambio el icon en ConnecKit?
+// const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
 const gqlChainToWagmiChainMap = {
-  [GqlChain.Mainnet]: customMainnet,
-  [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
-  [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
-  [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
+  [GqlChain.Mainnet]: mainnet,
+  [GqlChain.Arbitrum]: arbitrum,
+  [GqlChain.Base]: base,
+  [GqlChain.Avalanche]: avalanche,
   [GqlChain.Fantom]: fantom,
-  [GqlChain.Gnosis]: { iconUrl: '/images/chains/GNOSIS.svg', ...gnosis },
-  [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
-  [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
-  [GqlChain.Zkevm]: { iconUrl: '/images/chains/ZKEVM.svg', ...polygonZkEvm },
-  [GqlChain.Sepolia]: { iconUrl: '/images/chains/SEPOLIA.svg', ...sepolia },
-  [GqlChain.Mode]: { iconUrl: '/images/chains/MODE.svg', ...mode },
-  [GqlChain.Fraxtal]: { iconUrl: '/images/chains/FRAXTAL.svg', ...fraxtal },
+  [GqlChain.Gnosis]: gnosis,
+  [GqlChain.Optimism]: optimism,
+  [GqlChain.Polygon]: polygon,
+  [GqlChain.Zkevm]: polygonZkEvm,
+  [GqlChain.Sepolia]: sepolia,
+  [GqlChain.Mode]: mode,
+  [GqlChain.Fraxtal]: fraxtal,
 } as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
 export const chains: readonly [Chain, ...Chain[]] = [
-  customMainnet,
+  mainnet,
   ...supportedNetworks
     .filter(chain => chain !== GqlChain.Mainnet)
     .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),

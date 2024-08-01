@@ -1,13 +1,12 @@
 'use client'
 
-import { Chain } from '@rainbow-me/rainbowkit'
-
 import { fallback, http } from 'wagmi'
 
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 
 import { chains, rpcOverrides } from './ChainConfig'
+import { Chain } from 'wagmi/chains'
 export function getTransports(chain: Chain) {
   const gqlChain = getGqlChain(chain.id as SupportedChainId)
   const overrideRpcUrl = rpcOverrides[gqlChain]
