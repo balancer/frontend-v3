@@ -1,14 +1,7 @@
 'use client'
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalProps,
-  VStack,
-} from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
@@ -22,6 +15,7 @@ import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFoo
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
+import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 
 type Props = {
   isOpen: boolean
@@ -62,12 +56,12 @@ export function StakeModal({
         <TransactionModalHeader label="Stake LP tokens" txHash={stakeTxHash} chain={pool.chain} />
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm" w="full">
+          <AnimateHeightChange spacing="sm">
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
             <StakePreview />
-          </VStack>
+          </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!stakeTxHash}

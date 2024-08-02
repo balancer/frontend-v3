@@ -146,6 +146,9 @@ importers:
       react-syntax-highlighter:
         specifier: ^15.5.0
         version: 15.5.0(react@18.2.0)
+      react-use-measure:
+        specifier: ^2.1.1
+        version: 2.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       react-virtuoso:
         specifier: ^4.7.1
         version: 4.7.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
@@ -7812,6 +7815,12 @@ packages:
     peerDependencies:
       react: '>=16.6.0'
       react-dom: '>=16.6.0'
+
+  react-use-measure@2.1.1:
+    resolution: {integrity: sha512-nocZhN26cproIiIduswYpV5y5lQpSQS1y/4KuvUCjSKmw7ZWIS/+g3aFnX3WdBkyuGUtTLif3UTqnLLhbDoQig==}
+    peerDependencies:
+      react: '>=16.13'
+      react-dom: '>=16.13'
 
   react-virtuoso@4.7.1:
     resolution: {integrity: sha512-V1JIZLEwgX7R+YNkbY8dq6NcnIGKGWXe4mnMJJPsA2L4qeFKst0LY3mDk6sBCJyKRbMzYFxTZWyTT4QsA1JvVQ==}
@@ -18852,6 +18861,12 @@ snapshots:
       dom-helpers: 5.2.1
       loose-envify: 1.4.0
       prop-types: 15.8.1
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+
+  react-use-measure@2.1.1(react-dom@18.2.0(react@18.2.0))(react@18.2.0):
+    dependencies:
+      debounce: 1.2.1
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 

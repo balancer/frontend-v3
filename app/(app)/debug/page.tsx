@@ -108,6 +108,9 @@ export default function Debug() {
         <Link as={NextLink} href="/debug/alerts">
           Alerts
         </Link>
+        <Link as={NextLink} href="/debug/modal">
+          Modal animation
+        </Link>
       </VStack>
     </FadeInOnView>
   )

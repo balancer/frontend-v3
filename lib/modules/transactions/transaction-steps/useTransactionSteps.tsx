@@ -35,6 +35,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   const lastTransactionConfirmingOrConfirmed =
     lastTransactionState === TransactionState.Confirming ||
     lastTransactionState === TransactionState.Completed
+  const lastTransactionConfirmed = lastTransactionState === TransactionState.Completed
 
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
@@ -98,6 +99,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
+    lastTransactionConfirmed,
     isLastStep,
     setCurrentStepIndex,
     resetTransactionSteps,

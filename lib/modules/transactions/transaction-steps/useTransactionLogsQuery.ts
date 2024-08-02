@@ -4,7 +4,7 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useQuery } from '@tanstack/react-query'
-import { formatUnits, parseAbiItem, Address } from 'viem'
+import { formatUnits, parseAbiItem, Address, Hex } from 'viem'
 import { useTransaction } from 'wagmi'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -16,7 +16,7 @@ import { HumanAmount } from '@balancer/sdk'
 
 const userNotConnected = 'User is not connected'
 
-export type ReceiptProps = { txHash: Address; userAddress: Address }
+export type ReceiptProps = { txHash?: Hex; userAddress: Address }
 
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const { chain } = usePool()
@@ -210,20 +210,25 @@ export function useTransactionLogsQuery({
 
   const outgoingTransfersData = useMemo(
     () =>
-      outgoingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+      outgoingTransfersQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [outgoingTransfersQuery.data, txHash]
   )
 
   const incomingTransfersData = useMemo(
     () =>
-      incomingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+      incomingTransfersQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [incomingTransfersQuery.data, txHash]
   )
 
   const incomingWithdrawalsData = useMemo(
     () =>
-      incomingWithdrawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) ||
-      [],
+      incomingWithdrawalsQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [incomingWithdrawalsQuery.data, txHash]
   )
 
