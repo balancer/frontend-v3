@@ -75,7 +75,7 @@ export function AddLiquiditySummary() {
         <TokenRowGroup
           label={shouldShowReceipt ? 'You added' : "You're adding"}
           amounts={shouldShowReceipt ? sentTokens : amountsIn}
-          totalUSDValue={shouldShowReceipt ? undefined : totalUSDValue}
+          totalUSDValue={totalUSDValue}
           chain={pool.chain}
           isLoading={shouldShowReceipt ? isLoadingReceipt : false}
         />
