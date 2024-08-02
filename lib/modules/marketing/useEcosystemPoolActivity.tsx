@@ -19,7 +19,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { usePoolEvents } from '../pool/usePoolEvents'
-import { supportedNetworks } from '../web3/ChainConfigConnect'
+import { supportedNetworks } from '../web3/ChainConfig'
 import { getChainShortName } from '@/lib/config/app.config'
 
 type ChartInfoTokens = {
