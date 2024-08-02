@@ -143,7 +143,7 @@ function AddLiquidityMainForm() {
   }, [addLiquidityTxHash])
 
   return (
-    <Box w="full" maxW="lg" mx="auto">
+    <Box w="full" maxW="lg" mx="auto" pb="2xl">
       <Card>
         <CardHeader>
           <HStack w="full" justify="space-between">

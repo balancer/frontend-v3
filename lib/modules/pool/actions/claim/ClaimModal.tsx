@@ -6,7 +6,6 @@ import {
   ModalContent,
   ModalProps,
   Text,
-  VStack,
 } from '@chakra-ui/react'
 import { useClaim } from './ClaimProvider'
 import { Address } from 'viem'
@@ -25,6 +24,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
 import { useRouter } from 'next/navigation'
+import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 
 type Props = {
   isOpen: boolean
@@ -87,7 +87,7 @@ export function ClaimModal({
         <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm">
+          <AnimateHeightChange spacing="sm">
             {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
             {isLoading ? (
               <Text>Loading data...</Text>
@@ -103,7 +103,7 @@ export function ClaimModal({
                 />
               </Card>
             )}
-          </VStack>
+          </AnimateHeightChange>
         </ModalBody>
 
         <ActionModalFooter
