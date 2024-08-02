@@ -1,6 +1,5 @@
 'use client'
 
-import { Chain as RainbowChain } from '@rainbow-me/rainbowkit'
 import {
   Chain,
   arbitrum,
@@ -20,7 +19,6 @@ import {
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
-import { getGqlChain } from '@/lib/config/app.config'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
@@ -62,7 +60,7 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: undefined,
 }
 
-// TODO: How do we change connectkit icon?
+//TODO: How do we change connectkit icon
 // const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
 const gqlChainToWagmiChainMap = {
   [GqlChain.Mainnet]: mainnet,
@@ -91,26 +89,3 @@ export const chainsByKey = keyBy(chains, 'id')
 export function getDefaultRpcUrl(chainId: number) {
   return chainsByKey[chainId].rpcUrls.default.http[0]
 }
-
-const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
-const gqlChainToRainbowChainMap = {
-  [GqlChain.Mainnet]: customMainnet,
-  [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
-  [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
-  [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
-  [GqlChain.Fantom]: fantom,
-  [GqlChain.Gnosis]: { iconUrl: '/images/chains/GNOSIS.svg', ...gnosis },
-  [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
-  [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
-  [GqlChain.Zkevm]: { iconUrl: '/images/chains/ZKEVM.svg', ...polygonZkEvm },
-  [GqlChain.Sepolia]: { iconUrl: '/images/chains/SEPOLIA.svg', ...sepolia },
-  [GqlChain.Mode]: { iconUrl: '/images/chains/MODE.svg', ...mode },
-  [GqlChain.Fraxtal]: { iconUrl: '/images/chains/FRAXTAL.svg', ...fraxtal },
-} as const satisfies Record<GqlChain, RainbowChain>
-
-export const rainbowChains: readonly [Chain, ...Chain[]] = [
-  customMainnet,
-  ...chains
-    .filter(chain => chain !== mainnet)
-    .map(chain => gqlChainToRainbowChainMap[getGqlChain(chain.id)]),
-]

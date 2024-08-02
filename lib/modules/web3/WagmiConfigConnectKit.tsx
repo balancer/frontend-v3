@@ -22,7 +22,7 @@ const connectors = [
   // walletConnect({ projectId })
 ]
 
-export const wagmiConfig = createConfig(
+export const wagmiConfigConnectKit = createConfig(
   getDefaultConfig({
     chains,
     transports,

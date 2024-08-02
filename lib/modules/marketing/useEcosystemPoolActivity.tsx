@@ -19,7 +19,7 @@ import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { usePoolEvents } from '../pool/usePoolEvents'
-import { supportedNetworks } from '../web3/ChainConfig'
+import { supportedNetworks } from '../web3/ChainConfigConnect'
 import { getChainShortName } from '@/lib/config/app.config'
 
 type ChartInfoTokens = {
@@ -245,7 +245,7 @@ const getDefaultPoolActivityChartOptions = (
                       .replace('AM', 'am')
                       .replace('PM', 'pm')}
                   </span>
-              
+
               ${arrow}
             </a>
             <div style="width:100%;display:flex;align-items:center;font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${

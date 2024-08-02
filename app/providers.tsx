@@ -7,7 +7,6 @@ import { ApolloGlobalDataProvider } from '@/lib/shared/services/api/apollo-globa
 import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/base/foundations'
-import { wagmiConfig } from '@/lib/modules/web3/WagmiConfig'
 import { GlobalAlertsProvider } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -15,7 +14,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <ThemeProvider>
         <GlobalAlertsProvider>
-          <Web3Provider wagmiConfig={wagmiConfig}>
+          <Web3Provider>
             <ApolloClientProvider>
               <ApolloGlobalDataProvider>
                 <UserSettingsProvider

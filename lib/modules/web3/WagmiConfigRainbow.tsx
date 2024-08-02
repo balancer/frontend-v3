@@ -1,0 +1,46 @@
+'use client'
+
+import { connectorsForWallets } from '@rainbow-me/rainbowkit'
+
+import { createConfig } from 'wagmi'
+
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import {
+  coinbaseWallet,
+  injectedWallet,
+  metaMaskWallet,
+  rabbyWallet,
+  rainbowWallet,
+  safeWallet,
+  walletConnectWallet,
+} from '@rainbow-me/rainbowkit/wallets'
+import { rainbowChains } from './ChainConfig'
+import { transports } from './transports'
+
+const appName = getProjectConfig().projectName
+const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
+
+const connectors = connectorsForWallets(
+  [
+    {
+      groupName: 'Recommended',
+      wallets: [
+        injectedWallet,
+        metaMaskWallet,
+        rabbyWallet,
+        rainbowWallet,
+        safeWallet,
+        coinbaseWallet,
+        walletConnectWallet,
+      ],
+    },
+  ],
+  { appName, projectId }
+)
+export type WagmiConfig = ReturnType<typeof createConfig>
+export const wagmiConfigRainbow = createConfig({
+  chains: rainbowChains,
+  transports,
+  connectors,
+  ssr: true,
+})

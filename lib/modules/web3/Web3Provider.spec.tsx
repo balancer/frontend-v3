@@ -1,5 +1,5 @@
 import { mainnet, optimism } from 'viem/chains'
-import { getDefaultRpcUrl, chains } from './ChainConfig'
+import { getDefaultRpcUrl, chains } from './ChainConfigConnect'
 
 test('getRpcUrl by chain id', () => {
   expect(getDefaultRpcUrl(mainnet.id)).toMatch('https://cloudflare-eth.com')

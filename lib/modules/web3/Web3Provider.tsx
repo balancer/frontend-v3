@@ -2,28 +2,30 @@
 
 import { ReactQueryClientProvider } from '@/app/react-query.provider'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
-import '@rainbow-me/rainbowkit/styles.css'
-import { ConnectKitProvider } from 'connectkit'
 import { PropsWithChildren } from 'react'
 import { WagmiProvider } from 'wagmi'
 import { UserSettingsProvider } from '../user/settings/UserSettingsProvider'
 import { AcceptPoliciesModal } from './AcceptPoliciesModal'
 import { BlockedAddressModal } from './BlockedAddressModal'
 import { UserAccountProvider } from './UserAccountProvider'
-import { WagmiConfig } from './WagmiConfig'
+import { WalletConnectionProvider } from './WalletConnectionProvider'
+import { wagmiConfigRainbow } from '@/lib/modules/web3/WagmiConfigRainbow'
+import { wagmiConfigConnectKit } from '@/lib/modules/web3/WagmiConfigConnectKit'
+import { useExperimentalConnectKit } from './useExperimentalConnectKit'
 
-export function Web3Provider({
-  children,
-  wagmiConfig,
-}: PropsWithChildren<{ wagmiConfig: WagmiConfig }>) {
+export function Web3Provider({ children }: PropsWithChildren) {
   const isMounted = useIsMounted()
+
+  const { shouldUseConnectKit } = useExperimentalConnectKit()
+
+  const wagmiConfig = shouldUseConnectKit ? wagmiConfigConnectKit : wagmiConfigRainbow
 
   if (!isMounted) return null
 
   return (
     <WagmiProvider config={wagmiConfig}>
       <ReactQueryClientProvider>
-        <ConnectKitProvider>
+        <WalletConnectionProvider wagmiConfig={wagmiConfig}>
           <UserAccountProvider>
             <UserSettingsProvider
               initCurrency={undefined}
@@ -38,7 +40,7 @@ export function Web3Provider({
               <AcceptPoliciesModal />
             </UserSettingsProvider>
           </UserAccountProvider>
-        </ConnectKitProvider>
+        </WalletConnectionProvider>
       </ReactQueryClientProvider>
     </WagmiProvider>
   )

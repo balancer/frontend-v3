@@ -8,4 +8,6 @@ export const LS_KEYS = {
     PoolListView: 'userSettings.PoolListView',
     AcceptedPolicies: 'userSettings.AcceptedPolicies',
   },
+  // Hidden experimental feature to choose between Rainbow and ConnectKit
+  ConnectKit: 'ConnectKit',
 }
