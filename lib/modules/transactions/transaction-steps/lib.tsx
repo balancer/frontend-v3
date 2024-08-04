@@ -1,5 +1,6 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 import React from 'react'
+import { LockActionType } from '../../vebal/lock/lockTransactionHelpers'
 
 export enum TransactionState {
   Ready = 'init',
@@ -39,6 +40,7 @@ export type StepType =
   | 'unstake'
   | 'claim'
   | 'swap'
+  | LockActionType
 
 export type TxActionId =
   | 'SignBatchRelayer'
