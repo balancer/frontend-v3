@@ -1,6 +1,6 @@
 'use client'
 
-import { Modal, ModalBody, ModalCloseButton, ModalContent, VStack, Card } from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, Card } from '@chakra-ui/react'
 import { UsePortfolio, usePortfolio } from '@/lib/modules/portfolio/PortfolioProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address } from 'viem'
@@ -19,6 +19,7 @@ import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useClaimVeBalRewardsStep } from '../../pool/actions/claim/useClaimVeBalRewardsStep'
 import { useEffect, useState } from 'react'
 import BigNumber from 'bignumber.js'
+import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 
 type Props = {
   isOpen: boolean
@@ -72,7 +73,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
         />
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm" w="full">
+          <AnimateHeightChange spacing="sm" w="full">
             {isMobile && (
               <MobileStepTracker transactionSteps={transactionSteps} chain={GqlChain.Mainnet} />
             )}
@@ -85,7 +86,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
                 chain={GqlChain.Mainnet}
               />
             </Card>
-          </VStack>
+          </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!claimTxHash}

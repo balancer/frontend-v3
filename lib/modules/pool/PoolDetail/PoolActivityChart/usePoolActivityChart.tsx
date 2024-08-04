@@ -466,7 +466,6 @@ export function usePoolActivityChart(isExpanded: boolean) {
           Boolean
         )
         const lastTimestamp = Math.min(...timestamps)
-        console.log('lastTimestamp', lastTimestamp)
         diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
       }
 

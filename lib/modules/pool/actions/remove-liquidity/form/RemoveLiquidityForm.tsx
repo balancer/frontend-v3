@@ -96,7 +96,7 @@ export function RemoveLiquidityForm() {
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>
-      <Box h="full" w="full" maxW="lg" mx="auto">
+      <Box h="full" w="full" maxW="lg" mx="auto" pb="2xl">
         <Card>
           <CardHeader>
             <HStack justify="space-between" w="full">
