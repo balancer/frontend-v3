@@ -5,6 +5,7 @@ import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
 import { GithubIcon } from '../icons/social/GithubIcon'
 import { useParams } from 'next/navigation'
+import { isProd } from '@/lib/config/app.config'
 
 export function useNav() {
   const pathname = usePathname()
@@ -26,6 +27,14 @@ export function useNav() {
       label: 'Portfolio',
     },
   ]
+
+  // To-do: Remove this when veBAL is live
+  if (!isProd) {
+    appLinks.push({
+      href: '/vebal-dev',
+      label: 'veBAL (wip)',
+    })
+  }
 
   const ecosystemLinks = [
     { label: 'Build', href: 'https://balancer.fi/build' },
