@@ -102,7 +102,7 @@ export function PriceImpactAccordion({
                       }.00%`}
                 </AlertTitle>
                 <AlertDescription>
-                  <Text color="grayText" fontSize="sm">
+                  <Text color="font.dark" fontSize="sm">
                     {isUnknownPriceImpact
                       ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
                       : 'The higher the price impact, the worse exchange rate you get for this swap.'}
