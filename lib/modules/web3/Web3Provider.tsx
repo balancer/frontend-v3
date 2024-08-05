@@ -72,7 +72,7 @@ export function Web3Provider({
       // generalBorderDim: '...',
       // menuItemBackground: '...',
       // modalBackdrop: '...',
-      modalBackground: semanticTokens.colors.background.base[colorModeKey],
+      modalBackground: semanticTokens.colors.background.level0[colorModeKey],
       // modalBorder: '...',
       modalText: semanticTokens.colors.font.primary[colorModeKey],
       // modalTextDim: '...',
