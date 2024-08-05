@@ -7,6 +7,7 @@ import { createConfig } from 'wagmi'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   coinbaseWallet,
+  injectedWallet,
   rabbyWallet,
   rainbowWallet,
   safeWallet,
@@ -14,7 +15,7 @@ import {
 } from '@rainbow-me/rainbowkit/wallets'
 import { chains } from './ChainConfig'
 import { transports } from './transports'
-import { injected, metaMask } from 'wagmi/connectors'
+import { metaMask } from 'wagmi/connectors'
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
@@ -23,7 +24,7 @@ const connectors = connectorsForWallets(
     {
       groupName: 'Recommended',
       wallets: [
-        // injectedWallet,
+        injectedWallet,
         rabbyWallet,
         rainbowWallet,
         safeWallet,
@@ -44,7 +45,7 @@ export const wagmiConfig = createConfig({
   */
   connectors: [
     // injected(),
-    injected(),
+    // injected(),
     metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
     ...connectors,
   ],
