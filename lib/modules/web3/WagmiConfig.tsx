@@ -44,7 +44,7 @@ export const wagmiConfig = createConfig({
   */
   connectors: [
     // injected(),
-    injected({ target: 'rabby' }),
+    injected(),
     metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
     ...connectors,
   ],
