@@ -24,17 +24,24 @@ export default async function PoolsPage() {
   const featuredPools = featuredPoolsQuery.data.featuredPools || []
 
   return (
-    <DefaultPageContainer>
-      <FadeInOnView animateOnce={false}>
-        <Box mb={{ base: '2xl', sm: '3xl' }}>
-          <FeaturedPools featuredPools={featuredPools} />
-        </Box>
-      </FadeInOnView>
-      <FadeInOnView animateOnce={false}>
-        <Suspense fallback={<Skeleton w="full" h="500px" />}>
-          <PoolList />
-        </Suspense>
-      </FadeInOnView>
-    </DefaultPageContainer>
+    <>
+      <Box bg="background.level0" borderBottom="1px solid" borderColor="border.base">
+        <DefaultPageContainer>
+          <FadeInOnView animateOnce={false}>
+            <Box>
+              <FeaturedPools featuredPools={featuredPools} />
+            </Box>
+          </FadeInOnView>
+        </DefaultPageContainer>
+      </Box>
+
+      <DefaultPageContainer pt={['md', 'lg']} pb={['xl', '2xl']} noVerticalPadding>
+        <FadeInOnView animateOnce={false}>
+          <Suspense fallback={<Skeleton w="full" h="500px" />}>
+            <PoolList />
+          </Suspense>
+        </FadeInOnView>
+      </DefaultPageContainer>
+    </>
   )
 }

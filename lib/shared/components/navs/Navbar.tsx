@@ -149,7 +149,15 @@ function NavActions() {
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   return (
-    <Box w="full" {...rest}>
+    <Box
+      w="full"
+      pos="fixed"
+      zIndex={100}
+      top="0"
+      transition="all 0.2s ease-in-out"
+      style={{ backdropFilter: 'blur(10px)' }}
+      {...rest}
+    >
       <HStack padding={{ base: 'sm', md: 'md' }} justify="space-between" as="nav">
         <HStack
           spacing="lg"
