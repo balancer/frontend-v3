@@ -7,7 +7,6 @@ import { createConfig } from 'wagmi'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   coinbaseWallet,
-  injectedWallet,
   rabbyWallet,
   rainbowWallet,
   safeWallet,
@@ -15,7 +14,7 @@ import {
 } from '@rainbow-me/rainbowkit/wallets'
 import { chains } from './ChainConfig'
 import { transports } from './transports'
-import { metaMask } from 'wagmi/connectors'
+import { injected, metaMask } from 'wagmi/connectors'
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
@@ -24,7 +23,7 @@ const connectors = connectorsForWallets(
     {
       groupName: 'Recommended',
       wallets: [
-        injectedWallet,
+        // injectedWallet,
         rabbyWallet,
         rainbowWallet,
         safeWallet,
@@ -43,6 +42,10 @@ export const wagmiConfig = createConfig({
     We found random disconnection issues when using metaMaskWallet from @rainbow-me/rainbowkit/wallets
     Using default wagmi metaMask connector instead, seems to be more reliable:
   */
-  connectors: [...connectors, metaMask({ shouldShimWeb3: true, dappMetadata: { name: appName } })],
+  connectors: [
+    ...connectors,
+    metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
+    injected({ target: 'metaMask' }),
+  ],
   ssr: true,
 })
