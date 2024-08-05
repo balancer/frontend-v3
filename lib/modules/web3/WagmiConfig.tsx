@@ -43,9 +43,9 @@ export const wagmiConfig = createConfig({
     Using default wagmi metaMask connector instead, seems to be more reliable:
   */
   connectors: [
-    ...connectors,
-    metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
     injected({ target: 'metaMask' }),
+    metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
+    ...connectors,
   ],
   ssr: true,
 })
