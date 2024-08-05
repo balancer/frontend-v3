@@ -14,7 +14,7 @@ import { motion } from 'framer-motion'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { MobileNav } from './MobileNav'
 import { useNav } from './useNav'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
@@ -148,6 +148,18 @@ function NavActions() {
 }
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
+  const [showBorder, setShowBorder] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 0) setShowBorder(true)
+      else setShowBorder(false)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
   return (
     <Box
       w="full"
@@ -156,6 +168,9 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
       top="0"
       transition="all 0.2s ease-in-out"
       style={{ backdropFilter: 'blur(10px)' }}
+      onScroll={e => console.log('Navbar scroll:', e)}
+      borderBottom={showBorder ? '1px solid' : 'none'}
+      borderColor="border.base"
       {...rest}
     >
       <HStack padding={{ base: 'sm', md: 'md' }} justify="space-between" as="nav">
