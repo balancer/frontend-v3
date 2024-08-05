@@ -35,7 +35,7 @@ export default async function PoolsPage() {
         </DefaultPageContainer>
       </Box>
 
-      <DefaultPageContainer pt={['md', 'lg']} pb={['xl', '2xl']} noVerticalPadding>
+      <DefaultPageContainer pt={['lg', 'xl']} pb={['xl', '2xl']} noVerticalPadding>
         <FadeInOnView animateOnce={false}>
           <Suspense fallback={<Skeleton w="full" h="500px" />}>
             <PoolList />
