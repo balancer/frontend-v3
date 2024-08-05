@@ -15,7 +15,8 @@ import {
 } from '@rainbow-me/rainbowkit/wallets'
 import { chains } from './ChainConfig'
 import { transports } from './transports'
-import { metaMask } from 'wagmi/connectors'
+import { injected, metaMask } from 'wagmi/connectors'
+import { isMobileDevice } from '@/lib/shared/utils/mobile'
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
@@ -44,8 +45,7 @@ export const wagmiConfig = createConfig({
     Using default wagmi metaMask connector instead, seems to be more reliable:
   */
   connectors: [
-    // injected(),
-    // injected(),
+    isMobileDevice() ? injected({ target: 'metaMask' }) : injected(),
     metaMask({ shouldShimWeb3: false, dappMetadata: { name: appName } }),
     ...connectors,
   ],
