@@ -35,7 +35,7 @@ export function PoolSnapshotValues() {
     }
   })
 
-  // reward tokens will always be there?
+  // In case a reward token is undefined, it's icon in TokenIconStack will be a random one
   const tokens = currentRewardsPerWeek
     .filter(reward => bn(reward.rewardPerSecond).gt(0))
     .map(reward => getToken(reward.tokenAddress, chain)) as GqlToken[]
