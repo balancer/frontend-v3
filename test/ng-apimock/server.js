@@ -5,6 +5,7 @@ const cors = require('cors')
 
 apimock.processor.process({
   src: '',
+  //watch: true,
 })
 
 const app = express()
