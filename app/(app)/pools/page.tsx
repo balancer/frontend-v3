@@ -26,7 +26,7 @@ export default async function PoolsPage() {
   return (
     <>
       <Box bg="background.level0" borderBottom="1px solid" borderColor="border.base">
-        <DefaultPageContainer>
+        <DefaultPageContainer pt={['xl', '40px']} pb={['xl', '2xl']}>
           <FadeInOnView animateOnce={false}>
             <Box>
               <FeaturedPools featuredPools={featuredPools} />
@@ -35,7 +35,7 @@ export default async function PoolsPage() {
         </DefaultPageContainer>
       </Box>
 
-      <DefaultPageContainer pt={['lg', 'xl']} pb={['xl', '2xl']} noVerticalPadding>
+      <DefaultPageContainer pt={['lg', '54px']} pb={['xl', '2xl']} noVerticalPadding>
         <FadeInOnView animateOnce={false}>
           <Suspense fallback={<Skeleton w="full" h="500px" />}>
             <PoolList />
