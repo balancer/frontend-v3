@@ -7,6 +7,7 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { GetVeBalUserDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { Stack, Text } from '@chakra-ui/react'
+import { VeBALLocksChart } from './vebal-chart/VebalLocksChart'
 
 export function VebalMainInfo() {
   const { balanceFor } = useTokenBalances()
@@ -22,7 +23,6 @@ export function VebalMainInfo() {
     },
   })
 
-  console.log({ data })
   const lockedUntil = !lockInfo.mainnetLockedInfo.lockedEndDate
     ? '-'
     : format(lockInfo.mainnetLockedInfo.lockedEndDate, 'yyyy-MM-dd')
@@ -58,6 +58,7 @@ export function VebalMainInfo() {
           <Text>{value}</Text>
         </Stack>
       ))}
+      <VeBALLocksChart />
     </Stack>
   )
 }
