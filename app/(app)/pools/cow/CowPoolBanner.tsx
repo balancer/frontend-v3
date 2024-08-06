@@ -48,10 +48,10 @@ export function CowPoolBanner() {
       </Box>
 
       <Center h="100%" className="copy" zIndex="1">
-        <Flex gap={{ base: 'ms', md: 'xl' }} justifyContent="center" alignItems="center">
+        <Flex gap={{ base: 'ms', md: 'xl' }} justifyContent="center" alignItems="center" zIndex="1">
           <Box w="clamp(160px, 40vw, 300px)" h="auto">
             <Picture
-              imgName="cowamm-logo"
+              imgName="cowamm-logotype"
               altText="CoW AMM logo"
               defaultImgType="svg"
               imgSvg={true}
