@@ -4,15 +4,25 @@
 import { useEffect, useState } from 'react'
 import { getTransactionState, TransactionState, TransactionStep } from './lib'
 import { useTransactionState } from './TransactionStateProvider'
-import useSound from 'use-sound'
+import { useTxSound } from './useTxSound'
 
 export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
 export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = false) {
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
-  const [onSuccessCalled, setOnSuccessCalled] = useState<boolean>(false)
-  const { getTransaction } = useTransactionState()
-  const [playGong] = useSound('/sounds/gong.mp3')
+  const [onSuccessCalled, setOnSuccessCalled] = useState<{ [stepId: string]: boolean }>({})
+
+  const updateOnSuccessCalled = (stepId: string, value: boolean) => {
+    setOnSuccessCalled(prevState => ({
+      ...prevState,
+      [stepId]: value,
+    }))
+  }
+
+  const isOnSuccessCalled = (stepId: string) => !!onSuccessCalled[stepId]
+
+  const { getTransaction, resetTransactionState } = useTransactionState()
+  const { playTxSound } = useTxSound()
 
   const currentStep = steps?.[currentStepIndex]
   const currentTransaction = currentStep ? getTransaction(currentStep.id) : undefined
@@ -25,18 +35,26 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   const lastTransactionConfirmingOrConfirmed =
     lastTransactionState === TransactionState.Confirming ||
     lastTransactionState === TransactionState.Completed
+  const lastTransactionConfirmed = lastTransactionState === TransactionState.Completed
 
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
+  }
+
+  function resetTransactionSteps() {
+    setCurrentStepIndex(0)
+    setOnSuccessCalled({})
+    resetTransactionState()
   }
 
   // Trigger side effects on transaction completion. The step itself decides
   // when it's complete. e.g. so approvals can refetch to check correct
   // allowance has been given.
   useEffect(() => {
-    if (!onSuccessCalled && currentTransaction?.result.isSuccess) {
+    if (!currentStep) return
+    if (!isOnSuccessCalled(currentStep.id) && currentTransaction?.result.isSuccess) {
       currentStep?.onSuccess?.()
-      setOnSuccessCalled(true)
+      updateOnSuccessCalled(currentStep.id, true)
     }
   }, [currentTransaction?.result.isSuccess, currentStep?.onSuccess])
 
@@ -68,7 +86,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // TODO move this to a global tx state management system in later refactor.
   useEffect(() => {
     if (lastTransaction?.result.isSuccess) {
-      playGong()
+      playTxSound(currentStep.stepType)
     }
   }, [lastTransaction?.result.isSuccess])
 
@@ -81,7 +99,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
+    lastTransactionConfirmed,
     isLastStep,
     setCurrentStepIndex,
+    resetTransactionSteps,
   }
 }

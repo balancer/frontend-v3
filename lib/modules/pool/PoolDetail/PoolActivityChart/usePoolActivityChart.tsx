@@ -51,6 +51,7 @@ const getDefaultPoolActivityChartOptions = (
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
+  is2xl = false,
   isExpanded = false,
   chain: GqlChain
 ): echarts.EChartsCoreOption => {
@@ -64,15 +65,14 @@ const getDefaultPoolActivityChartOptions = (
 
   return {
     grid: {
-      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '5.5%',
-      right: '2.5%',
+      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '60',
+      right: '10',
       top: '7.5%',
       bottom: !isExpanded ? '50%' : '10.5%',
       containLabel: false,
     },
     xAxis: {
       show: isExpanded,
-      offset: 10,
       type: 'time',
       minorSplitLine: { show: false },
       axisTick: { show: false },
@@ -105,7 +105,6 @@ const getDefaultPoolActivityChartOptions = (
     },
     yAxis: {
       show: isExpanded,
-      offset: 10,
       type: 'value',
       axisLine: { show: false },
       minorSplitLine: { show: false },
@@ -124,6 +123,7 @@ const getDefaultPoolActivityChartOptions = (
     },
     tooltip: {
       triggerOn: 'mousemove|click',
+      confine: is2xl ? false : true,
       enterable: true,
       hideDelay: 300,
       position: function (point: number[]) {
@@ -266,7 +266,7 @@ export function getPoolActivityTabsList({
 
 export function usePoolActivityChart(isExpanded: boolean) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
-  const { isMobile } = useBreakpoints()
+  const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
   const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
@@ -462,7 +462,10 @@ export function usePoolActivityChart(isExpanded: boolean) {
       }
 
       if (activeTab.value === 'all') {
-        const lastTimestamp = Math.max(firstSwapTimeStamp, firstRemoveTimeStamp, firstAddTimeStamp)
+        const timestamps = [firstAddTimeStamp, firstRemoveTimeStamp, firstSwapTimeStamp].filter(
+          Boolean
+        )
+        const lastTimestamp = Math.min(...timestamps)
         diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
       }
 
@@ -504,6 +507,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
       theme,
       toCurrency,
       isMobile,
+      is2xl,
       isExpanded,
       _chain
     ),

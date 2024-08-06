@@ -1,7 +1,7 @@
 import { captureException } from '@sentry/nextjs'
 import { Extras, ScopeContext } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError, shouldIgnoreExecutionError } from './error-filters'
+import { isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -9,6 +9,8 @@ import {
 import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
 import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQuery'
 import { isProd } from '@/lib/config/app.config'
+import { SwapState } from '@/lib/modules/swap/swap.types'
+import { SwapHandler } from '@/lib/modules/swap/handlers/Swap.handler'
 
 /**
  * Metadata to be added to the captured Sentry error
@@ -32,7 +34,16 @@ export function sentryMetaForRemoveLiquidityHandler(
   return createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
-export function sentryMetaForSwapHandler(errorMessage: string, params: SimulateSwapParams) {
+export type SwapBuildCallExtras = {
+  handler: SwapHandler
+  swapState: SwapState
+  slippage: string
+  wethIsEth: boolean
+}
+export function sentryMetaForSwapHandler(
+  errorMessage: string,
+  params: SimulateSwapParams | SwapBuildCallExtras
+) {
   return createSwapHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
@@ -130,13 +141,12 @@ function createRemoveHandlerMetadata(
 function createSwapHandlerMetadata(
   errorName: string,
   errorMessage: string,
-  params: SimulateSwapParams
+  params: SimulateSwapParams | SwapBuildCallExtras
 ) {
+  const { handler, ...rest } = params
   const extra: Extras = {
-    handler: params.handler.constructor.name,
-    params: {
-      ...params.swapInputs,
-    },
+    handler: handler.constructor.name,
+    params: rest,
   }
   return createFatalMetadata(errorName, errorMessage, extra)
 }
@@ -199,7 +209,7 @@ export function captureSentryError(
   { context, errorMessage, errorName }: SentryMetadata
 ) {
   const causeError = ensureError(e)
-  if (shouldIgnoreExecutionError(causeError)) return
+  if (isUserRejectedError(causeError)) return
 
   // Adding the root cause message to the top level message makes slack alerts more useful
   const errorMessageWithCause = errorMessage + `\n\nCause: \n` + causeError.message
@@ -227,7 +237,28 @@ export function shouldIgnoreError(e: Error) {
 }
 
 function shouldIgnore(e: Error): boolean {
+  if (!e?.message) return false
+
+  if (isUserRejectedError(e)) return true
+
   if (e.message.includes('.getAccounts is not a function')) return true
+
+  /*
+    Error thrown by Library detector chrome extension:
+    https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
+  */
+  if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+
+  /*
+    Frequent errors in rainbowkit + wagmi that do not mean a real crash
+  */
+  if (e.message.includes('Connector not connected')) return true
+  if (e.message.includes('Provider not found')) return true
+
+  /*
+    More info: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
+  */
+  if (e.message.includes('ResizeObserver loop limit exceeded')) return true
 
   if (isUserRejectedError(e)) return true
 

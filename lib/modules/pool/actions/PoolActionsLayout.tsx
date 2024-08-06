@@ -20,30 +20,26 @@ export function PoolActionsLayout({ children }: Props) {
       top={0}
       left={0}
       w="full"
-      h="full"
       bg="transparent"
-      zIndex={100}
+      zIndex={50}
       onClick={redirectToPoolPage}
     >
       <VStack
-        pos="absolute"
-        top={0}
-        left={0}
         w="full"
-        h="full"
         bg="blackAlpha.700"
         backdropFilter="blur(3px) hue-rotate(90deg)"
-        zIndex={101}
+        zIndex={51}
         onClick={redirectToPoolPage}
       >
         <Navbar leftSlot={<PoolName pool={pool} color="font.light" />} />
-        <Box w="full" px={['0', 'md']} flexGrow="1">
+        <Box w="full" px={['0', 'md']}>
           <Card
+            position="relative"
             variant="level1"
             shadow="lg"
-            h="full"
             borderBottomRadius={0}
             borderTopRadius="2xl"
+            minH="calc(100vh - 80px)"
             onClick={e => e.stopPropagation()}
           >
             <PoolActionsNav />

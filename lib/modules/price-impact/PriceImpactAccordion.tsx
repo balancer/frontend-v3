@@ -70,7 +70,7 @@ export function PriceImpactAccordion({
   return (
     <Box w="full">
       <Accordion w="full" variant="button" allowToggle>
-        <AccordionItem w="full" isDisabled={isDisabled}>
+        <AccordionItem w="full" isDisabled={isDisabled} shadow={isDisabled ? 'none' : undefined}>
           <h2>
             <AccordionButton>
               <Box as="span" flex="1" textAlign="left">
@@ -102,7 +102,7 @@ export function PriceImpactAccordion({
                       }.00%`}
                 </AlertTitle>
                 <AlertDescription>
-                  <Text color="grayText" fontSize="sm">
+                  <Text color="font.dark" fontSize="sm">
                     {isUnknownPriceImpact
                       ? 'The price impact cannot be calculated. Only proceed if you know exactly what you are doing.'
                       : 'The higher the price impact, the worse exchange rate you get for this swap.'}

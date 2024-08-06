@@ -4,7 +4,7 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useQuery } from '@tanstack/react-query'
-import { formatUnits, parseAbiItem, Address } from 'viem'
+import { formatUnits, parseAbiItem, Address, Hex } from 'viem'
 import { useTransaction } from 'wagmi'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -16,7 +16,7 @@ import { HumanAmount } from '@balancer/sdk'
 
 const userNotConnected = 'User is not connected'
 
-export type ReceiptProps = { txHash: Address; userAddress: Address }
+export type ReceiptProps = { txHash?: Hex; userAddress: Address }
 
 export function useAddLiquidityReceipt({ txHash, userAddress }: ReceiptProps) {
   const { chain } = usePool()
@@ -165,28 +165,32 @@ export function useTransactionLogsQuery({
   const viemClient = getViemClient(chain)
   const receipt = useTransaction({ hash: txHash, chainId })
 
+  const blockHash = receipt.data?.blockHash
+
   const outgoingTransfersQuery = useQuery({
-    queryKey: ['tx.logs.outgoing', userAddress, receipt.data?.blockHash],
+    queryKey: ['tx.logs.outgoing', userAddress, blockHash],
     queryFn: () =>
       viemClient.getLogs({
-        blockHash: receipt?.data?.blockHash,
+        blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { from: userAddress },
       }),
+    enabled: !!blockHash,
   })
 
   const incomingTransfersQuery = useQuery({
-    queryKey: ['tx.logs.incoming.transfers', userAddress, receipt.data?.blockHash],
+    queryKey: ['tx.logs.incoming.transfers', userAddress, blockHash],
     queryFn: () =>
       viemClient.getLogs({
-        blockHash: receipt?.data?.blockHash,
+        blockHash,
         event: parseAbiItem(
           'event Transfer(address indexed from, address indexed to, uint256 value)'
         ),
         args: { to: userAddress },
       }),
+    enabled: !!blockHash,
   })
 
   // Catches when the wNativeAsset is withdrawn from the vault, assumption is
@@ -201,24 +205,30 @@ export function useTransactionLogsQuery({
         event: parseAbiItem('event Withdrawal(address indexed src, uint256 wad)'),
         args: { src: networkConfig.contracts.balancer.vaultV2 },
       }),
+    enabled: !!blockHash,
   })
 
   const outgoingTransfersData = useMemo(
     () =>
-      outgoingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+      outgoingTransfersQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [outgoingTransfersQuery.data, txHash]
   )
 
   const incomingTransfersData = useMemo(
     () =>
-      incomingTransfersQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) || [],
+      incomingTransfersQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [incomingTransfersQuery.data, txHash]
   )
 
   const incomingWithdrawalsData = useMemo(
     () =>
-      incomingWithdrawalsQuery.data?.filter(log => isSameAddress(log.transactionHash, txHash)) ||
-      [],
+      incomingWithdrawalsQuery.data?.filter(log =>
+        isSameAddress(log.transactionHash, txHash || emptyAddress)
+      ) || [],
     [incomingWithdrawalsQuery.data, txHash]
   )
 
@@ -229,6 +239,8 @@ export function useTransactionLogsQuery({
       incomingTransfersQuery.error ||
       incomingWithdrawalsQuery.error,
     isLoading:
+      // We cannot guarantee that the transaction is in logs until blockHash is available
+      !blockHash ||
       receipt.isLoading ||
       outgoingTransfersQuery.isLoading ||
       incomingTransfersQuery.isLoading ||

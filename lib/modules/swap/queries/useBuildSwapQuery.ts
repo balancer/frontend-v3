@@ -8,6 +8,7 @@ import { SimulateSwapResponse, SwapState } from '../swap.types'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SwapSimulationQueryResult } from './useSimulateSwapQuery'
 import { useRelayerSignature } from '../../relayer/RelayerSignatureProvider'
+import { SwapBuildCallExtras, sentryMetaForSwapHandler } from '@/lib/shared/utils/query-errors'
 
 export type BuildSwapQueryResponse = ReturnType<typeof useBuildSwapQuery>
 
@@ -65,6 +66,12 @@ export function useBuildSwapQuery({
     queryFn,
     enabled: enabled && isConnected && !!simulationQuery.data,
     gcTime: 0,
+    meta: sentryMetaForSwapHandler('Error in swap buildCallData query', {
+      handler,
+      swapState,
+      slippage,
+      wethIsEth,
+    } as SwapBuildCallExtras),
     ...onlyExplicitRefetch,
   })
 }

@@ -7,9 +7,9 @@ import { DELEGATE_OWNER } from '@/lib/config/app.config'
 import { zeroAddress } from 'viem'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { bptUsdValue } from '../../../pool.helpers'
+import { bptUsdValue, isCowAmmPool, isStable } from '../../../pool.helpers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { getPoolTypeLabel } from '../../../pool.utils'
+import { getPoolTypeLabel, shouldHideSwapFee } from '../../../pool.utils'
 
 export function useFormattedPoolAttributes() {
   const { pool } = usePool()
@@ -24,7 +24,7 @@ export function useFormattedPoolAttributes() {
       return {
         title: 'No owner',
         link: '',
-        swapFeeText: 'non-editable',
+        editableText: 'non-editable',
         attributeImmutabilityText: '',
       }
     }
@@ -33,16 +33,20 @@ export function useFormattedPoolAttributes() {
       return {
         title: 'Delegate owner',
         link: '',
-        swapFeeText: 'editable by governance',
-        attributeImmutabilityText: ' except for swap fees editable by governance',
+        editableText: 'editable by governance',
+        attributeImmutabilityText: isStable(pool.type)
+          ? ' except for swap fees and AMP factor editable by governance'
+          : ' except for swap fees editable by governance',
       }
     }
 
     return {
       title: abbreviateAddress(owner || ''),
       link: '',
-      swapFeeText: 'editable by pool owner',
-      attributeImmutabilityText: ' except for swap fees editable by the pool owner',
+      editableText: 'editable by pool owner',
+      attributeImmutabilityText: isStable(pool.type)
+        ? ' except for swap fees and AMP factor editable by the pool owner'
+        : ' except for swap fees editable by the pool owner',
     }
   }, [pool])
 
@@ -50,27 +54,33 @@ export function useFormattedPoolAttributes() {
     if (!pool) return []
     const { name, symbol, createTime, dynamicData, type } = pool
 
-    return [
+    const attributes = [
       {
-        title: 'Pool name',
+        title: 'Name',
         value: name,
       },
       {
-        title: 'Pool symbol',
+        title: 'Symbol',
         value: symbol,
       },
       {
-        title: 'Pool type',
+        title: 'Type',
         value: getPoolTypeLabel(type),
       },
       {
         title: 'Protocol version',
-        value: `Balancer V${pool.protocolVersion}`,
+        value: isCowAmmPool(pool.type) ? 'Balancer CoW AMM' : `Balancer V${pool.protocolVersion}`,
       },
       {
         title: 'Swap fees',
-        value: `${fNum('feePercent', dynamicData.swapFee)} (${poolOwnerData?.swapFeeText})`,
+        value: `${fNum('feePercent', dynamicData.swapFee)} (${poolOwnerData?.editableText})`,
       },
+      isStable(pool.type) && 'amp' in pool
+        ? {
+            title: 'AMP factor',
+            value: `${fNum('integer', pool.amp)} (${poolOwnerData?.editableText})`,
+          }
+        : null,
       {
         title: 'Pool Manager',
         value: 'None',
@@ -94,6 +104,10 @@ export function useFormattedPoolAttributes() {
         value: toCurrency(bptUsdValue(pool, '1')),
       },
     ]
+    if (shouldHideSwapFee(pool?.type)) {
+      return attributes.filter(a => a?.title !== 'Swap fees')
+    }
+    return attributes
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool, poolOwnerData])
 

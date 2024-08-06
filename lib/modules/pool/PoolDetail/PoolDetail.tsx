@@ -1,6 +1,6 @@
 'use client'
 
-import { VStack, Image, Stack } from '@chakra-ui/react'
+import { VStack, Stack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
 import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
@@ -18,12 +18,14 @@ import PoolUserEvents from './PoolUserEvents'
 import { hasTotalBalance } from '../user-balance.helpers'
 import { usePoolEvents } from '../usePoolEvents'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+import { CowFooter } from '@/app/(app)/pools/cow/CowFooter'
+import { CowPoolBanner } from '@/app/(app)/pools/cow/CowPoolBanner'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
   const router = useRouter()
   const pathname = usePathname()
-  const { variant, banners } = usePoolVariant()
+  const { banners } = usePoolVariant()
   const { userAddress, isConnected } = useUserAccount()
   const {
     data: userPoolEventsData,
@@ -54,8 +56,8 @@ export function PoolDetail() {
     router.prefetch(`${pathname}/add-liquidity`)
     if (userHasLiquidity) {
       router.prefetch(`${pathname}/remove-liquidity`)
-      router.prefetch(`${pathname}/stake-liquidity`)
-      router.prefetch(`${pathname}/unstake-liquidity`)
+      router.prefetch(`${pathname}/stake`)
+      router.prefetch(`${pathname}/unstake`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router])
@@ -68,7 +70,8 @@ export function PoolDetail() {
             <VStack w="full" spacing="md">
               <PoolAlerts />
               <PoolHeader />
-              {banners?.headerSrc && <Image src={banners.headerSrc} alt={`${variant}-header`} />}
+              {banners?.headerSrc && <CowPoolBanner />}
+
               <PoolStatsLayout />
             </VStack>
             {isConnected && (userHasLiquidity || userhasPoolEvents) && (
@@ -88,7 +91,8 @@ export function PoolDetail() {
           </VStack>
         </ClaimProvider>
       </DefaultPageContainer>
-      {banners?.footerSrc && <Image src={banners.footerSrc} alt={`${variant}-footer`} />}
+
+      {banners?.footerSrc && <CowFooter />}
     </>
   )
 }

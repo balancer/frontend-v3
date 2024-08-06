@@ -54,7 +54,7 @@ export default function ButtonGroup({
                   inset="0"
                 ></Box>
               )}
-              <Box position="relative" zIndex="10">
+              <Box position="relative" zIndex="8">
                 {option.label}
               </Box>
             </Button>

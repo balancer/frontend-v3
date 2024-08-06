@@ -16,6 +16,7 @@ import { MobileNav } from './MobileNav'
 import { useNav } from './useNav'
 import { useMemo } from 'react'
 import { usePathname } from 'next/navigation'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -79,6 +80,7 @@ function NavLogo() {
 
 function NavActions() {
   const pathname = usePathname()
+  const { isConnected } = useUserAccount()
 
   const actions = useMemo(() => {
     if (pathname === '/') {
@@ -102,11 +104,7 @@ function NavActions() {
       ]
     }
 
-    return [
-      {
-        el: <RecentTransactions />,
-        display: { base: 'none', lg: 'block' },
-      },
+    const defaultActions = [
       {
         el: <UserSettings />,
         display: { base: 'none', lg: 'block' },
@@ -124,7 +122,19 @@ function NavActions() {
         display: { base: 'block', lg: 'none' },
       },
     ]
-  }, [pathname])
+
+    if (isConnected) {
+      return [
+        {
+          el: <RecentTransactions />,
+          display: { base: 'none', lg: 'block' },
+        },
+        ...defaultActions,
+      ]
+    }
+
+    return defaultActions
+  }, [pathname, isConnected])
 
   return (
     <>

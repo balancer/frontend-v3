@@ -9,6 +9,7 @@ import NextTopLoader from 'nextjs-toploader'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
+import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
 const { projectName, projectId } = getProjectConfig()
 const iconUrl = `/images/icons/${projectId}.ico`
@@ -28,10 +29,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script async src="https://w.appzi.io/w.js?token=8TY8k" />
       </head>
-      <body className={satoshiFont.className} suppressHydrationWarning>
+      <body
+        className={satoshiFont.className}
+        suppressHydrationWarning
+        style={{ marginRight: '0px !important' }} // Required to prevent layout shift introduced by Rainbowkit
+      >
         <Fathom />
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>
+          <GlobalAlerts />
           <Navbar />
           {children}
           <Footer />

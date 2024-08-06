@@ -11,9 +11,17 @@ const getColor = (isCurrentSort: boolean) => (isCurrentSort ? 'text.special' : '
 
 export default function PoolListSortButton({ title, isDesc, isCurrentSort, ...rest }: Props) {
   return (
-    <Button size="sm" variant={isCurrentSort ? 'tertiary' : 'ghost'} {...rest}>
+    <Button
+      size="sm"
+      variant="ghost"
+      {...rest}
+      color={isCurrentSort ? 'font.highlight' : 'font.primary'}
+      fontWeight="bold"
+    >
       <HStack>
-        <Text>{title}</Text>
+        <Text color={isCurrentSort ? 'font.highlight' : 'font.primary'} fontWeight="bold">
+          {title}
+        </Text>
         <VStack alignContent="center" gap="0" spacing="0">
           {(!isCurrentSort || !isDesc) && (
             <Icon as={ChevronUp} size="10" color={getColor(isCurrentSort)} />

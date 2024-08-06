@@ -1,5 +1,6 @@
 import {
   Modal,
+  Text,
   ModalOverlay,
   ModalContent,
   ModalHeader,
@@ -38,19 +39,30 @@ export function VeBalLink({ triggerEl, ...props }: VebalRedirectModalProps) {
 
 export function VebalRedirectModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>veBAL (redirect to v2)</ModalHeader>
+        <ModalHeader>veBAL redirect</ModalHeader>
         <ModalCloseButton />
         <ModalBody color="grayText">
-          The veBAL experience is being carefully crafted for this new app. In the meantime, go to
-          the v2 app to nurture your veBAL:
+          <Text color="font.secondary">
+            A new and improved veBAL experience is currently being crafted. In the meantime, go to
+            the old app to manage your veBAL:
+          </Text>
+
           <UnorderedList>
-            <ListItem>Vote on gauges</ListItem>
-            <ListItem>Lock and unlock veBAL</ListItem>
-            <ListItem>View your balance and expiry date</ListItem>
-            <ListItem>Sync veBAL to other networks</ListItem>
+            <ListItem>
+              <Text color="font.secondary">Vote on gauges</Text>
+            </ListItem>
+            <ListItem>
+              <Text color="font.secondary">Lock and unlock veBAL</Text>
+            </ListItem>
+            <ListItem>
+              <Text color="font.secondary">View your balance and expiry date</Text>
+            </ListItem>
+            <ListItem>
+              <Text color="font.secondary">Sync veBAL to other networks</Text>
+            </ListItem>
           </UnorderedList>
         </ModalBody>
 
@@ -63,7 +75,7 @@ export function VebalRedirectModal({ isOpen, onClose }: { isOpen: boolean; onClo
             w="full"
           >
             <HStack>
-              <span>Proceed to V2</span>
+              <span>Manage your veBAL</span>
               <ArrowUpRight size={16} />
             </HStack>
           </Button>

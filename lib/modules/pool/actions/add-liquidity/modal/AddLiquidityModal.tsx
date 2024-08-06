@@ -8,17 +8,14 @@ import { useAddLiquidity } from '../AddLiquidityProvider'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AddLiquidityPreview } from './AddLiquidityPreview'
 import { AddLiquidityTimeout } from './AddLiquidityTimeout'
-import { AddLiquidityReceipt } from './AddLiquidityReceipt'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
-import { AnimatePresence, motion } from 'framer-motion'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
-import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
+import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
+import { AddLiquiditySummary } from './AddLiquiditySummary'
 
 type Props = {
   isOpen: boolean
@@ -39,8 +36,6 @@ export function AddLiquidityModal({
     useAddLiquidity()
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
-  const isMounted = useIsMounted()
-  const { userAddress } = useUserAccount()
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -50,13 +45,10 @@ export function AddLiquidityModal({
     }
   }, [addLiquidityTxHash])
 
-  useEffect(() => {
-    if (isMounted) {
-      setInitialHumanAmountsIn()
-      onClose()
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  useOnUserAccountChanged(() => {
+    setInitialHumanAmountsIn()
+    onClose()
+  })
 
   return (
     <Modal
@@ -65,6 +57,7 @@ export function AddLiquidityModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!addLiquidityTxHash && hasQuoteContext} />
@@ -81,29 +74,7 @@ export function AddLiquidityModal({
         />
         <ModalCloseButton />
         <ModalBody>
-          <AnimatePresence mode="wait" initial={false}>
-            {addLiquidityTxHash ? (
-              <motion.div
-                key="receipt"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AddLiquidityReceipt txHash={addLiquidityTxHash} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="preview"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <AddLiquidityPreview />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <AddLiquiditySummary />
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!addLiquidityTxHash}

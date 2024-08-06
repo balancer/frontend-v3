@@ -4,7 +4,7 @@
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlPoolTokenExpanded, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, safeSum } from '@/lib/shared/utils/numbers'
@@ -17,7 +17,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { hasNestedPools, isGyro } from '../../pool.helpers'
+import { isCowAmmPool, isGyro, isNonComposableStable } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
@@ -73,15 +73,18 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  const tokenFilter = hasNestedPools(pool)
-    ? (token: GqlPoolTokenExpanded) => !token.isNested
-    : (token: GqlPoolTokenExpanded) => isGyro(pool.type) || token.isMainToken
+  function getPoolTokens() {
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
+  }
 
-  const tokens = pool.allTokens
-    .filter(tokenFilter)
-    .map(token => getToken(token.address, pool.chain))
+  const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
 
   function tokensToShow() {
+    // Cow AMM pools don't support wethIsEth
+    if (isCowAmmPool(pool.type)) return tokens
+
     // for single token we show both the native asset AND the wrapped native asset in the ui
     if (includesWrappedNativeAsset && isSingleToken && nativeAsset) return [...tokens, nativeAsset]
 

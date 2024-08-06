@@ -6,18 +6,16 @@ import { DesktopStepTracker } from '../../transactions/transaction-steps/step-tr
 import { useSwap } from '../SwapProvider'
 import { SwapTimeout } from './SwapTimeout'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { AnimatePresence } from 'framer-motion'
 import { capitalize } from 'lodash'
 import { ActionModalFooter } from '../../../shared/components/modals/ActionModalFooter'
 import { TransactionModalHeader } from '../../../shared/components/modals/TransactionModalHeader'
 import { chainToSlugMap } from '../../pool/pool.utils'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '../../transactions/transaction-steps/step-tracker/step-tracker.utils'
-import { SwapModalBody } from './SwapModalBody'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
-import { useUserAccount } from '../../web3/UserAccountProvider'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../pool/actions/useResetStepIndexOnOpen'
+import { useOnUserAccountChanged } from '../../web3/useOnUserAccountChanged'
+import { SwapSummary } from './SwapSummary'
 
 type Props = {
   isOpen: boolean
@@ -33,8 +31,6 @@ export function SwapPreviewModal({
   ...rest
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
-  const { userAddress } = useUserAccount()
-  const isMounted = useIsMounted()
   const initialFocusRef = useRef(null)
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
@@ -49,13 +45,7 @@ export function SwapPreviewModal({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swapTxHash])
 
-  useEffect(() => {
-    if (isMounted) {
-      onClose()
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  useOnUserAccountChanged(onClose)
 
   return (
     <Modal
@@ -64,6 +54,7 @@ export function SwapPreviewModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!swapTxHash && hasQuoteContext} />
@@ -80,9 +71,7 @@ export function SwapPreviewModal({
         />
         <ModalCloseButton />
         <ModalBody>
-          <AnimatePresence mode="wait" initial={false}>
-            <SwapModalBody />
-          </AnimatePresence>
+          <SwapSummary />
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!swapTxHash}

@@ -60,7 +60,7 @@ export function AcceptPoliciesModal() {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={handleOnClose} isCentered>
+    <Modal isOpen={isOpen} onClose={handleOnClose} isCentered preserveScrollBarGap>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Accept Balancer UI policies</ModalHeader>

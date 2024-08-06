@@ -157,7 +157,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     // Section is a custom component
     Section: {
       baseStyle: {
-        marginBottom: { base: '16', md: '24' },
+        marginBottom: { base: '16', md: '32', lg: '60' },
       },
       variants: {
         subsection: {
@@ -296,6 +296,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         color: 'font.link',
         transition: tokens.transition.default,
         fontSize: ['sm', 'md'],
+        fontWeight: 'medium',
         _hover: {
           color: 'font.linkHover',
         },
@@ -384,6 +385,7 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         },
         md: {
           h: { base: '36px', md: '40px' },
+          fontSize: { base: '0.875rem', md: '1rem' },
           px: { base: '2', md: '3' },
         },
         lg: {
@@ -791,40 +793,93 @@ export function getComponents(tokens: any, primaryTextColor: string) {
     Switch: {
       baseStyle: {
         track: {
-          bg: 'gray.500',
+          bg: 'font.secondary',
           _checked: {
-            bg: 'purple.500',
+            bg: 'font.highlight',
           },
         },
       },
     },
     Divider: {
       baseStyle: {
-        borderColor: 'brown.100',
+        borderColor: 'border.divider',
         borderWidth: '1px',
-        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.8)',
+        boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 1)',
         _dark: {
-          borderColor: 'gray.800',
-          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.1)',
+          boxShadow: '0px 1px 0px 0px rgba(255, 255, 255, 0.15)',
         },
       },
     },
     Alert: {
       baseStyle: {
+        button: {
+          background: 'green',
+        },
+        icon: {
+          color: 'font.dark',
+        },
         container: {
           rounded: 'md',
           alignItems: 'start',
+          "&[data-status='info']": {
+            background: 'var(--chakra-colors-purple-200)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-purple-300)',
+            },
+          },
+          "&[data-status='warning']": {
+            background: 'var(--chakra-colors-orange-200)',
+            _dark: {
+              background: 'var(--chakra-colors-orange-300)',
+            },
+          },
+          "&[data-status='success']": {
+            backgroundColor: 'var(--chakra-colors-green-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-green-400)',
+            },
+          },
           "&[data-status='error']": {
-            border: '1px solid red',
+            backgroundColor: 'var(--chakra-colors-red-300)',
+            _dark: {
+              backgroundColor: 'var(--chakra-colors-red-400)',
+            },
           },
         },
         title: {
           letterSpacing: '-0.25px',
-          mb: 'xs',
+          fontSize: ['sm', 'md'],
+          lineHeight: '1.3',
+          color: 'font.dark',
+          mr: '0',
+          button: {
+            height: '28px',
+            fontSize: 'sm',
+            px: 'sm',
+            color: 'font.dark',
+            position: 'relative',
+            top: '-4px',
+            borderColor: 'font.dark',
+            borderRadius: 'md',
+            _hover: {
+              transform: 'scale(1.05)',
+            },
+          },
+          a: {
+            color: 'font.dark',
+            borderColor: 'font.dark',
+            _hover: {
+              transform: 'scale(1.05)',
+              color: 'font.dark',
+              borderColor: 'font.dark',
+              backgroundColor: 'transparent',
+            },
+          },
         },
         description: {
-          fontWeight: 'medium',
           letterSpacing: '-0.25px',
+          fontWeight: 'medium',
+          color: 'font.dark',
         },
       },
       variants: {},

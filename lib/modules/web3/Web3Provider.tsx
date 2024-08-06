@@ -14,14 +14,23 @@ import { CustomAvatar } from './CustomAvatar'
 import { UserAccountProvider } from './UserAccountProvider'
 import { PropsWithChildren } from 'react'
 import { WagmiConfig } from './WagmiConfig'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 export function Web3Provider({
   children,
   wagmiConfig,
 }: PropsWithChildren<{ wagmiConfig: WagmiConfig }>) {
+  const isMounted = useIsMounted()
+
   const { colors, radii, shadows, semanticTokens, fonts } = useTheme()
   const colorMode = useThemeColorMode()
   const colorModeKey = colorMode === 'light' ? 'default' : '_dark'
+
+  /*
+    Avoids warning (Warning: Prop `dangerouslySetInnerHTML` did not match. Server...)
+    when customTheme changes from default (dark) to light theme while mounting.
+  */
+  if (!isMounted) return null
 
   const sharedConfig = {
     fonts: {
@@ -63,7 +72,7 @@ export function Web3Provider({
       // generalBorderDim: '...',
       // menuItemBackground: '...',
       // modalBackdrop: '...',
-      modalBackground: semanticTokens.colors.background.base[colorModeKey],
+      modalBackground: semanticTokens.colors.background.level0[colorModeKey],
       // modalBorder: '...',
       modalText: semanticTokens.colors.font.primary[colorModeKey],
       // modalTextDim: '...',

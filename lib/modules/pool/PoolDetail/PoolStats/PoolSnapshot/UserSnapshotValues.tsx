@@ -100,14 +100,23 @@ export function UserSnapshotValues() {
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My liquidity
         </Text>
         {poolMyStatsValues ? (
           poolMyStatsValues.myLiquidity ? (
-            <HStack>
-              <Heading size="h4">{toCurrency(poolMyStatsValues.myLiquidity)}</Heading>
-              <Text color="font.link" onClick={handleClick} cursor="pointer">
+            <HStack onClick={handleClick}>
+              <Heading cursor="pointer" size="h4">
+                {toCurrency(poolMyStatsValues.myLiquidity)}
+              </Heading>
+              <Text
+                color="font.link"
+                cursor="pointer"
+                opacity="0"
+                fontSize="sm"
+                transition="opacity 0.2s var(--ease-out-cubic)"
+                _groupHover={{ opacity: '1' }}
+              >
                 Manage
               </Text>
             </HStack>
@@ -119,7 +128,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My APR
         </Text>
         {poolMyStatsValues && poolMyStatsValues.myLiquidity ? (
@@ -135,7 +144,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           {`My potential weekly yield${
             poolMyStatsValues && !poolMyStatsValues.myLiquidity ? ' on $10k' : ''
           }`}
@@ -147,7 +156,7 @@ export function UserSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           My claimable rewards
         </Text>
         {poolMyStatsValues ? (

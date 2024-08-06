@@ -2,7 +2,7 @@
 
 import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery as useApolloQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { createContext, useMemo } from 'react'
+import { createContext, useCallback, useMemo } from 'react'
 import { useProtocolRewards } from './PortfolioClaim/useProtocolRewards'
 import { ClaimableReward, useClaimableBalances } from './PortfolioClaim/useClaimableBalances'
 import { BalTokenReward, useBalTokenRewards } from './PortfolioClaim/useBalRewards'
@@ -134,16 +134,21 @@ function _usePortfolio() {
   }, [poolsWithOnchainUserBalances, isConnected, userAddress])
 
   // Bal token rewards
-  const { balRewardsData, isLoadingBalRewards } = useBalTokenRewards(
+  const { balRewardsData, refetchBalRewards, isLoadingBalRewards } = useBalTokenRewards(
     portfolioData.stakedPools || []
   )
 
   // Protocol rewards
-  const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
+  const { protocolRewardsData, isLoadingProtocolRewards, refetchProtocolRewards } =
+    useProtocolRewards()
 
   // Other tokens rewards
-  const { claimableRewards, claimableRewardsByPoolMap, isLoadingClaimableRewards } =
-    useClaimableBalances(portfolioData.stakedPools || [])
+  const {
+    claimableRewards,
+    refetchClaimableRewards,
+    claimableRewardsByPoolMap,
+    isLoadingClaimableRewards,
+  } = useClaimableBalances(portfolioData.stakedPools || [])
 
   const poolRewardsMap = useMemo(() => {
     return portfolioData.stakedPools?.reduce((acc: PoolRewardsDataMap, pool) => {
@@ -215,6 +220,11 @@ function _usePortfolio() {
     }, bn(0))
   }, [protocolRewardsData])
 
+  const refetchClaimPoolData = useCallback(() => {
+    refetchBalRewards()
+    refetchClaimableRewards()
+  }, [refetchBalRewards, refetchClaimableRewards])
+
   return {
     portfolioData,
     balRewardsData,
@@ -227,12 +237,14 @@ function _usePortfolio() {
     totalFiatClaimableBalanceByChain,
     protocolRewardsBalance,
     rewardsByChainMap,
+    refetchClaimPoolData,
+    refetchProtocolRewards,
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,
     isLoadingPortfolio:
       isLoadingPoolsUserAddress || isLoadingOnchainUserBalances || isLoadingPoolsId,
-    isLoadingClaimPoolData: isLoadingBalRewards || isLoadingClaimableRewards,
+    isLoadingRewards: isLoadingBalRewards || isLoadingClaimableRewards || isLoadingProtocolRewards,
   }
 }
 

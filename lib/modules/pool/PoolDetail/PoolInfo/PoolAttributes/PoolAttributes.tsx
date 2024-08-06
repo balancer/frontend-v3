@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Show, Card, Stack, HStack, Heading, Text, VStack } from '@chakra-ui/react'
+import { Box, Card, Stack, Heading, Text, VStack, Divider } from '@chakra-ui/react'
 import { useFormattedPoolAttributes } from './useFormattedPoolAttributes'
 
 export function PoolAttributes() {
@@ -12,19 +12,8 @@ export function PoolAttributes() {
         <Heading variant="h4" fontSize="1.25rem">
           Pool attributes
         </Heading>
+        <Divider />
         <VStack width="full">
-          <Show above="md">
-            <HStack spacing={{ base: '0', md: 'xl' }} width="full">
-              <Box minWidth="160px">
-                <Heading variant="h6" fontSize="1rem">
-                  Attribute
-                </Heading>
-              </Box>
-              <Heading variant="h6" fontSize="1rem">
-                Details
-              </Heading>
-            </HStack>
-          </Show>
           {formattedAttributes.map(attribute => {
             return (
               attribute && (
@@ -35,7 +24,7 @@ export function PoolAttributes() {
                   direction={{ base: 'column', md: 'row' }}
                 >
                   <Box minWidth="160px">
-                    <Text variant={{ base: 'primary', md: 'secondary' }}>{attribute.title}</Text>
+                    <Text variant={{ base: 'primary', md: 'secondary' }}>{attribute.title}:</Text>
                   </Box>
                   <Text
                     variant={{ base: 'secondary', md: 'secondary' }}

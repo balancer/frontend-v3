@@ -8,26 +8,29 @@ import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsPr
 import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/base/foundations'
 import { wagmiConfig } from '@/lib/modules/web3/WagmiConfig'
+import { GlobalAlertsProvider } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
     <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
       <ThemeProvider>
-        <Web3Provider wagmiConfig={wagmiConfig}>
-          <ApolloClientProvider>
-            <ApolloGlobalDataProvider>
-              <UserSettingsProvider
-                initCurrency={undefined}
-                initSlippage={undefined}
-                initEnableSignatures={undefined}
-                initPoolListView={undefined}
-                initAcceptedPolicies={undefined}
-              >
-                <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-              </UserSettingsProvider>
-            </ApolloGlobalDataProvider>
-          </ApolloClientProvider>
-        </Web3Provider>
+        <GlobalAlertsProvider>
+          <Web3Provider wagmiConfig={wagmiConfig}>
+            <ApolloClientProvider>
+              <ApolloGlobalDataProvider>
+                <UserSettingsProvider
+                  initCurrency={undefined}
+                  initSlippage={undefined}
+                  initEnableSignatures={undefined}
+                  initPoolListView={undefined}
+                  initAcceptedPolicies={undefined}
+                >
+                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                </UserSettingsProvider>
+              </ApolloGlobalDataProvider>
+            </ApolloClientProvider>
+          </Web3Provider>
+        </GlobalAlertsProvider>
       </ThemeProvider>
     </ColorThemeProvider>
   )

@@ -38,9 +38,9 @@ export function RateProviderInfoPopOver({
       <PopoverContent w="auto">
         <PopoverArrow bg="background.level2" />
         <PopoverBody>
-          <VStack w="full" alignItems="flex-start" spacing="lg" mb="sm">
+          <VStack w="full" alignItems="flex-start" spacing="ms">
             <HStack w="full">
-              <Heading variant="h4" fontSize="1.25rem">
+              <Heading variant="h4" fontSize="1.125rem">
                 {token.symbol} rate provider
               </Heading>
               <TokenIcon
@@ -53,12 +53,12 @@ export function RateProviderInfoPopOver({
             </HStack>
             {level === 0 && (
               <>
-                <Text>
+                <Text fontSize="sm">
                   This rate provider has not been reviewed.
                   <br />
                   Proceed with caution.
                 </Text>
-                <Text>
+                <Text fontSize="sm">
                   Learn more about{' '}
                   <Link href="/risks#rate-provider-risk" target="_blank">
                     <Box as="span" color="font.link">
@@ -70,18 +70,22 @@ export function RateProviderInfoPopOver({
             )}
             {level !== 0 && (
               <>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Review summary</Text>
-                  <Text>
+                <VStack alignItems="flex-start" gap="0">
+                  <Text fontSize="sm" color="grayText">
+                    Review summary:
+                  </Text>
+                  <Text fontSize="sm">
                     {data.summary === 'safe' ? 'No vulnerabilities were reported' : 'Unsafe'}
                   </Text>
                 </VStack>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Warnings</Text>
+                <VStack alignItems="flex-start" gap="0">
+                  <Text fontSize="sm" color="grayText">
+                    Warnings:
+                  </Text>
                   {warnings.length > 0 ? (
-                    <Text>Yes, see review details</Text>
+                    <Text fontSize="sm">Yes, see review details</Text>
                   ) : (
-                    <Text>
+                    <Text fontSize="sm">
                       None except{' '}
                       <Link href="/risks#rate-provider-risk" target="_blank">
                         <Box as="span" color="font.link">
@@ -91,25 +95,31 @@ export function RateProviderInfoPopOver({
                     </Text>
                   )}
                 </VStack>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Upgradeable components</Text>
+                <VStack alignItems="flex-start" gap="0">
+                  <Text fontSize="sm" color="grayText">
+                    Upgradeable components:
+                  </Text>
                   {data.upgradeableComponents && data.upgradeableComponents.length > 0 ? (
-                    <Text>Yes, see review details</Text>
+                    <Text fontSize="sm">Yes, see review details</Text>
                   ) : (
-                    <Text>None</Text>
+                    <Text fontSize="sm">None</Text>
                   )}
                 </VStack>
-                <VStack alignItems="flex-start">
-                  <Text color="grayText">Rate provider factory</Text>
-                  <Text>{data.factory ?? 'None'}</Text>
+                <VStack alignItems="flex-start" gap="0">
+                  <Text fontSize="sm" color="grayText">
+                    Rate provider factory:
+                  </Text>
+                  <Text fontSize="sm">{data.factory ?? 'None'}</Text>
                 </VStack>
                 {data.reviewFile && (
                   <Link
                     href={`https://github.com/balancer/code-review/blob/main/rate-providers/${data.reviewFile}`}
                     target="_blank"
                   >
-                    <HStack>
-                      <Text color="font.link">View review details</Text>
+                    <HStack gap="xxs">
+                      <Text fontSize="sm" color="font.link">
+                        View review details
+                      </Text>
                       <Icon as={ArrowUpRight} size={12} color="font.link" />
                     </HStack>
                   </Link>

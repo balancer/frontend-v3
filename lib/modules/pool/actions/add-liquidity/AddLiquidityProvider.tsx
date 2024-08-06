@@ -14,6 +14,8 @@ import {
   LiquidityActionHelpers,
   areEmptyAmounts,
   filterHumanAmountsIn,
+  injectNativeAsset,
+  replaceWrappedWithNativeAsset,
   requiresProportionalInput,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
@@ -21,8 +23,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro } from '../../pool.helpers'
-import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { isGyro, isNonComposableStable } from '../../pool.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
@@ -79,26 +80,19 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     ])
   }
 
-  const tokens = pool.allTokens
-    .filter(token => {
-      if (isGyro(pool.type)) return true
-      return token.isMainToken
-    })
+  function getPoolTokens() {
+    if (isNonComposableStable(pool.type)) return pool.poolTokens
+    if (isGyro(pool.type)) return pool.allTokens
+    return pool.allTokens.filter(token => token.isMainToken)
+  }
+
+  const tokens = getPoolTokens()
     .map(token => getToken(token.address, chain))
+    .filter((token): token is GqlToken => !!token)
 
-  let isWrappedNativeAssetInPool = false
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
-      isWrappedNativeAssetInPool = true
-      return nativeAsset
-    } else {
-      return token
-    }
-  })
+  const tokensWithNativeAsset = replaceWrappedWithNativeAsset(tokens, nativeAsset)
 
-  let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens =
-    isWrappedNativeAssetInPool && nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+  const validTokens = injectNativeAsset(tokens, nativeAsset, pool)
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
@@ -135,6 +129,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
 
   const addLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const addLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
 
@@ -198,6 +194,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     urlTxHash,
     addLiquidityTxHash,
     hasQuoteContext,
+    addLiquidityTxSuccess,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,

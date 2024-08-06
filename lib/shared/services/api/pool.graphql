@@ -12,12 +12,14 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
     type
     chain
     protocolVersion
+    tags
     dynamicData {
       poolId
       swapEnabled
       totalLiquidity
       totalShares
       fees24h
+      surplus24h
       swapFee
       volume24h
       holdersCount
@@ -425,6 +427,7 @@ query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $cha
     totalLiquidity
     volume24h
     fees24h
+    surplus24h
     sharePrice
   }
 }
@@ -470,6 +473,7 @@ query GetPoolEvents(
     tx
     type
     valueUSD
+    chain
     userAddress
     ... on GqlPoolSwapEventV3 {
       tokenIn {

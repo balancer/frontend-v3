@@ -46,7 +46,7 @@ function TokenInfo({
           <Heading
             fontWeight="bold"
             as="h6"
-            fontSize="lg"
+            fontSize="md"
             variant={disabled ? 'secondary' : 'primary'}
           >
             {tokenSymbol}
@@ -148,7 +148,7 @@ export default function TokenRow({
               </>
             ) : (
               <>
-                <Heading fontWeight="bold" as="h6" fontSize="lg">
+                <Heading fontWeight="bold" as="h6" fontSize="md" title={value.toString()}>
                   {isZero(amount) && showZeroAmountAsDash ? '-' : amount ? amount : '0'}
                 </Heading>
                 <Text fontWeight="medium" variant="secondary" fontSize="sm">

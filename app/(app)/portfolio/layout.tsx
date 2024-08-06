@@ -7,7 +7,7 @@ type Props = {
 
 export default async function PortfolioLayout({ children }: Props) {
   return (
-    <DefaultPageContainer>
+    <DefaultPageContainer minH="100vh">
       <PortfolioProvider>{children}</PortfolioProvider>
     </DefaultPageContainer>
   )

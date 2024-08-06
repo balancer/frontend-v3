@@ -137,7 +137,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const tokenOutInfo = getToken(swapState.tokenOut.address, swapState.selectedChain)
 
   if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
-    throw new Error('Token metadata not found')
+    try {
+      setDefaultTokens()
+    } catch (error) {
+      throw new Error('Token metadata not found')
+    }
   }
 
   const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
@@ -404,6 +408,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const swapTxHash = urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const swapTxConfirmed = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
 
@@ -550,6 +555,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    swapTxConfirmed,
+    replaceUrlPath,
     resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,
