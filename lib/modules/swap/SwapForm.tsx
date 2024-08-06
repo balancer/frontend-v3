@@ -13,7 +13,6 @@ import {
   IconButton,
   Button,
   Box,
-  Text,
   CardHeader,
   CardFooter,
   CardBody,
@@ -195,9 +194,7 @@ export function SwapForm() {
 
               {simulationQuery.isError && (
                 <ErrorAlert title="Error fetching swap">
-                  <Text color="font.maxContrast" variant="secondary">
-                    {parseSwapError(simulationQuery.error?.message)}
-                  </Text>
+                  {parseSwapError(simulationQuery.error?.message)}
                 </ErrorAlert>
               )}
             </VStack>
