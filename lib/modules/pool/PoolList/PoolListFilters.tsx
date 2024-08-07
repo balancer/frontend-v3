@@ -48,6 +48,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
 import { getChainShortName } from '@/lib/config/app.config'
 import { usePoolList } from './PoolListProvider'
+import { MultiSelect } from '@/lib/shared/components/inputs/MultiSelect'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -353,6 +354,12 @@ export function PoolListFilters() {
                           <UserPoolFilter />
                         </Box>
                       )}
+                      <Box as={motion.div} variants={staggeredFadeInUp} w="full">
+                        <Heading as="h3" size="sm" my="sm">
+                          Networks 2
+                        </Heading>
+                        <MultiSelect label="Select network" />
+                      </Box>
                       <Box as={motion.div} variants={staggeredFadeInUp}>
                         <Heading as="h3" size="sm" my="sm">
                           Networks
