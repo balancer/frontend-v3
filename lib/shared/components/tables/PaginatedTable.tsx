@@ -22,11 +22,11 @@ export function PaginatedTable({
 }: Props<any>) {
   return (
     <Card {...rest} p={{ base: '0', sm: '0' }}>
-      <VStack spacing={['sm', 'md']} w="full" overflowX="scroll" className="hide-scrollbar">
+      <VStack w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">
           {items.length > 0 && (
-            <VStack spacing={['xs', 'ms']}>
+            <VStack gap="0">
               {items.map((item, index) => (
                 <Box key={`${item.id}-${index}`} w="full">
                   {renderTableRow(item, index)}
