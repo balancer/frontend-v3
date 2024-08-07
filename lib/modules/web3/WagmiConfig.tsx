@@ -7,35 +7,38 @@ import { createConfig } from 'wagmi'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import {
   coinbaseWallet,
-  injectedWallet,
-  metaMaskWallet,
   rabbyWallet,
   rainbowWallet,
   safeWallet,
+  injectedWallet,
   walletConnectWallet,
+  metaMaskWallet,
 } from '@rainbow-me/rainbowkit/wallets'
 import { chains } from './ChainConfig'
 import { transports } from './transports'
 
 const appName = getProjectConfig().projectName
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID || ''
+
 const connectors = connectorsForWallets(
   [
     {
       groupName: 'Recommended',
       wallets: [
-        injectedWallet,
+        // metaMaskWallet must appear above injectedWallet to avoid random disconnection issues
         metaMaskWallet,
-        rabbyWallet,
-        rainbowWallet,
         safeWallet,
-        coinbaseWallet,
         walletConnectWallet,
+        rabbyWallet,
+        coinbaseWallet,
+        rainbowWallet,
+        injectedWallet,
       ],
     },
   ],
   { appName, projectId }
 )
+
 export type WagmiConfig = ReturnType<typeof createConfig>
 export const wagmiConfig = createConfig({
   chains,
