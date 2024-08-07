@@ -8,17 +8,29 @@ import { CowPromolBanner } from './cow/CowPromoBanner'
 
 export default async function PoolsPage() {
   return (
-    <DefaultPageContainer>
-      <FadeInOnView animateOnce={false}>
-        <Box mb={{ base: '2xl', sm: '3xl' }}>
-          <CowPromolBanner />
-        </Box>
-      </FadeInOnView>
-      <FadeInOnView animateOnce={false}>
-        <Suspense fallback={<Skeleton w="full" h="500px" />}>
-          <PoolList />
-        </Suspense>
-      </FadeInOnView>
-    </DefaultPageContainer>
+    <>
+      <Box bg="background.level0" borderBottom="1px solid" borderColor="border.base">
+        <DefaultPageContainer pt={['xl', '40px']} pb={['xl', '2xl']}>
+          {/* <FadeInOnView animateOnce={false}>
+            <Box>
+              <FeaturedPools featuredPools={featuredPools} />
+            </Box>
+          </FadeInOnView> */}
+          <FadeInOnView animateOnce={false}>
+            <Box mb={{ base: '2xl', sm: '3xl' }}>
+              <CowPromolBanner />
+            </Box>
+          </FadeInOnView>
+        </DefaultPageContainer>
+      </Box>
+
+      <DefaultPageContainer pt={['lg', '54px']} pb={['xl', '2xl']} noVerticalPadding>
+        <FadeInOnView animateOnce={false}>
+          <Suspense fallback={<Skeleton w="full" h="500px" />}>
+            <PoolList />
+          </Suspense>
+        </FadeInOnView>
+      </DefaultPageContainer>
+    </>
   )
 }
