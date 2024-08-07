@@ -17,7 +17,7 @@ export default async function PoolsPage() {
             </Box>
           </FadeInOnView> */}
           <FadeInOnView animateOnce={false}>
-            <Box mb={{ base: '2xl', sm: '3xl' }}>
+            <Box>
               <CowPromolBanner />
             </Box>
           </FadeInOnView>
