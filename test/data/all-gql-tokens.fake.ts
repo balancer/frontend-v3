@@ -29,6 +29,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -42,6 +43,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -55,6 +57,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -68,6 +71,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -81,6 +85,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xba100000625a3754423978a60c9317c58a424e3d.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -94,6 +99,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://raw.githubusercontent.com/balancer/tokenlists/main/src/assets/images/tokens/0xd33526068d116ce69f19a9ee46f0bd304f21a51f.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -107,6 +113,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png',
     priority: 0,
     tradable: false,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -120,6 +127,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
     priority: 0,
     tradable: false,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -133,6 +141,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png',
     priority: 0,
     tradable: false,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -145,6 +154,7 @@ export const allFakeGqlTokens: GqlToken[] = [
     logoURI: '',
     priority: 0,
     tradable: false,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -157,6 +167,7 @@ export const allFakeGqlTokens: GqlToken[] = [
     logoURI: 'https://assets.coingecko.com/coins/images/11674/large/aUSDC.png?1592546449',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     __typename: 'GqlToken',
@@ -170,6 +181,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
   {
     // Used in 50WETH-50-3pool nested pool tests
@@ -184,6 +196,7 @@ export const allFakeGqlTokens: GqlToken[] = [
       'https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png',
     priority: 0,
     tradable: true,
+    isErc4626: false,
   },
 ]
 
