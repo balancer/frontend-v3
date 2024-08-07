@@ -27,6 +27,7 @@ import {
   TagCloseButton,
   TagLabel,
   Text,
+  useColorModeValue,
   VisuallyHidden,
   VStack,
 } from '@chakra-ui/react'
@@ -345,13 +346,23 @@ export function FilterTags() {
 const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
   const { isMobile } = useBreakpoints()
+  const textColor = useColorModeValue('#fff', 'font.dark')
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
       <Icon as={Filter} boxSize={4} />
       {!isMobile && 'Filters'}
       {totalFilterCount > 0 && (
-        <Badge colorScheme="green" borderRadius="full" p="0">
+        <Badge
+          bg="font.highlight"
+          color={textColor}
+          borderRadius="full"
+          p="0"
+          position="absolute"
+          right="-9px"
+          top="-9px"
+          shadow="lg"
+        >
           <Center h="5" w="5">
             {totalFilterCount}
           </Center>
@@ -369,7 +380,7 @@ export function PoolListFilters() {
 
   return (
     <VStack w="full">
-      <HStack w="full" spacing="none" justify="end" gap="xs">
+      <HStack w="full" spacing="none" justify="end" gap="0">
         <PoolListSearch />
         <Popover
           isOpen={isPopoverOpen}
@@ -377,7 +388,7 @@ export function PoolListFilters() {
           onClose={() => setIsPopoverOpen(false)}
         >
           <PopoverTrigger>
-            <FilterButton ml="sm" />
+            <FilterButton ml="ms" />
           </PopoverTrigger>
           <Box zIndex="popover" shadow="2xl">
             <PopoverContent>
