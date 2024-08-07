@@ -23,7 +23,7 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
     >
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={Globe} boxSize="5" ml="1" color="grayText" />
+          <Icon as={Globe} boxSize="5" ml="1" color="font.primary" />
         </VStack>
       </GridItem>
       <GridItem>
