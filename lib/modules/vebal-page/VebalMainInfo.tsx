@@ -1,8 +1,6 @@
-import networkConfig from '@/lib/config/networks/mainnet'
-import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useVebalLockInfo } from '../vebal/useVebalLockInfo'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { format } from 'date-fns'
+import { differenceInDays, format } from 'date-fns'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { GetVeBalUserDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '../web3/UserAccountProvider'
@@ -10,11 +8,8 @@ import { Stack, Text } from '@chakra-ui/react'
 import { VeBALLocksChart } from './vebal-chart/VebalLocksChart'
 
 export function VebalMainInfo() {
-  const { balanceFor } = useTokenBalances()
   const lockInfo = useVebalLockInfo()
   const user = useUserAccount()
-
-  const unlockedBalance = balanceFor(networkConfig.tokens.addresses.b8020BalWeth)
 
   const { data } = useQuery(GetVeBalUserDocument, {
     variables: {
@@ -27,18 +22,18 @@ export function VebalMainInfo() {
     ? '-'
     : format(lockInfo.mainnetLockedInfo.lockedEndDate, 'yyyy-MM-dd')
 
-  const percentOfAllSupply = bn(unlockedBalance?.amount || 0)
-    .div(10 ** 18)
-    .div(lockInfo.mainnetLockedInfo.totalSupply || 0)
+  const percentOfAllSupply = bn(data?.veBalGetUser.balance || 0).div(
+    lockInfo.mainnetLockedInfo.totalSupply || 0
+  )
 
   const vebalData = [
     {
-      title: 'veBAL',
+      title: 'My veBAL',
       value: data?.veBalGetUser.balance,
     },
     {
-      title: 'Locked until',
-      value: lockedUntil,
+      title: '',
+      value: `Expires ${lockedUntil} (${differenceInDays(new Date(lockedUntil), new Date())} days)`,
     },
     {
       title: '% of all supply',
