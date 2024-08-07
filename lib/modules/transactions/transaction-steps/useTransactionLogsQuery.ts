@@ -163,7 +163,7 @@ export function useTransactionLogsQuery({
   const chainId = getChainId(chain)
   const networkConfig = getNetworkConfig(chain)
   const viemClient = getViemClient(chain)
-  const receipt = useTransaction({ hash: txHash, chainId })
+  const receipt = useTransaction({ hash: txHash, chainId, query: { enabled: !!txHash } })
 
   const blockHash = receipt.data?.blockHash
 
