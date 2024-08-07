@@ -1,14 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useTheme as useChakraTheme } from '@chakra-ui/react'
 
 import * as echarts from 'echarts/core'
 import { format, differenceInDays } from 'date-fns'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import BigNumber from 'bignumber.js'
 import { lockSnapshots } from './test-locks'
 import { useVebalLockInfo } from '../../vebal/useVebalLockInfo'
-import { GetVeBalUserDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 
 type ChartValueAcc = (readonly [string, number])[]
@@ -19,21 +16,65 @@ interface LockSnapshot {
   timestamp: number
 }
 
-export function useVebalLocksChart() {
-  const user = useUserAccount()
-  const theme = useChakraTheme()
-  const toolTipTheme = {
-    heading: 'font-weight: bold; color: #E5D3BE',
-    container: `background: ${theme.colors.gray[800]};`,
-    text: theme.colors.gray[400],
-  }
+function groupValuesByDates(chartValues: ChartValueAcc) {
+  return chartValues.reduce((acc: Record<string, number[]>, item) => {
+    const [date, value] = item
+    if (acc[date]) {
+      acc[date].push(value)
+    } else {
+      acc[date] = [value]
+    }
+    return acc
+  }, {})
+}
 
-  const { data } = useQuery(GetVeBalUserDocument, {
-    variables: {
-      address: user.userAddress.toLowerCase(),
-      chain: GqlChain.Mainnet,
-    },
-  })
+function calculatePoint2Balance(snapshot: LockSnapshot, slope: BigNumber, now: BigNumber) {
+  const point2V = bn(snapshot.bias).minus(slope.times(now.minus(snapshot.timestamp)))
+  return point2V.isLessThan(0) ? 0 : point2V.toNumber()
+}
+
+function formatDate(timestamp: number) {
+  return format(timestamp * 1000, 'yyyy/MM/dd')
+}
+
+function processLockSnapshots(lockSnapshots: LockSnapshot[]) {
+  const currentDate = (Date.now() / 1000).toFixed(0)
+
+  return lockSnapshots.reduce((acc: ChartValueAcc, snapshot, i) => {
+    const slope = bn(snapshot.slope)
+    const now = lockSnapshots[i + 1] ? bn(lockSnapshots[i + 1].timestamp) : bn(currentDate)
+
+    const point1Balance = bn(snapshot.bias).toNumber()
+    const point1Date = formatDate(snapshot.timestamp)
+
+    const point2Balance = calculatePoint2Balance(snapshot, slope, now)
+    const point2Date = formatDate(now.toNumber())
+
+    acc.push([point1Date, point1Balance])
+
+    if (point1Balance.toFixed(2) !== point2Balance.toFixed(2)) {
+      acc.push([point2Date, point2Balance])
+    }
+
+    return acc
+  }, [])
+}
+
+function filterAndFlattenValues(valuesByDates: Record<string, number[]>) {
+  return Object.keys(valuesByDates).reduce((acc: ChartValueAcc, item) => {
+    const values = valuesByDates[item]
+    const filteredValues = values.length > 2 ? [Math.min(...values), Math.max(...values)] : values
+
+    filteredValues.forEach((val: number) => {
+      acc.push([item, val])
+    })
+    return acc
+  }, [])
+}
+
+export function useVebalLocksChart() {
+  const theme = useChakraTheme()
+
   const userHistoricalLocks = lockSnapshots
 
   const { mainnetLockedInfo } = useVebalLockInfo()
@@ -43,69 +84,13 @@ export function useVebalLocksChart() {
   const hasExistingLock = mainnetLockedInfo.hasExistingLock
   const isExpired = mainnetLockedInfo.isExpired
 
-  function calculatePoint2Balance(snapshot: LockSnapshot, slope: BigNumber, now: BigNumber) {
-    const point2V = bn(snapshot.bias).minus(slope.times(now.minus(snapshot.timestamp)))
-    return point2V.isLessThan(0) ? 0 : point2V.toNumber()
-  }
-
-  function formatDate(timestamp: number) {
-    return format(timestamp * 1000, 'yyyy/MM/dd')
-  }
-
-  function processLockSnapshots(lockSnapshots: LockSnapshot[]) {
-    const currentDate = (Date.now() / 1000).toFixed(0)
-
-    return lockSnapshots.reduce((acc: ChartValueAcc, snapshot, i) => {
-      const slope = bn(snapshot.slope)
-      const now = lockSnapshots[i + 1] ? bn(lockSnapshots[i + 1].timestamp) : bn(currentDate)
-
-      const point1Balance = bn(snapshot.bias).toNumber()
-      const point1Date = formatDate(snapshot.timestamp)
-
-      const point2Balance = calculatePoint2Balance(snapshot, slope, now)
-      const point2Date = formatDate(now.toNumber())
-
-      acc.push([point1Date, point1Balance])
-
-      if (point1Balance.toFixed(2) !== point2Balance.toFixed(2)) {
-        acc.push([point2Date, point2Balance])
-      }
-
-      return acc
-    }, [])
-  }
-
-  function groupValuesByDates(chartValues: ChartValueAcc) {
-    return chartValues.reduce((acc: Record<string, number[]>, item) => {
-      const [date, value] = item
-      if (acc[date]) {
-        acc[date].push(value)
-      } else {
-        acc[date] = [value]
-      }
-      return acc
-    }, {})
-  }
-
-  function filterAndFlattenValues(valuesByDates: Record<string, number[]>) {
-    return Object.keys(valuesByDates).reduce((acc: ChartValueAcc, item) => {
-      const values = valuesByDates[item]
-      const filteredValues = values.length > 2 ? [Math.min(...values), Math.max(...values)] : values
-
-      filteredValues.forEach((val: number) => {
-        acc.push([item, val])
-      })
-      return acc
-    }, [])
-  }
-
   const chartValues = useMemo(() => {
     if (!userHistoricalLocks) return []
 
     const processedValues = processLockSnapshots(lockSnapshots)
     const valuesByDates = groupValuesByDates(processedValues)
     return filterAndFlattenValues(valuesByDates)
-  }, [userHistoricalLocks, lockSnapshots])
+  }, [userHistoricalLocks])
 
   const futureLockChartData = useMemo(() => {
     if (hasExistingLock && !isExpired) {
@@ -129,6 +114,11 @@ export function useVebalLocksChart() {
   }, [chartValues, mainnetLockedInfo.lockedEndDate, hasExistingLock, isExpired])
 
   const options = useMemo(() => {
+    const toolTipTheme = {
+      heading: 'font-weight: bold; color: #E5D3BE',
+      container: `background: ${theme.colors.gray[800]};`,
+      text: theme.colors.gray[400],
+    }
     return {
       grid: {
         left: '1.5%',
@@ -225,7 +215,7 @@ export function useVebalLocksChart() {
         futureLockChartData,
       ],
     }
-  }, [chartValues, futureLockChartData])
+  }, [chartValues, futureLockChartData, theme])
 
   return {
     lockedUntil,
