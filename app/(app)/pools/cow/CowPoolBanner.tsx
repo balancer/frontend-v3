@@ -3,6 +3,7 @@
 import { Picture } from '@/lib/shared/components/other/Picture'
 import { Button, Flex, Box, Center, useColorModeValue } from '@chakra-ui/react'
 import NextLink from 'next/link'
+import { ArrowUpRight } from 'react-feather'
 
 export function CowPoolBanner() {
   const bgColor = useColorModeValue('#194D05', '#194D05')
@@ -71,8 +72,16 @@ export function CowPoolBanner() {
             _hover={{ bg: '#E2F8BF' }}
             target="_blank"
             rel="noopener noreferrer"
+            role="group"
           >
             How it works
+            <Box
+              pl="xs"
+              transition="all 0.2s var(--ease-out-cubic)"
+              _groupHover={{ transform: ' translateX(1.5px)' }}
+            >
+              <ArrowUpRight size={14} style={{ display: 'inline' }} />
+            </Box>
           </Button>
         </Flex>
       </Center>
