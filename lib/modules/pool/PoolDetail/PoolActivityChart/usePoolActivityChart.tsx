@@ -340,8 +340,6 @@ export function usePoolActivityChart(isExpanded: boolean) {
       { adds: [], removes: [], swaps: [] }
     )
 
-    console.log('data', data)
-
     return data
   }, [response, isExpanded])
 
