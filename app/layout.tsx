@@ -11,16 +11,26 @@ import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
 import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
-const { projectName, projectId } = getProjectConfig()
-const iconUrl = `/images/icons/${projectId}.ico`
+const { projectName } = getProjectConfig()
 
 export const metadata: Metadata = {
   title: `${projectName} DeFi Liquidity Pools`,
   description: `Explore DeFi liquidity pools and swap tokens. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move.`,
-  icons: {
-    icon: [{ url: iconUrl }],
-    shortcut: [iconUrl],
-  },
+  icons: [
+    { rel: 'icon', type: 'image/x-icon', url: '/favicon.ico' },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/favicon-light.png',
+      media: '(prefers-color-scheme: light)',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/favicon-dark.png',
+      media: '(prefers-color-scheme: dark)',
+    },
+  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
