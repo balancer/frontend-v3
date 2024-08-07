@@ -308,6 +308,7 @@ export function PoolListFilters() {
           isOpen={isPopoverOpen}
           onOpen={() => setIsPopoverOpen(true)}
           onClose={() => setIsPopoverOpen(false)}
+          placement="bottom-end"
         >
           <PopoverTrigger>
             <FilterButton ml="sm" />
