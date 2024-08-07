@@ -11,6 +11,7 @@ import { Protocol } from '../../protocols/useProtocols'
 import { ExpandedPoolInfo, ExpandedPoolType } from './useExpandedPools'
 import { getCanStake } from '../../pool/actions/stake.helpers'
 import AuraAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/AuraAprTooltip'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 interface Props extends GridProps {
   pool: ExpandedPoolInfo
@@ -44,78 +45,80 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
   const stakingText = canStake ? getStakingText(pool.poolType) : 'N/A'
 
   return (
-    <Box
-      key={keyValue}
-      transition="all 0.2s ease-in-out"
-      _hover={{
-        bg: 'background.base',
-      }}
-      rounded="md"
-      px={{ base: 'ms', sm: '0' }}
-      w="full"
-    >
-      <Link href={getPoolPath(pool)} prefetch={true}>
-        <Grid {...rest} py="sm">
-          <GridItem>
-            <NetworkIcon chain={pool.chain} size={6} />
-          </GridItem>
-          <GridItem>
-            <PoolListTokenPills
-              pool={pool}
-              h={['32px', '36px']}
-              p={['xxs', 'sm']}
-              pr={[1.5, 'ms']}
-              iconSize={20}
-            />
-          </GridItem>
-          <GridItem>
-            <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
-              {getPoolTypeLabel(pool.type)}
-            </Text>
-          </GridItem>
-          <GridItem display="flex" justifyContent="right">
-            <HStack>
-              <Text textAlign="right" fontWeight="medium">
-                {stakingText}{' '}
-              </Text>
-              <StakingIcons pool={pool} />
-            </HStack>
-          </GridItem>
-          {/* TO-DO vebal boost */}
-          <GridItem textAlign="right">
-            <Text
-              title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
-              textAlign="right"
-              fontWeight="medium"
-            >
-              {vebalBoostValue ? `${Number(vebalBoostValue).toFixed(2)}x` : '-'}
-            </Text>
-          </GridItem>
-          <GridItem>
-            <Text textAlign="right" fontWeight="medium">
-              {toCurrency(pool.poolPositionUsd, { abbreviated: false })}
-            </Text>
-          </GridItem>
-          <GridItem justifySelf="end">
-            {pool.poolType === ExpandedPoolType.StakedAura ? (
-              pool.staking?.aura?.apr ? (
-                <AuraAprTooltip auraApr={pool.staking?.aura?.apr} />
-              ) : (
-                ' - '
-              )
-            ) : (
-              <MemoizedMainAprTooltip
-                aprItems={pool.dynamicData.aprItems}
-                poolId={pool.id}
-                textProps={{ fontWeight: 'medium' }}
-                vebalBoost={vebalBoostValue}
+    <FadeInOnView>
+      <Box
+        key={keyValue}
+        transition="all 0.2s ease-in-out"
+        _hover={{
+          bg: 'background.base',
+        }}
+        rounded="md"
+        px={{ base: 'ms', sm: '0' }}
+        w="full"
+      >
+        <Link href={getPoolPath(pool)} prefetch={true}>
+          <Grid {...rest} py={{ base: 'ms', md: 'md' }}>
+            <GridItem>
+              <NetworkIcon chain={pool.chain} size={6} />
+            </GridItem>
+            <GridItem>
+              <PoolListTokenPills
                 pool={pool}
+                h={['32px', '36px']}
+                p={['xxs', 'sm']}
+                pr={[1.5, 'ms']}
+                iconSize={20}
               />
-            )}
-          </GridItem>
-        </Grid>
-      </Link>
-    </Box>
+            </GridItem>
+            <GridItem>
+              <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
+                {getPoolTypeLabel(pool.type)}
+              </Text>
+            </GridItem>
+            <GridItem display="flex" justifyContent="right">
+              <HStack>
+                <Text textAlign="right" fontWeight="medium">
+                  {stakingText}{' '}
+                </Text>
+                <StakingIcons pool={pool} />
+              </HStack>
+            </GridItem>
+            {/* TO-DO vebal boost */}
+            <GridItem textAlign="right">
+              <Text
+                title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
+                textAlign="right"
+                fontWeight="medium"
+              >
+                {vebalBoostValue ? `${Number(vebalBoostValue).toFixed(2)}x` : '-'}
+              </Text>
+            </GridItem>
+            <GridItem>
+              <Text textAlign="right" fontWeight="medium">
+                {toCurrency(pool.poolPositionUsd, { abbreviated: false })}
+              </Text>
+            </GridItem>
+            <GridItem justifySelf="end">
+              {pool.poolType === ExpandedPoolType.StakedAura ? (
+                pool.staking?.aura?.apr ? (
+                  <AuraAprTooltip auraApr={pool.staking?.aura?.apr} />
+                ) : (
+                  ' - '
+                )
+              ) : (
+                <MemoizedMainAprTooltip
+                  aprItems={pool.dynamicData.aprItems}
+                  poolId={pool.id}
+                  textProps={{ fontWeight: 'medium' }}
+                  vebalBoost={vebalBoostValue}
+                  pool={pool}
+                />
+              )}
+            </GridItem>
+          </Grid>
+        </Link>
+      </Box>
+    </FadeInOnView>
   )
 }
 
