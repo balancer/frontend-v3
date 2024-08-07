@@ -1,7 +1,7 @@
 'use client'
 
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Box, Card, Center, Heading, Link, VStack, Image } from '@chakra-ui/react'
+import { Box, Text, Card, Center, Heading, Link, VStack, Image } from '@chakra-ui/react'
 import { ArrowUpRight } from 'react-feather'
 
 export function CowHeader() {
@@ -14,6 +14,7 @@ export function CowHeader() {
           md: '/images/partners/cow/banner-desktop.svg',
         }}
         backgroundSize="cover"
+        backgroundRepeat="no-repeat"
         backgroundPosition={{ base: 'bottom', md: 'bottom' }}
       >
         <Center>
@@ -26,7 +27,7 @@ export function CowHeader() {
             >
               The first MEV-capturing AMM
             </Heading>
-            <Box color="#BCEC79">
+            <Text color="#BCEC79">
               CoW AMM protects LPs from LVR so they can provide liquidity with less risk and more
               return.{' '}
               <Link
@@ -48,7 +49,7 @@ export function CowHeader() {
                   <ArrowUpRight size={14} style={{ display: 'inline' }} />
                 </Box>
               </Link>
-            </Box>
+            </Text>
             <Image src="/images/partners/cow/cow-amm-logo.svg" alt="cow-logo" h="30px" />
           </VStack>
         </Center>
