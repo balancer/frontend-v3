@@ -27,9 +27,9 @@ export function PoolListLayout() {
         direction={{ base: 'column', md: 'row' }}
         w="full"
         justify="space-between"
-        align={isFilterVisible ? 'end' : 'start'}
+        alignItems={isFilterVisible ? 'flex-end' : 'flex-start'}
       >
-        <VStack align="start" w="full" pb={{ base: 'sm', md: '0' }}>
+        <VStack align="start" w="full" pb={{ base: 'sm', md: '0' }} className="zzz" flex={1}>
           <HStack w="full">
             <Box position="relative" top="0">
               <Box
@@ -57,7 +57,11 @@ export function PoolListLayout() {
           <FilterTags />
         </VStack>
 
-        <Stack direction="row" w="full" align={{ base: 'end', sm: 'center' }}>
+        <Stack
+          direction="row"
+          w={{ base: 'full', md: 'auto' }}
+          align={{ base: 'end', sm: 'center' }}
+        >
           <PoolListFilters />
         </Stack>
       </Stack>
