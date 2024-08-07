@@ -160,7 +160,7 @@ function PoolNetworkFilters() {
       isChecked={isCheckedNetwork}
       toggleOption={toggleNetwork}
       toggleAll={() => setNetworks(null)}
-      label="Select networks"
+      label="All networks"
     />
   )
 }
