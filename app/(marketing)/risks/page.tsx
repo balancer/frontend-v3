@@ -278,7 +278,7 @@ export default function Privacy() {
                 </li>
               </ul>
 
-              <h5 id="rebasing-token">Rebasing tokens</h5>
+              <h5 id="rebasing-tokens">Rebasing tokens</h5>
               <p>
                 Rebasing tokens are a type of cryptocurrency that adjusts the supply of the token
                 based on a predetermined formula. This formula is usually designed to keep the price
