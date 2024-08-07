@@ -1,7 +1,7 @@
 import { ProjectConfig } from '@/lib/config/config.types'
 import { PartnerVariant } from '@/lib/modules/pool/pool.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { isProd } from '@/lib/config/app.config'
+import { isProd, isStaging } from '@/lib/config/app.config'
 
 export const ProjectConfigBalancer: ProjectConfig = {
   projectId: 'balancer',
@@ -19,7 +19,7 @@ export const ProjectConfigBalancer: ProjectConfig = {
     GqlChain.Fraxtal,
 
     // testnets only in dev mode
-    ...(isProd ? [] : [GqlChain.Sepolia]),
+    ...(isProd || isStaging ? [] : [GqlChain.Sepolia]),
   ],
   variantConfig: {
     [PartnerVariant.cow]: {
