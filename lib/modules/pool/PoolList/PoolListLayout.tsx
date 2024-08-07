@@ -15,7 +15,7 @@ export function PoolListLayout() {
         direction={{ base: 'column', md: 'row' }}
         w="full"
         justify="space-between"
-        align={{ base: 'start', md: 'end' }}
+        align="start"
       >
         <VStack align="start" w="full">
           <HStack w="full">

@@ -5,7 +5,6 @@ import {
   AddLiquidity,
   AddLiquidityKind,
   AddLiquidityProportionalInput,
-  HumanAmount,
   InputAmount,
   Slippage,
   calculateProportionalAmounts,
@@ -18,10 +17,9 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
+ * AddLiquidityHandler interface for strictly proportional adds, e.g. where the user
+ * specifies the token amounts in. It uses the Balancer SDK to calculate the BPT
+ * out with the current pools state, then uses that bptOut for the query.
  */
 export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -35,8 +33,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   public async simulate(
-    humanAmountsIn: HumanTokenAmountWithAddress[],
-    slippagePercent: string
+    humanAmountsIn: HumanTokenAmountWithAddress[]
   ): Promise<SdkQueryAddLiquidityOutput> {
     // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
     const humanAmountIn = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
@@ -46,17 +43,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       humanAmountIn
     )
 
-    if (slippagePercent) {
-      // We need to subtract slippage from the bpt amount to ensure the
-      // transaction can be successful. If we don't do this and the user has
-      // maxxed out one of their balances, it's very likely that the transaction
-      // will fail because if there is any slippage then the transaction would
-      // require more than one of their token balances as an amount in.
-      bptAmount.rawAmount = Slippage.fromPercentage(slippagePercent as HumanAmount).applyTo(
-        bptAmount.rawAmount,
-        -1
-      )
-    }
+    bptAmount.rawAmount = bptAmount.rawAmount - 10n // Subtract 10 wei to ensure query doesn't fail when user maxes out balance.
 
     const addLiquidity = new AddLiquidity()
 

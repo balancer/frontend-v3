@@ -11,16 +11,26 @@ import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
 import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
-const { projectName, projectId } = getProjectConfig()
-const iconUrl = `/images/icons/${projectId}.ico`
+const { projectName } = getProjectConfig()
 
 export const metadata: Metadata = {
   title: `${projectName} DeFi Liquidity Pools`,
   description: `Explore DeFi liquidity pools and swap tokens. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move.`,
-  icons: {
-    icon: [{ url: iconUrl }],
-    shortcut: [iconUrl],
-  },
+  icons: [
+    { rel: 'icon', type: 'image/x-icon', url: '/favicon.ico' },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/favicon-light.png',
+      media: '(prefers-color-scheme: light)',
+    },
+    {
+      rel: 'icon',
+      type: 'image/png',
+      url: '/favicon-dark.png',
+      media: '(prefers-color-scheme: dark)',
+    },
+  ],
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +39,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <script async src="https://w.appzi.io/w.js?token=8TY8k" />
       </head>
-      <body className={satoshiFont.className} suppressHydrationWarning>
+      <body
+        className={satoshiFont.className}
+        suppressHydrationWarning
+        style={{ marginRight: '0px !important' }} // Required to prevent layout shift introduced by Rainbowkit
+      >
         <Fathom />
         <NextTopLoader showSpinner={false} color="#7f6ae8" />
         <Providers>

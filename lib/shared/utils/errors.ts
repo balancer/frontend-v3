@@ -23,6 +23,11 @@ export function captureError(error: Error, context?: Partial<ScopeContext>): voi
   captureException(error, { ...context })
 }
 
+// Wraps Sentry's captureException to capture an error without throwing.
+export function captureErrorMessage(errorMessage: string, context?: Partial<ScopeContext>): void {
+  captureException(new Error(errorMessage), { ...context })
+}
+
 // Extends base Error class to allow for additional context and to automatically
 // capture the error in Sentry. Enforces that all errors thrown are of this type.
 export class SentryError extends Error {
