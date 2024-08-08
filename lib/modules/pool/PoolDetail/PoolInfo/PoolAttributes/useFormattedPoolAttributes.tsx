@@ -20,7 +20,7 @@ export function useFormattedPoolAttributes() {
     const { owner } = pool
     if (!owner) return
 
-    if (owner === zeroAddress) {
+    if (owner === zeroAddress || isCowAmmPool(pool.type)) {
       return {
         title: 'No owner',
         link: '',
@@ -81,10 +81,6 @@ export function useFormattedPoolAttributes() {
             value: `${fNum('integer', pool.amp)} (${poolOwnerData?.editableText})`,
           }
         : null,
-      {
-        title: 'Pool Manager',
-        value: 'None',
-      },
       poolOwnerData
         ? {
             title: 'Pool Owner',
