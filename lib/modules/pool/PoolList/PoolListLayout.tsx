@@ -29,7 +29,7 @@ export function PoolListLayout() {
         justify="space-between"
         alignItems={isFilterVisible ? 'flex-end' : 'flex-start'}
       >
-        <VStack align="start" w="full" pb={{ base: 'sm', md: '0' }} className="zzz" flex={1}>
+        <VStack align="start" w="full" pb={{ base: 'sm', md: '0' }} flex={1}>
           <HStack w="full">
             <Box position="relative" top="0">
               <Box
