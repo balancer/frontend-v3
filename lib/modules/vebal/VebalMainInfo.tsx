@@ -1,22 +1,16 @@
 import { useVebalLockInfo } from './useVebalLockInfo'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { differenceInDays, format } from 'date-fns'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
-import { GetVeBalUserDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { Stack, Text } from '@chakra-ui/react'
 import { VeBALLocksChart } from './vebal-chart/VebalLocksChart'
+import { useVebalUserData } from './useVebalUserData'
 
 export function VebalMainInfo() {
   const lockInfo = useVebalLockInfo()
-  const { userAddress, isConnected } = useUserAccount()
+  const { isConnected } = useUserAccount()
 
-  const { data } = useQuery(GetVeBalUserDocument, {
-    variables: {
-      address: userAddress.toLowerCase(),
-      chain: GqlChain.Mainnet,
-    },
-  })
+  const { data } = useVebalUserData()
 
   const lockedUntil = !lockInfo.mainnetLockedInfo.lockedEndDate
     ? '-'
@@ -33,7 +27,9 @@ export function VebalMainInfo() {
     },
     {
       title: '',
-      value: `Expires ${lockedUntil} (${differenceInDays(new Date(lockedUntil), new Date())} days)`,
+      value: lockedUntil
+        ? `Expires ${lockedUntil} (${differenceInDays(new Date(lockedUntil), new Date())} days)`
+        : '',
     },
     {
       title: '% of all supply',
