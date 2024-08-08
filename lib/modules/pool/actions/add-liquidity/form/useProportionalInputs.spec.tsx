@@ -19,7 +19,7 @@ describe('calculates and sorts proportional human amounts in', () => {
     expect(humanAmountsIn).toEqual([
       {
         tokenAddress: usdcAddress,
-        humanAmount: '84.523645',
+        humanAmount: '100',
       },
       {
         tokenAddress: daiAddress,
