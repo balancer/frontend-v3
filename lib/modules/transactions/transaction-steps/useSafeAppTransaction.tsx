@@ -1,46 +1,14 @@
-import { useEffect, useState } from 'react'
-import { useUserAccount } from '../../web3/UserAccountProvider'
-import { useWatchContractEvent } from 'wagmi'
-import { Hex, parseAbi, parseAbiItem } from 'viem'
-import { useQuery } from '@tanstack/react-query'
-import { getViemClient } from '@/lib/shared/services/viem/viem.client'
 import { getGqlChain } from '@/lib/config/app.config'
-
-const safeAbi = parseAbi(['event ExecutionSuccess(bytes32 txHash, uint256 payment)'])
+import { getViemClient } from '@/lib/shared/services/viem/viem.client'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { Hex, parseAbiItem } from 'viem'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 
 type Props = {
   hash: Hex | undefined
   chainId: number
   blockNumber?: bigint
-}
-
-// This is not being used. Will be removed in the next commit
-export function useSafeAppTransaction({ hash, chainId }: Props) {
-  const { userAddress } = useUserAccount()
-  const [safeTxHash, setSafeTxHash] = useState<`0x${string}` | undefined>()
-
-  useWatchContractEvent({
-    enabled: !!hash,
-    abi: safeAbi,
-    chainId,
-    address: userAddress,
-    eventName: 'ExecutionSuccess',
-    poll: false,
-    onLogs(logs) {
-      logs.forEach(log => {
-        console.log('DETECTED LOG: ', { logTxHash: log.args.txHash, hash })
-        if (log.args.txHash === hash) {
-          if (!log.transactionHash) {
-            throw new Error('Safe App Transaction hash not found')
-          }
-
-          setSafeTxHash(log.transactionHash)
-        }
-      })
-    },
-  })
-
-  return { safeTxHash }
 }
 
 export function useSafeAppLogs({ hash, chainId, blockNumber }: Props) {
