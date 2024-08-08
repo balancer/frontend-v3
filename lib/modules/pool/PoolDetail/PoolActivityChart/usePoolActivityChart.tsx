@@ -12,6 +12,7 @@ import {
   GqlPoolType,
   GqlPoolEventType,
   GqlToken,
+  GqlPoolEventAmount,
 } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
@@ -301,27 +302,12 @@ export function usePoolActivityChart(isExpanded: boolean) {
         const { type, timestamp, valueUSD, userAddress, tx } = item
 
         const usdValue = valueUSD.toString() ?? ''
-        const tokens: ChartInfoTokens[] = []
-
-        if (item.__typename === 'GqlPoolAddRemoveEventV3') {
-          item.tokens.forEach(token => {
-            tokens.push({
-              token: getToken(token.address, _chain),
-              amount: token.amount,
-            })
-          })
-        }
-
-        if (item.__typename === 'GqlPoolSwapEventV3') {
-          tokens.push({
-            token: getToken(item.tokenIn.address, _chain),
-            amount: item.tokenIn.amount,
-          })
-          tokens.push({
-            token: getToken(item.tokenOut.address, _chain),
-            amount: item.tokenOut.amount,
-          })
-        }
+        const tokens: ChartInfoTokens[] = [...(item.tokens || []), item.tokenIn, item.tokenOut]
+          .filter((token): token is GqlPoolEventAmount => !!token)
+          .map(token => ({
+            token: getToken(token.address, _chain),
+            amount: token.amount,
+          }))
 
         const chartYAxisValue = isExpanded ? usdValue : '0'
 

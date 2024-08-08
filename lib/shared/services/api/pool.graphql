@@ -475,22 +475,23 @@ query GetPoolEvents(
     valueUSD
     chain
     userAddress
-    ... on GqlPoolSwapEventV3 {
-      tokenIn {
-        address
-        amount
-      }
-      tokenOut {
-        address
-        amount
-      }
+    tokenIn {
+      address
+      amount
     }
-    ... on GqlPoolAddRemoveEventV3 {
-      tokens {
-        address
-        amount
-        valueUSD
-      }
+    tokenOut {
+      address
+      amount
+    }
+    surplus {
+      address
+      amount
+      valueUSD
+    }
+    tokens {
+      address
+      amount
+      valueUSD
     }
   }
 }
