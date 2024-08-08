@@ -82,8 +82,9 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               <MemoizedMainAprTooltip
                 aprItems={pool.dynamicData.aprItems}
                 poolId={pool.id}
-                textProps={{ fontWeight: 'medium' }}
+                textProps={{ fontWeight: 'medium', textAlign: 'right' }}
                 pool={pool}
+                height="auto"
               />
             </GridItem>
           </Grid>
