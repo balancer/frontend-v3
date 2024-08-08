@@ -111,6 +111,9 @@ export default function Debug() {
         <Link as={NextLink} href="/debug/modal">
           Modal animation
         </Link>
+        <Link as={NextLink} href="/debug/remove-allowance">
+          Remove allowance
+        </Link>
       </VStack>
     </FadeInOnView>
   )

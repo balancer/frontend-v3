@@ -75,6 +75,7 @@ function getActiveColor(transaction?: ManagedResult) {
 function isLoading(status: StepStatus, transaction?: ManagedResult): boolean {
   if (!transaction) return false
   if (status !== 'active') return false
+  if (transaction.isSafeTxLoading) return true
   if (getTransactionState(transaction) === TransactionState.Loading) {
     return true
   }
