@@ -151,7 +151,7 @@ function PoolNetworkFilters() {
   }))
 
   function isCheckedNetwork(network: GqlChain): boolean {
-    return !!toggledNetworks.find(toggledNetwork => toggledNetwork === network)
+    return !!toggledNetworks.includes(network)
   }
 
   return (
