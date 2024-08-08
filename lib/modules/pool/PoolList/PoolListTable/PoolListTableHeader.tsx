@@ -20,7 +20,7 @@ export function PoolListTableHeader({ ...rest }) {
     <Grid {...rest} p={['ms', 'md']} w="full" borderBottom="1px solid" borderColor="border.base">
       <GridItem>
         <VStack align="start" w="full">
-          <Icon as={Globe} boxSize="5" color="grayText" />
+          <Icon as={Globe} boxSize="5" color="font.primary" />
         </VStack>
       </GridItem>
       <GridItem>
