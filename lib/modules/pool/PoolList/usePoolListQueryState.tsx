@@ -221,6 +221,7 @@ export function usePoolListQueryState() {
     setPoolCategories,
     resetFilters,
     poolCategoryLabel,
+    setNetworks,
     poolCategories,
     minTvl,
     searchText: textSearch,
