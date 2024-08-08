@@ -8,6 +8,7 @@ import {
   ButtonProps,
   Center,
   Checkbox,
+  Flex,
   forwardRef,
   Heading,
   HStack,
@@ -26,6 +27,8 @@ import {
   TagCloseButton,
   TagLabel,
   Text,
+  useColorModeValue,
+  VisuallyHidden,
   VStack,
 } from '@chakra-ui/react'
 import { PoolListSearch } from './PoolListSearch'
@@ -54,6 +57,19 @@ import Image from 'next/image'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
+
+export function useFilterTagsVisible() {
+  const { networks, poolTypes, minTvl, poolCategories } = usePoolListQueryState()
+  const [isVisible, setIsVisible] = useState(false)
+
+  useEffect(() => {
+    setIsVisible(
+      networks.length > 0 || poolTypes.length > 0 || minTvl > 0 || poolCategories.length > 0
+    )
+  }, [networks, poolTypes, minTvl, poolCategories])
+
+  return isVisible
+}
 
 function UserPoolFilter() {
   const { userAddress, toggleUserAddress } = usePoolListQueryState()
@@ -238,39 +254,99 @@ export function FilterTags() {
   }
 
   return (
-    <HStack spacing="sm" wrap="wrap" mt="2">
-      {poolTypes.map(poolType => (
-        <Tag key={poolType} size="lg">
-          <TagLabel>{poolTypeLabel(poolType)}</TagLabel>
-          <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
-        </Tag>
-      ))}
-      {networks.map(network => (
-        <Tag key={network} size="lg">
-          <TagLabel>
-            <Text fontWeight="bold" textTransform="capitalize">
-              {network.toLowerCase()}
-            </Text>
-          </TagLabel>
-          <TagCloseButton onClick={() => toggleNetwork(false, network)} />
-        </Tag>
-      ))}
+    <HStack spacing="sm" wrap="wrap">
+      <AnimatePresence>
+        {poolTypes.map(poolType => (
+          <motion.div
+            key={poolType}
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{
+              enter: { ease: 'easeOut', duration: 0.15, delay: 0.05 },
+              exit: { ease: 'easeIn', duration: 0.05, delay: 0 },
+            }}
+          >
+            <Tag size="lg">
+              <TagLabel>
+                <Text fontSize="sm" fontWeight="bold" textTransform="capitalize">
+                  {poolTypeLabel(poolType)}
+                </Text>
+              </TagLabel>
+              <TagCloseButton onClick={() => togglePoolType(false, poolType)} />
+            </Tag>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+      <AnimatePresence>
+        {networks.map(network => (
+          <motion.div
+            key={network}
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{
+              enter: { ease: 'easeOut', duration: 0.15, delay: 0.05 },
+              exit: { ease: 'easeIn', duration: 0.05, delay: 0 },
+            }}
+          >
+            <Tag size="lg">
+              <TagLabel>
+                <Text fontSize="sm" fontWeight="bold" textTransform="capitalize">
+                  {network.toLowerCase()}
+                </Text>
+              </TagLabel>
+              <TagCloseButton onClick={() => toggleNetwork(false, network)} />
+            </Tag>
+          </motion.div>
+        ))}
+      </AnimatePresence>
       {minTvl > 0 && (
-        <Tag key="minTvl" size="lg">
-          <TagLabel>
-            <Text fontWeight="bold" textTransform="capitalize">
-              {`TVL > ${toCurrency(minTvl)}`}
-            </Text>
-          </TagLabel>
-          <TagCloseButton onClick={() => setMinTvl(0)} />
-        </Tag>
+        <AnimatePresence>
+          <motion.div
+            key="minTvl"
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{
+              enter: { ease: 'easeOut', duration: 0.15, delay: 0.05 },
+              exit: { ease: 'easeIn', duration: 0.05, delay: 0 },
+            }}
+          >
+            <Tag size="lg">
+              <TagLabel>
+                <Text fontSize="sm" fontWeight="bold" textTransform="capitalize">
+                  {`TVL > ${toCurrency(minTvl)}`}
+                </Text>
+              </TagLabel>
+              <TagCloseButton onClick={() => setMinTvl(0)} />
+            </Tag>
+          </motion.div>
+        </AnimatePresence>
       )}
-      {poolCategories.map(poolCategory => (
-        <Tag key={poolCategory} size="lg">
-          <TagLabel>{poolCategoryLabel(poolCategory)}</TagLabel>
-          <TagCloseButton onClick={() => togglePoolCategory(false, poolCategory)} />
-        </Tag>
-      ))}
+      <AnimatePresence>
+        {poolCategories.map(poolCategory => (
+          <motion.div
+            key={poolCategory}
+            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40 }}
+            exit={{ opacity: 0, y: 0 }}
+            transition={{
+              enter: { ease: 'easeOut', duration: 0.15, delay: 0.05 },
+              exit: { ease: 'easeIn', duration: 0.05, delay: 0 },
+            }}
+          >
+            <Tag size="lg">
+              <TagLabel>
+                <Text fontSize="sm" fontWeight="bold" textTransform="capitalize">
+                  {poolCategoryLabel(poolCategory)}
+                </Text>
+              </TagLabel>
+              <TagCloseButton onClick={() => togglePoolCategory(false, poolCategory)} />
+            </Tag>
+          </motion.div>
+        ))}
+      </AnimatePresence>
     </HStack>
   )
 }
@@ -278,13 +354,23 @@ export function FilterTags() {
 const FilterButton = forwardRef<ButtonProps, 'button'>((props, ref) => {
   const { totalFilterCount } = usePoolListQueryState()
   const { isMobile } = useBreakpoints()
+  const textColor = useColorModeValue('#fff', 'font.dark')
 
   return (
     <Button ref={ref} {...props} display="flex" gap="2" variant="tertiary">
       <Icon as={Filter} boxSize={4} />
       {!isMobile && 'Filters'}
       {totalFilterCount > 0 && (
-        <Badge colorScheme="green" borderRadius="full" p="0">
+        <Badge
+          bg="font.highlight"
+          color={textColor}
+          borderRadius="full"
+          p="0"
+          position="absolute"
+          right="-9px"
+          top="-9px"
+          shadow="lg"
+        >
           <Center h="5" w="5">
             {totalFilterCount}
           </Center>
@@ -302,7 +388,7 @@ export function PoolListFilters() {
 
   return (
     <VStack w="full">
-      <HStack w="full" spacing="none" justify="end">
+      <HStack w="full" spacing="none" justify="end" gap="0">
         <PoolListSearch />
         <Popover
           isOpen={isPopoverOpen}
@@ -311,7 +397,7 @@ export function PoolListFilters() {
           placement="bottom-end"
         >
           <PopoverTrigger>
-            <FilterButton ml="sm" />
+            <FilterButton ml="ms" />
           </PopoverTrigger>
           <Box zIndex="popover" shadow="2xl">
             <PopoverContent>
@@ -329,30 +415,28 @@ export function PoolListFilters() {
                       exit="exit"
                       variants={staggeredFadeInUp}
                     >
-                      <Box
-                        lineHeight="0"
-                        p="0"
-                        mb="sm"
-                        as={motion.div}
-                        variants={staggeredFadeInUp}
-                      >
-                        <Text
-                          variant="eyebrow"
-                          background="font.special"
-                          backgroundClip="text"
-                          fontSize="xs"
-                          display="inline"
-                          lineHeight="1"
-                        >
-                          Filters
-                        </Text>
-                      </Box>
+                      <Box lineHeight="0" p="0" as={motion.div} variants={staggeredFadeInUp}>
+                        <Flex gap="ms" alignItems="center" w="full" justifyContent="space-between">
+                          <Text
+                            variant="eyebrow"
+                            background="font.special"
+                            backgroundClip="text"
+                            fontSize="xs"
+                            display="inline"
+                            lineHeight="1"
+                          >
+                            Filters
+                          </Text>
 
-                      {totalFilterCount > 0 && (
-                        <Button size="xs" w="full" onClick={resetFilters}>
-                          Reset filters
-                        </Button>
-                      )}
+                          <Button size="xs" variant="link" onClick={resetFilters}>
+                            {totalFilterCount === 0 ? (
+                              <VisuallyHidden>Reset all</VisuallyHidden>
+                            ) : (
+                              'Reset all'
+                            )}
+                          </Button>
+                        </Flex>
+                      </Box>
 
                       {isConnected && (
                         <Box as={motion.div} variants={staggeredFadeInUp}>
