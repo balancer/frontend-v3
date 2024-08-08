@@ -327,7 +327,7 @@ export default function PoolMyLiquidity() {
               <VeBalLink
                 flex="1"
                 triggerEl={
-                  <Button w="100%" variant="secondary">
+                  <Button w="100%" variant="secondary" maxW="120px">
                     {lockBtnText}
                   </Button>
                 }
