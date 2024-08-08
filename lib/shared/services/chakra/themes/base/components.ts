@@ -358,8 +358,6 @@ export function getComponents(tokens: any, primaryTextColor: string) {
         borderRadius: 'lg',
         color: 'text-body',
         letterSpacing: '-0.02em',
-        border: '1px solid',
-        borderColor: 'transparent',
         _disabled: {
           background: 'background.level3',
           border: '1px solid',
@@ -422,15 +420,10 @@ export function getComponents(tokens: any, primaryTextColor: string) {
           shadow: 'md',
           _hover: {
             shadow: 'sm',
-            borderColor: 'border.base',
           },
           _active: {
             background: 'background.level2',
             shadow: 'none',
-            borderColor: 'border.base',
-          },
-          _focus: {
-            borderColor: 'border.base',
           },
         },
         solid: {
