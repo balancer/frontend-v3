@@ -1,4 +1,4 @@
-import { useVebalLockInfo } from '../vebal/useVebalLockInfo'
+import { useVebalLockInfo } from './useVebalLockInfo'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { differenceInDays, format } from 'date-fns'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
@@ -9,11 +9,11 @@ import { VeBALLocksChart } from './vebal-chart/VebalLocksChart'
 
 export function VebalMainInfo() {
   const lockInfo = useVebalLockInfo()
-  const user = useUserAccount()
+  const { userAddress, isConnected } = useUserAccount()
 
   const { data } = useQuery(GetVeBalUserDocument, {
     variables: {
-      address: user.userAddress.toLowerCase(),
+      address: userAddress.toLowerCase(),
       chain: GqlChain.Mainnet,
     },
   })
@@ -45,11 +45,17 @@ export function VebalMainInfo() {
     },
   ]
 
+  if (!isConnected) {
+    return <Text>Not connected</Text>
+  }
+
   return (
     <Stack spacing="4">
       {vebalData.map(({ title, value }) => (
         <Stack key={title} spacing="2">
-          <Text>{title}</Text>
+          <Text fontWeight={700} fontSize="lg">
+            {title}
+          </Text>
           <Text>{value}</Text>
         </Stack>
       ))}

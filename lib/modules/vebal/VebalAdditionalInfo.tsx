@@ -1,5 +1,5 @@
 import networkConfig from '@/lib/config/networks/mainnet'
-import { useVebalLockInfo } from '../vebal/useVebalLockInfo'
+import { useVebalLockInfo } from './useVebalLockInfo'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { Stack, Text } from '@chakra-ui/react'
 
