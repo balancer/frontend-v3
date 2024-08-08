@@ -4,7 +4,12 @@
 import * as echarts from 'echarts/core'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { format } from 'date-fns'
-import { GqlChain, GqlPoolEventType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolEventAmount,
+  GqlPoolEventType,
+  GqlToken,
+} from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { ColorMode, useTheme as useChakraTheme } from '@chakra-ui/react'
 import { useTheme as useNextTheme } from 'next-themes'
@@ -338,27 +343,12 @@ export function useEcosystemPoolActivityChart() {
       }
 
       const usdValue = valueUSD.toString() ?? ''
-      const tokens: ChartInfoTokens[] = []
-
-      if (item.__typename === 'GqlPoolAddRemoveEventV3') {
-        item.tokens.forEach(token => {
-          tokens.push({
-            token: getToken(token.address, chain),
-            amount: token.amount,
-          })
-        })
-      }
-
-      if (item.__typename === 'GqlPoolSwapEventV3') {
-        tokens.push({
-          token: getToken(item.tokenIn.address, chain),
-          amount: item.tokenIn.amount,
-        })
-        tokens.push({
-          token: getToken(item.tokenOut.address, chain),
-          amount: item.tokenOut.amount,
-        })
-      }
+      const tokens: ChartInfoTokens[] = [...(item.tokens || []), item.tokenIn, item.tokenOut]
+        .filter((token): token is GqlPoolEventAmount => !!token)
+        .map(token => ({
+          token: getToken(token.address, chain),
+          amount: token.amount,
+        }))
 
       const chartYAxisValue = Math.sqrt(Number(usdValue))
 

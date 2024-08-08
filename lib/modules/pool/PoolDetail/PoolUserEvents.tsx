@@ -37,7 +37,7 @@ type PoolEventRowProps = {
 const GRID_COLUMNS = '100px 150px 100px 1fr'
 
 function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) {
-  if (poolEvent.__typename !== 'GqlPoolAddRemoveEventV3') {
+  if (!poolEvent.tokens || poolEvent.tokens.length === 0) {
     return null
   }
 
@@ -58,7 +58,7 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 
   const Tokens = () =>
-    poolEvent.tokens
+    (poolEvent.tokens || [])
       .filter(token => token.amount !== '0')
       .map(token => (
         <HStack gap={['xs', 'sm']} key={token.address} mb="sm">
