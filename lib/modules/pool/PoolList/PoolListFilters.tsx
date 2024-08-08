@@ -51,6 +51,9 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { staggeredFadeInUp } from '@/lib/shared/utils/animations'
 import { getChainShortName } from '@/lib/config/app.config'
 import { usePoolList } from './PoolListProvider'
+import { MultiSelect } from '@/lib/shared/components/inputs/MultiSelect'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import Image from 'next/image'
 
 const SLIDER_MAX_VALUE = 10000000
 const SLIDER_STEP_SIZE = 100000
@@ -150,26 +153,31 @@ function PoolTypeFilters() {
 
 function PoolNetworkFilters() {
   const { supportedNetworks } = getProjectConfig()
-  const { networks: toggledNetworks, toggleNetwork } = usePoolListQueryState()
+  const { networks: toggledNetworks, toggleNetwork, setNetworks } = usePoolListQueryState()
 
   // Sort networks alphabetically after mainnet
   const sortedNetworks = [supportedNetworks[0], ...supportedNetworks.slice(1).sort()]
 
+  const networkOptions = sortedNetworks.map(network => ({
+    label: getChainShortName(network),
+    value: network,
+    selectedLabel: (
+      <Image src={`/images/chains/${network}.svg`} alt={network} width="20" height="20" />
+    ),
+  }))
+
+  function isCheckedNetwork(network: GqlChain): boolean {
+    return !!toggledNetworks.includes(network)
+  }
+
   return (
-    <Box as={motion.div} initial="hidden" animate="show" exit="exit" variants={staggeredFadeInUp}>
-      {sortedNetworks.map(network => (
-        <Box key={network} as={motion.div} variants={staggeredFadeInUp}>
-          <Checkbox
-            isChecked={!!toggledNetworks.find(toggledNetwork => toggledNetwork === network)}
-            onChange={e => toggleNetwork(e.target.checked, network)}
-          >
-            <Text fontSize="sm" textTransform="capitalize">
-              {getChainShortName(network)}
-            </Text>
-          </Checkbox>
-        </Box>
-      ))}
-    </Box>
+    <MultiSelect<GqlChain>
+      options={networkOptions}
+      isChecked={isCheckedNetwork}
+      toggleOption={toggleNetwork}
+      toggleAll={() => setNetworks(null)}
+      label="All networks"
+    />
   )
 }
 
@@ -386,6 +394,7 @@ export function PoolListFilters() {
           isOpen={isPopoverOpen}
           onOpen={() => setIsPopoverOpen(true)}
           onClose={() => setIsPopoverOpen(false)}
+          placement="bottom-end"
         >
           <PopoverTrigger>
             <FilterButton ml="ms" />
@@ -437,7 +446,7 @@ export function PoolListFilters() {
                           <UserPoolFilter />
                         </Box>
                       )}
-                      <Box as={motion.div} variants={staggeredFadeInUp}>
+                      <Box as={motion.div} variants={staggeredFadeInUp} w="full">
                         <Heading as="h3" size="sm" my="sm">
                           Networks
                         </Heading>
