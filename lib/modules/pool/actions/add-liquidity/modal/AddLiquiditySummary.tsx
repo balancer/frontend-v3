@@ -27,7 +27,6 @@ export function AddLiquiditySummary() {
     hasQuoteContext,
     tokens,
     addLiquidityTxHash,
-    addLiquidityTxSuccess,
   } = useAddLiquidity()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
@@ -51,10 +50,10 @@ export function AddLiquiditySummary() {
   if (!isUserAddressLoading && !userAddress) {
     return <BalAlert status="warning" content="User is not connected" />
   }
-  if (addLiquidityTxSuccess && error) {
+  if (error) {
     return <BalAlert status="warning" content="We were unable to find this transaction hash" />
   }
-  if (addLiquidityTxSuccess && !isLoadingReceipt && !sentTokens.length) {
+  if (!isLoadingReceipt && !sentTokens.length) {
     return (
       <BalAlert
         status="warning"
