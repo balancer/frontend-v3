@@ -5,6 +5,7 @@ import {
   GqlPoolTokenDetail,
   GqlPoolType,
   GqlPoolAprItem,
+  GqlPoolAprItemType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import {
@@ -110,19 +111,19 @@ export function getTotalApr(
   let minTotal = bn(0)
   let maxTotal = bn(0)
   const boost = vebalBoost || 1
-  let usedBalReward = false
 
   aprItems
     // Filter known APR types to avoid including new unknown API types that are not yet displayed in the APR tooltip
     .filter(item => TOTAL_APR_TYPES.includes(item.type))
     .forEach(item => {
-      if (item.title === 'BAL reward APR') {
-        if (!usedBalReward) {
-          minTotal = bn(item.apr).times(boost).plus(minTotal)
-          maxTotal = bn(item.apr).times(2.5).plus(maxTotal)
-          usedBalReward = true
-        }
+      if (item.type === GqlPoolAprItemType.StakingBoost) {
+        maxTotal = bn(item.apr).plus(maxTotal)
+        return
+      }
 
+      if (item.type === GqlPoolAprItemType.Staking) {
+        minTotal = bn(item.apr).times(boost).plus(minTotal)
+        maxTotal = bn(item.apr).plus(maxTotal)
         return
       }
 
