@@ -13,7 +13,7 @@ export const inherentTokenYieldTooltipText = `Inherent token yield,
 export const merklIncentivesTooltipText = `Merkl is a platform that allows 3rd party Incentive Providers
  to offer campaigns with additional yield for Liquidity Providers.`
 
-export const surplusIncentivesTooltipText = `In a traditional AMM, LPs lose money to arbitrageurs. CoW AMM 
+export const surplusIncentivesTooltipText = `In a traditional AMM, LPs lose money to arbitrageurs. CoW AMM
 prevents this loss (also called LVR), thereby increasing LP returns.`
 
 export const extraBalTooltipText = `veBAL holders can get an extra boost of up to 2.5x on their staking yield.
@@ -81,6 +81,10 @@ export function useAprTooltip({
 
     return true
   })
+
+  const hasVeBalBoost = !!aprItems.find(
+    item => item.title === 'BAL reward APR' && item.type === GqlPoolAprItemType.StakingBoost
+  )
 
   // Swap fees
   const swapFee = filteredAprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
@@ -193,6 +197,7 @@ export function useAprTooltip({
     isLockingAprPresent,
     subitemPopoverAprItemProps,
     balReward,
+    hasVeBalBoost,
     maxVeBal,
     totalBase,
     totalCombined,
