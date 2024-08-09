@@ -45,6 +45,7 @@ export const TOTAL_APR_TYPES = [
   ...TOTAL_BASE_APR_TYPES,
   GqlPoolAprItemType.Voting,
   GqlPoolAprItemType.Locking,
+  GqlPoolAprItemType.StakingBoost,
 ]
 
 function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
