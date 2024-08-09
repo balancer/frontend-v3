@@ -51,7 +51,7 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Base]: undefined,
   [GqlChain.Avalanche]: 'https://avalanche-c-chain-rpc.publicnode.com',
   [GqlChain.Fantom]: undefined,
-  [GqlChain.Gnosis]: undefined,
+  [GqlChain.Gnosis]: 'https://gnosis-rpc.publicnode.com',
   [GqlChain.Optimism]: undefined,
   [GqlChain.Polygon]: undefined,
   [GqlChain.Zkevm]: undefined,
