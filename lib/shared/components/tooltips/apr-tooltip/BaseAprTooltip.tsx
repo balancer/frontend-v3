@@ -97,6 +97,7 @@ function BaseAprTooltip({
     stakingIncentivesDisplayed,
     subitemPopoverAprItemProps,
     balReward,
+    hasVeBalBoost,
     totalBase,
     maxVeBal,
     lockingAprDisplayed,
@@ -126,6 +127,8 @@ function BaseAprTooltip({
       minWidth={['100px', '300px']}
       p="0"
     >
+      <div>YES</div>
+
       <TooltipAprItem
         {...basePopoverAprItemProps}
         displayValueFormatter={usedDisplayValueFormatter}
@@ -246,7 +249,7 @@ function BaseAprTooltip({
           </Stack>
         </>
       )}
-      {balReward && (
+      {hasVeBalBoost && (
         <>
           <Divider />
           <Stack roundedBottom="md" gap={0}>
