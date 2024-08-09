@@ -118,10 +118,12 @@ function MainAprTooltip({
             >
               {!onlySparkles && (
                 <Text
-                  {...textProps}
-                  textAlign="right"
+                  textAlign="left"
                   color={isOpen ? hoverColor : 'font.primary'}
                   textDecoration={isLBP(pool.type) ? 'line-through' : 'none'}
+                  whiteSpace="pre-wrap"
+                  noOfLines={2}
+                  {...textProps}
                 >
                   {apr || aprToShow}
                   {aprLabel ? ' APR' : ''}
