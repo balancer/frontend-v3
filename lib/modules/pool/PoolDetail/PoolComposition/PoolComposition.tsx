@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, Divider, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
 import {
@@ -72,20 +72,22 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
 
 export function PoolComposition() {
   const { pool, chain, isLoading } = usePool()
-  const [totalLiquidity, setTotalLiquidity] = useState('')
   const { isMobile } = useBreakpoints()
-
-  useEffect(() => {
-    if (pool) {
-      setTotalLiquidity(pool.dynamicData.totalLiquidity)
-    }
-  }, [pool])
+  const { calcTvl } = useTokens()
 
   const displayTokens = pool.poolTokens.filter(token =>
     pool.displayTokens.find(
       (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
     )
   ) as GqlPoolTokenDetail[]
+
+  const CardContentBlock = () => (
+    <CardContent
+      totalLiquidity={calcTvl(displayTokens, chain)}
+      displayTokens={displayTokens}
+      chain={chain}
+    />
+  )
 
   return (
     <Card>
@@ -100,18 +102,10 @@ export function PoolComposition() {
             Pool composition
           </Heading>
           {isMobile ? (
-            <CardContent
-              totalLiquidity={totalLiquidity}
-              displayTokens={displayTokens}
-              chain={chain}
-            />
+            <CardContentBlock />
           ) : (
             <Card variant="subSection" w="full">
-              <CardContent
-                totalLiquidity={totalLiquidity}
-                displayTokens={displayTokens}
-                chain={chain}
-              />
+              <CardContentBlock />
             </Card>
           )}
           {isMobile && <Divider />}
