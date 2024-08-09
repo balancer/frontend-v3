@@ -47,6 +47,9 @@ export function createApolloClient() {
         GqlUserPoolBalance: {
           keyFields: ['poolId'],
         },
+        GqlPoolAprItem: {
+          keyFields: ['id'],
+        },
         Query: {
           fields: {
             //poolGetJoinExits: concatPagination(keyArgs),
