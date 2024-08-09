@@ -8,6 +8,7 @@ import {
   GetTokensQuery,
   GetTokensQueryVariables,
   GqlChain,
+  GqlPoolTokenDetail,
   GqlToken,
 } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
@@ -130,6 +131,14 @@ export function _useTokens(
     []
   )
 
+  const calcTvl = useCallback((displayTokens: GqlPoolTokenDetail[], chain: GqlChain) => {
+    return displayTokens
+      .reduce((total, token) => {
+        return total.plus(bn(priceFor(token.address, chain)).times(token.balance))
+      }, bn(0))
+      .toString()
+  }, [])
+
   return {
     tokens,
     prices,
@@ -143,6 +152,7 @@ export function _useTokens(
     getTokensByTokenAddress,
     usdValueForToken,
     calcWeightForBalance,
+    calcTvl,
   }
 }
 
