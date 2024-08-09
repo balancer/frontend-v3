@@ -127,8 +127,6 @@ function BaseAprTooltip({
       minWidth={['100px', '300px']}
       p="0"
     >
-      <div>YES</div>
-
       <TooltipAprItem
         {...basePopoverAprItemProps}
         displayValueFormatter={usedDisplayValueFormatter}
