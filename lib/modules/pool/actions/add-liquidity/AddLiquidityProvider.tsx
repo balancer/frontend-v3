@@ -41,16 +41,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const [wethIsEth, setWethIsEth] = useState(false)
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
-  const { pool, refetch: refetchPool, isLoading, isLoadingOnchainData } = usePool()
+  const { pool, refetch: refetchPool, isLoading } = usePool()
   const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
     useTokens()
   const { isConnected } = useUserAccount()
   const { hasValidationErrors } = useTokenInputsValidation()
 
-  const handler = useMemo(
-    () => selectAddLiquidityHandler(pool),
-    [pool.id, isLoadingOnchainData, isLoading]
-  )
+  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id, isLoading])
 
   /**
    * Helper functions & variables
