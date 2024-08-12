@@ -43,8 +43,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       humanAmountIn
     )
 
-    bptAmount.rawAmount = bptAmount.rawAmount - 10n // Subtract 10 wei to ensure query doesn't fail when user maxes out balance.
-
     const addLiquidity = new AddLiquidity()
 
     const addLiquidityInput = this.constructSdkInput(humanAmountsIn, bptAmount)

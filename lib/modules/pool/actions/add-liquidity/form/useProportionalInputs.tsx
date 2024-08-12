@@ -48,7 +48,7 @@ export function useProportionalInputs() {
         ? wNativeAsset && balance.address !== wNativeAsset.address
         : nativeAsset && balance.address !== nativeAsset.address
     )
-  }, [wethIsEth, isBalancesLoading])
+  }, [wethIsEth, isBalancesLoading, balances])
 
   function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(

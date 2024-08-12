@@ -26,7 +26,7 @@ export function useMaximumInputs() {
         ? wNativeAsset && balance.address !== wNativeAsset.address
         : nativeAsset && balance.address !== nativeAsset.address
     )
-  }, [wethIsEth, isBalancesLoading])
+  }, [wethIsEth, isBalancesLoading, balances])
 
   function handleMaximizeUserAmounts() {
     if (isMaximized) return setIsMaximized(false)

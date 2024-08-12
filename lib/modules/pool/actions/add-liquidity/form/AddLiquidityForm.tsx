@@ -49,10 +49,14 @@ import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
+  const { pool } = usePool()
   const { validTokens } = useAddLiquidity()
 
   return (
-    <TokenBalancesProvider extTokens={validTokens}>
+    <TokenBalancesProvider
+      extTokens={validTokens}
+      subtractSlippage={requiresProportionalInput(pool.type)}
+    >
       <AddLiquidityMainForm />
     </TokenBalancesProvider>
   )
