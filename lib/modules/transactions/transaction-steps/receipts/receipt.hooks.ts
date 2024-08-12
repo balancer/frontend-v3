@@ -56,8 +56,17 @@ function useTxReceipt({ txHash, chain, userAddress, parseReceipt }: ReceiptProps
   const chainId = getChainId(chain)
   // These queries will be cached if we are in the context of a transaction flow
   // or will be fetched if the user is visiting an historic transaction receipt
-  const receiptQuery = useWaitForTransactionReceipt({ chainId, hash: txHash })
-  const transactionQuery = useTransaction({ chainId, hash: txHash })
+  const receiptQuery = useWaitForTransactionReceipt({
+    chainId,
+    hash: txHash,
+  })
+  const transactionQuery = useTransaction({
+    chainId,
+    hash: txHash,
+    query: {
+      enabled: !!txHash,
+    },
+  })
 
   const receiptLogs = receiptQuery.data?.logs || []
   const txValue = transactionQuery.data?.value || 0n
