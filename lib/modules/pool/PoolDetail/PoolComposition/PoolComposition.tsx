@@ -27,6 +27,7 @@ type CardContentProps = {
 function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps) {
   const { toCurrency } = useCurrency()
   const { calcWeightForBalance } = useTokens()
+  const { pool } = usePool()
 
   return (
     <VStack spacing="md" width="full">
@@ -61,6 +62,7 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
                 totalLiquidity,
                 chain
               )}
+              pool={pool}
               targetWeight={poolToken.weight || undefined}
             />
           )
