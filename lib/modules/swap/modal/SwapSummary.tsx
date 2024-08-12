@@ -5,7 +5,7 @@ import { MobileStepTracker } from '../../transactions/transaction-steps/step-tra
 import { SwapDetails } from '../SwapDetails'
 import { SwapRate } from '../SwapRate'
 import { useSwap } from '../SwapProvider'
-import { useSwapReceipt } from '../../transactions/transaction-steps/useTransactionLogsQuery'
+import { useSwapReceipt } from '../../transactions/transaction-steps/receipts/receipt.hooks'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { HumanAmount } from '@balancer/sdk'

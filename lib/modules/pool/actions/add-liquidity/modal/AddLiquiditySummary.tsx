@@ -10,7 +10,7 @@ import { QuoteBptOut, ReceiptBptOut } from './BptOut'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
+import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { StakingOptions } from './StakingOptions'
 import { isVebalPool } from '../../../pool.helpers'
@@ -29,7 +29,7 @@ export function AddLiquiditySummary() {
     addLiquidityTxHash,
     addLiquidityTxSuccess,
   } = useAddLiquidity()
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { isMobile } = useBreakpoints()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const vebalRedirectModal = useDisclosure()
@@ -39,6 +39,7 @@ export function AddLiquiditySummary() {
     sentTokens,
     receivedBptUnits,
   } = useAddLiquidityReceipt({
+    chain,
     txHash: addLiquidityTxHash,
     userAddress,
   })

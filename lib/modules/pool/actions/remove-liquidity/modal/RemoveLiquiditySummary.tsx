@@ -10,7 +10,7 @@ import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { bn } from '@/lib/shared/utils/numbers'
 import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
+import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
@@ -26,7 +26,7 @@ export function RemoveLiquiditySummary() {
   } = useRemoveLiquidity()
   const { isMobile } = useBreakpoints()
   const { getTokensByChain } = useTokens()
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const {
     isLoading: isLoadingReceipt,
@@ -34,6 +34,7 @@ export function RemoveLiquiditySummary() {
     receivedTokens,
     sentBptUnits,
   } = useRemoveLiquidityReceipt({
+    chain,
     txHash: removeLiquidityTxHash,
     userAddress,
   })
