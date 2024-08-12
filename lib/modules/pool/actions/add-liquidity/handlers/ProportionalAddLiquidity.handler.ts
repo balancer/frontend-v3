@@ -5,6 +5,7 @@ import {
   AddLiquidity,
   AddLiquidityKind,
   AddLiquidityProportionalInput,
+  HumanAmount,
   InputAmount,
   Slippage,
   calculateProportionalAmounts,
@@ -43,11 +44,9 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       humanAmountIn
     )
 
-    bptAmount.rawAmount = bptAmount.rawAmount - 10n // Subtract 10 wei to ensure query doesn't fail when user maxes out balance.
-
     const addLiquidity = new AddLiquidity()
 
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn, bptAmount)
+    const addLiquidityInput = this.constructSdkInput(bptAmount)
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
@@ -55,7 +54,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
 
   public async buildCallData({
     account,
-    slippagePercent,
     queryOutput,
     humanAmountsIn,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
@@ -63,7 +61,12 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
 
     const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
-      slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
+      // Setting slippage to zero ensures the build call can't fail if the user
+      // maxes out their balance. It can result in a tx failure if the pool
+      // state changes significantly in the background. The assumption is that
+      // this should be rare. If not, we will have to re-introduce slippage here
+      // and limit the user input amounts to their balance - slippage.
+      slippage: Slippage.fromPercentage('0' as HumanAmount),
       sender: account,
       recipient: account,
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
@@ -81,10 +84,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(
-    humanAmountsIn: HumanTokenAmountWithAddress[],
-    bptOut: InputAmount
-  ): AddLiquidityProportionalInput {
+  private constructSdkInput(bptOut: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
