@@ -24,9 +24,8 @@ export function isValidUserAddress(userAddress?: Address) {
   More info: https://tanstack.com/query/v5/docs/framework/react/guides/query-retries
  */
 export function getWaitForReceiptTimeout(chainId: number) {
-  console.log({ chainId })
   // In polygon there will be 3 retries of 25 seconds until we throw the timeout error
-  if (chainId === polygon.id) return 25_000
+  if (chainId === polygon.id) return 2_000
 
   // In other chains there will be 3 retries of 15 seconds until we throw the timeout error
   return 15_000
