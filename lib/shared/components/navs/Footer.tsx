@@ -8,6 +8,7 @@ import { DefaultPageContainer } from '../containers/DefaultPageContainer'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { ArrowUpRight } from 'react-feather'
 import { useNav } from './useNav'
+import { isBeets } from '@/lib/config/app.config'
 
 type LinkSection = {
   title: string
@@ -196,7 +197,9 @@ function LegalLinks() {
 }
 
 export function Footer() {
-  return (
+  return isBeets ? (
+    <h2>Hello, Beets Footer!</h2>
+  ) : (
     <Box as="footer" background="background.level0" shadow="innerLg">
       <DefaultPageContainer py="xl">
         <VStack align="start" spacing="lg" pt="md">

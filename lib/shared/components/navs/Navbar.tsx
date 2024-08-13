@@ -17,6 +17,7 @@ import { useNav } from './useNav'
 import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { useFeatures } from '../../hooks/useFeatures'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -44,37 +45,38 @@ function useBoundedScroll(threshold: number) {
 }
 
 function NavLinks({ ...props }: BoxProps) {
-  const { appLinks, linkColorFor } = useNav()
+  const { appLinks, beetsLinks, AppLink } = useNav()
+  const { mabeets, vebal, sftmx } = useFeatures()
 
   return (
     <HStack spacing="lg" fontWeight="medium" {...props}>
       {appLinks.map(link => (
         <Box key={link.href} as={motion.div} variants={fadeIn}>
-          <Link
-            as={NextLink}
-            href={link.href}
-            prefetch={true}
-            variant="nav"
-            color={linkColorFor(link.href)}
-          >
-            {link.label}
-          </Link>
+          <AppLink href={link.href} label={link.label} />
         </Box>
       ))}
-      <Box as={motion.div} variants={fadeIn}>
-        <VeBalLink />
-      </Box>
+      {vebal && (
+        <Box as={motion.div} variants={fadeIn}>
+          <VeBalLink />
+        </Box>
+      )}
+      {mabeets && (
+        <AppLink
+          key={beetsLinks.mabeets.href}
+          href={beetsLinks.mabeets.href}
+          label={beetsLinks.mabeets.label}
+        />
+      )}
+      {sftmx && (
+        <AppLink
+          key={beetsLinks.sftmx.href}
+          href={beetsLinks.sftmx.href}
+          label={beetsLinks.sftmx.label}
+        />
+      )}
       {(isDev || isStaging) && (
         <Box as={motion.div} variants={fadeIn}>
-          <Link
-            as={NextLink}
-            variant="nav"
-            href="/debug"
-            prefetch={true}
-            color={linkColorFor('/debug')}
-          >
-            Debug
-          </Link>
+          <AppLink href="/debug" label="Debug" />
         </Box>
       )}
     </HStack>

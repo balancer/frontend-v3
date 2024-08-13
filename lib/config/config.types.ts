@@ -54,6 +54,14 @@ export interface BlockExplorerConfig {
 
 export type SupportedChainId = (typeof chains)[number]['id']
 
+enum Features {
+  mabeets = 'mabeets',
+  vebal = 'vebal',
+  sftmx = 'sftmx',
+  masterchef = 'masterchef',
+  gauge = 'gauge',
+}
+
 export interface NetworkConfig {
   chainId: SupportedChainId
   name: string
@@ -66,6 +74,8 @@ export interface NetworkConfig {
   contracts: ContractsConfig
   minConfirmations?: number
   pools: PoolsConfig
+  features: { [key in Features]: boolean }
+  default: boolean
 }
 
 export interface Config {

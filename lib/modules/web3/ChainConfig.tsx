@@ -19,6 +19,7 @@ import {
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
+import { isBeets } from '@/lib/config/app.config'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
@@ -61,12 +62,14 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
+const customFantom = { iconUrl: '/images/chains/FANTOM.svg', ...fantom }
+
 const gqlChainToWagmiChainMap = {
   [GqlChain.Mainnet]: customMainnet,
   [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
   [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
   [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
-  [GqlChain.Fantom]: fantom,
+  [GqlChain.Fantom]: customFantom,
   [GqlChain.Gnosis]: { iconUrl: '/images/chains/GNOSIS.svg', ...gnosis },
   [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
   [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
@@ -77,10 +80,14 @@ const gqlChainToWagmiChainMap = {
 } as const satisfies Record<GqlChain, Chain>
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
+
+const customChain = isBeets ? customFantom : customMainnet
+const chainToFilter = isBeets ? GqlChain.Fantom : GqlChain.Mainnet
+
 export const chains: readonly [Chain, ...Chain[]] = [
-  customMainnet,
+  customChain,
   ...supportedNetworks
-    .filter(chain => chain !== GqlChain.Mainnet)
+    .filter(chain => chain !== chainToFilter)
     .map(gqlChain => gqlChainToWagmiChainMap[gqlChain]),
 ]
 

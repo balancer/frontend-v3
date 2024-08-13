@@ -11,13 +11,13 @@ import '@/lib/assets/css/global.css'
 import { Fathom } from '@/lib/shared/services/fathom/Fathom'
 import { GlobalAlerts } from '@/lib/shared/components/navs/GlobalAlerts'
 
-const { projectName } = getProjectConfig()
+const { projectName, projectId } = getProjectConfig()
 
 export const metadata: Metadata = {
   title: `${projectName} DeFi Liquidity Pools`,
   description: `Explore DeFi liquidity pools and swap tokens. Provide liquidity to accumulate yield from swap fees while retaining your token exposure as prices move.`,
   icons: [
-    { rel: 'icon', type: 'image/x-icon', url: '/favicon.ico' },
+    { rel: 'icon', type: 'image/x-icon', url: `/favicon-${projectId}.ico` },
     {
       rel: 'icon',
       type: 'image/png',

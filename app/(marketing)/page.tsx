@@ -7,9 +7,12 @@ import { HomeHero } from '@/lib/shared/components/marketing/HomeHero'
 import { HomeBuilders } from '@/lib/shared/components/marketing/HomeBuilders'
 import { HomeProtocols } from '@/lib/shared/components/marketing/HomeProtocols'
 import { HomeActivity } from '@/lib/shared/components/marketing/HomeActivity'
+import { isBeets } from '@/lib/config/app.config'
 
 export default function Home() {
-  return (
+  return isBeets ? (
+    <h1>Hello, Beets Marketing!</h1>
+  ) : (
     <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}>
       <Box className="homepage" overflowX="hidden">
         <HomeHero />

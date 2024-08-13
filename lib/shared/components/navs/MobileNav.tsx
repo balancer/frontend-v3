@@ -19,30 +19,45 @@ import { useRef } from 'react'
 import { ArrowUpRight, Menu } from 'react-feather'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useNav } from './useNav'
-import NextLink from 'next/link'
+
 import { useRouter } from 'next/navigation'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
+import { useFeatures } from '../../hooks/useFeatures'
 
 function NavLinks({ onClick }: { onClick?: () => void }) {
-  const { appLinks, linkColorFor } = useNav()
+  const { appLinks, beetsLinks, AppLink } = useNav()
+  const { mabeets, vebal, sftmx } = useFeatures()
 
   return (
     <VStack align="start" w="full">
       {appLinks.map(link => (
-        <Link
+        <AppLink
           key={link.href}
-          as={NextLink}
           href={link.href}
-          prefetch={true}
-          variant="nav"
-          color={linkColorFor(link.href)}
+          label={link.label}
           onClick={onClick}
           fontSize="xl"
-        >
-          {link.label}
-        </Link>
+        />
       ))}
-      <VeBalLink fontSize="xl" />
+      {vebal && <VeBalLink fontSize="xl" />}
+      {mabeets && (
+        <AppLink
+          key={beetsLinks.mabeets.href}
+          href={beetsLinks.mabeets.href}
+          label={beetsLinks.mabeets.label}
+          onClick={onClick}
+          fontSize="xl"
+        />
+      )}
+      {sftmx && (
+        <AppLink
+          key={beetsLinks.sftmx.href}
+          href={beetsLinks.sftmx.href}
+          label={beetsLinks.sftmx.label}
+          onClick={onClick}
+          fontSize="xl"
+        />
+      )}
     </VStack>
   )
 }

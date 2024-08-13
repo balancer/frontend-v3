@@ -5,11 +5,13 @@ import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
 import { GithubIcon } from '../icons/social/GithubIcon'
 import { useParams } from 'next/navigation'
+import NextLink from 'next/link'
+import { Link, LinkProps } from '@chakra-ui/react'
 
 export function useNav() {
   const pathname = usePathname()
-
   const { chain } = useParams()
+
   const swapHref = chain ? '/swap/' + chain : '/swap'
 
   const appLinks = [
@@ -26,6 +28,11 @@ export function useNav() {
       label: 'Portfolio',
     },
   ]
+
+  const beetsLinks = {
+    mabeets: { href: '/mabeets', label: 'maBEETS' },
+    sftmx: { href: '/sftmx', label: 'sFTMx' },
+  }
 
   const ecosystemLinks = [
     { label: 'Build', href: 'https://balancer.fi/build' },
@@ -67,5 +74,29 @@ export function useNav() {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
 
-  return { appLinks, ecosystemLinks, getSocialLinks, linkColorFor }
+  const AppLink = ({
+    href,
+    label,
+    onClick,
+    ...rest
+  }: {
+    href: string
+    label: string
+    onClick?: () => void
+  } & LinkProps) => (
+    <Link
+      key={href}
+      as={NextLink}
+      href={href}
+      prefetch={true}
+      variant="nav"
+      color={linkColorFor(href)}
+      onClick={onClick}
+      {...rest}
+    >
+      {label}
+    </Link>
+  )
+
+  return { appLinks, beetsLinks, ecosystemLinks, getSocialLinks, linkColorFor, AppLink }
 }

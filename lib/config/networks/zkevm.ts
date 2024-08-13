@@ -54,6 +54,14 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Zkevm] },
   }),
+  features: {
+    mabeets: false,
+    vebal: true,
+    sftmx: false,
+    masterchef: false,
+    gauge: true,
+  },
+  default: false,
 }
 
 export default networkConfig

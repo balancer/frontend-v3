@@ -20,17 +20,22 @@ export const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'dev'
 export const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'prod'
 export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === 'staging'
 
+export const isBeets = process.env.NEXT_PUBLIC_PROJECT_ID === 'beets'
+export const isBalancer = process.env.NEXT_PUBLIC_PROJECT_ID === 'balancer'
+
 const networksByChainId = keyBy(config.networks, 'chainId')
 
 /**
  * Fetches network config by chainId or network name type from API (GqlChain). If chain
- * param is not provided or incorrect, it will return mainnet config.
+ * param is not provided or incorrect, it will return the default network config.
  */
 export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
-  if (!chain) return config.networks.MAINNET
+  const defaultNetwork = networksByChainId[process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || 250]
+
+  if (!chain) return defaultNetwork
 
   if (typeof chain === 'number') {
-    return networksByChainId[chain] || config.networks.MAINNET
+    return networksByChainId[chain] || defaultNetwork
   }
 
   return config.networks[chain]

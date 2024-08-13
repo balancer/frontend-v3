@@ -10,6 +10,7 @@ import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
 import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { isBeets } from '@/lib/config/app.config'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -21,6 +22,8 @@ const MemoizedMainAprTooltip = memo(MainAprTooltip)
 export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
+
+  console.log({ isBeets })
 
   return (
     <FadeInOnView>
@@ -40,13 +43,19 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
               <NetworkIcon chain={pool.chain} size={6} />
             </GridItem>
             <GridItem>
-              <PoolListTokenPills
-                pool={pool}
-                h={['32px', '36px']}
-                p={['xxs', 'sm']}
-                pr={[1.5, 'ms']}
-                iconSize={20}
-              />
+              {isBeets ? (
+                <Text textAlign="left" fontWeight="medium">
+                  {pool.name}
+                </Text>
+              ) : (
+                <PoolListTokenPills
+                  pool={pool}
+                  h={['32px', '36px']}
+                  p={['xxs', 'sm']}
+                  pr={[1.5, 'ms']}
+                  iconSize={20}
+                />
+              )}
             </GridItem>
             <GridItem>
               <Text textAlign="left" fontWeight="medium" textTransform="capitalize">
