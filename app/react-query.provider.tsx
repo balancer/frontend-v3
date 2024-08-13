@@ -28,6 +28,13 @@ export const queryClient = new QueryClient({
   }),
 })
 
+queryClient.setDefaultOptions({
+  queries: {
+    // avoids problems in simulation and build queries when the user navigates away from the page while waiting for a tx confirmation
+    placeholderData: (prev: any) => prev,
+  },
+})
+
 export function ReactQueryClientProvider({ children }: { children: ReactNode | ReactNode[] }) {
   return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 }
