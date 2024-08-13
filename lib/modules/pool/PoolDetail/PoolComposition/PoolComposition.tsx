@@ -4,11 +4,7 @@ import { Card, Divider, HStack, Heading, Skeleton, Stack, Text, VStack } from '@
 import React from 'react'
 import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
-import {
-  GqlChain,
-  GqlPoolTokenDetail,
-  GqlPoolTokenDisplay,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
@@ -17,6 +13,7 @@ import { PoolWeightChart } from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { getPoolDisplayTokens } from '../../pool.utils'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -75,11 +72,7 @@ export function PoolComposition() {
   const { isMobile } = useBreakpoints()
   const { calcTotalUsdValue } = useTokens()
 
-  const displayTokens = pool.poolTokens.filter(token =>
-    pool.displayTokens.find(
-      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
-    )
-  ) as GqlPoolTokenDetail[]
+  const displayTokens = getPoolDisplayTokens(pool)
 
   const CardContentBlock = () => (
     <CardContent
