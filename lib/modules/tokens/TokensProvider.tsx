@@ -131,7 +131,7 @@ export function _useTokens(
     []
   )
 
-  const calcTvl = useCallback((displayTokens: GqlPoolTokenDetail[], chain: GqlChain) => {
+  const calcTotalUsdValue = useCallback((displayTokens: GqlPoolTokenDetail[], chain: GqlChain) => {
     return displayTokens
       .reduce((total, token) => {
         return total.plus(bn(priceFor(token.address, chain)).times(token.balance))
@@ -152,7 +152,7 @@ export function _useTokens(
     getTokensByTokenAddress,
     usdValueForToken,
     calcWeightForBalance,
-    calcTvl,
+    calcTotalUsdValue,
   }
 }
 

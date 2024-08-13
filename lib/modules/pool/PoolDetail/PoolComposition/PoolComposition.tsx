@@ -73,7 +73,7 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
 export function PoolComposition() {
   const { pool, chain, isLoading } = usePool()
   const { isMobile } = useBreakpoints()
-  const { calcTvl } = useTokens()
+  const { calcTotalUsdValue } = useTokens()
 
   const displayTokens = pool.poolTokens.filter(token =>
     pool.displayTokens.find(
@@ -83,7 +83,7 @@ export function PoolComposition() {
 
   const CardContentBlock = () => (
     <CardContent
-      totalLiquidity={calcTvl(displayTokens, chain)}
+      totalLiquidity={calcTotalUsdValue(displayTokens, chain)}
       displayTokens={displayTokens}
       chain={chain}
     />
