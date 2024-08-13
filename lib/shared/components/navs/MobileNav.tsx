@@ -19,10 +19,10 @@ import { useRef } from 'react'
 import { ArrowUpRight, Menu } from 'react-feather'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useNav } from './useNav'
-
 import { useRouter } from 'next/navigation'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { useFeatures } from '../../hooks/useFeatures'
+import { isBalancer } from '@/lib/config/app.config'
 
 function NavLinks({ onClick }: { onClick?: () => void }) {
   const { appLinks, beetsLinks, AppLink } = useNav()
@@ -39,7 +39,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
           fontSize="xl"
         />
       ))}
-      {vebal && <VeBalLink fontSize="xl" />}
+      {vebal && isBalancer && <VeBalLink fontSize="xl" />}
       {mabeets && (
         <AppLink
           key={beetsLinks.mabeets.href}

@@ -8,7 +8,7 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
-import { isDev, isStaging } from '@/lib/config/app.config'
+import { isBalancer, isDev, isStaging } from '@/lib/config/app.config'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
 import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from 'framer-motion'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
@@ -55,7 +55,7 @@ function NavLinks({ ...props }: BoxProps) {
           <AppLink href={link.href} label={link.label} />
         </Box>
       ))}
-      {vebal && (
+      {vebal && isBalancer && (
         <Box as={motion.div} variants={fadeIn}>
           <VeBalLink />
         </Box>
