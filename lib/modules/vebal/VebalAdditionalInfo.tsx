@@ -6,7 +6,7 @@ import { Stack, Text } from '@chakra-ui/react'
 export function VebalAdditionalInfo() {
   const { balanceFor } = useTokenBalances()
   const lockInfo = useVebalLockInfo()
-  const unlockedBalance = balanceFor(networkConfig.tokens.addresses.b8020BalWeth)
+  const unlockedBalance = balanceFor(networkConfig.tokens.addresses.veBalBpt)
 
   const lockData = [
     {

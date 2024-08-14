@@ -10,7 +10,7 @@ export interface TokensConfig {
     bal: Address
     wNativeAsset: Address
     auraBal?: Address
-    b8020BalWeth?: Address
+    veBalBpt?: Address
   }
   nativeAsset: {
     name: string

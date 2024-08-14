@@ -19,7 +19,7 @@ import {
   getInitLabel,
   getTooltip,
   parseDate,
-} from './lockTransactionHelpers'
+} from './lock.helpers'
 
 type UseCreateLockArgs = {
   lockAmount: RawAmount

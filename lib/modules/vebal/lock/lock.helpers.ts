@@ -7,6 +7,7 @@ export enum LockActionType {
   ExtendLock = 'increase_unlock_time',
   Unlock = 'withdraw',
 }
+
 export function parseDate(date: string) {
   return (toUtcTime(new Date(date)) / 1000).toString()
 }
