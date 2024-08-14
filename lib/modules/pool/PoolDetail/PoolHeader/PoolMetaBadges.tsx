@@ -7,6 +7,7 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { Repeat } from 'react-feather'
 import { PoolListTokenPills } from '../../PoolList/PoolListTokenPills'
 import { shouldHideSwapFee } from '../../pool.utils'
+import { getChainShortName } from '@/lib/config/app.config'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -21,6 +22,7 @@ export default function PoolMetaBadges() {
         border="1px solid"
         borderColor="border.base"
         shadow="sm"
+        title={getChainShortName(chain)}
       >
         <Image
           src={`/images/chains/${chain}.svg`}
