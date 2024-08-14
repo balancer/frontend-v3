@@ -17,6 +17,7 @@ type BaseReceiptProps = {
 }
 
 export type ReceiptProps = BaseReceiptProps & { parseReceipt: ParseReceipt }
+export type AddLiquidityReceiptResult = ReturnType<typeof useAddLiquidityReceipt>
 
 export function useAddLiquidityReceipt(props: BaseReceiptProps) {
   const result = useTxReceipt({ ...props, parseReceipt: parseAddLiquidityReceipt })
@@ -25,6 +26,7 @@ export function useAddLiquidityReceipt(props: BaseReceiptProps) {
 
   return {
     ...result,
+    isReceiptReady: !!data,
     sentTokens: data?.sentTokens || [],
     receivedBptUnits: data?.receivedBptUnits || '0',
   }
