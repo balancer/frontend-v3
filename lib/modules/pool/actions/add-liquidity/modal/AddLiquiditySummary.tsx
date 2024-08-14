@@ -63,7 +63,7 @@ export function AddLiquiditySummary({
 
   const shouldShowReceipt = addLiquidityTxHash && !isLoadingReceipt && sentTokens.length > 0
 
-  const isLoadingSentTokens = () => {
+  const isLoadingTokenData = () => {
     if (hasQuoteContext) return shouldShowReceipt && isLoadingReceipt
     return isLoadingReceipt
   }
@@ -80,7 +80,7 @@ export function AddLiquiditySummary({
           amounts={shouldShowReceipt ? sentTokens : amountsIn}
           totalUSDValue={totalUSDValue}
           chain={pool.chain}
-          isLoading={isLoadingSentTokens()}
+          isLoading={isLoadingTokenData()}
         />
       </Card>
 
@@ -88,7 +88,7 @@ export function AddLiquiditySummary({
         {shouldShowReceipt ? (
           <ReceiptBptOut actualBptOut={receivedBptUnits} isLoading={isLoadingReceipt} />
         ) : (
-          <QuoteBptOut isLoading={isLoadingSentTokens()} />
+          <QuoteBptOut isLoading={isLoadingTokenData()} />
         )}
       </Card>
 
