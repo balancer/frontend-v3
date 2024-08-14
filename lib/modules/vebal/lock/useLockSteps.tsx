@@ -19,6 +19,7 @@ import {
   getInitLabel,
   getTooltip,
   parseDate,
+  getLockContractFunctionName,
 } from './lock.helpers'
 
 type UseCreateLockArgs = {
@@ -80,7 +81,7 @@ export function useLockSteps({ lockAmount, lockEndDate, lockActionType }: UseCre
       chainId: mainnetNetworkConfig.chainId,
       contractId: 'balancer.veBAL',
       contractAddress: mainnetNetworkConfig.contracts.veBAL,
-      functionName: lockActionType,
+      functionName: getLockContractFunctionName(lockActionType),
       args: getArgs() as any,
       txSimulationMeta,
     }

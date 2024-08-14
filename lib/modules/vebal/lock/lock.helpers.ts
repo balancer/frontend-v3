@@ -2,10 +2,27 @@ import { toUtcTime } from '@/lib/shared/utils/time'
 import { RawAmount } from '../../tokens/approvals/approval-rules'
 
 export enum LockActionType {
-  CreateLock = 'create_lock',
-  IncreaseLock = 'increase_amount',
-  ExtendLock = 'increase_unlock_time',
-  Unlock = 'withdraw',
+  CreateLock = 'createLock',
+  IncreaseLock = 'increaseAmount',
+  ExtendLock = 'extendLock',
+  Unlock = 'unlock',
+}
+
+type LockContractFunctionName =
+  | 'create_lock'
+  | 'increase_amount'
+  | 'increase_unlock_time'
+  | 'withdraw'
+
+const contractFunctionNames: Record<LockActionType, LockContractFunctionName> = {
+  [LockActionType.CreateLock]: 'create_lock',
+  [LockActionType.IncreaseLock]: 'increase_amount',
+  [LockActionType.ExtendLock]: 'increase_unlock_time',
+  [LockActionType.Unlock]: 'withdraw',
+}
+
+export function getLockContractFunctionName(action: LockActionType) {
+  return contractFunctionNames[action]
 }
 
 export function parseDate(date: string) {
