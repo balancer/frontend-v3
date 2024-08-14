@@ -3,8 +3,9 @@ import { useRouter } from 'next/navigation'
 import { getPoolPath } from './pool.utils'
 import { Pool } from './PoolProvider'
 import { useParams } from 'next/navigation'
-import { PartnerVariant, PoolVariant } from '@/lib/modules/pool/pool.types'
+import { PartnerVariant } from '@/lib/modules/pool/pool.types'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { isCowAmmPool } from './pool.helpers'
 
 export function usePoolRedirect(pool: Pool) {
   const router = useRouter()
@@ -24,14 +25,28 @@ export function usePoolRedirect(pool: Pool) {
   return { redirectToPoolPage }
 }
 
+export function getVariantConfig(variant: PartnerVariant) {
+  const { variantConfig } = getProjectConfig()
+  return variantConfig?.[variant] || {}
+}
+
 export function usePoolVariant() {
   const { variant } = useParams<{ variant: PartnerVariant }>()
 
-  const { variantConfig } = getProjectConfig()
-  const config = variantConfig?.[variant] || {}
+  const config = getVariantConfig(variant)
 
   return {
     variant,
     ...config,
+  }
+}
+
+// Redirects to pool detail page if the pool variant in the url does not match with the actual pool type.
+export function useInvalidVariantRedirect(pool: Pool) {
+  const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { variant } = usePoolVariant()
+
+  if (!isCowAmmPool(pool.type) && variant === PartnerVariant.cow) {
+    redirectToPoolPage()
   }
 }

@@ -1,10 +1,10 @@
 import { getChainId, getNativeAsset, getNetworkConfig } from '@/lib/config/app.config'
 import { TokenAmountToApprove } from '@/lib/modules/tokens/approvals/approval-rules'
 import { nullAddress } from '@/lib/modules/web3/contracts/wagmi-helpers'
-import { GqlChain, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { SentryError } from '@/lib/shared/utils/errors'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, isZero } from '@/lib/shared/utils/numbers'
 import {
   HumanAmount,
   InputAmount,
@@ -23,12 +23,14 @@ import {
   hasNestedPools,
   isAffectedByCspIssue,
   isComposableStableV1,
+  isCowAmmPool,
   isGyro,
   isV3Pool,
 } from '../pool.helpers'
 import { Pool } from '../PoolProvider'
 import {
   isNativeAsset,
+  isNativeOrWrappedNative,
   isWrappedNativeAsset,
   swapNativeWithWrapped,
 } from '../../tokens/token.helpers'
@@ -201,10 +203,10 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
 }
 
 export function requiresProportionalInput(poolType: GqlPoolType): boolean {
-  return isGyro(poolType)
+  return isGyro(poolType) || isCowAmmPool(poolType)
 }
 
-type VaultVersion = PoolState['vaultVersion']
+type ProtocolVersion = PoolState['protocolVersion']
 
 export function toPoolState(pool: Pool): PoolState {
   return {
@@ -212,7 +214,7 @@ export function toPoolState(pool: Pool): PoolState {
     address: pool.address as Address,
     tokens: pool.poolTokens as MinimalToken[],
     type: mapPoolType(pool.type),
-    vaultVersion: pool.protocolVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 
@@ -228,7 +230,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
       decimals: t.decimals,
     })),
     totalShares: pool.dynamicData.totalShares as HumanAmount,
-    vaultVersion: pool.protocolVersion as VaultVersion,
+    protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
 }
 
@@ -269,4 +271,49 @@ export function roundDecimals(humanAmountsIn: HumanTokenAmountWithAddress[], max
 
 export function emptyTokenAmounts(pool: Pool): TokenAmount[] {
   return pool.poolTokens.map(token => TokenAmount.fromHumanAmount(token as unknown as Token, '0'))
+}
+
+export function shouldShowNativeWrappedSelector(token: GqlToken, poolType: GqlPoolType) {
+  return (
+    !isCowAmmPool(poolType) && // Cow AMM pools don't support wethIsEth
+    isNativeOrWrappedNative(token.address as Address, token.chain)
+  )
+}
+
+export function replaceWrappedWithNativeAsset(
+  validTokens: GqlToken[],
+  nativeAsset: GqlToken | undefined
+) {
+  if (!nativeAsset) return validTokens
+  return validTokens.map(token => {
+    if (isWrappedNativeAsset(token.address as Address, nativeAsset.chain)) {
+      return nativeAsset
+    } else {
+      return token
+    }
+  })
+}
+
+export function injectNativeAsset(
+  validTokens: GqlToken[],
+  nativeAsset: GqlToken | undefined,
+  pool: Pool
+) {
+  const isWrappedNativeAssetInPool = validTokens.find(token =>
+    isWrappedNativeAsset(token.address as Address, pool.chain)
+  )
+
+  if (
+    isWrappedNativeAssetInPool &&
+    nativeAsset &&
+    // Cow AMM pools don't support wethIsEth
+    !isCowAmmPool(pool.type)
+  ) {
+    return [nativeAsset, ...validTokens]
+  }
+  return validTokens
+}
+
+export function hasNoLiquidity(pool: Pool): boolean {
+  return isZero(pool.dynamicData.totalShares)
 }

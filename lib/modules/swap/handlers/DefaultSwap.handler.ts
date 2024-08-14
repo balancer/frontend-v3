@@ -22,13 +22,13 @@ export class DefaultSwapHandler implements SwapHandler {
       notifyOnNetworkStatusChange: true,
     })
 
-    // TODO: workaround while we wait for sdk team to also start using 'protocolVersion'
     const paths = data.swaps.paths.map(
       path =>
         ({
           ...path,
-          vaultVersion: path.protocolVersion,
-        } as unknown as Path)
+          inputAmountRaw: BigInt(path.inputAmountRaw),
+          outputAmountRaw: BigInt(path.outputAmountRaw),
+        } as Path)
     )
 
     const swap = new Swap({

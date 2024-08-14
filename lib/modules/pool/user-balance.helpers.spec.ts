@@ -5,7 +5,7 @@ import {
   GqlUserStakedBalance,
 } from '@/lib/shared/services/api/generated/graphql'
 import {
-  calcNonVeBalStakedBalance,
+  calcNonOnChainFetchedStakedBalance,
   calcTotalStakedBalanceInt,
   getUserTotalBalanceInt,
   getUserWalletBalanceInt,
@@ -57,7 +57,7 @@ test('User balance helpers', () => {
   }
   pool.userBalance = userBalanceMock
 
-  expect(getUserTotalBalance(pool)).toBe('175')
+  expect(getUserTotalBalance(pool)).toBe('175.000000000000000000')
   expect(getUserTotalBalanceUsd(pool)).toBe(300)
   expect(getUserTotalBalanceInt(pool)).toBe(175000000000000000000n)
 
@@ -69,7 +69,7 @@ test('User balance helpers', () => {
   expect(getUserWalletBalanceUsd(pool)).toBe(200)
   expect(getUserWalletBalanceInt(pool)).toBe(100000000000000000000n)
 
-  expect(calcNonVeBalStakedBalance(pool)).toBe(22) // aura staked
+  expect(calcNonOnChainFetchedStakedBalance(pool)).toBe('0')
 
   expect(hasAuraStakedBalance(pool)).toBeTruthy()
   expect(hasBalancerStakedBalance(pool)).toBeTruthy()

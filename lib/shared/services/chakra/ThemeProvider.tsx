@@ -2,14 +2,15 @@
 
 import { ChakraProvider, ThemeTypings } from '@chakra-ui/react'
 import { ReactNode } from 'react'
-import { useParams } from 'next/navigation'
-import { PoolVariant, BaseVariant, PartnerVariant } from '@/lib/modules/pool/pool.types'
+import { useParams, usePathname } from 'next/navigation'
+import { PoolVariant, PartnerVariant } from '@/lib/modules/pool/pool.types'
 import { theme as balTheme } from './themes/bal/bal.theme'
 import { theme as cowTheme } from './themes/cow/cow.theme'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const { variant } = useParams<{ variant?: PoolVariant }>()
+  const pathname = usePathname()
 
   const { projectName } = getProjectConfig()
 
@@ -26,14 +27,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const defaultTheme = getDefaultTheme()
 
   function getTheme(): ThemeTypings {
-    switch (variant) {
-      case PartnerVariant.cow:
-        return cowTheme
-      case BaseVariant.v2:
-        return defaultTheme
-      default:
-        return defaultTheme
+    const pathIncludesCow = pathname.split('/').includes('cow')
+
+    if (pathIncludesCow || variant === PartnerVariant.cow) {
+      return cowTheme
     }
+
+    return defaultTheme
   }
 
   return (

@@ -51,7 +51,13 @@ export function PoolActionsPriceImpactDetails({
               {toCurrency(priceImpactUsd, { abbreviated: false })} ({priceImpactLabel})
             </NumberText>
           )}
-          <Tooltip label="Price impact" fontSize="sm">
+          <Tooltip
+            label="In general, adding or removing liquidity in proportional amounts to the token weights
+                of the pool incur low price impact. Adding custom token amounts (non-proportionally)
+                causes the internal prices of the pool to change, as if you were swapping tokens, which 
+                incurs a higher price impact."
+            fontSize="sm"
+          >
             {priceImpactLevel === 'low' ? (
               <InfoIcon />
             ) : (
@@ -68,7 +74,12 @@ export function PoolActionsPriceImpactDetails({
           <NumberText color="grayText">
             {toCurrency(maxSlippageUsd, { abbreviated: false })} ({fNum('slippage', slippage)})
           </NumberText>
-          <Tooltip label="Max slippage" fontSize="sm">
+          <Tooltip
+            label="Slippage occurs when market conditions change between the time your order is
+                submitted and the time it gets executed on-chain. Slippage tolerance is the
+                maximum change in price you are willing to accept."
+            fontSize="sm"
+          >
             <InfoIcon />
           </Tooltip>
         </HStack>
@@ -81,7 +92,10 @@ export function PoolActionsPriceImpactDetails({
             <Icon as={ArrowRight} color="grayText" />
             <NumberText color="grayText">{fNum('sharePercent', futureShareOfPool)}</NumberText>
           </HStack>
-          <Tooltip label="Share of pool" fontSize="sm">
+          <Tooltip
+            label="The percentage of the pool that you will own after this transaction."
+            fontSize="sm"
+          >
             <InfoIcon />
           </Tooltip>
         </HStack>

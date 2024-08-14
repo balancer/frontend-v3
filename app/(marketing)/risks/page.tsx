@@ -137,8 +137,12 @@ export default function Privacy() {
           <FadeInOnView>
             <div className="subsection">
               <h2>Risks for Liquidity Providers (LPs)</h2>
-              <h3 id="general">General risks</h3>
-              <h4 id="smart-contract-risk">Smart contract risk</h4>
+              <h3 id="general" className="anchor">
+                General risks
+              </h3>
+              <h4 id="smart-contract-risk" className="anchor">
+                Smart contract risk
+              </h4>
               <p>
                 Smart contract risk is a general risk when using DeFi protocols, including Balancer.
                 Smart contracts are self-executing pieces of code that run on certain blockchains,
@@ -200,7 +204,7 @@ export default function Privacy() {
             </div>
           </FadeInOnView>
           <FadeInOnView>
-            <div id="economic-risk" className="subsection">
+            <div id="economic-risk" className="subsection anchor">
               <h4>Mechanism / Economic risk</h4>
               <p>
                 An mechanism or economic exploit of a DeFi protocol occurs when an attacker is able
@@ -236,7 +240,7 @@ export default function Privacy() {
             </div>
           </FadeInOnView>
           <FadeInOnView>
-            <div id="toxic-token-risk" className="subsection">
+            <div id="toxic-token-risk" className="subsection anchor">
               <h4>Toxic pool token risk</h4>
               <p>
                 A liquidity pool is only as good as its weakest token. This is because liquidity
@@ -278,7 +282,9 @@ export default function Privacy() {
                 </li>
               </ul>
 
-              <h5 id="rebasing-token">Rebasing tokens</h5>
+              <h5 id="rebasing-token" className="anchor">
+                Rebasing tokens
+              </h5>
               <p>
                 Rebasing tokens are a type of cryptocurrency that adjusts the supply of the token
                 based on a predetermined formula. This formula is usually designed to keep the price
@@ -352,7 +358,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="composability-risk">DeFi composability risks</h4>
+              <h4 id="composability-risk" className="anchor">
+                DeFi composability risks
+              </h4>
               <p>
                 DeFi composability refers to the ability of different DeFi protocols and
                 applications to work together seamlessly in endless combinations, allowing
@@ -377,7 +385,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="governance-risk">DAO Governance risk</h4>
+              <h4 id="governance-risk" className="anchor">
+                DAO Governance risk
+              </h4>
               <p>
                 Balancer currently uses off-chain voting mechanisms to signal the will of veBAL
                 token holders (vote-escrow BAL). This off-chain voting is done via{' '}
@@ -477,7 +487,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="flash-loans-risk">Flash Loans risk</h4>
+              <h4 id="flash-loans-risk" className="anchor">
+                Flash Loans risk
+              </h4>
               <p>
                 A Flash Loan is a type of loan where a user borrows assets with no upfront
                 collateral and returns the borrowed assets within the same blockchain transaction.
@@ -505,7 +517,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="mutable-attributes-risk">Mutable pool attributes</h4>
+              <h4 id="mutable-attributes-risk" className="anchor">
+                Mutable pool attributes
+              </h4>
               <p>
                 Balancer is a flexible AMM that allows people to create different types of liquidity
                 pools, including those with immutable and/or mutable pool attributes.
@@ -565,7 +579,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="join-exit-risk">Loss of funds on join/exit of a pool</h4>
+              <h4 id="join-exit-risk" className="anchor">
+                Loss of funds on join/exit of a pool
+              </h4>
               <h5>Due to high price impact</h5>
               <p>
                 When joining a pool, LPs should be aware of the price impact from adding tokens to
@@ -629,7 +645,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="impermanent-loss-risk">Impermanent loss</h4>
+              <h4 id="impermanent-loss-risk" className="anchor">
+                Impermanent loss
+              </h4>
               <p>
                 Impermanent loss is a risk that liquidity providers (LPs) face when providing
                 liquidity to an automated market maker (AMM) like Balancer. It is the difference
@@ -693,7 +711,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="ui-risk">User Interface (UI) risk</h4>
+              <h4 id="ui-risk" className="anchor">
+                User Interface (UI) risk
+              </h4>
               <p>
                 DeFi users, including liquidity providers and swappers, typically interact with
                 front-end user interfaces to interact with a protocol&rsquo;s smart contracts. An
@@ -753,7 +773,9 @@ export default function Privacy() {
           <FadeInOnView>
             <div className="subsection">
               {' '}
-              <h4 id="regulatory-risk">Regulatory risk</h4>
+              <h4 id="regulatory-risk" className="anchor">
+                Regulatory risk
+              </h4>
               <p>
                 The regulatory frameworks applicable to blockchain transactions in connection with
                 tokens and stablecoins are still developing and evolving. In addition, the
@@ -778,7 +800,9 @@ export default function Privacy() {
               <FadeInOnView>
                 <div className="subsection">
                   {' '}
-                  <h3 id="pool-type-risks">Pool type risks</h3>
+                  <h3 id="pool-type-risks" className="anchor">
+                    Pool type risks
+                  </h3>
                   <p>
                     Balancer is designed to be infinitely extendible to allow for any conceivable
                     pool type with custom curves, logic and parameters, and more. The general risks
@@ -788,7 +812,9 @@ export default function Privacy() {
               </FadeInOnView>
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="weighted-pools">Weighted Pools</h4>
+                  <h4 id="weighted-pools" className="anchor">
+                    Weighted Pools
+                  </h4>
                   <p>
                     Weighted Pools use{' '}
                     <a href="https://docs.balancer.fi/reference/math/weighted-math.html">
@@ -821,7 +847,9 @@ export default function Privacy() {
               </FadeInOnView>
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="stable-pools">Stable Pools</h4>
+                  <h4 id="stable-pools" className="anchor">
+                    Stable Pools
+                  </h4>
                   <h5>Loss of stablecoin peg</h5>
                   <p>
                     Stablecoins are tokens whose value is intended to be pegged or tied to that of
@@ -866,7 +894,9 @@ export default function Privacy() {
               </FadeInOnView>
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="composable-pools">Composable Stable Pools &amp; MetaStable Pools</h4>
+                  <h4 id="composable-pools" className="anchor">
+                    Composable Stable Pools &amp; MetaStable Pools
+                  </h4>
                   <p>
                     Composable Stable Pools are designed for assets that are either expected to
                     consistently trade at near parity, or at a known exchange rate. Composable
@@ -897,7 +927,9 @@ export default function Privacy() {
                     of rate providers.
                   </p>
                   <div>
-                    <h5 id="rate-provider-risk">Rate provider risk</h5>
+                    <h5 id="rate-provider-risk" className="anchor">
+                      Rate provider risk
+                    </h5>
                     <p>
                       Rate Providers are contracts that provide an exchange rate between two assets.
                       These exchange rates can come from any on-chain source, whether that may be an
@@ -969,7 +1001,9 @@ export default function Privacy() {
               </FadeInOnView>
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="boosted-pools">Boosted Pools</h4>
+                  <h4 id="boosted-pools" className="anchor">
+                    Boosted Pools
+                  </h4>
                   <p>
                     Typically, only 10% or less of the liquidity deposited into an AMM pool is being
                     utilized by traders because the trade sizes are much smaller than the available
@@ -1030,7 +1064,9 @@ export default function Privacy() {
 
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="concentrated-liquidity-pools">Concentrated Liquidity Pools</h4>
+                  <h4 id="concentrated-liquidity-pools" className="anchor">
+                    Concentrated Liquidity Pools
+                  </h4>
                   <p>
                     <a href="https://gyro.finance">Gyroscope&rsquo;s</a>&nbsp; &lsquo;Concentrated
                     Liquidity Pools&rsquo; (CLPs) are a class of AMMs that price the exchange of
@@ -1109,7 +1145,9 @@ export default function Privacy() {
               <Divider />
               <FadeInOnView>
                 <div className="subsection">
-                  <h3 id="network-risks">Network risks (L2s and Sidechains)</h3>
+                  <h3 id="network-risks" className="anchor">
+                    Network risks (L2s and Sidechains)
+                  </h3>
                   <p>
                     Sidechains and Layer 2 networks can offer advantages over Ethereum Mainnet, like
                     faster transaction times and lower fees. However, they come with their own set
@@ -1136,7 +1174,9 @@ export default function Privacy() {
               </FadeInOnView>
               <FadeInOnView>
                 <div className="subsection">
-                  <h4 id="arbitrum">Arbitrum One risks</h4>
+                  <h4 id="arbitrum" className="anchor">
+                    Arbitrum One risks
+                  </h4>
                   <p>
                     <a href="https://arbitrum.io/">Arbitrum</a> is a Layer 2 scaling solution for
                     Ethereum that uses Optimistic Rollups to improve transaction throughput and
@@ -1150,7 +1190,9 @@ export default function Privacy() {
               </FadeInOnView>
             </FadeInOnView>
             <div className="subsection">
-              <h4 id="optimism">Optimism risks</h4>
+              <h4 id="optimism" className="anchor">
+                Optimism risks
+              </h4>
               <p>
                 <a href="https://www.optimism.io/">Optimism</a> is a Layer 2 scaling solution for
                 Ethereum that uses Optimistic Rollups to improve transaction throughput and reduce
@@ -1166,7 +1208,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="base">Base Chain risks</h4>
+              <h4 id="base" className="anchor">
+                Base Chain risks
+              </h4>
               <p>
                 <a href="https://www.base.org/">Base</a> is an Optimistic Rollup that has been
                 developed on the Ethereum network by Coinbase. It utilizes OP Stack technology from
@@ -1180,7 +1224,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="polygon">Polygon PoS risks</h4>
+              <h4 id="polygon" className="anchor">
+                Polygon PoS risks
+              </h4>
               <p>
                 <a href="https://polygon.technology/">Polygon PoS</a> is Proof-of-Stake (PoS)
                 sidechain scaling solution that runs in parallel to Ethereum Mainnet. Its validators
@@ -1196,7 +1242,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="polygon-zkevm">Polygon zkEVM risks</h4>
+              <h4 id="polygon-zkevm" className="anchor">
+                Polygon zkEVM risks
+              </h4>
               <p>
                 <a href="https://polygon.technology/polygon-zkevm">Polygon zkEVM</a> is a
                 EVM-compatible ZK Rollup built by Polygon Labs. Polygon zkEVM harnesses the power of
@@ -1212,7 +1260,9 @@ export default function Privacy() {
           <FadeInOnView>
             <div className="subsection">
               {' '}
-              <h4 id="gnosis">Gnosis chain risks</h4>
+              <h4 id="gnosis" className="anchor">
+                Gnosis chain risks
+              </h4>
               <p>
                 <a href="https://www.gnosis.io/">Gnosis Chain</a>, formerly known as xDai Chain, is
                 a sidechain for Ethereum focused on providing fast, stable, and cost-effective
@@ -1228,7 +1278,9 @@ export default function Privacy() {
           </FadeInOnView>
           <FadeInOnView>
             <div className="subsection">
-              <h4 id="avalanche">Avalanche risks</h4>
+              <h4 id="avalanche" className="anchor">
+                Avalanche risks
+              </h4>
               <p>
                 <a href="https://www.avax.network/">Avalanche</a> is a Layer 1 blockchain that is
                 completely independent from the Ethereum blockchain. It&apos;s actually a

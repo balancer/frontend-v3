@@ -4,6 +4,7 @@ import { usePool } from '../../../PoolProvider'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { BptRow } from '@/lib/modules/tokens/TokenRow/BptRow'
+import { requiresProportionalInput } from '../../LiquidityActionHelpers'
 
 export function ReceiptBptOut({
   actualBptOut,
@@ -47,7 +48,13 @@ export function QuoteBptOut({ label }: { label?: string }) {
   const bptOutUnits = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
   const { pool } = usePool()
 
-  return (
-    <BptRow label={label ?? 'You will get (if no slippage)'} bptAmount={bptOutUnits} pool={pool} />
-  )
+  const proportionalRequired = requiresProportionalInput(pool.type)
+
+  const _label = label
+    ? label
+    : proportionalRequired
+    ? 'You will get'
+    : 'You will get (if no slippage)'
+
+  return <BptRow label={_label} bptAmount={bptOutUnits} pool={pool} />
 }

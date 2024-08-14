@@ -202,6 +202,10 @@ export function getSemanticTokens(tokens: any, colors: any) {
           default: tokens.colors.light.border.base,
           _dark: tokens.colors.dark.border.base,
         },
+        divider: {
+          default: tokens.colors.light.border.divider,
+          _dark: tokens.colors.dark.border.divider,
+        },
         highlight: {
           default: tokens.colors.light.border.highlight,
           _dark: tokens.colors.dark.border.highlight,
@@ -275,6 +279,10 @@ export function getSemanticTokens(tokens: any, colors: any) {
           default: tokens.colors.light.text.highlight,
           _dark: tokens.colors.dark.text.highlight,
         },
+        warning: {
+          default: tokens.colors.light.text.warning,
+          _dark: tokens.colors.dark.text.warning,
+        },
         accordionHeading: {
           default: tokens.colors.light.button.background.primary,
           _dark: tokens.colors.dark.button.background.primary,
@@ -304,6 +312,11 @@ export function getSemanticTokens(tokens: any, colors: any) {
             volume: {
               from: 'rgba(0, 211, 149, 1)',
               to: 'rgba(0, 211, 149, 0.2)',
+              cow: {
+                from: 'rgba(111, 192, 37, 1)',
+                to: 'rgba(111, 192, 37, 0.5)',
+                hover: '#00a1ff',
+              },
             },
           },
           scatter: {

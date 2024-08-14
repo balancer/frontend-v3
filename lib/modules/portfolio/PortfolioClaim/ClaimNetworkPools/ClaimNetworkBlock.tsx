@@ -31,8 +31,7 @@ export function ClaimNetworkBlock({
       border="1px solid"
       borderColor="border.base"
       flex="1"
-      minW={['320px']}
-      maxW={['auto', 'auto', '410px']}
+      w="full"
       onClick={isMobile ? onClick : undefined}
     >
       <Flex justifyContent="space-between" alignItems="center">

@@ -6,6 +6,7 @@ import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Repeat } from 'react-feather'
 import { PoolListTokenPills } from '../../PoolList/PoolListTokenPills'
+import { shouldHideSwapFee } from '../../pool.utils'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -29,26 +30,28 @@ export default function PoolMetaBadges() {
         />
       </Badge>
       <PoolListTokenPills pool={pool} py="2" px="sm" />
-      <Tooltip label="Swap fee">
-        <Badge
-          fontWeight="normal"
-          py="xs"
-          px="sm"
-          background="background.level2"
-          border="1px solid"
-          borderColor="border.base"
-          shadow="sm"
-          rounded="full"
-          display="flex"
-          alignItems="center"
-          h={{ base: '28px' }}
-        >
-          <HStack color="font.primary">
-            <Repeat size={12} />
-            <Text fontSize="sm">{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
-          </HStack>
-        </Badge>
-      </Tooltip>
+      {!shouldHideSwapFee(pool.type) && (
+        <Tooltip label="Swap fee">
+          <Badge
+            fontWeight="normal"
+            py="xs"
+            px="sm"
+            background="background.level2"
+            border="1px solid"
+            borderColor="border.base"
+            shadow="sm"
+            rounded="full"
+            display="flex"
+            alignItems="center"
+            h={{ base: '28px' }}
+          >
+            <HStack color="font.primary">
+              <Repeat size={12} />
+              <Text fontSize="sm">{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
+            </HStack>
+          </Badge>
+        </Tooltip>
+      )}
     </Flex>
   )
 }

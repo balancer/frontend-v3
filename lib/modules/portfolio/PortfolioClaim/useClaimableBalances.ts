@@ -66,7 +66,7 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
     }
   })
 
-  const { data, refetch, isLoading }: UseReadContractsReturnType = useReadContracts({
+  const { data, refetch, isLoading, status }: UseReadContractsReturnType = useReadContracts({
     contracts: poolsRewardTokensRequests,
     query: { enabled: isConnected },
   })
@@ -116,5 +116,6 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
     claimableRewards: poolRewardTokensData,
     refetchClaimableRewards: refetch,
     isLoadingClaimableRewards: isLoading,
+    isLoadedClaimableRewards: status === 'success',
   }
 }

@@ -46,6 +46,8 @@ import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { usePriceImpact } from '../price-impact/PriceImpactProvider'
 import { calcMarketPriceImpact } from '../price-impact/price-impact.utils'
+import { isAuraBalSwap } from './swap.helpers'
+import { AuraBalSwapHandler } from './handlers/AuraBalSwap.handler'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -64,13 +66,17 @@ function selectSwapHandler(
   tokenInAddress: Address,
   tokenOutAddress: Address,
   chain: GqlChain,
-  apolloClient: ApolloClient<object>
+  swapType: GqlSorSwapType,
+  apolloClient: ApolloClient<object>,
+  tokens: GqlToken[]
 ): SwapHandler {
   if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
     return new NativeWrapHandler(apolloClient)
   } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
     const WrapHandler = getWrapHandlerClass(tokenInAddress, tokenOutAddress, chain)
     return new WrapHandler()
+  } else if (isAuraBalSwap(tokenInAddress, tokenOutAddress, chain, swapType)) {
+    return new AuraBalSwapHandler(tokens)
   }
 
   return new DefaultSwapHandler(apolloClient)
@@ -117,7 +123,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
         swapState.tokenIn.address,
         swapState.tokenOut.address,
         swapState.selectedChain,
-        client
+        swapState.swapType,
+        client,
+        tokens
       ),
     [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain]
   )
@@ -129,7 +137,11 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const tokenOutInfo = getToken(swapState.tokenOut.address, swapState.selectedChain)
 
   if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
-    throw new Error('Token metadata not found')
+    try {
+      setDefaultTokens()
+    } catch (error) {
+      throw new Error('Token metadata not found')
+    }
   }
 
   const tokenInUsd = usdValueForToken(tokenInInfo, swapState.tokenIn.amount)
@@ -396,6 +408,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const swapTxHash = urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const swapTxConfirmed = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
 
@@ -542,6 +555,8 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    swapTxConfirmed,
+    replaceUrlPath,
     resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,

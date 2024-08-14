@@ -11,17 +11,19 @@ import { useTokens } from '../../../../tokens/TokensProvider'
 import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
+import { isCowAmmPool } from '../../../pool.helpers'
+import { getPoolDisplayTokens } from '../../../pool.utils'
 
-export type PoolStatsValues = {
+type PoolStatsValues = {
   totalLiquidity: string
-  fees24h: string
+  income24h: string
   weeklyRewards: string
 }
 
 export function PoolSnapshotValues() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
-  const { priceFor, getToken } = useTokens()
+  const { priceFor, getToken, calcTotalUsdValue } = useTokens()
 
   const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
@@ -34,7 +36,7 @@ export function PoolSnapshotValues() {
     }
   })
 
-  // reward tokens will always be there?
+  // In case a reward token is undefined, it's icon in TokenIconStack will be a random one
   const tokens = currentRewardsPerWeek
     .filter(reward => bn(reward.rewardPerSecond).gt(0))
     .map(reward => getToken(reward.tokenAddress, chain)) as GqlToken[]
@@ -47,18 +49,24 @@ export function PoolSnapshotValues() {
   const poolStatsValues: PoolStatsValues | undefined = useMemo(() => {
     if (pool) {
       return {
-        totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false }),
-        fees24h: toCurrency(pool.dynamicData.fees24h),
+        totalLiquidity: toCurrency(calcTotalUsdValue(getPoolDisplayTokens(pool), chain), {
+          abbreviated: false,
+        }),
+        income24h: isCowAmmPool(pool.type)
+          ? toCurrency(pool.dynamicData.surplus24h)
+          : toCurrency(pool.dynamicData.fees24h),
         weeklyRewards: toCurrency(weeklyRewards),
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
 
+  const incomeLabel = isCowAmmPool(pool.type) ? 'Surplus (24h)' : 'Fees (24h)'
+
   return (
     <>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           TVL
         </Text>
         {poolStatsValues ? (
@@ -68,7 +76,7 @@ export function PoolSnapshotValues() {
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           APR for LPs
         </Text>
         <MemoizedMainAprTooltip
@@ -84,17 +92,17 @@ export function PoolSnapshotValues() {
         />
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
-          Fees (24h)
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
+          {incomeLabel}
         </Text>
         {poolStatsValues ? (
-          <Heading size="h4">{poolStatsValues.fees24h}</Heading>
+          <Heading size="h4">{poolStatsValues.income24h}</Heading>
         ) : (
           <Skeleton height="30px" w="100px" />
         )}
       </VStack>
       <VStack spacing="0" align="flex-start" w="full">
-        <Text variant="secondaryGradient" fontWeight="semibold" fontSize="sm" mt="xxs">
+        <Text variant="secondary" fontWeight="semibold" fontSize="sm" mt="xxs">
           Weekly incentives
         </Text>
         {poolStatsValues ? (

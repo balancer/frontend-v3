@@ -15,6 +15,7 @@ import { PoolVariant, BaseVariant } from '../../../pool.types'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useTheme as useNextTheme } from 'next-themes'
+import { isCowAmmPool } from '../../../pool.helpers'
 
 const MIN_DISPLAY_PERIOD_DAYS = 30
 
@@ -22,6 +23,7 @@ export enum PoolChartTab {
   VOLUME = 'volume',
   TVL = 'tvl',
   FEES = 'fees',
+  SURPLUS = 'surplus',
 }
 
 export type PoolChartPeriod = {
@@ -192,6 +194,23 @@ export function getPoolTabsList({
     ]
   }
 
+  if (poolType === GqlPoolType.CowAmm) {
+    return [
+      {
+        value: PoolChartTab.VOLUME,
+        label: 'Volume',
+      },
+      {
+        value: PoolChartTab.TVL,
+        label: 'TVL',
+      },
+      {
+        value: PoolChartTab.SURPLUS,
+        label: 'Surplus',
+      },
+    ]
+  }
+
   return [
     {
       value: PoolChartTab.VOLUME,
@@ -215,7 +234,7 @@ export function usePoolSnapshots(
 ) {
   return useQuery(GetPoolSnapshotsDocument, {
     variables: {
-      poolId,
+      poolId: poolId.toLowerCase(),
       range,
       chainId,
     },
@@ -225,6 +244,8 @@ export function usePoolSnapshots(
 
 export function usePoolCharts() {
   const { pool } = usePool()
+  const isCowPool = isCowAmmPool(pool.type)
+
   const { id: poolId, variant } = useParams()
   const { toCurrency } = useCurrency()
   const { theme: nextTheme } = useNextTheme()
@@ -268,6 +289,12 @@ export function usePoolCharts() {
       }, 0)
     }
 
+    if (activeTab.value === PoolChartTab.SURPLUS) {
+      val = data?.snapshots.reduce((acc, snapshot) => {
+        return (acc += Number(snapshot.surplus24h))
+      }, 0)
+    }
+
     if (activeTab.value === PoolChartTab.VOLUME) {
       val = data?.snapshots.reduce((acc, snapshot) => {
         return (acc += Number(snapshot.volume24h))
@@ -293,6 +320,13 @@ export function usePoolCharts() {
         return [snapshot.timestamp, snapshot.fees24h]
       })
     }
+
+    if (activeTab.value === PoolChartTab.SURPLUS) {
+      chartArr = snapshots.map(snapshot => {
+        return [snapshot.timestamp, snapshot.surplus24h]
+      })
+    }
+
     if (activeTab.value === PoolChartTab.VOLUME) {
       chartArr = snapshots.map(snapshot => {
         return [snapshot.timestamp, snapshot.volume24h]
@@ -402,14 +436,20 @@ export function usePoolCharts() {
       color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
         {
           offset: 0,
-          color: theme.semanticTokens.colors.chart.pool.bar.volume.from,
+          color: isCowPool
+            ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.from
+            : theme.semanticTokens.colors.chart.pool.bar.volume.from,
         },
         {
           offset: 1,
-          color: theme.semanticTokens.colors.chart.pool.bar.volume.to,
+          color: isCowPool
+            ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.to
+            : theme.semanticTokens.colors.chart.pool.bar.volume.to,
         },
       ]),
-      hoverColor: defaultTheme.colors.pink[500],
+      hoverColor: isCowPool
+        ? theme.semanticTokens.colors.chart.pool.bar.volume.cow.hover
+        : defaultTheme.colors.pink[500],
     },
     [PoolChartTab.TVL]: {
       type: 'line',
@@ -430,6 +470,11 @@ export function usePoolCharts() {
       },
     },
     [PoolChartTab.FEES]: {
+      type: 'bar',
+      color: defaultTheme.colors.yellow[400],
+      hoverColor: defaultTheme.colors.pink[500],
+    },
+    [PoolChartTab.SURPLUS]: {
       type: 'bar',
       color: defaultTheme.colors.yellow[400],
       hoverColor: defaultTheme.colors.pink[500],

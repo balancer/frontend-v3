@@ -59,7 +59,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
         contentProps={COMMON_NOISY_CARD_PROPS.contentProps}
       >
         <Box top={0} bottom={0} left={0} right={0} position="absolute" overflow="hidden">
-          <ZenGarden variant="diamond" sizePx="225px" />
+          <ZenGarden variant="circle" sizePx="280px" subdued />
         </Box>
         <VStack
           spacing="xl"
@@ -71,6 +71,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
           h="full"
+          role="group"
         >
           <ButtonGroup
             size="xxs"

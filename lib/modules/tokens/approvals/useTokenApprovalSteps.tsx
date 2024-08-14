@@ -65,7 +65,7 @@ export function useTokenApprovalSteps({
       const { tokenAddress, requiredRawAmount, requestedRawAmount } = tokenAmountToApprove
       const token = getToken(tokenAddress, chain)
       const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
-      const labels = buildTokenApprovalLabels({ actionType, symbol, requiredRawAmount })
+      const labels = buildTokenApprovalLabels({ actionType, symbol })
       const id = tokenAddress
 
       const isComplete = () => {

@@ -17,10 +17,9 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
+ * AddLiquidityHandler interface for strictly proportional adds, e.g. where the user
+ * specifies the token amounts in. It uses the Balancer SDK to calculate the BPT
+ * out with the current pools state, then uses that bptOut for the query.
  */
 export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -43,6 +42,8 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       this.helpers.poolStateWithBalances,
       humanAmountIn
     )
+
+    bptAmount.rawAmount = bptAmount.rawAmount - 10n // Subtract 10 wei to ensure query doesn't fail when user maxes out balance.
 
     const addLiquidity = new AddLiquidity()
 

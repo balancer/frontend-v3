@@ -17,7 +17,10 @@ export function useClaimCallDataQuery(
   }
 
   const queryKey = ['claim', 'gauge', 'callData', inputData]
-  const queryFn = () => gaugeService && gaugeService.getGaugeClaimRewardsContractCallData(inputData)
+  const queryFn = (): `0x${string}`[] => {
+    if (!gaugeService) return []
+    return gaugeService.getGaugeClaimRewardsContractCallData(inputData)
+  }
 
   const query = useQuery({
     queryKey,

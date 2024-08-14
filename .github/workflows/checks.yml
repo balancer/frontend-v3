@@ -16,6 +16,8 @@ jobs:
       - name: Setup
         uses: ./.github/actions/setup
       - name: Run build
+        env:
+          NODE_OPTIONS: '--max_old_space_size=4096'
         run: pnpm run build
 
   Lint:

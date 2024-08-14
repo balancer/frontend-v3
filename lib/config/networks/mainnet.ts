@@ -19,6 +19,7 @@ const networkConfig = {
     addresses: {
       bal: '0xba100000625a3754423978a60c9317c58a424e3d',
       wNativeAsset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      auraBal: '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
     },
     nativeAsset: {
       name: 'Ether',

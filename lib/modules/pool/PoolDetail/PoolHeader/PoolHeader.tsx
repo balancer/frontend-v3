@@ -4,6 +4,8 @@ import PoolMetaBadges from './PoolMetaBadges'
 
 import { usePool } from '../../PoolProvider'
 import { shouldBlockAddLiquidity } from '../../pool.helpers'
+import { AnalyticsEvent, trackEvent } from '@/lib/shared/services/fathom/Fathom'
+import { PoolCategories } from '../../categories/PoolCategores'
 
 export function PoolHeader() {
   const pathname = usePathname()
@@ -12,17 +14,25 @@ export function PoolHeader() {
 
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
+  function handleClick() {
+    trackEvent(AnalyticsEvent.ClickAddLiquidity)
+    router.push(`${pathname}/add-liquidity`)
+  }
+
   return (
-    <Stack w="full" justify="space-between" direction={{ base: 'column', sm: 'row' }}>
+    <Stack w="full" justify="space-between" spacing="md" direction={{ base: 'column', md: 'row' }}>
       <PoolMetaBadges />
-      <Button
-        onClick={() => router.push(`${pathname}/add-liquidity`)}
-        variant="primary"
-        size="lg"
-        isDisabled={isAddLiquidityBlocked}
-      >
-        Add liquidity
-      </Button>
+      <Stack spacing="md" direction={{ base: 'column', md: 'row' }}>
+        <PoolCategories />
+        <Button
+          onClick={handleClick}
+          variant="primary"
+          size="lg"
+          isDisabled={isAddLiquidityBlocked}
+        >
+          Add liquidity
+        </Button>
+      </Stack>
     </Stack>
   )
 }

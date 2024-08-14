@@ -28,10 +28,6 @@ export class LidoWrapHandler implements SwapHandler {
 
     return {
       swapType: variables.swapType,
-      priceImpact: {
-        __typename: 'GqlPriceImpact',
-        priceImpact: '0',
-      },
       effectivePrice: '1',
       effectivePriceReversed: '1',
       returnAmount,

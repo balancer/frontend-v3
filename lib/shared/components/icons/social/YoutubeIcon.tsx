@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
-export function YoutubeIcon() {
+export function YoutubeIcon({ size = 24 }: { size?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 576 512"
+      width={size}
+      height={size}
       stroke="currentColor"
       fill="currentColor"
     >

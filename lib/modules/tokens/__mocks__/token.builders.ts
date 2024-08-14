@@ -114,7 +114,7 @@ export function aTokenPriceMock(...options: Partial<GqlTokenPrice>[]): GqlTokenP
     __typename: 'GqlTokenPrice',
     address: emptyAddress,
     chain: GqlChain.Mainnet,
-    price: 10,
+    price: 2,
     updatedAt: 1,
   }
   return Object.assign({}, defaultPrice, ...options)

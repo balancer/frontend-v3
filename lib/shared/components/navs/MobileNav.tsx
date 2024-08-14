@@ -76,11 +76,11 @@ function EcosystemLinks() {
 }
 
 function SocialLinks() {
-  const { socialLinks } = useNav()
+  const { getSocialLinks } = useNav()
 
   return (
     <HStack justify="space-between" w="full">
-      {socialLinks.map(({ href, icon }) => (
+      {getSocialLinks().map(({ href, icon }) => (
         <Button as={Link} key={href} href={href} variant="tertiary" isExternal>
           {icon}
         </Button>

@@ -19,6 +19,7 @@ query GetPools(
     createTime
     decimals
     protocolVersion
+    tags
     displayTokens {
       id
       address
@@ -82,6 +83,8 @@ query GetPools(
         id
         apr
         auraPoolAddress
+        auraPoolId
+        isShutdown
       }
     }
     factory

@@ -1,9 +1,11 @@
 /* eslint-disable max-len */
-export function GithubIcon() {
+export function GithubIcon({ size = 24 }: { size?: number }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 496 512"
+      width={size}
+      height={size}
       stroke="currentColor"
       fill="currentColor"
     >

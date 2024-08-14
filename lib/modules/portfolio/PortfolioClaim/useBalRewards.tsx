@@ -57,6 +57,7 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
     data: claimableTokensData,
     refetch,
     isLoading,
+    status,
   } = useReadContracts({
     allowFailure: true,
     contracts: contractCalls,
@@ -100,5 +101,6 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
     balRewardsData,
     refetchBalRewards: refetch,
     isLoadingBalRewards: isLoading,
+    isLoadedBalRewards: status === 'success',
   }
 }

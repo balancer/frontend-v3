@@ -1,14 +1,7 @@
 'use client'
 
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
-import {
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalProps,
-  VStack,
-} from '@chakra-ui/react'
+import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
 import { RefObject, useRef } from 'react'
 // eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
@@ -21,6 +14,8 @@ import { MigrateStakePreview } from './MigrateStakePreview'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { usePoolRedirect } from '../../pool.hooks'
+import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
+import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 
 type Props = {
   isOpen: boolean
@@ -42,6 +37,8 @@ export function MigrateStakeModal({
   const { isMobile } = useBreakpoints()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
+
   return (
     <Modal
       isOpen={isOpen}
@@ -49,6 +46,7 @@ export function MigrateStakeModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!restakeTxHash} />
@@ -62,12 +60,12 @@ export function MigrateStakeModal({
         />
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm" w="full">
+          <AnimateHeightChange spacing="sm" w="full">
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
             <MigrateStakePreview />
-          </VStack>
+          </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!restakeTxHash}

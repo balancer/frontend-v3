@@ -96,7 +96,7 @@ export function RemoveLiquidityForm() {
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>
-      <Box h="full" w="full" maxW="lg" mx="auto">
+      <Box h="full" w="full" maxW="lg" mx="auto" pb="2xl">
         <Card>
           <CardHeader>
             <HStack justify="space-between" w="full">
@@ -130,7 +130,9 @@ export function RemoveLiquidityForm() {
                   {fNum('percentage', humanBptInPercent / 100)}
                 </Text>
               </InputWithSlider>
-              {activeTab === TABS[0] && <RemoveLiquidityProportional tokens={tokens} />}
+              {activeTab === TABS[0] && (
+                <RemoveLiquidityProportional tokens={tokens} poolType={pool.type} />
+              )}
               {activeTab === TABS[1] && (
                 <RemoveLiquiditySingleToken tokens={tokens} chain={pool.chain} />
               )}
@@ -140,7 +142,7 @@ export function RemoveLiquidityForm() {
                 setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
-                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                    <Text variant="secondary" fontSize="sm" color="font.secondary">
                       Price impact:{' '}
                     </Text>
                     <Text variant="secondary" fontSize="sm" color={priceImpactColor}>

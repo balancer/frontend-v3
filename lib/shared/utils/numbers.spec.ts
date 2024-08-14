@@ -28,7 +28,11 @@ describe('fiatFormat', () => {
   test('Non-abbreviated formats', () => {
     expect(fNum('fiat', '0.000000000000000001')).toBe('<0.001')
     expect(fNum('fiat', '0.00269693621158015889', { abbreviated: false })).toBe('0.003')
-    expect(fNum('fiat', '123456789.12345678', { abbreviated: false })).toBe('123,456,789.12')
+    expect(fNum('fiat', '56789.12345678', { abbreviated: false })).toBe('56,789.12')
+  })
+
+  test('Hide cents when value >= 100k', () => {
+    expect(fNum('fiat', '123456789.12345678', { abbreviated: false })).toBe('123,456,789')
   })
 })
 
@@ -57,7 +61,7 @@ describe('tokenFormat', () => {
   })
 
   test('Non-abbreviated formats', () => {
-    expect(fNum('token', '123456789.12345678', { abbreviated: false })).toBe('123,456,789.1235')
+    expect(fNum('token', '56789.12345678', { abbreviated: false })).toBe('56,789.1235')
   })
 })
 

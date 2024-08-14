@@ -128,7 +128,7 @@ export function PoolCharts({ ...props }: CardProps) {
               </Stack>
               <Box w="full" h="full" onMouseLeave={handleMouseLeave}>
                 <ReactECharts
-                  style={{ height: '100%' }}
+                  style={{ height: '100%', width: '100%' }}
                   option={options}
                   onEvents={{
                     updateAxisPointer: handleAxisMoved,

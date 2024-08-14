@@ -26,9 +26,14 @@ export function _useTransactionState() {
     return transactionMap.get(id)
   }
 
+  function resetTransactionState() {
+    setTransactionMap(new Map())
+  }
+
   return {
     getTransaction,
     updateTransaction,
+    resetTransactionState,
   }
 }
 

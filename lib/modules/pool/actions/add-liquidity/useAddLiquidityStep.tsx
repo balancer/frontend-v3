@@ -7,7 +7,7 @@ import {
   TxCall,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
   AddLiquidityBuildQueryParams,
   useAddLiquidityBuildCallDataQuery,
@@ -57,6 +57,10 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
     }
   }, [simulationQuery.data])
 
+  const onSuccess = useCallback(() => {
+    refetchPoolBalances()
+  }, [])
+
   return useMemo(
     () => ({
       id: addLiquidityStepId,
@@ -65,7 +69,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
       isComplete,
       onActivated: () => setIsStepActivated(true),
       onDeactivated: () => setIsStepActivated(false),
-      onSuccess: () => refetchPoolBalances(),
+      onSuccess,
       renderAction: () => {
         return (
           <ManagedSendTransactionButton

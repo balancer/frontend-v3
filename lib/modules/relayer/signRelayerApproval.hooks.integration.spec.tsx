@@ -22,7 +22,8 @@ test('Signs relayer approval and saves signature in the addLiquidity provider st
   const { result } = testHook(
     () => {
       const { relayerApprovalSignature } = useRelayerSignature()
-      const signResult = useSignRelayerApproval()
+      const mainnetId = 1
+      const signResult = useSignRelayerApproval(mainnetId)
       return { ...signResult, relayerApprovalSignature }
     },
     {

@@ -21,7 +21,7 @@ export function useStakeSteps(pool: Pool, stakeAmount = getUserWalletBalance(poo
       chain: pool.chain,
       approvalAmounts: [amountToApprove],
       actionType: 'Staking',
-      bptSymbol: pool.symbol,
+      bptSymbol: 'LP token',
     })
 
   const stakingStep = useStakeStep(pool, rawAmount)
