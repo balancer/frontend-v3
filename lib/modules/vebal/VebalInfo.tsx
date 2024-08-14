@@ -8,7 +8,7 @@ import { useVebalUserData } from './useVebalUserData'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 
-export function VebalMainInfo() {
+export function VebalInfo() {
   const lockInfo = useVebalLockInfo()
   const { isConnected } = useUserAccount()
 
@@ -62,7 +62,7 @@ export function VebalMainInfo() {
   }
 
   return (
-    <Stack spacing="4">
+    <Stack spacing="lg">
       {vebalData.map(({ title, value }) => (
         <Stack key={title} spacing="2">
           <Text fontWeight={700} fontSize="lg">
@@ -71,7 +71,7 @@ export function VebalMainInfo() {
           <Text>{value}</Text>
         </Stack>
       ))}
-      <Stack spacing="4">
+      <Stack spacing="lg">
         {lockData.map(({ title, value }) => (
           <Stack key={title} spacing="2">
             <Text>{title}</Text>

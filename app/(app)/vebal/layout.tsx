@@ -5,11 +5,11 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 
-type Props = {
+type PropsWithChildren = {
   children: React.ReactNode
 }
 
-export default function VebalLayout({ children }: Props) {
+export default function VebalLayout({ children }: PropsWithChildren) {
   const { getTokensByChain } = useTokens()
 
   const tokens = getTokensByChain(1)
@@ -21,7 +21,7 @@ export default function VebalLayout({ children }: Props) {
   if (!vebalBptToken) throw new Error('vebalBptToken not found')
 
   return (
-    <TokenBalancesProvider extTokens={[vebalBptToken]}>
+    <TokenBalancesProvider initTokens={[vebalBptToken]}>
       <DefaultPageContainer minH="100vh">{children}</DefaultPageContainer>
     </TokenBalancesProvider>
   )
