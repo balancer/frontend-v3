@@ -5,6 +5,8 @@ import { useUserAccount } from '../web3/UserAccountProvider'
 import { Stack, Text } from '@chakra-ui/react'
 import { VeBALLocksChart } from './vebal-chart/VebalLocksChart'
 import { useVebalUserData } from './useVebalUserData'
+import { useTokenBalances } from '../tokens/TokenBalancesProvider'
+import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 
 export function VebalMainInfo() {
   const lockInfo = useVebalLockInfo()
@@ -19,6 +21,20 @@ export function VebalMainInfo() {
   const percentOfAllSupply = bn(data?.veBalGetUser.balance || 0).div(
     lockInfo.mainnetLockedInfo.totalSupply || 0
   )
+
+  const { balanceFor } = useTokenBalances()
+  const unlockedBalance = balanceFor(mainnetNetworkConfig.tokens.addresses.veBalBpt)
+
+  const lockData = [
+    {
+      title: 'Locked veBAL',
+      value: lockInfo.mainnetLockedInfo.lockedAmount,
+    },
+    {
+      title: 'Unlocked veBAL',
+      value: unlockedBalance?.formatted,
+    },
+  ]
 
   const vebalData = [
     {
@@ -55,6 +71,14 @@ export function VebalMainInfo() {
           <Text>{value}</Text>
         </Stack>
       ))}
+      <Stack spacing="4">
+        {lockData.map(({ title, value }) => (
+          <Stack key={title} spacing="2">
+            <Text>{title}</Text>
+            <Text>{value}</Text>
+          </Stack>
+        ))}
+      </Stack>
       <VeBALLocksChart />
     </Stack>
   )
