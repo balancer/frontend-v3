@@ -1,9 +1,6 @@
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
+import { PropsWithChildren } from 'react'
 
-type Props = {
-  children: React.ReactNode
-}
-
-export default async function SftmxLayout({ children }: Props) {
+export default async function SftmxLayout({ children }: PropsWithChildren) {
   return <DefaultPageContainer minH="100vh">{children}</DefaultPageContainer>
 }
