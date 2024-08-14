@@ -1,14 +1,10 @@
 'use client'
 
 import { Card, Divider, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
-import {
-  GqlChain,
-  GqlPoolTokenDetail,
-  GqlPoolTokenDisplay,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
@@ -17,6 +13,7 @@ import { PoolWeightChart } from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { getPoolDisplayTokens } from '../../pool.utils'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -74,20 +71,18 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
 
 export function PoolComposition() {
   const { pool, chain, isLoading } = usePool()
-  const [totalLiquidity, setTotalLiquidity] = useState('')
   const { isMobile } = useBreakpoints()
+  const { calcTotalUsdValue } = useTokens()
 
-  useEffect(() => {
-    if (pool) {
-      setTotalLiquidity(pool.dynamicData.totalLiquidity)
-    }
-  }, [pool])
+  const displayTokens = getPoolDisplayTokens(pool)
 
-  const displayTokens = pool.poolTokens.filter(token =>
-    pool.displayTokens.find(
-      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
-    )
-  ) as GqlPoolTokenDetail[]
+  const CardContentBlock = () => (
+    <CardContent
+      totalLiquidity={calcTotalUsdValue(displayTokens, chain)}
+      displayTokens={displayTokens}
+      chain={chain}
+    />
+  )
 
   return (
     <Card>
@@ -102,18 +97,10 @@ export function PoolComposition() {
             Pool composition
           </Heading>
           {isMobile ? (
-            <CardContent
-              totalLiquidity={totalLiquidity}
-              displayTokens={displayTokens}
-              chain={chain}
-            />
+            <CardContentBlock />
           ) : (
             <Card variant="subSection" w="full">
-              <CardContent
-                totalLiquidity={totalLiquidity}
-                displayTokens={displayTokens}
-                chain={chain}
-              />
+              <CardContentBlock />
             </Card>
           )}
           {isMobile && <Divider />}

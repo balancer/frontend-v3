@@ -5,6 +5,7 @@ import {
   GqlPoolTokenDetail,
   GqlPoolType,
   GqlPoolAprItem,
+  GqlPoolTokenDisplay,
   GqlPoolAprItemType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
@@ -271,4 +272,12 @@ export function getAuraPoolLink(chainId: number, pid: string) {
 
 export function shouldHideSwapFee(poolType: GqlPoolType) {
   return poolType === GqlPoolType.CowAmm
+}
+
+export function getPoolDisplayTokens(pool: Pool) {
+  return pool.poolTokens.filter(token =>
+    pool.displayTokens.find(
+      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
+    )
+  ) as GqlPoolTokenDetail[]
 }
