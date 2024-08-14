@@ -13,6 +13,7 @@ import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from 
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import { useTxHash } from '../safe.hooks'
 
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
@@ -56,9 +57,11 @@ export function useManagedTransaction({
 
   const writeQuery = useWriteContract()
 
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
-    hash: writeQuery.data,
+    hash: txHash,
     confirmations: minConfirmations,
   })
 
@@ -67,12 +70,13 @@ export function useManagedTransaction({
     simulation: simulateQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
+    isSafeTxLoading,
   }
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data,
+    hash: txHash,
     chain: getGqlChain(chainId as SupportedChainId),
   })
 

@@ -171,10 +171,15 @@ export function _calculateProportionalHumanAmountsIn({
 }: Params): HumanTokenAmountWithAddress[] {
   const amountIn: InputAmount = helpers.toSdkInputAmounts([{ tokenAddress, humanAmount }])[0]
   const proportionalAmounts = calculateProportionalAmounts(helpers.poolStateWithBalances, amountIn)
-    .tokenAmounts.map(({ address, rawAmount, decimals }) => ({
-      tokenAddress: address,
-      humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
-    }))
+    .tokenAmounts.map(({ address, rawAmount, decimals }) => {
+      // Use the humanAmount entered by the user to avoid displaying rounding updates from calculateProportionalAmounts
+      if (address === tokenAddress) return { tokenAddress, humanAmount }
+
+      return {
+        tokenAddress: address,
+        humanAmount: formatUnits(rawAmount, decimals) as HumanAmount,
+      }
+    })
     // user updated token must be in the first place of the array because the Proportional handler always calculates bptOut based on the first position
     .sort(sortUpdatedTokenFirst(tokenAddress))
 

@@ -55,7 +55,7 @@ export type TxActionId =
   | 'Claim'
   | 'Swap'
 
-export type ManagedResult = TransactionBundle & Executable
+export type ManagedResult = TransactionBundle & Executable & { isSafeTxLoading: boolean }
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
   execute is the union of write and sendTransaction functions

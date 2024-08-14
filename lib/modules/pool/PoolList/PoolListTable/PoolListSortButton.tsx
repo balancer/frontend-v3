@@ -17,6 +17,8 @@ export default function PoolListSortButton({ title, isDesc, isCurrentSort, ...re
       {...rest}
       color={isCurrentSort ? 'font.highlight' : 'font.primary'}
       fontWeight="bold"
+      position="relative"
+      right="-8px"
     >
       <HStack>
         <Text color={isCurrentSort ? 'font.highlight' : 'font.primary'} fontWeight="bold">
