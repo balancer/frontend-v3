@@ -2,6 +2,7 @@
 import { Address } from 'viem'
 import { TransactionBundle } from './contract.types'
 import { polygon } from 'viem/chains'
+import { secs } from '@/lib/shared/utils/time'
 
 export function getHashFromTransaction(transactionBundle?: TransactionBundle): Address | undefined {
   if (!transactionBundle) return
@@ -25,8 +26,8 @@ export function isValidUserAddress(userAddress?: Address) {
  */
 export function getWaitForReceiptTimeout(chainId: number) {
   // In polygon there will be 3 retries of 25 seconds until we throw the timeout error
-  if (chainId === polygon.id) return 25_000
+  if (chainId === polygon.id) return secs(25).toMs()
 
   // In other chains there will be 3 retries of 15 seconds until we throw the timeout error
-  return 15_000
+  return secs(15).toMs()
 }
