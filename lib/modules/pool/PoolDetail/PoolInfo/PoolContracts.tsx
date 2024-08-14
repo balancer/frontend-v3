@@ -20,7 +20,7 @@ import { usePool } from '../../PoolProvider'
 import { ArrowUpRight } from 'react-feather'
 import { useMemo } from 'react'
 import { GqlPriceRateProviderData, GqlToken } from '@/lib/shared/services/api/generated/graphql'
-import { Address } from 'viem'
+import { Address, zeroAddress } from 'viem'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { AlertTriangle, XCircle } from 'react-feather'
@@ -31,30 +31,36 @@ import { getRateProviderWarnings } from '@/lib/modules/pool/pool.helpers'
 
 type RateProvider = {
   tokenAddress: Address
-  priceRateProviderData: GqlPriceRateProviderData
+  rateProviderAddress: Address
+  priceRateProviderData: GqlPriceRateProviderData | null
 }
 
-function getRateProviderIcon(data: GqlPriceRateProviderData, token: GqlToken) {
+function getRateProviderIcon(data: GqlPriceRateProviderData | null, token: GqlToken) {
   let icon
   let level
 
-  const warnings = getRateProviderWarnings(data.warnings || [])
+  const warnings = getRateProviderWarnings(data?.warnings || [])
 
-  if (data.reviewed && data.summary === 'safe') {
-    if (warnings.length > 0) {
-      icon = <Icon as={AlertTriangle} color="font.warning" size={16} cursor="pointer" />
-      level = 1
-    } else {
-      icon = (
-        <Box as="span" cursor="pointer">
-          <Image src="/images/icons/notes.svg" alt="Notes" width={16} height={16} />
-        </Box>
-      )
-      level = 2
-    }
+  if (!data) {
+    icon = <Icon as={AlertTriangle} color="font.warning" size={16} cursor="pointer" />
+    level = 1
   } else {
-    icon = <Icon as={XCircle} color="red.500" size={16} cursor="pointer" />
-    level = 0
+    if (data.reviewed && data.summary === 'safe') {
+      if (warnings.length > 0) {
+        icon = <Icon as={AlertTriangle} color="font.warning" size={16} cursor="pointer" />
+        level = 1
+      } else {
+        icon = (
+          <Box as="span" cursor="pointer">
+            <Image src="/images/icons/notes.svg" alt="Notes" width={16} height={16} />
+          </Box>
+        )
+        level = 2
+      }
+    } else {
+      icon = <Icon as={XCircle} color="red.500" size={16} cursor="pointer" />
+      level = 0
+    }
   }
 
   return (
@@ -95,9 +101,12 @@ export function PoolContracts({ ...props }: CardProps) {
     return pool.poolTokens
       .map(token => ({
         tokenAddress: token.address,
+        rateProviderAddress: token.priceRateProvider,
         priceRateProviderData: token.priceRateProviderData,
       }))
-      .filter(item => item.priceRateProviderData) as RateProvider[]
+      .filter(
+        item => item.rateProviderAddress && item.rateProviderAddress !== zeroAddress
+      ) as RateProvider[]
   }, [pool])
 
   return (
@@ -153,17 +162,14 @@ export function PoolContracts({ ...props }: CardProps) {
                           />
                         </Tooltip>
                         <Link
-                          key={provider.priceRateProviderData.address}
+                          key={provider.rateProviderAddress}
                           target="_blank"
-                          href={getBlockExplorerAddressUrl(
-                            provider.priceRateProviderData.address,
-                            chain
-                          )}
+                          href={getBlockExplorerAddressUrl(provider.rateProviderAddress, chain)}
                           variant="link"
                         >
                           <HStack gap="xxs">
                             <Text color="link">
-                              {abbreviateAddress(provider.priceRateProviderData.address)}
+                              {abbreviateAddress(provider.rateProviderAddress)}
                             </Text>
                             <ArrowUpRight size={12} />
                           </HStack>
