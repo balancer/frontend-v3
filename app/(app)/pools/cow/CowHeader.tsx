@@ -1,20 +1,22 @@
 'use client'
 
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Box, Card, Center, Heading, Link, Text, VStack, Image } from '@chakra-ui/react'
+import { Box, Text, Card, Center, Heading, Link, VStack, Image } from '@chakra-ui/react'
 import { ArrowUpRight } from 'react-feather'
 
 export function CowHeader() {
   return (
     <FadeInOnView animateOnce={false}>
       <Card
-        mb={{ base: '2xl', sm: '3xl' }}
         backgroundImage={{
           base: '/images/partners/cow/banner-mobile.svg',
           md: '/images/partners/cow/banner-desktop.svg',
         }}
         backgroundSize="cover"
+        backgroundRepeat="no-repeat"
         backgroundPosition={{ base: 'bottom', md: 'bottom' }}
+        rounded="xl"
+        bg="#194D05"
       >
         <Center>
           <VStack p="xl" maxW="xl" textAlign="center" spacing="lg">

@@ -3,7 +3,11 @@
 import { Box, Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../TokensProvider'
-import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import {
+  GqlChain,
+  GqlPoolTokenDisplay,
+  GqlToken,
+} from '@/lib/shared/services/api/generated/graphql'
 import { ReactNode, useEffect, useState } from 'react'
 import { TokenIcon } from '../TokenIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -13,11 +17,13 @@ import { bptUsdValue } from '../../pool/pool.helpers'
 import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
 import { BullseyeIcon } from '@/lib/shared/components/icons/BullseyeIcon'
+import { isSameAddress } from '@/lib/shared/utils/addresses'
 
 type DataProps = {
   address: Address
   chain: GqlChain
   token?: GqlToken
+  displayToken?: GqlPoolTokenDisplay
   pool?: Pool
   disabled?: boolean
   showSelect?: boolean
@@ -29,13 +35,16 @@ function TokenInfo({
   address,
   chain,
   token,
+  displayToken,
   pool,
   disabled,
   showSelect = false,
   showInfoPopover = true,
   isBpt = false,
 }: DataProps) {
-  const tokenSymbol = isBpt ? 'LP token' : token?.symbol || pool?.symbol
+  const tokenSymbol = isBpt ? 'LP token' : token?.symbol || pool?.symbol || displayToken?.symbol
+  const tokenName = isBpt ? pool?.name : token?.name || displayToken?.name
+
   return (
     <HStack spacing="sm">
       {!isBpt && (
@@ -56,7 +65,7 @@ function TokenInfo({
           )}
         </HStack>
         <Text fontWeight="medium" variant="secondary" fontSize="0.85rem">
-          {token?.name || pool?.name}
+          {tokenName}
         </Text>
       </VStack>
       {showSelect && (
@@ -105,12 +114,14 @@ export default function TokenRow({
   const [amount, setAmount] = useState<string>('')
   const [usdValue, setUsdValue] = useState<string | undefined>(undefined)
   const token = getToken(address, chain)
+  const displayToken = pool?.displayTokens.find(t => isSameAddress(t.address, address))
 
   // TokenRowTemplate default props
   const props = {
     address,
     chain,
     token,
+    displayToken,
     pool,
     disabled,
   }

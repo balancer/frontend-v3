@@ -21,7 +21,7 @@ export function PoolActionsLayout({ children }: Props) {
       left={0}
       w="full"
       bg="transparent"
-      zIndex={50}
+      zIndex={100}
       onClick={redirectToPoolPage}
     >
       <VStack
@@ -32,7 +32,7 @@ export function PoolActionsLayout({ children }: Props) {
         onClick={redirectToPoolPage}
       >
         <Navbar leftSlot={<PoolName pool={pool} color="font.light" />} />
-        <Box w="full" px={['0', 'md']}>
+        <Box w="full" px={['0', 'md']} pt="72px">
           <Card
             position="relative"
             variant="level1"

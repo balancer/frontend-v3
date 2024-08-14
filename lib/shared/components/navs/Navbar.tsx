@@ -8,19 +8,39 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
-import { isProd } from '@/lib/config/app.config'
+import { isDev, isStaging } from '@/lib/config/app.config'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
-import { motion } from 'framer-motion'
+import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from 'framer-motion'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { MobileNav } from './MobileNav'
 import { useNav } from './useNav'
-import { useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   leftSlot?: React.ReactNode
   rightSlot?: React.ReactNode
+}
+
+const clamp = (number: number, min: number, max: number) => Math.min(Math.max(number, min), max)
+
+function useBoundedScroll(threshold: number) {
+  const { scrollY } = useScroll()
+  const scrollYBounded = useMotionValue(0)
+  const scrollYBoundedProgress = useTransform(scrollYBounded, [0, threshold], [0, 1])
+
+  useEffect(() => {
+    return scrollY.on('change', current => {
+      const previous = scrollY.getPrevious()
+      const diff = current - previous
+      const newScrollYBounded = scrollYBounded.get() + diff
+
+      scrollYBounded.set(clamp(newScrollYBounded, 0, threshold))
+    })
+  }, [threshold, scrollY, scrollYBounded])
+
+  return { scrollYBounded, scrollYBoundedProgress }
 }
 
 function NavLinks({ ...props }: BoxProps) {
@@ -44,7 +64,7 @@ function NavLinks({ ...props }: BoxProps) {
       <Box as={motion.div} variants={fadeIn}>
         <VeBalLink />
       </Box>
-      {!isProd && (
+      {(isDev || isStaging) && (
         <Box as={motion.div} variants={fadeIn}>
           <Link
             as={NextLink}
@@ -148,8 +168,57 @@ function NavActions() {
 }
 
 export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
+  const [showShadow, setShowShadow] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 72) setShowShadow(true)
+      else setShowShadow(false)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const { scrollYBoundedProgress } = useBoundedScroll(72)
+  const scrollYBoundedProgressDelayed = useTransform(
+    scrollYBoundedProgress,
+    [0, 0.75, 1],
+    [0, 0, 1]
+  )
+
+  const blurEffect = useTransform(scrollYBoundedProgressDelayed, [0, 1], [10, 0])
+  const backdropFilterStyle = useMotionTemplate`blur(${blurEffect}px)`
+
   return (
-    <Box w="full" {...rest}>
+    <Box
+      as={motion.div}
+      w="full"
+      pos="fixed"
+      zIndex={100}
+      top="0"
+      transition="all 0.3s ease-in-out"
+      style={{
+        backdropFilter: backdropFilterStyle,
+        top: useTransform(scrollYBoundedProgressDelayed, [0, 1], [0, -72]),
+        opacity: useTransform(scrollYBoundedProgressDelayed, [0, 1], [1, 0]),
+      }}
+      onScroll={e => console.log('Navbar scroll:', e)}
+      boxShadow={showShadow ? 'lg' : 'none'}
+      borderColor="border.base"
+      _before={{
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        bg: showShadow ? 'background.level1' : 'none',
+        opacity: 0.5,
+        zIndex: -1,
+      }}
+      {...rest}
+    >
       <HStack padding={{ base: 'sm', md: 'md' }} justify="space-between" as="nav">
         <HStack
           spacing="lg"

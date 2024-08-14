@@ -571,6 +571,21 @@ export function getComponents(tokens: any, primaryTextColor: string) {
             rounded: 'md',
           },
         },
+        multiSelect: {
+          content: {
+            background: 'background.level2',
+            border: 'none',
+            borderColor: 'transparent',
+            color: 'font.primary',
+          },
+          body: {
+            background: 'background.level2',
+            border: 'none',
+            borderColor: 'transparent',
+            rounded: 'md',
+            shadow: '3xl',
+          },
+        },
       },
     },
     Card: {

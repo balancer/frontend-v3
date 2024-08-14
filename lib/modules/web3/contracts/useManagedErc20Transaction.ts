@@ -10,11 +10,13 @@ import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useEffect, useState } from 'react'
 import { Address, ContractFunctionArgs, ContractFunctionName, erc20Abi } from 'viem'
 import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
+import { useTxHash } from '../safe.hooks'
 import { useChainSwitch } from '../useChainSwitch'
 import { usdtAbi } from './abi/UsdtAbi'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
 
 type Erc20Abi = typeof erc20Abi
 
@@ -62,10 +64,14 @@ export function useManagedErc20Transaction({
   })
 
   const writeQuery = useWriteContract()
+
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
-    hash: writeQuery.data,
+    hash: txHash,
     confirmations: minConfirmations,
+    timeout: getWaitForReceiptTimeout(chainId),
   })
 
   const bundle = {
@@ -73,12 +79,13 @@ export function useManagedErc20Transaction({
     simulation: simulateQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
+    isSafeTxLoading,
   }
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data,
+    hash: txHash,
     chain: getGqlChain(chainId),
   })
 

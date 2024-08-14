@@ -14,6 +14,7 @@ import React, { ReactNode, createContext, useCallback, useEffect, useState } fro
 import { Hash } from 'viem'
 import { useConfig, usePublicClient } from 'wagmi'
 import { waitForTransactionReceipt } from 'wagmi/actions'
+import { getWaitForReceiptTimeout } from '../web3/contracts/wagmi-helpers'
 
 export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
@@ -85,6 +86,7 @@ export function _useRecentTransactions() {
           const receipt = await waitForTransactionReceipt(config, {
             hash: tx.hash,
             chainId: getChainId(tx.chain),
+            timeout: getWaitForReceiptTimeout(getChainId(tx.chain)),
           })
           if (receipt?.status === 'success') {
             updatePayload[tx.hash] = {

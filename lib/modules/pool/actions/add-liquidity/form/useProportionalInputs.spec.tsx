@@ -11,7 +11,7 @@ describe('calculates and sorts proportional human amounts in', () => {
   it('given a new human amount for the first token (USDC)', () => {
     const humanAmountsIn = _calculateProportionalHumanAmountsIn({
       tokenAddress: usdcAddress,
-      humanAmount: '100',
+      humanAmount: '5',
       helpers,
       wethIsEth: false,
     })
@@ -19,11 +19,11 @@ describe('calculates and sorts proportional human amounts in', () => {
     expect(humanAmountsIn).toEqual([
       {
         tokenAddress: usdcAddress,
-        humanAmount: '84.523645',
+        humanAmount: '5',
       },
       {
         tokenAddress: daiAddress,
-        humanAmount: '93.571836178433508978',
+        humanAmount: '4.678591808918857994',
       },
     ])
   })

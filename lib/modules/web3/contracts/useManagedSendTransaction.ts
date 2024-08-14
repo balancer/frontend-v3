@@ -16,6 +16,8 @@ import {
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { mainnet } from 'viem/chains'
+import { useTxHash } from '../safe.hooks'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -39,6 +41,7 @@ export function useManagedSendTransaction({
     query: {
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
+      refetchOnWindowFocus: false,
     },
   })
 
@@ -51,10 +54,13 @@ export function useManagedSendTransaction({
     },
   })
 
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
-    hash: writeQuery.data,
+    hash: txHash,
     confirmations: minConfirmations,
+    timeout: getWaitForReceiptTimeout(chainId),
   })
 
   const bundle = {
@@ -62,6 +68,7 @@ export function useManagedSendTransaction({
     simulation: estimateGasQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
+    isSafeTxLoading,
   }
 
   // when the transaction is successfully submitted to the chain
@@ -89,12 +96,6 @@ export function useManagedSendTransaction({
 
   useEffect(() => {
     if (transactionStatusQuery.error) {
-      const txHash = writeQuery.data
-      captureWagmiExecutionError(transactionStatusQuery.error, 'Error in useWaitForTransaction', {
-        chainId,
-        txHash,
-      })
-
       if (txHash) {
         updateTrackedTransaction(txHash, {
           status: 'timeout',
@@ -109,7 +110,7 @@ export function useManagedSendTransaction({
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data,
+    hash: txHash,
     chain: getGqlChain(chainId),
   })
 

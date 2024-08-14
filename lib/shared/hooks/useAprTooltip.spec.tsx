@@ -3,15 +3,20 @@ import { bn, fNum } from '../utils/numbers'
 import { useAprTooltip } from './useAprTooltip'
 import { aprTooltipDataMock } from './_mocks_/aprTooltipDataMock'
 import BigNumber from 'bignumber.js'
+import { GqlPoolAprItem, GqlPoolAprItemType } from '../services/api/generated/graphql'
 
 const defaultNumberFormatter = (value: string) => bn(bn(value).toFixed(4, BigNumber.ROUND_HALF_UP))
 
+function testUseAprTooltip({ aprItems }: { aprItems: GqlPoolAprItem[] }) {
+  const { result } = testHook(() =>
+    useAprTooltip({ aprItems, numberFormatter: defaultNumberFormatter })
+  )
+  return result
+}
+
 describe('useAprTooltip', () => {
   test('formats APRs with default formatter', () => {
-    aprTooltipDataMock
-    const { result } = testHook(() =>
-      useAprTooltip({ ...aprTooltipDataMock, numberFormatter: defaultNumberFormatter })
-    )
+    const result = testUseAprTooltip({ aprItems: aprTooltipDataMock.aprItems })
 
     expect(result.current.swapFeesDisplayed.toFixed()).toBe('0.0007')
     expect(fNum('apr', result.current.swapFeesDisplayed)).toBe('0.07%')
@@ -36,4 +41,72 @@ describe('useAprTooltip', () => {
     expect(maxVeBalApr.toFixed()).toBe('0.0553')
     expect(fNum('apr', maxVeBalApr)).toBe('5.53%') // 2.66 + 2.87 = 5.53
   })
+})
+
+it('When the pool has BAL staking incentives (outside the veBAL system)', () => {
+  const aprItems: GqlPoolAprItem[] = [
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0xf08d4dea369c456d26a3168ff0024b904f2d8b91-swap-apr',
+      title: 'Swap fees APR',
+      type: GqlPoolAprItemType.SwapFee,
+      apr: 0.01557208351741454,
+    },
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0xf08d4dea369c456d26a3168ff0024b904f2d8b91-surplus',
+      title: 'Surplus APR',
+      type: GqlPoolAprItemType.Surplus,
+      apr: 0.05520228189828037,
+    },
+    // BAL incentives that are outside of the veBAL system
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0xf9423b78d784d610a00955e733dba0bf9bda7b06-BAL-apr',
+      title: 'BAL reward APR',
+      type: GqlPoolAprItemType.Staking,
+      apr: 6883.427340115957,
+    },
+  ]
+
+  const result = testUseAprTooltip({ aprItems })
+
+  expect(result.current.hasVeBalBoost).toBeFalsy()
+})
+
+it('When the pool has BAL staking incentives (inside the veBAL system)', () => {
+  const aprItems: GqlPoolAprItem[] = [
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112-rETH-yield-apr',
+      title: 'rETH APR',
+      type: GqlPoolAprItemType.IbYield,
+      apr: 0.007768926276078092,
+    },
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0x1e19cf2d73a72ef1332c882f20534b6519be0276000200000000000000000112-swap-apr',
+      title: 'Swap fees APR',
+      type: GqlPoolAprItemType.SwapFee,
+      apr: 0.001428043486003915,
+    },
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr',
+      title: 'BAL reward APR',
+      type: GqlPoolAprItemType.Staking,
+      apr: 0.01454219612063976,
+    },
+    {
+      __typename: 'GqlPoolAprItem',
+      id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr',
+      title: 'BAL reward APR',
+      type: GqlPoolAprItemType.StakingBoost,
+      apr: 0.021813294180959626,
+    },
+  ]
+
+  const result = testUseAprTooltip({ aprItems })
+
+  expect(result.current.hasVeBalBoost).toBeTruthy()
 })

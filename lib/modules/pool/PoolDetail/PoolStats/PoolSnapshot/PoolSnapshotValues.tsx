@@ -12,6 +12,7 @@ import { usePool } from '../../../PoolProvider'
 import { bn } from '@/lib/shared/utils/numbers'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { isCowAmmPool } from '../../../pool.helpers'
+import { getPoolDisplayTokens } from '../../../pool.utils'
 
 type PoolStatsValues = {
   totalLiquidity: string
@@ -22,7 +23,7 @@ type PoolStatsValues = {
 export function PoolSnapshotValues() {
   const { pool, chain } = usePool()
   const { toCurrency } = useCurrency()
-  const { priceFor, getToken } = useTokens()
+  const { priceFor, getToken, calcTotalUsdValue } = useTokens()
 
   const MemoizedMainAprTooltip = memo(MainAprTooltip)
 
@@ -48,7 +49,9 @@ export function PoolSnapshotValues() {
   const poolStatsValues: PoolStatsValues | undefined = useMemo(() => {
     if (pool) {
       return {
-        totalLiquidity: toCurrency(pool.dynamicData.totalLiquidity, { abbreviated: false }),
+        totalLiquidity: toCurrency(calcTotalUsdValue(getPoolDisplayTokens(pool), chain), {
+          abbreviated: false,
+        }),
         income24h: isCowAmmPool(pool.type)
           ? toCurrency(pool.dynamicData.surplus24h)
           : toCurrency(pool.dynamicData.fees24h),

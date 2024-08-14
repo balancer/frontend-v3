@@ -1,5 +1,6 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 import React from 'react'
+import { LockActionType } from '../../vebal/lock/lock.helpers'
 
 export enum TransactionState {
   Ready = 'init',
@@ -39,6 +40,7 @@ export type StepType =
   | 'unstake'
   | 'claim'
   | 'swap'
+  | LockActionType
 
 export type TxActionId =
   | 'SignBatchRelayer'
@@ -53,7 +55,7 @@ export type TxActionId =
   | 'Claim'
   | 'Swap'
 
-export type ManagedResult = TransactionBundle & Executable
+export type ManagedResult = TransactionBundle & Executable & { isSafeTxLoading: boolean }
 
 /* This type unifies wagmi writeTransaction and sendTransaction types:
   execute is the union of write and sendTransaction functions
