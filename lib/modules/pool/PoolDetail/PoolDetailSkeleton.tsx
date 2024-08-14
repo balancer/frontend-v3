@@ -6,7 +6,7 @@ export function PoolDetailSkeleton() {
     <DefaultPageContainer>
       <VStack align="start" spacing="2xl" w="full">
         <VStack align="start" w="full" spacing="md">
-          <Skeleton w="lg" maxW="full" h="50px" />
+          <Skeleton w="lg" maxW="full" h="100px" />
           <HStack w="full" spacing="md">
             <Skeleton w="300px" h="400px" display={{ base: 'none', md: 'block' }} />
             <Skeleton w="full" h="400px" />
