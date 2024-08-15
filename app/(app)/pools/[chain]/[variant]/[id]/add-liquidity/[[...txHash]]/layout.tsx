@@ -1,6 +1,6 @@
 'use client'
 
-import { isNotSupported, shouldBlockAddLiquidity } from '@/lib/modules/pool/pool.helpers'
+import { isFx, isNotSupported, shouldBlockAddLiquidity } from '@/lib/modules/pool/pool.helpers'
 import { usePool } from '@/lib/modules/pool/PoolProvider'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
@@ -24,7 +24,7 @@ export default function AddLiquidityLayout({ params: { txHash }, children }: Pro
   const maybeTxHash = txHash?.[0] || ''
   const urlTxHash = isHash(maybeTxHash) ? maybeTxHash : undefined
 
-  if (shouldBlockAddLiquidity(pool)) {
+  if (shouldBlockAddLiquidity(pool) || isFx(pool.type)) {
     return redirectToPoolPage()
   }
 
