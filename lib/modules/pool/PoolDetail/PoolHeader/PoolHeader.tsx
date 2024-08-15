@@ -1,23 +1,39 @@
-import { Stack, Button, VStack } from '@chakra-ui/react'
+import { Stack, Button, VStack, useDisclosure } from '@chakra-ui/react'
 import { usePathname, useRouter } from 'next/navigation'
 import PoolMetaBadges from './PoolMetaBadges'
 
 import { usePool } from '../../PoolProvider'
-import { shouldBlockAddLiquidity } from '../../pool.helpers'
+import { isFx, shouldBlockAddLiquidity } from '../../pool.helpers'
 import { AnalyticsEvent, trackEvent } from '@/lib/shared/services/fathom/Fathom'
 import { PoolCategories } from '../../categories/PoolCategories'
 import { PoolBreadcrumbs } from './PoolBreadcrumbs'
+import {
+  PartnerRedirectModal,
+  RedirectPartner,
+} from '@/lib/shared/components/modals/PartnerRedirectModal'
+import { useState } from 'react'
 
 export function PoolHeader() {
   const pathname = usePathname()
   const { pool } = usePool()
   const router = useRouter()
+  const [redirectPartner, setRedirectPartner] = useState<RedirectPartner>(RedirectPartner.Xave)
+  const partnerRedirectDisclosure = useDisclosure()
 
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
+  function openRedirectModal(partner: RedirectPartner) {
+    setRedirectPartner(partner)
+    partnerRedirectDisclosure.onOpen()
+  }
+
   function handleClick() {
     trackEvent(AnalyticsEvent.ClickAddLiquidity)
-    router.push(`${pathname}/add-liquidity`)
+    if (isFx(pool.type)) {
+      openRedirectModal(RedirectPartner.Xave)
+    } else {
+      router.push(`${pathname}/add-liquidity`)
+    }
   }
 
   return (
@@ -40,6 +56,11 @@ export function PoolHeader() {
           >
             Add liquidity
           </Button>
+          <PartnerRedirectModal
+            partner={redirectPartner}
+            isOpen={partnerRedirectDisclosure.isOpen}
+            onClose={partnerRedirectDisclosure.onClose}
+          />
         </Stack>
       </Stack>
     </VStack>
