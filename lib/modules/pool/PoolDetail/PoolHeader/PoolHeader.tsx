@@ -12,18 +12,25 @@ import {
   RedirectPartner,
 } from '@/lib/shared/components/modals/PartnerRedirectModal'
 import { useState } from 'react'
+import { getXavePoolLink } from '../../pool.utils'
 
 export function PoolHeader() {
   const pathname = usePathname()
   const { pool } = usePool()
   const router = useRouter()
   const [redirectPartner, setRedirectPartner] = useState<RedirectPartner>(RedirectPartner.Xave)
+  const [redirectPartnerUrl, setRedirectPartnerUrl] = useState<string>()
   const partnerRedirectDisclosure = useDisclosure()
 
   const isAddLiquidityBlocked = shouldBlockAddLiquidity(pool)
 
   function openRedirectModal(partner: RedirectPartner) {
     setRedirectPartner(partner)
+    let url
+    if (partner === RedirectPartner.Xave && pool?.address && pool.chain) {
+      url = getXavePoolLink(pool.chain, pool.address)
+    }
+    setRedirectPartnerUrl(url)
     partnerRedirectDisclosure.onOpen()
   }
 
@@ -58,6 +65,7 @@ export function PoolHeader() {
           </Button>
           <PartnerRedirectModal
             partner={redirectPartner}
+            redirectUrl={redirectPartnerUrl}
             isOpen={partnerRedirectDisclosure.isOpen}
             onClose={partnerRedirectDisclosure.onClose}
           />

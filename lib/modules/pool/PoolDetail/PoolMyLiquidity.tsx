@@ -23,7 +23,7 @@ import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn, getXavePoolLink } from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
@@ -228,9 +228,9 @@ export default function PoolMyLiquidity() {
     setRedirectPartner(partner)
     let url
     if (partner === RedirectPartner.Aura && pool?.staking?.aura?.auraPoolId) {
-      url = pool?.staking?.aura?.auraPoolId
-        ? getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)
-        : undefined
+      url = getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)
+    } else if (partner === RedirectPartner.Xave && pool?.address && pool.chain) {
+      url = getXavePoolLink(pool.chain, pool.address)
     }
     setRedirectPartnerUrl(url)
     partnerRedirectDisclosure.onOpen()
