@@ -2,25 +2,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import { useParams } from 'next/navigation'
-import { differenceInCalendarDays, format } from 'date-fns'
-import { usePool } from '../../PoolProvider'
-import { PoolVariant, BaseVariant } from '../../pool.types'
-import {
-  GqlChain,
-  GqlPoolType,
-  GqlPoolEventType,
-  GqlToken,
-} from '@/lib/shared/services/api/generated/graphql'
+import { format } from 'date-fns'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode, useTheme as useChakraTheme } from '@chakra-ui/react'
 import { useTheme as useNextTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-
 import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
@@ -28,23 +18,12 @@ import {
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
-import { usePoolEvents } from '../../usePoolEvents'
-
-type ChartInfoTokens = {
-  token?: GqlToken
-  amount: string
-}
-
-export type ChartInfoMetaData = {
-  userAddress: string
-  tokens: ChartInfoTokens[]
-  tx: string
-  usdValue: string
-}
-
-type ChartEl = [number, string, ChartInfoMetaData]
-
-export type ChartInfo = Record<'adds' | 'removes' | 'swaps', ChartEl[]>
+import {
+  PoolActivityMetaData,
+  PoolActivityTokens,
+  PoolActivityEl,
+  usePoolActivity,
+} from '../PoolActivity/usePoolActivity'
 
 const getDefaultPoolActivityChartOptions = (
   nextTheme: ColorMode = 'dark',
@@ -133,13 +112,13 @@ const getDefaultPoolActivityChartOptions = (
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
-        const metaData = data.data[2] as ChartInfoMetaData
+        const metaData = data.data[2] as PoolActivityMetaData
         const userAddress = metaData.userAddress
         const tokens = metaData.tokens.filter(token => {
           if (!token.token) return false
           if (Number(token.amount) === 0) return false
           return true
-        }) as ChartInfoTokens[]
+        }) as PoolActivityTokens[]
 
         const tx = metaData.tx
         const txLink = getBlockExplorerTxUrl(tx, chain)
@@ -205,7 +184,7 @@ const getDefaultPoolActivityChartOptions = (
   }
 }
 
-function getSymbolSize(dataItem?: ChartEl) {
+function getSymbolSize(dataItem?: PoolActivityEl) {
   if (!dataItem) return 0
 
   const value = Number(dataItem[2].usdValue)
@@ -217,131 +196,16 @@ function getSymbolSize(dataItem?: ChartEl) {
   return 80
 }
 
-export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
-
-export interface PoolActivityChartTypeTab {
-  value: string
-  label: string
-}
-
-export function getPoolActivityTabsList({
-  variant,
-  poolType,
-}: {
-  variant: PoolVariant
-  poolType: GqlPoolType
-}): PoolActivityChartTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
-    return [
-      {
-        value: 'adds',
-        label: 'Adds',
-      },
-      {
-        value: 'removes',
-        label: 'Removes',
-      },
-    ]
-  }
-
-  return [
-    {
-      value: 'all',
-      label: 'All',
-    },
-    {
-      value: 'adds',
-      label: 'Adds',
-    },
-    {
-      value: 'removes',
-      label: 'Removes',
-    },
-    {
-      value: 'swaps',
-      label: 'Swaps',
-    },
-  ]
-}
-
 export function usePoolActivityChart(isExpanded: boolean) {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
-  const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
-  const { id: poolId, variant, chain } = useParams()
-  const { pool } = usePool()
+  const { chain } = useParams()
   const theme = useChakraTheme()
+  const { poolActivityData, activeTab } = usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
-
-  const tabsList = useMemo(() => {
-    const poolType = pool?.type
-    if (!poolType || typeof variant !== 'string') return []
-
-    return getPoolActivityTabsList({
-      variant: variant as PoolVariant,
-      poolType: poolType,
-    })
-  }, [pool?.type, variant])
-
-  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
-
-  const { loading, data: response } = usePoolEvents({
-    poolIdIn: [poolId] as string[],
-    chainIn: [_chain],
-  })
-
-  const chartData = useMemo(() => {
-    if (!response) return { adds: [], removes: [], swaps: [] }
-    const { poolEvents: events } = response
-
-    const data = events.reduce(
-      (acc: ChartInfo, item) => {
-        const { type, timestamp, valueUSD, userAddress, tx } = item
-
-        const usdValue = valueUSD.toString() ?? ''
-        const tokens: ChartInfoTokens[] = []
-
-        if (item.__typename === 'GqlPoolAddRemoveEventV3') {
-          item.tokens.forEach(token => {
-            tokens.push({
-              token: getToken(token.address, _chain),
-              amount: token.amount,
-            })
-          })
-        }
-
-        if (item.__typename === 'GqlPoolSwapEventV3') {
-          tokens.push({
-            token: getToken(item.tokenIn.address, _chain),
-            amount: item.tokenIn.amount,
-          })
-          tokens.push({
-            token: getToken(item.tokenOut.address, _chain),
-            amount: item.tokenOut.amount,
-          })
-        }
-
-        const chartYAxisValue = isExpanded ? usdValue : '0'
-
-        if (type === GqlPoolEventType.Add) {
-          acc.adds.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Remove) {
-          acc.removes.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-
-        return acc
-      },
-      { adds: [], removes: [], swaps: [] }
-    )
-
-    return data
-  }, [response, isExpanded])
+  const chartHeight = isExpanded ? 300 : 90
 
   const options = useMemo(() => {
     return {
@@ -364,7 +228,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: chartData.adds,
+        data: poolActivityData.adds,
         type: 'scatter',
       },
       exitOption: {
@@ -386,7 +250,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: chartData.removes,
+        data: poolActivityData.removes,
         type: 'scatter',
       },
       swapOption: {
@@ -408,11 +272,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: chartData.swaps,
+        data: poolActivityData.swaps,
         type: 'scatter',
       },
     }
-  }, [chartData])
+  }, [poolActivityData])
 
   useEffect(() => {
     const instance = eChartsRef.current?.getEchartsInstance()
@@ -438,70 +302,9 @@ export function usePoolActivityChart(isExpanded: boolean) {
           series: [joinOption, exitOption, swapOption],
         })
     }
-  }, [activeTab, chartData, options])
-
-  function getChartDateCaption() {
-    try {
-      let diffInDays = 0
-      const firstAddTimeStamp = chartData.adds[chartData.adds.length - 1]?.[0] ?? 0
-      const firstRemoveTimeStamp = chartData.removes[chartData.removes.length - 1]?.[0] ?? 0
-      const firstSwapTimeStamp = chartData.swaps[chartData.swaps.length - 1]?.[0] ?? 0
-
-      if (activeTab.value === 'adds' && firstAddTimeStamp) {
-        diffInDays = differenceInCalendarDays(new Date(), new Date(firstAddTimeStamp * 1000))
-      }
-
-      if (activeTab.value === 'removes' && firstRemoveTimeStamp) {
-        const timestamp = firstRemoveTimeStamp
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'swaps' && firstSwapTimeStamp) {
-        const timestamp = chartData.swaps[chartData.swaps.length - 1][0]
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'all') {
-        const timestamps = [firstAddTimeStamp, firstRemoveTimeStamp, firstSwapTimeStamp].filter(
-          Boolean
-        )
-        const lastTimestamp = Math.min(...timestamps)
-        diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
-      }
-
-      return diffInDays > 0 ? `In last ${diffInDays} days` : 'today'
-    } catch (e) {
-      console.error(e)
-      return ''
-    }
-  }
-
-  function getChartTitle() {
-    if (activeTab.value === 'all') {
-      return 'transactions'
-    }
-
-    return activeTab.value
-  }
-
-  const dataSize = useMemo(() => {
-    let dataSize = 0
-
-    if (['all', 'adds'].includes(activeTab.value)) {
-      dataSize += chartData.adds.length
-    }
-    if (['all', 'removes'].includes(activeTab.value)) {
-      dataSize += chartData.removes.length
-    }
-    if (['all', 'swaps'].includes(activeTab.value)) {
-      dataSize += chartData.swaps.length
-    }
-
-    return dataSize
-  }, [activeTab, chartData])
+  }, [activeTab, poolActivityData, options])
 
   return {
-    isLoading: loading,
     chartOption: getDefaultPoolActivityChartOptions(
       nextTheme as ColorMode,
       theme,
@@ -511,13 +314,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
       isExpanded,
       _chain
     ),
-    activeTab,
-    setActiveTab,
-    tabsList,
     eChartsRef,
-    chartData,
-    getChartDateCaption,
-    getChartTitle,
-    dataSize,
+    chartHeight,
   }
 }
