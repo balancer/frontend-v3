@@ -80,6 +80,9 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
       if (!balance) return // Discard calls with no reward
 
       const gaugeData = rewardTokensList[i]
+
+      if (!gaugeData) return
+
       const gaugeAddress = gaugeData.gaugeAddress
       const tokenAddress = gaugeData.tokenAddress
       const tokenPrice = priceFor(tokenAddress, gaugeData.pool.chain)
@@ -89,7 +92,7 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
         : bn(0)
 
       const reward: ClaimableReward = {
-        pool: gaugeData?.pool,
+        pool: gaugeData.pool,
         tokenAddress,
         gaugeAddress,
         balance,
