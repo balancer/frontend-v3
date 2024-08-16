@@ -1,20 +1,11 @@
-import { fNum } from '@/lib/shared/utils/numbers'
 import { Card, Heading, Stack, VStack, Text } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
 
 export function PoolActivity() {
-  const {
-    isExpanded,
-    setIsExpanded,
-    getTitle,
-    dataSize,
-    getDateCaption,
-    activeTab,
-    tabsList,
-    setActiveTab,
-  } = usePoolActivity()
+  const { isExpanded, setIsExpanded, transactionsLabel, activeTab, tabsList, setActiveTab } =
+    usePoolActivity()
 
   return (
     <Card>
@@ -37,14 +28,10 @@ export function PoolActivity() {
             size="h5"
             _groupHover={isExpanded ? {} : { color: 'font.maxContrast' }}
           >
-            {fNum('integer', dataSize)} {getTitle()}
+            Pool Activity
           </Heading>
-          <Text
-            variant="primary"
-            fontSize="0.85rem"
-            _groupHover={isExpanded ? {} : { color: 'font.maxContrast' }}
-          >
-            {getDateCaption()}
+          <Text fontWeight="medium" variant="secondary" fontSize="sm">
+            {transactionsLabel}
           </Text>
         </VStack>
         <ButtonGroup

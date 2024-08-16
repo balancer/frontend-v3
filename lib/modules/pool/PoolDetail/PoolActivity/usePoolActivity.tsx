@@ -12,6 +12,7 @@ import { usePoolEvents } from '../../usePoolEvents'
 import { slugToChainMap, ChainSlug } from '../../pool.utils'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { differenceInCalendarDays } from 'date-fns'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 export type PoolActivityTokens = {
   token?: GqlToken
@@ -206,7 +207,7 @@ export function usePoolActivity() {
         diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
       }
 
-      return diffInDays > 0 ? `In last ${diffInDays} days` : 'today'
+      return diffInDays > 0 ? `in last ${diffInDays} days` : 'today'
     } catch (e) {
       console.error(e)
       return ''
@@ -220,6 +221,7 @@ export function usePoolActivity() {
     activeTab,
     tabsList,
     poolActivityData,
+    transactionsLabel: `${fNum('integer', dataSize)} ${getTitle()} ${getDateCaption()}`,
     setActiveTab,
     setIsExpanded,
     getTitle,
