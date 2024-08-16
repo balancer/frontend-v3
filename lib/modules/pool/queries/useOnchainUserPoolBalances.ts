@@ -41,12 +41,9 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
 
   const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
 
-  const enrichedPools = overwriteOnchainPoolBalanceData(
-    pools,
-    unstakedBalanceByPoolId,
-    stakedBalancesByPoolId,
-    isLoading
-  )
+  const enrichedPools = isLoading
+    ? pools
+    : overwriteOnchainPoolBalanceData(pools, unstakedBalanceByPoolId, stakedBalancesByPoolId)
 
   useEffect(() => {
     if (stakedPoolBalancesError) {
@@ -103,15 +100,10 @@ function captureUnstakedMulticallError(unstakedPoolBalancesError: ReadContractsE
 function overwriteOnchainPoolBalanceData(
   pools: Pool[],
   ocUnstakedBalances: UnstakedBalanceByPoolId,
-  stakedBalancesByPoolId: StakedBalancesByPoolId,
-  isLoading: boolean
+  stakedBalancesByPoolId: StakedBalancesByPoolId
 ) {
   return pools.map(pool => {
-    if (
-      isLoading ||
-      !Object.keys(ocUnstakedBalances).length ||
-      !Object.keys(stakedBalancesByPoolId).length
-    ) {
+    if (!Object.keys(ocUnstakedBalances).length || !Object.keys(stakedBalancesByPoolId).length) {
       return pool
     }
 
