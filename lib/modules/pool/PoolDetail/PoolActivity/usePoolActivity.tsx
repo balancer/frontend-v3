@@ -27,9 +27,7 @@ export type PoolActivityMetaData = {
 }
 
 export type PoolActivityEl = [number, string, PoolActivityMetaData]
-
 export type PoolActivity = Record<'adds' | 'removes' | 'swaps', PoolActivityEl[]>
-
 export type PoolActivityTab = 'all' | 'adds' | 'swaps' | 'removes'
 
 export interface PoolActivityTypeTab {
@@ -44,24 +42,7 @@ export function getPoolActivityTabsList({
   variant: PoolVariant
   poolType: GqlPoolType
 }): PoolActivityTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
-    return [
-      {
-        value: 'adds',
-        label: 'Adds',
-      },
-      {
-        value: 'removes',
-        label: 'Removes',
-      },
-    ]
-  }
-
-  return [
-    {
-      value: 'all',
-      label: 'All',
-    },
+  const defaultTabs = [
     {
       value: 'adds',
       label: 'Adds',
@@ -70,6 +51,17 @@ export function getPoolActivityTabsList({
       value: 'removes',
       label: 'Removes',
     },
+  ]
+  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
+    return defaultTabs
+  }
+
+  return [
+    {
+      value: 'all',
+      label: 'All',
+    },
+    ...defaultTabs,
     {
       value: 'swaps',
       label: 'Swaps',
@@ -140,16 +132,22 @@ export function usePoolActivity() {
           })
         }
 
-        const chartYAxisValue = isExpanded ? usdValue : '0'
+        const elToPush = [
+          timestamp,
+          isExpanded ? '0' : usdValue,
+          { userAddress, tokens, usdValue, tx },
+        ] as PoolActivityEl
 
-        if (type === GqlPoolEventType.Add) {
-          acc.adds.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Remove) {
-          acc.removes.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
+        switch (type) {
+          case GqlPoolEventType.Add:
+            acc.adds.push(elToPush)
+            break
+          case GqlPoolEventType.Remove:
+            acc.removes.push(elToPush)
+            break
+          case GqlPoolEventType.Swap:
+            acc.swaps.push(elToPush)
+            break
         }
 
         return acc

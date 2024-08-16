@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 'use client'
 import ReactECharts from 'echarts-for-react'
-import { Box, Divider, HStack, Skeleton, Text, useTheme } from '@chakra-ui/react'
+import { Box, Button, Divider, HStack, Skeleton, Text, useTheme } from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import { FC, PropsWithChildren } from 'react'
 import { motion } from 'framer-motion'
@@ -14,7 +14,7 @@ const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
 )
 
 export function PoolActivityChart() {
-  const { isExpanded, isLoading } = usePoolActivity()
+  const { isExpanded, isLoading, setIsExpanded } = usePoolActivity()
   const { chartOption, eChartsRef, chartHeight } = usePoolActivityChart(isExpanded)
   const theme = useTheme()
 
@@ -52,28 +52,33 @@ export function PoolActivityChart() {
           </motion.div>
         </Box>
       )}
-      {isExpanded && (
-        <AnimateOpacity>
-          <Divider pt="2" mb="4" />
-          <HStack spacing="4" px={['1', '2']}>
-            {legendTabs.map((tab, index) => (
-              <HStack alignItems="center" key={index} gap="2">
-                <Box
-                  key={index}
-                  height="2"
-                  width="2"
-                  backgroundImage={tab.color}
-                  borderRadius="50%"
-                  display="inline-block"
-                />
-                <Text color="font.secondary" fontSize="sm">
-                  {tab.label}
-                </Text>
-              </HStack>
-            ))}
-          </HStack>
-        </AnimateOpacity>
-      )}
+      {isExpanded && <Divider pt="2" mb="4" />}
+      <HStack>
+        <Button variant="secondary" onClick={() => setIsExpanded(!isExpanded)} size="sm">
+          {isExpanded ? 'Minimize' : 'Expand'}
+        </Button>
+        {isExpanded && (
+          <AnimateOpacity>
+            <HStack spacing="4" px={['1', '2']}>
+              {legendTabs.map((tab, index) => (
+                <HStack alignItems="center" key={index} gap="2">
+                  <Box
+                    key={index}
+                    height="2"
+                    width="2"
+                    backgroundImage={tab.color}
+                    borderRadius="50%"
+                    display="inline-block"
+                  />
+                  <Text color="font.secondary" fontSize="sm">
+                    {tab.label}
+                  </Text>
+                </HStack>
+              ))}
+            </HStack>
+          </AnimateOpacity>
+        )}
+      </HStack>
     </Box>
   )
 }
