@@ -17,6 +17,7 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -40,6 +41,7 @@ export function useManagedSendTransaction({
     query: {
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
+      refetchOnWindowFocus: false,
     },
   })
 
@@ -58,6 +60,7 @@ export function useManagedSendTransaction({
     chainId,
     hash: txHash,
     confirmations: minConfirmations,
+    timeout: getWaitForReceiptTimeout(chainId),
   })
 
   const bundle = {
@@ -93,11 +96,6 @@ export function useManagedSendTransaction({
 
   useEffect(() => {
     if (transactionStatusQuery.error) {
-      captureWagmiExecutionError(transactionStatusQuery.error, 'Error in useWaitForTransaction', {
-        chainId,
-        txHash,
-      })
-
       if (txHash) {
         updateTrackedTransaction(txHash, {
           status: 'timeout',

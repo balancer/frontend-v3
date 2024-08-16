@@ -14,6 +14,7 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useTxHash } from '../safe.hooks'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
 
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
@@ -63,6 +64,7 @@ export function useManagedTransaction({
     chainId,
     hash: txHash,
     confirmations: minConfirmations,
+    timeout: getWaitForReceiptTimeout(chainId),
   })
 
   const bundle = {
