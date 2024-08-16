@@ -1,12 +1,21 @@
+'use client'
+
 import { useAppzi } from '@/lib/shared/hooks/useAppzi'
 import { Button, Divider, HStack, ModalFooter, VStack } from '@chakra-ui/react'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import { CornerDownLeft, MessageSquare, ThumbsUp } from 'react-feather'
-import { TransactionStep } from '../../../modules/transactions/transaction-steps/lib'
+import {
+  SafeAppTxCall,
+  TransactionStep,
+  TxBatch,
+} from '../../../modules/transactions/transaction-steps/lib'
 import { useBatchTransactions } from '@/lib/modules/web3/useBatchTransactions'
 import { TransactionStepsResponse } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { buildTxBatch } from '@/lib/modules/transactions/transaction-steps/batchableTransactions'
+import { PropsWithChildren } from 'react'
+import { gnosis } from 'viem/chains'
+import { useIsSafeApp } from '@/lib/modules/web3/safe.hooks'
 
 export function SuccessActions({
   returnLabel,
@@ -56,13 +65,7 @@ type Props = {
   returnAction: () => void
 }
 
-export function ActionModalFooter({
-  isSuccess,
-  currentStep,
-  transactionSteps,
-  returnLabel,
-  returnAction,
-}: Props) {
+export function ActionModalFooter({ isSuccess, currentStep, returnLabel, returnAction }: Props) {
   return (
     <ModalFooter>
       <AnimatePresence mode="wait" initial={false}>
@@ -87,7 +90,7 @@ export function ActionModalFooter({
             style={{ width: '100%' }}
           >
             <VStack w="full">
-              <RenderActionButton steps={transactionSteps as TransactionStepsResponse} />
+              <RenderActionButton currentStep={currentStep} />
             </VStack>
           </motion.div>
         )}
@@ -96,17 +99,18 @@ export function ActionModalFooter({
   )
 }
 
-function RenderActionButton({ steps }: PropsWithChildren<{ steps: TransactionStepsResponse }>) {
-  const currentStep = steps.currentStep!
+function RenderActionButton({ currentStep }: PropsWithChildren<{ currentStep: TransactionStep }>) {
+  const isSafeApp = useIsSafeApp()
   // Pass this as a prop from upper layer
-  const arbitrumChainId = 42161
-  const { isLoadingBatchTransactions, supportsBatchTransactions } =
-    useBatchTransactions(arbitrumChainId)
-  if (isLoadingBatchTransactions) return null
+  const gnosisChainId = gnosis.id
+  // const { isLoadingBatchTransactions, supportsBatchTransactions } =
+  // useBatchTransactions(gnosisChainId)
+  // if (isLoadingBatchTransactions) return null
+  const supportsBatchTransactions = true // isSafeApp
+
   if (currentStep.isBatchEnd && supportsBatchTransactions) {
-    const txBatch = buildTxBatch(currentStep)
+    const txBatch: TxBatch = buildTxBatch(currentStep)
     if (txBatch.length === 1) return currentStep?.renderAction()
-    console.log({ txBatch })
     return currentStep?.renderBatchAction?.(txBatch)
   }
   return currentStep?.renderAction()

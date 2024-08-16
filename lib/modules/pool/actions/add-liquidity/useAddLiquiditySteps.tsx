@@ -29,7 +29,8 @@ export function useAddLiquiditySteps({
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep(chain)
-  const { supportsBatchTransactions, isLoadingBatchTransactions } = useBatchTransactions(chainId)
+  const supportsBatchTransactions = true // is running as a Safe
+  // const { supportsBatchTransactions, isLoadingBatchTransactions } = useBatchTransactions(chainId)
 
   const inputAmounts = useMemo(
     () => helpers.toInputAmounts(humanAmountsIn),
@@ -77,8 +78,9 @@ export function useAddLiquiditySteps({
   ])
 
   return {
-    isLoadingSteps:
-      isLoadingTokenApprovalSteps || isLoadingRelayerApproval || isLoadingBatchTransactions,
+    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval,
+    // isLoadingSteps:
+    //   isLoadingTokenApprovalSteps || isLoadingRelayerApproval || isLoadingBatchTransactions,
     steps,
   }
 }

@@ -16,6 +16,7 @@ import { TransactionModalHeader } from '@/lib/shared/components/modals/Transacti
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
 import { AddLiquiditySummary } from './AddLiquiditySummary'
+import { useConfig } from 'wagmi'
 
 type Props = {
   isOpen: boolean

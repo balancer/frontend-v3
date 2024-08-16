@@ -4,7 +4,7 @@ import { useTransactionState } from '@/lib/modules/transactions/transaction-step
 import {
   TransactionLabels,
   TransactionStep,
-  TxCall,
+  TxBatch,
 } from '@/lib/modules/transactions/transaction-steps/lib'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
 import { useCallback, useEffect, useMemo, useState } from 'react'
@@ -80,7 +80,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
           />
         )
       },
-      renderBatchAction: (txCalls: TxCall[]) => {
+      renderBatchAction: (txCalls: TxBatch) => {
         return (
           <TransactionBatchButton
             id={addLiquidityStepId}

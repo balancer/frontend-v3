@@ -2,6 +2,7 @@ import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
 import React from 'react'
 import { Address, Hash } from 'viem'
 import { LockActionType } from '../../vebal/lock/lock.helpers'
+import { BaseTransaction } from '@safe-global/safe-apps-sdk'
 
 export enum TransactionState {
   Ready = 'init',
@@ -73,6 +74,10 @@ export type TxCall = {
   data: Hash
 }
 
+export type SafeAppTxCall = BaseTransaction
+
+export type TxBatch = SafeAppTxCall[]
+
 /*
   Smart accounts like Gnosis safe, support batching multiple transactions into an atomic one by using wagmi's useSendCalls
   More info:
@@ -88,7 +93,7 @@ type MaybeBatchableTx = {
     the add liquidity transaction should have isBatchEnd = true
   */
   isBatchEnd?: boolean
-  renderBatchAction?: (txCalls: TxCall[]) => React.ReactNode
+  renderBatchAction?: (txCalls: TxBatch) => React.ReactNode
   // Example: token approval steps are nested inside addLiquidity step
   nestedSteps?: TransactionStep[]
 }
