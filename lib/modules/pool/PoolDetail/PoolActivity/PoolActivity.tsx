@@ -1,11 +1,27 @@
-import { Card, Heading, Stack, VStack, Text } from '@chakra-ui/react'
+import { Card, Heading, Stack, VStack, Text, HStack } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
+import { PoolActivityTable } from '../PoolActivityTable/PoolActivityTable'
+import { PoolActivityViewType } from '../PoolActivityViewType/PoolActivityViewType'
+import {
+  PoolActivityViewTypeProvider,
+  usePoolActivityViewType,
+} from '../PoolActivityViewType/usePoolActivityViewType'
 
 export function PoolActivity() {
+  return (
+    <PoolActivityViewTypeProvider>
+      <PoolActivityContent />
+    </PoolActivityViewTypeProvider>
+  )
+}
+
+function PoolActivityContent() {
   const { isExpanded, setIsExpanded, transactionsLabel, activeTab, tabsList, setActiveTab } =
     usePoolActivity()
+
+  const { isChartView, isListView } = usePoolActivityViewType()
 
   return (
     <Card>
@@ -34,17 +50,21 @@ export function PoolActivity() {
             {transactionsLabel}
           </Text>
         </VStack>
-        <ButtonGroup
-          currentOption={activeTab}
-          options={tabsList}
-          onChange={option => {
-            setActiveTab(option)
-          }}
-          size="xxs"
-          groupId="pool-activity"
-        />
+        <HStack>
+          <ButtonGroup
+            currentOption={activeTab}
+            options={tabsList}
+            onChange={option => {
+              setActiveTab(option)
+            }}
+            size="xxs"
+            groupId="pool-activity"
+          />
+          <PoolActivityViewType />
+        </HStack>
       </Stack>
-      <PoolActivityChart />
+      {isChartView && <PoolActivityChart />}
+      {isListView && <PoolActivityTable />}
     </Card>
   )
 }

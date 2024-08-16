@@ -13,6 +13,7 @@ import { slugToChainMap, ChainSlug } from '../../pool.utils'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { differenceInCalendarDays } from 'date-fns'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 
 export type PoolActivityTokens = {
   token?: GqlToken
@@ -24,6 +25,7 @@ export type PoolActivityMetaData = {
   tokens: PoolActivityTokens[]
   tx: string
   usdValue: string
+  action: 'swap' | 'add' | 'remove'
 }
 
 export type PoolActivityEl = [number, string, PoolActivityMetaData]
@@ -135,18 +137,18 @@ export function usePoolActivity() {
         const elToPush = [
           timestamp,
           isExpanded ? '0' : usdValue,
-          { userAddress, tokens, usdValue, tx },
+          { userAddress, tokens, usdValue, tx, action: 'swap' }, // action will be overwritten again below
         ] as PoolActivityEl
 
         switch (type) {
           case GqlPoolEventType.Add:
-            acc.adds.push(elToPush)
+            acc.adds.push([elToPush[0], elToPush[1], { ...elToPush[2], action: 'add' }])
             break
           case GqlPoolEventType.Remove:
-            acc.removes.push(elToPush)
+            acc.removes.push([elToPush[0], elToPush[1], { ...elToPush[2], action: 'remove' }])
             break
           case GqlPoolEventType.Swap:
-            acc.swaps.push(elToPush)
+            acc.swaps.push([elToPush[0], elToPush[1], { ...elToPush[2], action: 'swap' }])
             break
         }
 
@@ -158,6 +160,22 @@ export function usePoolActivity() {
     return data
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, isExpanded])
+
+  const [first, setFirst] = useState(10)
+  const [skip, setSkip] = useState(0)
+
+  const pagination: PaginationState = useMemo(
+    () => ({
+      pageIndex: skip / first,
+      pageSize: first,
+    }),
+    [skip, first]
+  )
+
+  function setPagination(newPagination: PaginationState) {
+    setFirst(newPagination.pageSize)
+    setSkip(newPagination.pageIndex * newPagination.pageSize)
+  }
 
   const dataSize = useMemo(() => {
     let dataSize = 0
@@ -212,6 +230,19 @@ export function usePoolActivity() {
     }
   }
 
+  const allPoolEvents = useMemo(() => {
+    const events = [
+      ...poolActivityData.adds,
+      ...poolActivityData.removes,
+      ...poolActivityData.swaps,
+    ].sort((a, b) => b[0] - a[0])
+
+    return events.slice(
+      pagination.pageIndex * pagination.pageSize,
+      pagination.pageSize * (pagination.pageIndex + 1)
+    )
+  }, [poolActivityData, pagination])
+
   return {
     isLoading: loading,
     isExpanded,
@@ -220,9 +251,13 @@ export function usePoolActivity() {
     tabsList,
     poolActivityData,
     transactionsLabel: `${fNum('integer', dataSize)} ${getTitle()} ${getDateCaption()}`,
+    pagination,
+    allPoolEvents,
+    count: response?.poolEvents.length ?? 0,
     setActiveTab,
     setIsExpanded,
     getTitle,
     getDateCaption,
+    setPagination,
   }
 }
