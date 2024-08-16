@@ -9,6 +9,7 @@ interface Props<T> extends BoxProps {
   renderTableRow: (item: T, index: number) => React.ReactNode
   showPagination: boolean
   paginationProps: any // TODO: type this
+  noItemsFoundLabel: string
 }
 
 export function PaginatedTable({
@@ -18,6 +19,7 @@ export function PaginatedTable({
   renderTableHeader,
   showPagination,
   paginationProps,
+  noItemsFoundLabel,
   ...rest
 }: Props<any>) {
   return (
@@ -37,7 +39,7 @@ export function PaginatedTable({
 
           {!loading && items.length === 0 && (
             <Center py="2xl">
-              <Text color="font.secondary">No pools found</Text>
+              <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
 

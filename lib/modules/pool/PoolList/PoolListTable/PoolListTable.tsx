@@ -49,6 +49,7 @@ export function PoolListTable({ pools, count, loading }: Props) {
       alignItems="flex-start"
       position="relative"
       left={{ base: '-4px', sm: '0' }}
+      noItemsFoundLabel="No pools found"
     />
   )
 }
