@@ -1,4 +1,14 @@
-import { Box, Grid, GridItem, GridProps, HStack, Text, Image, Link } from '@chakra-ui/react'
+import {
+  Box,
+  Grid,
+  GridItem,
+  GridProps,
+  HStack,
+  Text,
+  Image,
+  Link,
+  useTheme,
+} from '@chakra-ui/react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
@@ -21,6 +31,7 @@ function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
   const { chain } = usePool()
   const chainId = getChainId(chain)
   const { data: name } = useEnsName({ address: userAddress, chainId })
+
   const { data: ensAvatar } = useEnsAvatar({
     name: name as string,
     chainId,
@@ -52,6 +63,7 @@ function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
 
 export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
   const { toCurrency } = useCurrency()
+  const theme = useTheme()
 
   return (
     <FadeInOnView>
@@ -69,7 +81,20 @@ export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
           <GridItem>
             <EnsOrAddress userAddress={event[2].userAddress as `0x${string}`} />
           </GridItem>
-          <GridItem>{event[2].action}</GridItem>
+          <GridItem>
+            <HStack>
+              <Box
+                height="2"
+                width="2"
+                backgroundImage={
+                  theme.semanticTokens.colors.chart.pool.scatter[event[2].action].label
+                }
+                borderRadius="50%"
+                display="inline-block"
+              />
+              <Text casing="capitalize">{event[2].action}</Text>
+            </HStack>
+          </GridItem>
           <GridItem>{/* transaction details */}</GridItem>
           <GridItem textAlign="right">
             <Text>{toCurrency(event[2].usdValue)}</Text>

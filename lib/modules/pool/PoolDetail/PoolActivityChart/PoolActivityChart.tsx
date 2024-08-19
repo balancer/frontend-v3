@@ -21,15 +21,15 @@ export function PoolActivityChart() {
   const legendTabs = [
     {
       label: 'Adds',
-      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.add.from}, ${theme.semanticTokens.colors.chart.pool.scatter.add.to})`,
+      color: theme.semanticTokens.colors.chart.pool.scatter.add.label,
     },
     {
       label: 'Removes',
-      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.remove.from}, ${theme.semanticTokens.colors.chart.pool.scatter.remove.to})`,
+      color: theme.semanticTokens.colors.chart.pool.scatter.remove.label,
     },
     {
       label: 'Swaps',
-      color: `linear-gradient(to bottom, ${theme.semanticTokens.colors.chart.pool.scatter.swap.from}, ${theme.semanticTokens.colors.chart.pool.scatter.swap.to})`,
+      color: theme.semanticTokens.colors.chart.pool.scatter.swap.label,
     },
   ]
 
@@ -63,7 +63,6 @@ export function PoolActivityChart() {
               {legendTabs.map((tab, index) => (
                 <HStack alignItems="center" key={index} gap="2">
                   <Box
-                    key={index}
                     height="2"
                     width="2"
                     backgroundImage={tab.color}

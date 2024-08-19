@@ -323,14 +323,18 @@ export function getSemanticTokens(tokens: any, colors: any) {
             add: {
               from: 'rgba(0, 211, 149, 100%)',
               to: 'rgba(0, 211, 149, 20%)',
+              label: 'linear-gradient(to bottom, rgba(0, 211, 149, 100%), rgba(0, 211, 149, 20%))',
             },
             remove: {
               from: 'rgba(239, 68, 68, 100%)',
               to: 'rgba(239, 68, 68, 20%)',
+              label: 'linear-gradient(to bottom, rgba(239, 68, 68, 100%), rgba(239, 68, 68, 20%))',
             },
             swap: {
               from: 'rgba(109, 173, 249, 100%)',
               to: 'rgba(109, 173, 249, 20%)',
+              label:
+                'linear-gradient(to bottom, rgba(109, 173, 249, 100%), rgba(109, 173, 249, 20%))',
             },
           },
         },
