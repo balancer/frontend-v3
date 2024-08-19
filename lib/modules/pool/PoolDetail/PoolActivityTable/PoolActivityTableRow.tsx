@@ -8,6 +8,8 @@ import {
   Image,
   Link,
   useTheme,
+  Badge,
+  BadgeProps,
 } from '@chakra-ui/react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
@@ -23,7 +25,9 @@ import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
 } from '@/lib/shared/hooks/useBlockExplorer'
-import { PoolActivityEl } from '../PoolActivity/poolActivity.types'
+import { PoolActivityEl, PoolActivityTokens } from '../PoolActivity/poolActivity.types'
+import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
+import { fNum } from '@/lib/shared/utils/numbers'
 
 interface Props extends GridProps {
   event: PoolActivityEl
@@ -66,6 +70,47 @@ function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
   )
 }
 
+function TransactionDetails({
+  action,
+  tokens,
+  ...badgeProps
+}: { action: 'swap' | 'add' | 'remove'; tokens: PoolActivityTokens[] } & BadgeProps) {
+  const tokensWithAmount = tokens.filter(token => token.amount !== '0')
+
+  return (
+    <HStack>
+      {tokensWithAmount.map((token, index) => {
+        return (
+          <>
+            <Badge
+              key={index}
+              {...badgeProps}
+              display="flex"
+              alignItems="center"
+              bg="background.level3"
+              borderRadius="full"
+              textTransform="none"
+            >
+              <HStack gap={['xs', 'sm']}>
+                <TokenIcon
+                  chain={token.token?.chain}
+                  address={token.token?.address}
+                  size={24}
+                  alt={token.token?.symbol || ''}
+                />
+                <Text>{fNum('token', token.amount)}</Text>
+              </HStack>
+            </Badge>
+            {tokensWithAmount.length > 1 && tokensWithAmount.length - 1 > index && (
+              <Text>{action === 'swap' ? '→' : '+'}</Text>
+            )}
+          </>
+        )
+      })}
+    </HStack>
+  )
+}
+
 export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
   const { toCurrency } = useCurrency()
   const theme = useTheme()
@@ -102,7 +147,14 @@ export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
               <Text casing="capitalize">{poolEvent.action}</Text>
             </HStack>
           </GridItem>
-          <GridItem>{/* transaction details */}</GridItem>
+          <GridItem>
+            <TransactionDetails
+              action={poolEvent.action}
+              tokens={poolEvent.tokens}
+              py="2"
+              px="sm"
+            />
+          </GridItem>
           <GridItem textAlign="right">
             <Text>{toCurrency(poolEvent.usdValue)}</Text>
           </GridItem>
