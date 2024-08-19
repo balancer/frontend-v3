@@ -10,9 +10,17 @@ type SortableHeaderProps = {
   isSorted: boolean
   sorting: Sorting
   onSort: (newSortingBy: SortingBy) => void
+  align?: 'left' | 'right'
 }
 
-function SortableHeader({ label, sortingBy, isSorted, onSort, sorting }: SortableHeaderProps) {
+function SortableHeader({
+  label,
+  sortingBy,
+  isSorted,
+  onSort,
+  sorting,
+  align = 'left',
+}: SortableHeaderProps) {
   const renderSortIcon = () => {
     if (sortingBy !== label.toLowerCase()) return '↑↓'
     return sorting === Sorting.asc ? '↑' : '↓'
@@ -24,7 +32,7 @@ function SortableHeader({ label, sortingBy, isSorted, onSort, sorting }: Sortabl
     <GridItem textAlign="right">
       <Text
         display="flex"
-        justifyContent="flex-end"
+        justifyContent={align === 'left' ? 'flex-start' : 'flex-end'}
         alignItems="center"
         fontWeight="bold"
         color={color}
@@ -82,6 +90,7 @@ export function PoolActivityTableHeader({ ...rest }) {
         isSorted={isSortedByValue}
         sorting={sorting}
         onSort={handleSort}
+        align="right"
       />
       <SortableHeader
         label="Time"
@@ -89,6 +98,7 @@ export function PoolActivityTableHeader({ ...rest }) {
         isSorted={isSortedByTime}
         sorting={sorting}
         onSort={handleSort}
+        align="right"
       />
     </Grid>
   )
