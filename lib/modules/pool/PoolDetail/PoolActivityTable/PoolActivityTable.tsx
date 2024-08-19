@@ -6,7 +6,8 @@ import { PoolActivityTableRow } from './PoolActivityTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { Skeleton } from '@chakra-ui/react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
-import { PoolActivityEl, usePoolActivity } from '../PoolActivity/usePoolActivity'
+import { usePoolActivity } from '../PoolActivity/usePoolActivity'
+import { PoolActivityEl } from '../PoolActivity/poolActivity.types'
 
 export function PoolActivityTable() {
   const isMounted = useIsMounted()

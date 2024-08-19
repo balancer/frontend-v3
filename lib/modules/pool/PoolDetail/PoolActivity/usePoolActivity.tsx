@@ -1,81 +1,37 @@
-import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+'use client'
+
+import { useMandatoryContext } from '@/lib/shared/utils/contexts'
+import { PropsWithChildren, createContext, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { useMemo, useState } from 'react'
-import { BaseVariant, PoolVariant } from '../../pool.types'
+import { PoolVariant } from '../../pool.types'
 import { usePool } from '../../PoolProvider'
-import {
-  GqlPoolEventType,
-  GqlPoolType,
-  GqlToken,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolEventType } from '@/lib/shared/services/api/generated/graphql'
 import { usePoolEvents } from '../../usePoolEvents'
 import { slugToChainMap, ChainSlug } from '../../pool.utils'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { differenceInCalendarDays } from 'date-fns'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
+import {
+  PoolActivity,
+  PoolActivityEl,
+  PoolActivityTokens,
+  SortingBy,
+  getPoolActivityTabsList,
+  Sorting,
+} from './poolActivity.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 
-export type PoolActivityTokens = {
-  token?: GqlToken
-  amount: string
-}
+export type PoolActivityResponse = ReturnType<typeof _usePoolActivity>
+export const PoolActivityContext = createContext<PoolActivityResponse | null>(null)
 
-export type PoolActivityMetaData = {
-  userAddress: string
-  tokens: PoolActivityTokens[]
-  tx: string
-  usdValue: string
-  action: 'swap' | 'add' | 'remove'
-}
-
-export type PoolActivityEl = [number, string, PoolActivityMetaData]
-export type PoolActivity = Record<'adds' | 'removes' | 'swaps', PoolActivityEl[]>
-export type PoolActivityTab = 'all' | 'adds' | 'swaps' | 'removes'
-
-export interface PoolActivityTypeTab {
-  value: string
-  label: string
-}
-
-export function getPoolActivityTabsList({
-  variant,
-  poolType,
-}: {
-  variant: PoolVariant
-  poolType: GqlPoolType
-}): PoolActivityTypeTab[] {
-  const defaultTabs = [
-    {
-      value: 'adds',
-      label: 'Adds',
-    },
-    {
-      value: 'removes',
-      label: 'Removes',
-    },
-  ]
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
-    return defaultTabs
-  }
-
-  return [
-    {
-      value: 'all',
-      label: 'All',
-    },
-    ...defaultTabs,
-    {
-      value: 'swaps',
-      label: 'Swaps',
-    },
-  ]
-}
-
-export function usePoolActivity() {
+function _usePoolActivity() {
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
   const _chain = slugToChainMap[chain as ChainSlug]
   const { getToken } = useTokens()
+  const [sorting, setSorting] = useState<Sorting>(Sorting.desc)
+  const [sortingBy, setSortingBy] = useState<SortingBy>(SortingBy.time)
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -230,18 +186,53 @@ export function usePoolActivity() {
     }
   }
 
+  function sortAlphabetically(a: string, b: string) {
+    if (a < b) {
+      return -1
+    }
+    if (a > b) {
+      return 1
+    }
+    return 0
+  }
+
+  const sortPoolEvents = useCallback(
+    (events: PoolActivityEl[], sortBy: SortingBy, order: Sorting) => {
+      return [...events].sort((a, b) => {
+        let compareValue = a[0] - b[0]
+        switch (sortBy) {
+          case SortingBy.time:
+            compareValue = a[0] - b[0]
+            break
+          case SortingBy.value:
+            compareValue = Number(a[2].usdValue) - Number(b[2].usdValue)
+            break
+          case SortingBy.action:
+            compareValue = sortAlphabetically(a[2].action, b[2].action)
+            break
+        }
+        return order === Sorting.asc ? compareValue : -compareValue
+      })
+    },
+    []
+  )
+
   const allPoolEvents = useMemo(() => {
     const events = [
       ...poolActivityData.adds,
       ...poolActivityData.removes,
       ...poolActivityData.swaps,
-    ].sort((a, b) => b[0] - a[0])
-
-    return events.slice(
+    ]
+    const sortedEvents = sortPoolEvents(events, sortingBy, sorting)
+    return sortedEvents.slice(
       pagination.pageIndex * pagination.pageSize,
       pagination.pageSize * (pagination.pageIndex + 1)
     )
-  }, [poolActivityData, pagination])
+  }, [poolActivityData, pagination, sorting, sortingBy, sortPoolEvents])
+
+  function toggleSorting() {
+    setSorting(sorting === Sorting.asc ? Sorting.desc : Sorting.asc)
+  }
 
   return {
     isLoading: loading,
@@ -254,10 +245,27 @@ export function usePoolActivity() {
     pagination,
     allPoolEvents,
     count: response?.poolEvents.length ?? 0,
+    sorting,
+    sortingBy,
+    isSortedByTime: sortingBy === SortingBy.time,
+    isSortedByValue: sortingBy === SortingBy.value,
+    isSortedByAction: sortingBy === SortingBy.action,
+    setSorting,
+    toggleSorting,
+    setSortingBy,
     setActiveTab,
     setIsExpanded,
     getTitle,
     getDateCaption,
     setPagination,
+    sortPoolEvents,
   }
 }
+
+export function PoolActivityProvider({ children }: PropsWithChildren) {
+  const hook = _usePoolActivity()
+  return <PoolActivityContext.Provider value={hook}>{children}</PoolActivityContext.Provider>
+}
+
+export const usePoolActivity = (): PoolActivityResponse =>
+  useMandatoryContext(PoolActivityContext, 'PoolActivity')

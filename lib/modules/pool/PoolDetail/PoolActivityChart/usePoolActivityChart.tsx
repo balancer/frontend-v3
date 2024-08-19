@@ -18,12 +18,12 @@ import {
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
+import { usePoolActivity } from '../PoolActivity/usePoolActivity'
 import {
   PoolActivityMetaData,
   PoolActivityTokens,
   PoolActivityEl,
-  usePoolActivity,
-} from '../PoolActivity/usePoolActivity'
+} from '../PoolActivity/poolActivity.types'
 
 const getDefaultPoolActivityChartOptions = (
   nextTheme: ColorMode = 'dark',

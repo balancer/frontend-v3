@@ -1,6 +1,6 @@
 import { Card, Heading, Stack, VStack, Text, HStack } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { usePoolActivity } from './usePoolActivity'
+import { PoolActivityProvider, usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
 import { PoolActivityTable } from '../PoolActivityTable/PoolActivityTable'
 import { PoolActivityViewType } from '../PoolActivityViewType/PoolActivityViewType'
@@ -11,9 +11,11 @@ import {
 
 export function PoolActivity() {
   return (
-    <PoolActivityViewTypeProvider>
-      <PoolActivityContent />
-    </PoolActivityViewTypeProvider>
+    <PoolActivityProvider>
+      <PoolActivityViewTypeProvider>
+        <PoolActivityContent />
+      </PoolActivityViewTypeProvider>
+    </PoolActivityProvider>
   )
 }
 

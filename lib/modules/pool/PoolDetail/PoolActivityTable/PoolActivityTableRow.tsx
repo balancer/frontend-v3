@@ -1,7 +1,6 @@
 import { Box, Grid, GridItem, GridProps, HStack, Text, Image, Link } from '@chakra-ui/react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { PoolActivityEl } from '../PoolActivity/usePoolActivity'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useEnsAvatar, useEnsName } from 'wagmi'
@@ -11,6 +10,7 @@ import { createAvatar } from '@dicebear/core'
 import { identicon } from '@dicebear/collection'
 import { ArrowUpRight } from 'react-feather'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
+import { PoolActivityEl } from '../PoolActivity/poolActivity.types'
 
 interface Props extends GridProps {
   event: PoolActivityEl
