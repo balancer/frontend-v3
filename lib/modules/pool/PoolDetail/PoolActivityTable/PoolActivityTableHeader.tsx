@@ -1,6 +1,6 @@
 'use client'
 
-import { Grid, GridItem, Text } from '@chakra-ui/react'
+import { Box, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { usePoolActivity } from '../PoolActivity/usePoolActivity'
 import { Sorting, SortingBy } from '../PoolActivity/poolActivity.types'
 
@@ -22,11 +22,21 @@ function SortableHeader({
   align = 'left',
 }: SortableHeaderProps) {
   const renderSortIcon = () => {
-    if (sortingBy !== label.toLowerCase()) return '↑↓'
-    return sorting === Sorting.asc ? '↑' : '↓'
+    return (
+      <HStack gap={0} w="20px">
+        {sortingBy !== label.toLowerCase() ? (
+          <>
+            <Box as="span">↑</Box>
+            <Box as="span">↓</Box>
+          </>
+        ) : (
+          <Box as="span">{sorting === Sorting.asc ? '↑' : '↓'}</Box>
+        )}
+      </HStack>
+    )
   }
 
-  const color = isSorted ? 'green' : 'font.primary'
+  const color = isSorted ? 'font.highlight' : 'font.primary'
 
   return (
     <GridItem textAlign="right">
