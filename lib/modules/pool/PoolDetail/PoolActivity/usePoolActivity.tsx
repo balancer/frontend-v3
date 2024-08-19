@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
@@ -32,6 +33,9 @@ function _usePoolActivity() {
   const { getToken } = useTokens()
   const [sorting, setSorting] = useState<Sorting>(Sorting.desc)
   const [sortingBy, setSortingBy] = useState<SortingBy>(SortingBy.time)
+  const [first, setFirst] = useState(10)
+  const [skip, setSkip] = useState(0)
+  const [isExpanded, setIsExpanded] = useState(false)
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -43,8 +47,11 @@ function _usePoolActivity() {
     })
   }, [pool?.type, variant])
 
-  const [isExpanded, setIsExpanded] = useState(false)
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
+
+  const isAllOrSwaps = activeTab.value === 'all' || activeTab.value === 'swaps'
+  const isAllOrAdds = activeTab.value === 'all' || activeTab.value === 'adds'
+  const isAllOrRemoves = activeTab.value === 'all' || activeTab.value === 'removes'
 
   function getTitle() {
     if (activeTab.value === 'all') {
@@ -58,6 +65,8 @@ function _usePoolActivity() {
     poolIdIn: [poolId] as string[],
     chainIn: [_chain],
   })
+
+  const count = response?.poolEvents.length ?? 0
 
   const poolActivityData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -92,7 +101,7 @@ function _usePoolActivity() {
 
         const elToPush = [
           timestamp,
-          isExpanded ? '0' : usdValue,
+          isExpanded ? usdValue : '0',
           { userAddress, tokens, usdValue, tx, action: 'swap' }, // action will be overwritten again below
         ] as PoolActivityEl
 
@@ -117,9 +126,6 @@ function _usePoolActivity() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [response, isExpanded])
 
-  const [first, setFirst] = useState(10)
-  const [skip, setSkip] = useState(0)
-
   const pagination: PaginationState = useMemo(
     () => ({
       pageIndex: skip / first,
@@ -136,13 +142,13 @@ function _usePoolActivity() {
   const dataSize = useMemo(() => {
     let dataSize = 0
 
-    if (['all', 'adds'].includes(activeTab.value)) {
+    if (isAllOrAdds) {
       dataSize += poolActivityData.adds.length
     }
-    if (['all', 'removes'].includes(activeTab.value)) {
+    if (isAllOrRemoves) {
       dataSize += poolActivityData.removes.length
     }
-    if (['all', 'swaps'].includes(activeTab.value)) {
+    if (isAllOrSwaps) {
       dataSize += poolActivityData.swaps.length
     }
 
@@ -217,22 +223,29 @@ function _usePoolActivity() {
     []
   )
 
-  const allPoolEvents = useMemo(() => {
-    const events = [
-      ...poolActivityData.adds,
-      ...poolActivityData.removes,
-      ...poolActivityData.swaps,
+  const poolEvents = useMemo(() => {
+    return [
+      ...(isAllOrAdds ? poolActivityData.adds : []),
+      ...(isAllOrRemoves ? poolActivityData.removes : []),
+      ...(isAllOrSwaps ? poolActivityData.swaps : []),
     ]
-    const sortedEvents = sortPoolEvents(events, sortingBy, sorting)
+  }, [poolActivityData, isAllOrAdds, isAllOrRemoves, isAllOrSwaps])
+
+  const sortedPoolEvents = useMemo(() => {
+    const sortedEvents = sortPoolEvents(poolEvents, sortingBy, sorting)
     return sortedEvents.slice(
       pagination.pageIndex * pagination.pageSize,
       pagination.pageSize * (pagination.pageIndex + 1)
     )
-  }, [poolActivityData, pagination, sorting, sortingBy, sortPoolEvents])
+  }, [poolEvents, pagination, sorting, sortingBy, sortPoolEvents])
 
   function toggleSorting() {
     setSorting(sorting === Sorting.asc ? Sorting.desc : Sorting.asc)
   }
+
+  const showPagination = useMemo(() => {
+    return !!poolEvents.length && poolEvents.length > pagination.pageSize
+  }, [poolEvents, pagination])
 
   return {
     isLoading: loading,
@@ -243,8 +256,9 @@ function _usePoolActivity() {
     poolActivityData,
     transactionsLabel: `${fNum('integer', dataSize)} ${getTitle()} ${getDateCaption()}`,
     pagination,
-    allPoolEvents,
-    count: response?.poolEvents.length ?? 0,
+    sortedPoolEvents,
+    count,
+    showPagination,
     sorting,
     sortingBy,
     isSortedByTime: sortingBy === SortingBy.time,

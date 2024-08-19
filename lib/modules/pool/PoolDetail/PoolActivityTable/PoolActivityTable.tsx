@@ -11,9 +11,9 @@ import { PoolActivityEl } from '../PoolActivity/poolActivity.types'
 
 export function PoolActivityTable() {
   const isMounted = useIsMounted()
-  const { allPoolEvents, pagination, setPagination, isLoading, count } = usePoolActivity()
+  const { sortedPoolEvents, pagination, setPagination, isLoading, count, showPagination } =
+    usePoolActivity()
   const paginationProps = getPaginationProps(count, pagination, setPagination)
-  const showPagination = !!allPoolEvents.length && count > pagination.pageSize
 
   const rowProps = {
     px: { base: 'sm', sm: '0' },
@@ -26,7 +26,7 @@ export function PoolActivityTable() {
 
   return (
     <PaginatedTable
-      items={allPoolEvents}
+      items={sortedPoolEvents}
       loading={isLoading}
       renderTableHeader={() => <PoolActivityTableHeader {...rowProps} />}
       renderTableRow={(item: PoolActivityEl, index) => {
