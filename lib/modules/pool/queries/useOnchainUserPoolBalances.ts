@@ -41,11 +41,9 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
 
   const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
 
-  const enrichedPools = overwriteOnchainPoolBalanceData(
-    pools,
-    unstakedBalanceByPoolId,
-    stakedBalancesByPoolId
-  )
+  const enrichedPools = isLoading
+    ? pools
+    : overwriteOnchainPoolBalanceData(pools, unstakedBalanceByPoolId, stakedBalancesByPoolId)
 
   useEffect(() => {
     if (stakedPoolBalancesError) {
