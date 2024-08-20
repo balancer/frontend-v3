@@ -3,7 +3,8 @@ import { PaginationState } from './pagination.types'
 export function getPaginationProps(
   totalRowCount: number,
   pagination: PaginationState,
-  setPagination: (pagination: PaginationState) => void
+  setPagination: (pagination: PaginationState) => void,
+  changeSize = true
 ) {
   const totalPageCount = Math.floor(totalRowCount / pagination.pageSize) + 1
   const canPreviousPage = pagination.pageIndex - 1 > -1
@@ -35,5 +36,6 @@ export function getPaginationProps(
     goToPreviousPage,
     setPageIndex,
     setPageSize,
+    changeSize,
   }
 }

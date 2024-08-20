@@ -13,7 +13,7 @@ export function PoolActivityTable() {
   const isMounted = useIsMounted()
   const { sortedPoolEvents, pagination, setPagination, isLoading, count, showPagination } =
     usePoolActivity()
-  const paginationProps = getPaginationProps(count, pagination, setPagination)
+  const paginationProps = getPaginationProps(count, pagination, setPagination, false)
 
   const rowProps = {
     px: { base: 'sm', sm: '0' },

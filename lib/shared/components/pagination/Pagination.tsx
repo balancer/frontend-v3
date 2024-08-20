@@ -26,6 +26,7 @@ interface Props {
   setPageIndex: (page: number) => void
   setPageSize: (page: number) => void
   pageSize: number
+  changeSize?: boolean
 }
 
 export function Pagination({
@@ -40,6 +41,7 @@ export function Pagination({
   setPageIndex,
   setPageSize,
   pageSize,
+  changeSize = true,
   ...rest
 }: Props) {
   return (
@@ -123,6 +125,7 @@ export function Pagination({
             onChange={e => {
               setPageSize(Number(e.target.value))
             }}
+            disabled={!changeSize}
           >
             {[10, 20, 30, 40, 50].map(pageSize => (
               <option key={pageSize} value={pageSize}>
