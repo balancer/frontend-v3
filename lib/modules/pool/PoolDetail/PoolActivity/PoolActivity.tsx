@@ -1,4 +1,4 @@
-import { Card, Heading, Stack, VStack, Text, HStack } from '@chakra-ui/react'
+import { Card, Heading, Stack, VStack, Text, HStack, Skeleton } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { PoolActivityProvider, usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
@@ -20,8 +20,15 @@ export function PoolActivity() {
 }
 
 function PoolActivityContent() {
-  const { isExpanded, setIsExpanded, transactionsLabel, activeTab, tabsList, setActiveTab } =
-    usePoolActivity()
+  const {
+    isExpanded,
+    setIsExpanded,
+    transactionsLabel,
+    activeTab,
+    tabsList,
+    setActiveTab,
+    isLoading,
+  } = usePoolActivity()
 
   const { isChartView, isListView } = usePoolActivityViewType()
 
@@ -41,16 +48,16 @@ function PoolActivityContent() {
         role="group"
       >
         <VStack alignItems="flex-start" gap={0.5}>
-          <Heading
-            fontWeight="bold"
-            size="h5"
-            _groupHover={isExpanded ? {} : { color: 'font.maxContrast' }}
-          >
+          <Heading fontWeight="bold" size="h5">
             Pool Activity
           </Heading>
-          <Text fontWeight="medium" variant="secondary" fontSize="sm">
-            {transactionsLabel}
-          </Text>
+          {isLoading ? (
+            <Skeleton height="20px" w="100px" />
+          ) : (
+            <Text fontWeight="medium" variant="secondary" fontSize="sm">
+              {transactionsLabel}
+            </Text>
+          )}
         </VStack>
         <HStack>
           <ButtonGroup

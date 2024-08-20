@@ -53,31 +53,33 @@ export function PoolActivityChart() {
         </Box>
       )}
       {isExpanded && <Divider pt="2" mb="4" />}
-      <HStack>
-        <Button variant="secondary" onClick={() => setIsExpanded(!isExpanded)} size="sm">
-          {isExpanded ? 'Minimize' : 'Expand'}
-        </Button>
-        {isExpanded && (
-          <AnimateOpacity>
-            <HStack spacing="4" px={['1', '2']}>
-              {legendTabs.map((tab, index) => (
-                <HStack alignItems="center" key={index} gap="2">
-                  <Box
-                    height="2"
-                    width="2"
-                    backgroundImage={tab.color}
-                    borderRadius="50%"
-                    display="inline-block"
-                  />
-                  <Text color="font.secondary" fontSize="sm">
-                    {tab.label}
-                  </Text>
-                </HStack>
-              ))}
-            </HStack>
-          </AnimateOpacity>
-        )}
-      </HStack>
+      {!isLoading && (
+        <HStack>
+          <Button variant="secondary" onClick={() => setIsExpanded(!isExpanded)} size="sm">
+            {isExpanded ? 'Minimize' : 'Expand'}
+          </Button>
+          {isExpanded && (
+            <AnimateOpacity>
+              <HStack spacing="4" px={['1', '2']}>
+                {legendTabs.map((tab, index) => (
+                  <HStack alignItems="center" key={index} gap="2">
+                    <Box
+                      height="2"
+                      width="2"
+                      backgroundImage={tab.color}
+                      borderRadius="50%"
+                      display="inline-block"
+                    />
+                    <Text color="font.secondary" fontSize="sm">
+                      {tab.label}
+                    </Text>
+                  </HStack>
+                ))}
+              </HStack>
+            </AnimateOpacity>
+          )}
+        </HStack>
+      )}
     </Box>
   )
 }
