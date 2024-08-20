@@ -17,7 +17,7 @@ export function PoolActivityTable() {
 
   const rowProps = {
     px: { base: 'sm', sm: '0' },
-    gridTemplateColumns: `200px 100px 1fr 100px 150px`,
+    gridTemplateColumns: `200px 100px 1fr 100px 200px`,
     alignItems: 'center',
     gap: { base: 'xxs', xl: 'lg' },
   }
