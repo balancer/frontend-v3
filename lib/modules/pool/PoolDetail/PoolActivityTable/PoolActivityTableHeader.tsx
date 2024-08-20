@@ -1,65 +1,9 @@
 'use client'
 
-import { Box, Divider, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
+import { Divider, Grid, GridItem, Text } from '@chakra-ui/react'
 import { usePoolActivity } from '../PoolActivity/usePoolActivity'
 import { Sorting, SortingBy } from '../PoolActivity/poolActivity.types'
-
-type SortableHeaderProps = {
-  label: string
-  sortingBy: string
-  isSorted: boolean
-  sorting: Sorting
-  onSort: (newSortingBy: SortingBy) => void
-  align?: 'left' | 'right'
-}
-
-function SortableHeader({
-  label,
-  sortingBy,
-  isSorted,
-  onSort,
-  sorting,
-  align = 'left',
-}: SortableHeaderProps) {
-  const renderSortIcon = () => {
-    return (
-      <HStack gap="0" w="20px">
-        {sortingBy !== label.toLowerCase() ? (
-          <>
-            <Box as="span">↑</Box>
-            <Box as="span">↓</Box>
-          </>
-        ) : (
-          <Box as="span">{sorting === Sorting.asc ? '↑' : '↓'}</Box>
-        )}
-      </HStack>
-    )
-  }
-
-  const color = isSorted ? 'font.highlight' : 'font.primary'
-
-  return (
-    <GridItem>
-      <HStack
-        gap="0"
-        justifyContent={align === 'left' ? 'flex-start' : 'flex-end'}
-        alignItems="center"
-      >
-        <Text
-          fontWeight="bold"
-          color={color}
-          cursor="pointer"
-          onClick={() => onSort(label.toLowerCase() as SortingBy)}
-        >
-          {label}
-        </Text>
-        <Box fontSize="xs" ml={1} color={color}>
-          {renderSortIcon()}
-        </Box>
-      </HStack>
-    </GridItem>
-  )
-}
+import { SortableHeader } from '@/lib/shared/components/tables/SortableHeader'
 
 export function PoolActivityTableHeader({ ...rest }) {
   const {
@@ -91,7 +35,6 @@ export function PoolActivityTableHeader({ ...rest }) {
         </GridItem>
         <SortableHeader
           label="Action"
-          sortingBy={sortingBy}
           isSorted={isSortedByAction}
           sorting={sorting}
           onSort={handleSort}
@@ -101,7 +44,6 @@ export function PoolActivityTableHeader({ ...rest }) {
         </GridItem>
         <SortableHeader
           label="Value"
-          sortingBy={sortingBy}
           isSorted={isSortedByValue}
           sorting={sorting}
           onSort={handleSort}
@@ -109,7 +51,6 @@ export function PoolActivityTableHeader({ ...rest }) {
         />
         <SortableHeader
           label="Time"
-          sortingBy={sortingBy}
           isSorted={isSortedByTime}
           sorting={sorting}
           onSort={handleSort}
