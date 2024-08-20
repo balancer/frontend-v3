@@ -158,9 +158,9 @@ export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
           <GridItem textAlign="right">
             <Text>{toCurrency(poolEvent.usdValue)}</Text>
           </GridItem>
-          <GridItem textAlign="right">
+          <GridItem>
             <Link target="_blank" href={getBlockExplorerTxUrl(poolEvent.tx)}>
-              <HStack gap="0.5">
+              <HStack gap="0.5" justifyContent="flex-end">
                 <Text>
                   {formatDistanceToNow(new Date(secondsToMilliseconds(event[0])), {
                     addSuffix: true,
