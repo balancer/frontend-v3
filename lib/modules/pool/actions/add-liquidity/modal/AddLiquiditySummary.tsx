@@ -17,6 +17,7 @@ import { isVebalPool } from '../../../pool.helpers'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
 import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
+import { useMemo } from 'react'
 
 export function AddLiquiditySummary({
   isLoading: isLoadingReceipt,
@@ -45,6 +46,12 @@ export function AddLiquiditySummary({
     .filter(Boolean) as HumanTokenAmountWithAddress[]
 
   const shouldShowErrors = hasQuoteContext ? addLiquidityTxSuccess : addLiquidityTxHash
+  const shouldShowReceipt = addLiquidityTxHash && !isLoadingReceipt && sentTokens.length > 0
+
+  const isLoadingTokens = useMemo(() => {
+    if (hasQuoteContext) return shouldShowReceipt && isLoadingReceipt
+    return isLoadingReceipt
+  }, [hasQuoteContext, isLoadingReceipt, shouldShowReceipt])
 
   if (!isUserAddressLoading && !userAddress) {
     return <BalAlert status="warning" content="User is not connected" />
@@ -61,13 +68,6 @@ export function AddLiquiditySummary({
     )
   }
 
-  const shouldShowReceipt = addLiquidityTxHash && !isLoadingReceipt && sentTokens.length > 0
-
-  const isLoadingTokenData = () => {
-    if (hasQuoteContext) return shouldShowReceipt && isLoadingReceipt
-    return isLoadingReceipt
-  }
-
   return (
     <AnimateHeightChange spacing="sm">
       {isMobile && hasQuoteContext && (
@@ -81,7 +81,7 @@ export function AddLiquiditySummary({
           totalUSDValue={hasQuoteContext ? totalUSDValue : undefined}
           chain={pool.chain}
           tokens={tokens}
-          isLoading={isLoadingTokenData()}
+          isLoading={isLoadingTokens}
         />
       </Card>
 
@@ -89,7 +89,7 @@ export function AddLiquiditySummary({
         {shouldShowReceipt ? (
           <ReceiptBptOut actualBptOut={receivedBptUnits} isLoading={isLoadingReceipt} />
         ) : (
-          <QuoteBptOut isLoading={isLoadingTokenData()} />
+          <QuoteBptOut isLoading={isLoadingTokens} />
         )}
       </Card>
 

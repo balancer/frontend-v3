@@ -38,6 +38,7 @@ export function RemoveLiquiditySummary({
   const _amountsOut = amountsOut.filter(amount => bn(amount.humanAmount).gt(0))
 
   const shouldShowErrors = hasQuoteContext ? removeLiquidityTxSuccess : removeLiquidityTxHash
+  const shouldShowReceipt = removeLiquidityTxHash && !isLoadingReceipt && receivedTokens.length > 0
 
   if (!isUserAddressLoading && !userAddress) {
     return <BalAlert status="warning" content="User is not connected" />
@@ -53,8 +54,6 @@ export function RemoveLiquiditySummary({
       />
     )
   }
-
-  const shouldShowReceipt = removeLiquidityTxHash && !isLoadingReceipt && receivedTokens.length > 0
 
   return (
     <AnimateHeightChange spacing="sm">
