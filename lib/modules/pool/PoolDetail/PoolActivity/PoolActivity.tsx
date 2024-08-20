@@ -11,11 +11,11 @@ import {
 
 export function PoolActivity() {
   return (
-    <PoolActivityProvider>
-      <PoolActivityViewTypeProvider>
+    <PoolActivityViewTypeProvider>
+      <PoolActivityProvider>
         <PoolActivityContent />
-      </PoolActivityViewTypeProvider>
-    </PoolActivityProvider>
+      </PoolActivityProvider>
+    </PoolActivityViewTypeProvider>
   )
 }
 

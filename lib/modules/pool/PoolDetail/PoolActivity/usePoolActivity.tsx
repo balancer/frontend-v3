@@ -22,6 +22,7 @@ import {
   Sorting,
 } from './poolActivity.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
+import { usePoolActivityViewType } from '../PoolActivityViewType/usePoolActivityViewType'
 
 export type PoolActivityResponse = ReturnType<typeof _usePoolActivity>
 export const PoolActivityContext = createContext<PoolActivityResponse | null>(null)
@@ -36,6 +37,7 @@ function _usePoolActivity() {
   const [first, setFirst] = useState(10)
   const [skip, setSkip] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
+  const { isChartView } = usePoolActivityViewType()
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -139,22 +141,6 @@ function _usePoolActivity() {
     setSkip(newPagination.pageIndex * newPagination.pageSize)
   }
 
-  const dataSize = useMemo(() => {
-    let dataSize = 0
-
-    if (isAllOrAdds) {
-      dataSize += poolActivityData.adds.length
-    }
-    if (isAllOrRemoves) {
-      dataSize += poolActivityData.removes.length
-    }
-    if (isAllOrSwaps) {
-      dataSize += poolActivityData.swaps.length
-    }
-
-    return dataSize
-  }, [activeTab, poolActivityData])
-
   function getDateCaption() {
     try {
       let diffInDays = 0
@@ -233,11 +219,15 @@ function _usePoolActivity() {
 
   const sortedPoolEvents = useMemo(() => {
     const sortedEvents = sortPoolEvents(poolEvents, sortingBy, sorting)
-    return sortedEvents.slice(
-      pagination.pageIndex * pagination.pageSize,
-      pagination.pageSize * (pagination.pageIndex + 1)
-    )
-  }, [poolEvents, pagination, sorting, sortingBy, sortPoolEvents])
+    const sortedEventsLength = sortedEvents.length > 500 ? 500 : sortedEvents.length
+
+    return isChartView
+      ? sortedEvents.slice(0, sortedEventsLength)
+      : sortedEvents.slice(
+          pagination.pageIndex * pagination.pageSize,
+          pagination.pageSize * (pagination.pageIndex + 1)
+        )
+  }, [poolEvents, pagination, sorting, sortingBy, sortPoolEvents, isChartView])
 
   function toggleSorting() {
     setSorting(sorting === Sorting.asc ? Sorting.desc : Sorting.asc)
@@ -247,14 +237,30 @@ function _usePoolActivity() {
     return !!poolEvents.length && poolEvents.length > pagination.pageSize
   }, [poolEvents, pagination])
 
+  const sortedPoolEventsLength = useMemo(() => sortedPoolEvents.length, [sortedPoolEvents])
+
+  const poolEventsForChart = useMemo(() => {
+    const truncatedLength = sortedPoolEventsLength > 500 ? 500 : sortedPoolEventsLength
+
+    return sortedPoolEvents.slice(0, truncatedLength)
+  }, [sortedPoolEvents])
+
+  const transactionsLabel = useMemo(() => {
+    return `${fNum(
+      'integer',
+      isChartView ? poolEventsForChart.length : poolEvents.length
+    )} ${getTitle()} ${getDateCaption()}`
+  }, [poolEvents, getTitle, getDateCaption])
+
   return {
     isLoading: loading,
     isExpanded,
-    dataSize,
+    dataSize: poolEvents.length,
     activeTab,
     tabsList,
     poolActivityData,
-    transactionsLabel: `${fNum('integer', dataSize)} ${getTitle()} ${getDateCaption()}`,
+    poolEventsForChart,
+    transactionsLabel,
     pagination,
     sortedPoolEvents,
     count,
