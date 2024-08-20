@@ -20,15 +20,8 @@ export function PoolActivity() {
 }
 
 function PoolActivityContent() {
-  const {
-    isExpanded,
-    setIsExpanded,
-    transactionsLabel,
-    activeTab,
-    tabsList,
-    setActiveTab,
-    isLoading,
-  } = usePoolActivity()
+  const { isExpanded, transactionsLabel, activeTab, tabsList, setActiveTab, isLoading } =
+    usePoolActivity()
 
   const { isChartView, isListView } = usePoolActivityViewType()
 
@@ -41,11 +34,6 @@ function PoolActivityContent() {
         width="full"
         justifyContent="space-between"
         alignItems="start"
-        onClick={() => {
-          setIsExpanded(true)
-        }}
-        _hover={isExpanded ? {} : { cursor: 'pointer' }}
-        role="group"
       >
         <VStack alignItems="flex-start" gap={0.5}>
           <Heading fontWeight="bold" size="h5">
