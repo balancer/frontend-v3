@@ -120,6 +120,10 @@ function overwriteOnchainPoolBalanceData(
 
     // Staked balances
     const onchainStakedBalances = stakedBalancesByPoolId[pool.id]
+
+    if (!onchainStakedBalances) {
+      return pool
+    }
     const onchainTotalStakedBalance = safeSum(
       onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance))
     )
