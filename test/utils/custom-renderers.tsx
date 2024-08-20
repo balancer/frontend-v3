@@ -16,7 +16,7 @@ import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTra
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { UserAccountProvider } from '@/lib/modules/web3/UserAccountProvider'
-import { GqlChain, GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolElement } from '@/lib/shared/services/api/generated/graphql'
 import { testWagmiConfig } from '@/test/anvil/testWagmiConfig'
 import { ApolloProvider } from '@apollo/client'
 import { QueryClientProvider } from '@tanstack/react-query'
@@ -129,7 +129,7 @@ export const buildDefaultPoolTestProvider =
         <RelayerSignatureProvider>
           <PoolProvider
             id={pool.id}
-            chain={GqlChain.Mainnet}
+            chain={pool.chain}
             variant={BaseVariant.v2}
             data={{
               __typename: 'Query',

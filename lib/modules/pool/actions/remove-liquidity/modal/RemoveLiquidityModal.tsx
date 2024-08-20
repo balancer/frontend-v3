@@ -16,6 +16,8 @@ import { TransactionModalHeader } from '@/lib/shared/components/modals/Transacti
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
 import { RemoveLiquiditySummary } from './RemoveLiquiditySummary'
+import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -33,8 +35,15 @@ export function RemoveLiquidityModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { userAddress } = useUserAccount()
+
+  const receiptProps = useRemoveLiquidityReceipt({
+    chain,
+    txHash: removeLiquidityTxHash,
+    userAddress,
+  })
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -58,7 +67,7 @@ export function RemoveLiquidityModal({
     >
       <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
           <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
         )}
@@ -68,14 +77,15 @@ export function RemoveLiquidityModal({
           timeout={<RemoveLiquidityTimeout />}
           txHash={removeLiquidityTxHash}
           chain={pool.chain}
+          isReceiptLoading={receiptProps.isLoading}
         />
 
         <ModalCloseButton />
         <ModalBody>
-          <RemoveLiquiditySummary />
+          <RemoveLiquiditySummary {...receiptProps} />
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!removeLiquidityTxHash}
+          isSuccess={!!removeLiquidityTxHash && !receiptProps.isLoading}
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}

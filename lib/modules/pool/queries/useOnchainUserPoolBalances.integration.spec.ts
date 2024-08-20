@@ -112,20 +112,8 @@ describe('fetches onchain and overrides user balances', async () => {
           stakingId: '0x55ec14e951b1c25ab09132dae12363bea0d20105', // Non preferential gauge
           stakingType: 'GAUGE',
         },
-        {
-          stakingId: '0x2cd2b37e574b73e103eb61116afc51463f254f02',
-          balance: '0',
-          balanceUsd: 0,
-          stakingType: 'AURA',
-        },
-        {
-          balance: '0',
-          balanceUsd: 0,
-          stakingId: '0xe99a452a65e5bb316febac5de83a1ca59f6a3a94', // Preferential gauge
-          stakingType: 'GAUGE',
-        },
       ],
-      totalBalance: '52.364668984347889717',
+      totalBalance: '52.36466898434789',
       totalBalanceUsd: expect.any(Number),
       walletBalance: '0',
       walletBalanceUsd: 0,

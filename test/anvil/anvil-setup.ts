@@ -59,7 +59,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     fallBackRpc: 'https://polygon-rpc.com',
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
-    forkBlockNumber: 57569322n,
+    forkBlockNumber: 60496806n,
   },
   Sepolia: {
     networkName: 'Sepolia',

@@ -16,6 +16,8 @@ import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { useResetStepIndexOnOpen } from '../../pool/actions/useResetStepIndexOnOpen'
 import { useOnUserAccountChanged } from '../../web3/useOnUserAccountChanged'
 import { SwapSummary } from './SwapSummary'
+import { useSwapReceipt } from '../../transactions/transaction-steps/receipts/receipt.hooks'
+import { useUserAccount } from '../../web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -32,9 +34,16 @@ export function SwapPreviewModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
+  const { userAddress } = useUserAccount()
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
+
+  const swapReceipt = useSwapReceipt({
+    txHash: swapTxHash,
+    userAddress,
+    chain: selectedChain,
+  })
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -68,13 +77,14 @@ export function SwapPreviewModal({
           timeout={<SwapTimeout />}
           txHash={swapTxHash}
           chain={selectedChain}
+          isReceiptLoading={swapReceipt.isLoading}
         />
         <ModalCloseButton />
         <ModalBody>
-          <SwapSummary />
+          <SwapSummary {...swapReceipt} />
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!swapTxHash}
+          isSuccess={!!swapTxHash && !swapReceipt.isLoading}
           currentStep={transactionSteps.currentStep}
           returnLabel="Swap again"
           returnAction={onClose}
