@@ -185,7 +185,7 @@ const getDefaultPoolActivityChartOptions = (
                       .replace('AM', 'am')
                       .replace('PM', 'pm')}
                   </span>
-              
+
               ${arrow}
             </a>
             <div style="width:100%;display:flex;align-items:center;justify-content:space-between;font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
@@ -312,7 +312,10 @@ export function usePoolActivityChart(isExpanded: boolean) {
           })
         }
 
-        if (item.__typename === 'GqlPoolSwapEventV3') {
+        if (
+          item.__typename === 'GqlPoolSwapEventV3' ||
+          item.__typename === 'GqlPoolSwapEventCowAmm'
+        ) {
           tokens.push({
             token: getToken(item.tokenIn.address, _chain),
             amount: item.tokenIn.amount,
