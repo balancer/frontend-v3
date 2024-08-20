@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Card, Center, Text, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Center, Text, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -20,10 +20,9 @@ export function PaginatedTable({
   showPagination,
   paginationProps,
   noItemsFoundLabel,
-  ...rest
 }: Props<any>) {
   return (
-    <Card {...rest} p={{ base: '0', sm: '0' }}>
+    <>
       <VStack w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">
@@ -36,13 +35,11 @@ export function PaginatedTable({
               ))}
             </VStack>
           )}
-
           {!loading && items.length === 0 && (
             <Center py="2xl">
               <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
-
           {loading && items.length === 0 && (
             <Center py="2xl">
               <Box
@@ -66,7 +63,6 @@ export function PaginatedTable({
               </Box>
             </Center>
           )}
-
           {loading && (
             <Box py="2xl">
               <Box
@@ -93,6 +89,6 @@ export function PaginatedTable({
         </Box>
       </VStack>
       {showPagination && <Pagination p="md" {...paginationProps} />}
-    </Card>
+    </>
   )
 }
