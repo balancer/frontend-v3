@@ -10,11 +10,11 @@ import { useEffect, useState } from 'react'
 const options: ButtonGroupOption[] = [
   {
     value: PoolActivityView.Chart,
-    label: <BarChart2 />,
+    label: <BarChart2 size={16} />,
   },
   {
     value: PoolActivityView.List,
-    label: <List />,
+    label: <List size={16} />,
   },
 ]
 

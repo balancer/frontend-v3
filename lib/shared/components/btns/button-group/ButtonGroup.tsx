@@ -54,7 +54,12 @@ export default function ButtonGroup({
                   inset="0"
                 ></Box>
               )}
-              <Box position="relative" zIndex="8" fontSize="md" fontWeight="500">
+              <Box
+                position="relative"
+                zIndex="8"
+                fontSize={{ base: 'xs', md: 'md' }}
+                fontWeight="500"
+              >
                 {option.label}
               </Box>
             </Button>

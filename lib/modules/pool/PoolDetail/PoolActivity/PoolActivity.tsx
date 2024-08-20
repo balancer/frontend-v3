@@ -20,8 +20,7 @@ export function PoolActivity() {
 }
 
 function Content() {
-  const { isExpanded, transactionsLabel, activeTab, tabsList, setActiveTab, isLoading } =
-    usePoolActivity()
+  const { transactionsLabel, activeTab, tabsList, setActiveTab, isLoading } = usePoolActivity()
 
   const { isChartView, isListView } = usePoolActivityViewType()
 
@@ -29,7 +28,7 @@ function Content() {
     <Card>
       <Stack
         w="full"
-        direction={isExpanded ? { base: 'column', sm: 'row' } : 'row'}
+        direction={{ base: 'column', md: 'row' }}
         justify="space-between"
         width="full"
         justifyContent="space-between"
