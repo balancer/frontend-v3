@@ -82,7 +82,7 @@ export function RemoveLiquiditySummary({
         />
       </Card>
 
-      {!shouldShowReceipt && (
+      {!shouldShowReceipt && hasQuoteContext && (
         <CardPopAnim key="price-impact-details">
           <Card variant="modalSubSection">
             <VStack align="start" spacing="sm">
