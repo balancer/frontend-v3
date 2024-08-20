@@ -58,6 +58,7 @@ const networkConfig: NetworkConfig = {
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Optimism],
     },
   }),
+  layerZeroChainId: 111,
 }
 
 export default networkConfig

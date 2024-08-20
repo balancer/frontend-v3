@@ -66,6 +66,7 @@ const networkConfig: NetworkConfig = {
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Arbitrum],
     },
   }),
+  layerZeroChainId: 110,
 }
 
 export default networkConfig

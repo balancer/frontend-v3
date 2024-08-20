@@ -67,6 +67,7 @@ export interface NetworkConfig {
   contracts: ContractsConfig
   minConfirmations?: number
   pools: PoolsConfig
+  layerZeroChainId?: number
 }
 
 export interface Config {

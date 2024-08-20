@@ -92,6 +92,7 @@ const networkConfig: NetworkConfig = {
       ],
     },
   }),
+  layerZeroChainId: 109,
 }
 
 export default networkConfig

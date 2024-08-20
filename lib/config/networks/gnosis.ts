@@ -59,6 +59,7 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: { [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Gnosis] },
   }),
+  layerZeroChainId: 145,
 }
 
 export default networkConfig
