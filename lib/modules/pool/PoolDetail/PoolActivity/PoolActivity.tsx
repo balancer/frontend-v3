@@ -13,13 +13,13 @@ export function PoolActivity() {
   return (
     <PoolActivityViewTypeProvider>
       <PoolActivityProvider>
-        <PoolActivityContent />
+        <Content />
       </PoolActivityProvider>
     </PoolActivityViewTypeProvider>
   )
 }
 
-function PoolActivityContent() {
+function Content() {
   const { isExpanded, transactionsLabel, activeTab, tabsList, setActiveTab, isLoading } =
     usePoolActivity()
 
