@@ -26,11 +26,13 @@ export function useAddLiquidityReceipt(props: BaseReceiptProps) {
 
   return {
     ...result,
-    isReceiptReady: !!data,
     sentTokens: data?.sentTokens || [],
     receivedBptUnits: data?.receivedBptUnits || '0',
   }
 }
+
+export type RemoveLiquidityReceiptResult = ReturnType<typeof useRemoveLiquidityReceipt>
+
 export function useRemoveLiquidityReceipt(props: BaseReceiptProps) {
   const result = useTxReceipt({ ...props, parseReceipt: parseRemoveLiquidityReceipt })
 
@@ -42,6 +44,9 @@ export function useRemoveLiquidityReceipt(props: BaseReceiptProps) {
     sentBptUnits: data?.sentBptUnits || '0',
   }
 }
+
+export type SwapReceiptResult = ReturnType<typeof useSwapReceipt>
+
 export function useSwapReceipt(props: BaseReceiptProps) {
   const result = useTxReceipt({ ...props, parseReceipt: parseSwapReceipt })
   const data = result.data as ReturnType<typeof parseSwapReceipt> | undefined

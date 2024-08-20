@@ -10,12 +10,17 @@ import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { bn } from '@/lib/shared/utils/numbers'
 import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
+import { RemoveLiquidityReceiptResult } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
 
-export function RemoveLiquiditySummary() {
+export function RemoveLiquiditySummary({
+  isLoading: isLoadingReceipt,
+  receivedTokens,
+  sentBptUnits,
+  error,
+}: RemoveLiquidityReceiptResult) {
   const {
     transactionSteps,
     quoteBptIn,
@@ -23,31 +28,24 @@ export function RemoveLiquiditySummary() {
     amountsOut,
     hasQuoteContext,
     removeLiquidityTxHash,
+    removeLiquidityTxSuccess,
   } = useRemoveLiquidity()
   const { isMobile } = useBreakpoints()
   const { getTokensByChain } = useTokens()
-  const { pool, chain } = usePool()
+  const { pool } = usePool()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
-  const {
-    isLoading: isLoadingReceipt,
-    error,
-    receivedTokens,
-    sentBptUnits,
-  } = useRemoveLiquidityReceipt({
-    chain,
-    txHash: removeLiquidityTxHash,
-    userAddress,
-  })
 
   const _amountsOut = amountsOut.filter(amount => bn(amount.humanAmount).gt(0))
+
+  const shouldShowErrors = hasQuoteContext ? removeLiquidityTxSuccess : removeLiquidityTxHash
 
   if (!isUserAddressLoading && !userAddress) {
     return <BalAlert status="warning" content="User is not connected" />
   }
-  if (removeLiquidityTxHash && error) {
+  if (shouldShowErrors && error) {
     return <BalAlert status="warning" content="We were unable to find this transaction hash" />
   }
-  if (removeLiquidityTxHash && !isLoadingReceipt && !receivedTokens.length) {
+  if (shouldShowErrors && !isLoadingReceipt && !receivedTokens.length) {
     return (
       <BalAlert
         status="warning"

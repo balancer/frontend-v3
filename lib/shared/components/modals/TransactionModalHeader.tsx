@@ -12,13 +12,13 @@ export function TransactionModalHeader({
   txHash,
   chain,
   // true by default for flows that do not have a receipt
-  isReceiptReady = true,
+  isReceiptLoading = true,
 }: {
   label: string
   txHash?: Hash
   chain: GqlChain
   timeout?: React.ReactNode
-  isReceiptReady?: boolean
+  isReceiptLoading?: boolean
 }) {
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
 
@@ -26,12 +26,12 @@ export function TransactionModalHeader({
     <ModalHeader>
       <HStack justify="space-between" w="full" pr="lg">
         <AnimatePresence mode="wait" initial={false}>
-          {!txHash ? (
+          {!txHash || isReceiptLoading ? (
             <>
               <span>{label}</span>
               {timeout || null}
             </>
-          ) : isReceiptReady ? (
+          ) : (
             <HStack spacing="md">
               <motion.div
                 initial={{ opacity: 0, scale: 0 }}
@@ -60,7 +60,7 @@ export function TransactionModalHeader({
                 </VStack>
               </motion.div>
             </HStack>
-          ) : null}
+          )}
         </AnimatePresence>
       </HStack>
     </ModalHeader>

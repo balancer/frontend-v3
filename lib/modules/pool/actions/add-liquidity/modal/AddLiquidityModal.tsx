@@ -79,14 +79,14 @@ export function AddLiquidityModal({
           timeout={<AddLiquidityTimeout />}
           txHash={addLiquidityTxHash}
           chain={pool.chain}
-          isReceiptReady={receiptProps.isReceiptReady}
+          isReceiptLoading={receiptProps.isLoading}
         />
         <ModalCloseButton />
         <ModalBody>
           <AddLiquiditySummary {...receiptProps} />
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!addLiquidityTxHash}
+          isSuccess={!!addLiquidityTxHash && !receiptProps.isLoading}
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
