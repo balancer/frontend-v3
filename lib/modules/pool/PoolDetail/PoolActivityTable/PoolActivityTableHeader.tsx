@@ -40,7 +40,7 @@ export function PoolActivityTableHeader({ ...rest }) {
           onSort={handleSort}
         />
         <GridItem>
-          <Text fontWeight="bold">Transaction Details</Text>
+          <Text fontWeight="bold">Transaction details</Text>
         </GridItem>
         <SortableHeader
           label="Value"

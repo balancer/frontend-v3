@@ -1,20 +1,21 @@
 'use client'
 
 import { PoolActivityView, usePoolActivityViewType } from './usePoolActivityViewType'
-import { BarChart2, List } from 'react-feather'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { useEffect, useState } from 'react'
+import { ChartBubbleIcon } from '@/lib/shared/components/icons/ChartBubbleIcon'
+import { TableIcon } from '@/lib/shared/components/icons/TableIcon'
 
 const options: ButtonGroupOption[] = [
   {
     value: PoolActivityView.Chart,
-    label: <BarChart2 size={16} />,
+    label: <ChartBubbleIcon size={16} />,
   },
   {
     value: PoolActivityView.List,
-    label: <List size={16} />,
+    label: <TableIcon />,
   },
 ]
 

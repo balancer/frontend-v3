@@ -1,4 +1,7 @@
 import { Box, GridItem, HStack, Text } from '@chakra-ui/react'
+import { SortableIcon } from '../icons/SortableIcon'
+import { ArrowDownIcon } from '../icons/ArrowDownIcon'
+import { ArrowUpIcon } from '../icons/ArrowUpIcon'
 
 type SortableHeaderProps = {
   label: string
@@ -20,11 +23,10 @@ export function SortableHeader({
       <HStack gap="0" w="20px">
         {!isSorted ? (
           <>
-            <Box as="span">↑</Box>
-            <Box as="span">↓</Box>
+            <SortableIcon />
           </>
         ) : (
-          <Box as="span">{sorting === 'asc' ? '↑' : '↓'}</Box>
+          <Box as="span">{sorting === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}</Box>
         )}
       </HStack>
     )

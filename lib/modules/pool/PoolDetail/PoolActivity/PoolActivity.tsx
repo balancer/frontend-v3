@@ -36,7 +36,7 @@ function Content() {
       >
         <VStack alignItems="flex-start" gap="0.5">
           <Heading fontWeight="bold" size="h5">
-            Pool Activity
+            Pool activity
           </Heading>
           {isLoading ? (
             <Skeleton height="20px" w="100px" />
