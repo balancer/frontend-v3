@@ -1,4 +1,4 @@
-import { Card, Heading, Stack, VStack, Text, HStack, Skeleton } from '@chakra-ui/react'
+import { Card, Heading, Stack, VStack, Text, HStack, Skeleton, Box } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { PoolActivityProvider, usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
@@ -35,7 +35,7 @@ function Content() {
         justifyContent="space-between"
         alignItems="start"
       >
-        <VStack alignItems="flex-start" gap={0.5}>
+        <VStack alignItems="flex-start" gap="0.5">
           <Heading fontWeight="bold" size="h5">
             Pool Activity
           </Heading>
@@ -60,8 +60,10 @@ function Content() {
           <PoolActivityViewType />
         </HStack>
       </Stack>
-      {isChartView && <PoolActivityChart />}
-      {isListView && <PoolActivityTable />}
+      <Box mt="4">
+        {isChartView && <PoolActivityChart />}
+        {isListView && <PoolActivityTable />}
+      </Box>
     </Card>
   )
 }
