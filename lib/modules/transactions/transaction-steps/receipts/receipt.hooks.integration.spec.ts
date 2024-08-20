@@ -1,31 +1,42 @@
-import { DefaultPoolTestProvider, testHook } from '@/test/utils/custom-renderers'
+import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 
-import { Address, Hash } from 'viem'
-import {
-  useAddLiquidityReceipt,
-  useRemoveLiquidityReceipt,
-  useSwapReceipt,
-} from './useTransactionLogsQuery'
+import { getGqlChain } from '@/lib/config/app.config'
+import { maticAddress } from '@/lib/debug-helpers'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { Address, Hash } from 'viem'
+import { polygon } from 'viem/chains'
+import { useAddLiquidityReceipt, useRemoveLiquidityReceipt, useSwapReceipt } from './receipt.hooks'
 
-async function testAddReceipt(userAddress: Address, txHash: Hash) {
-  const { result } = testHook(() => useAddLiquidityReceipt({ txHash, userAddress }), {
-    wrapper: DefaultPoolTestProvider,
+async function testAddReceipt(userAddress: Address, txHash: Hash, chainId = 1) {
+  const { result } = testHook(() => {
+    return useAddLiquidityReceipt({
+      chain: getGqlChain(chainId),
+      txHash,
+      userAddress,
+    })
   })
   return result
 }
 
-async function testRemoveReceipt(userAddress: Address, txHash: Hash) {
-  const { result } = testHook(() => useRemoveLiquidityReceipt({ txHash, userAddress }), {
-    wrapper: DefaultPoolTestProvider,
+async function testRemoveReceipt(userAddress: Address, txHash: Hash, chainId = 1) {
+  const { result } = testHook(() => {
+    return useRemoveLiquidityReceipt({
+      txHash,
+      userAddress,
+      chain: getGqlChain(chainId),
+    })
   })
   return result
 }
 
 async function testSwapReceipt(userAddress: Address, txHash: Hash, chain: GqlChain) {
-  const { result } = testHook(() => useSwapReceipt({ txHash, userAddress, chain }), {
-    wrapper: DefaultPoolTestProvider,
+  const { result } = testHook(() => {
+    return useSwapReceipt({
+      txHash,
+      userAddress,
+      chain,
+    })
   })
   return result
 }
@@ -38,6 +49,7 @@ test('queries add liquidity transaction', async () => {
   const result = await testAddReceipt(userAddress, txHash)
 
   await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
   await waitFor(() => expect(result.current.sentTokens).toBeDefined())
 
   expect(result.current.sentTokens).toEqual([
@@ -52,6 +64,26 @@ test('queries add liquidity transaction', async () => {
   ])
 
   expect(result.current.receivedBptUnits).toBe('7.669852124112308228')
+})
+
+test('queries add liquidity with native token', async () => {
+  // https://polygonscan.com/tx/0x611a0eeeff15c2a5efc587b173fa577475134de2554a452259f112db67bd4de8
+  const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
+  const txHash = '0x611a0eeeff15c2a5efc587b173fa577475134de2554a452259f112db67bd4de8'
+
+  const result = await testAddReceipt(userAddress, txHash, polygon.id)
+
+  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+  await waitFor(() => expect(result.current.sentTokens).toBeDefined())
+
+  expect(result.current.sentTokens).toEqual([
+    {
+      tokenAddress: maticAddress,
+      humanAmount: '1',
+    },
+  ])
+
+  expect(result.current.receivedBptUnits).toBe('0.984524168989962117')
 })
 
 test('queries remove liquidity transaction', async () => {
@@ -125,20 +157,20 @@ describe('queries swap transaction', () => {
 
   test('when the native asset is the token out (from DAI to MATIC)', async () => {
     const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
-    // https://polygonscan.com/tx/0xc66780aebb4ec2f3d2f6c2e10358bbb6396574dc161f437982373c09e315479c
-    const txHash = '0xc66780aebb4ec2f3d2f6c2e10358bbb6396574dc161f437982373c09e315479c'
+    // https://polygonscan.com/tx/0xe0b75845d13ae12029c8dfef68488b3bf35347460fafdb3a15a5c7f884226288
+    const txHash = '0xe0b75845d13ae12029c8dfef68488b3bf35347460fafdb3a15a5c7f884226288'
 
     const result = await testSwapReceipt(userAddress, txHash, GqlChain.Polygon)
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy())
 
     expect(result.current.sentToken).toEqual({
-      humanAmount: '1',
+      humanAmount: '0.1',
       tokenAddress: daiAddress,
     })
 
     expect(result.current.receivedToken).toEqual({
-      humanAmount: '1.44262244738485634',
+      humanAmount: '0.241277224191485579',
       tokenAddress: maticAddress,
     })
   })

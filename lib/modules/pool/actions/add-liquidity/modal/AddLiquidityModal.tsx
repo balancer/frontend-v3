@@ -16,6 +16,8 @@ import { TransactionModalHeader } from '@/lib/shared/components/modals/Transacti
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
 import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
 import { AddLiquiditySummary } from './AddLiquiditySummary'
+import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -34,8 +36,14 @@ export function AddLiquidityModal({
   const initialFocusRef = useRef(null)
   const { transactionSteps, addLiquidityTxHash, hasQuoteContext, setInitialHumanAmountsIn } =
     useAddLiquidity()
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
+  const { userAddress } = useUserAccount()
+  const receiptProps = useAddLiquidityReceipt({
+    chain,
+    txHash: addLiquidityTxHash,
+    userAddress,
+  })
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -71,13 +79,14 @@ export function AddLiquidityModal({
           timeout={<AddLiquidityTimeout />}
           txHash={addLiquidityTxHash}
           chain={pool.chain}
+          isReceiptLoading={receiptProps.isLoading}
         />
         <ModalCloseButton />
         <ModalBody>
-          <AddLiquiditySummary />
+          <AddLiquiditySummary {...receiptProps} />
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!addLiquidityTxHash}
+          isSuccess={!!addLiquidityTxHash && !receiptProps.isLoading}
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
