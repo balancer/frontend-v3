@@ -1,6 +1,6 @@
 'use client'
 
-import { Box, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
+import { Box, Divider, Grid, GridItem, HStack, Text } from '@chakra-ui/react'
 import { usePoolActivity } from '../PoolActivity/usePoolActivity'
 import { Sorting, SortingBy } from '../PoolActivity/poolActivity.types'
 
@@ -83,36 +83,40 @@ export function PoolActivityTableHeader({ ...rest }) {
   }
 
   return (
-    <Grid {...rest} p={['ms', 'md']} w="full" borderBottom="1px solid" borderColor="border.base">
-      <GridItem>
-        <Text fontWeight="bold">User</Text>
-      </GridItem>
-      <SortableHeader
-        label="Action"
-        sortingBy={sortingBy}
-        isSorted={isSortedByAction}
-        sorting={sorting}
-        onSort={handleSort}
-      />
-      <GridItem>
-        <Text fontWeight="bold">Transaction Details</Text>
-      </GridItem>
-      <SortableHeader
-        label="Value"
-        sortingBy={sortingBy}
-        isSorted={isSortedByValue}
-        sorting={sorting}
-        onSort={handleSort}
-        align="right"
-      />
-      <SortableHeader
-        label="Time"
-        sortingBy={sortingBy}
-        isSorted={isSortedByTime}
-        sorting={sorting}
-        onSort={handleSort}
-        align="right"
-      />
-    </Grid>
+    <>
+      <Divider />
+      <Grid {...rest} p={['ms', 'md']} w="full">
+        <GridItem>
+          <Text fontWeight="bold">User</Text>
+        </GridItem>
+        <SortableHeader
+          label="Action"
+          sortingBy={sortingBy}
+          isSorted={isSortedByAction}
+          sorting={sorting}
+          onSort={handleSort}
+        />
+        <GridItem>
+          <Text fontWeight="bold">Transaction Details</Text>
+        </GridItem>
+        <SortableHeader
+          label="Value"
+          sortingBy={sortingBy}
+          isSorted={isSortedByValue}
+          sorting={sorting}
+          onSort={handleSort}
+          align="right"
+        />
+        <SortableHeader
+          label="Time"
+          sortingBy={sortingBy}
+          isSorted={isSortedByTime}
+          sorting={sorting}
+          onSort={handleSort}
+          align="right"
+        />
+      </Grid>
+      <Divider />
+    </>
   )
 }
