@@ -203,7 +203,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
   const theme = useChakraTheme()
-  const { poolActivityData, activeTab } = usePoolActivity()
+  const { poolEventsForChart, activeTab } = usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
   const chartHeight = isExpanded ? 300 : 90
 
@@ -228,7 +228,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: poolActivityData.adds,
+        data: poolEventsForChart.filter(event => event[2].action === 'add'),
         type: 'scatter',
       },
       exitOption: {
@@ -250,7 +250,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: poolActivityData.removes,
+        data: poolEventsForChart.filter(event => event[2].action === 'remove'),
         type: 'scatter',
       },
       swapOption: {
@@ -272,11 +272,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
           scale: 1.5,
         },
         symbolSize: getSymbolSize,
-        data: poolActivityData.swaps,
+        data: poolEventsForChart.filter(event => event[2].action === 'swap'),
         type: 'scatter',
       },
     }
-  }, [poolActivityData])
+  }, [poolEventsForChart])
 
   useEffect(() => {
     const instance = eChartsRef.current?.getEchartsInstance()
@@ -302,7 +302,7 @@ export function usePoolActivityChart(isExpanded: boolean) {
           series: [joinOption, exitOption, swapOption],
         })
     }
-  }, [activeTab, poolActivityData, options])
+  }, [activeTab, poolEventsForChart, options])
 
   return {
     chartOption: getDefaultPoolActivityChartOptions(
