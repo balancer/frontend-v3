@@ -23,7 +23,7 @@ function SortableHeader({
 }: SortableHeaderProps) {
   const renderSortIcon = () => {
     return (
-      <HStack gap={0} w="20px">
+      <HStack gap="0" w="20px">
         {sortingBy !== label.toLowerCase() ? (
           <>
             <Box as="span">↑</Box>
@@ -39,21 +39,24 @@ function SortableHeader({
   const color = isSorted ? 'font.highlight' : 'font.primary'
 
   return (
-    <GridItem textAlign="right">
-      <Text
-        display="flex"
+    <GridItem>
+      <HStack
+        gap="0"
         justifyContent={align === 'left' ? 'flex-start' : 'flex-end'}
         alignItems="center"
-        fontWeight="bold"
-        color={color}
-        cursor="pointer"
-        onClick={() => onSort(label.toLowerCase() as SortingBy)}
       >
-        {label}
-        <Text fontSize="xs" ml={1} color={color}>
-          {renderSortIcon()}
+        <Text
+          fontWeight="bold"
+          color={color}
+          cursor="pointer"
+          onClick={() => onSort(label.toLowerCase() as SortingBy)}
+        >
+          {label}
         </Text>
-      </Text>
+        <Box fontSize="xs" ml={1} color={color}>
+          {renderSortIcon()}
+        </Box>
+      </HStack>
     </GridItem>
   )
 }
