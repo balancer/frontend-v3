@@ -29,7 +29,7 @@ export function PoolActionsLayout({ children }: Props) {
       onClick={redirectToPoolPage}
     >
       <VStack w="full" bg={bg} backdropFilter={blur} zIndex={51} onClick={redirectToPoolPage}>
-        <Navbar leftSlot={<PoolName pool={pool} color={fontColor} />} />
+        <Navbar leftSlot={<PoolName pool={pool} color={fontColor} />} disableBlur />
         <Box w="full" px={['0', 'md']} pt="72px">
           <Card
             position="relative"

@@ -21,6 +21,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 type Props = {
   leftSlot?: React.ReactNode
   rightSlot?: React.ReactNode
+  disableBlur?: boolean
 }
 
 const clamp = (number: number, min: number, max: number) => Math.min(Math.max(number, min), max)
@@ -167,7 +168,7 @@ function NavActions() {
   )
 }
 
-export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
+export function Navbar({ leftSlot, rightSlot, disableBlur, ...rest }: Props & BoxProps) {
   const [showShadow, setShowShadow] = useState(false)
 
   useEffect(() => {
@@ -188,7 +189,9 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
   )
 
   const blurEffect = useTransform(scrollYBoundedProgressDelayed, [0, 1], [10, 0])
-  const backdropFilterStyle = useMotionTemplate`blur(${blurEffect}px)`
+  const backdropFilter = useMotionTemplate`blur(${blurEffect}px)`
+  const top = useTransform(scrollYBoundedProgressDelayed, [0, 1], [0, -72])
+  const opacity = useTransform(scrollYBoundedProgressDelayed, [0, 1], [1, 0])
 
   return (
     <Box
@@ -199,9 +202,9 @@ export function Navbar({ leftSlot, rightSlot, ...rest }: Props & BoxProps) {
       top="0"
       transition="all 0.3s ease-in-out"
       style={{
-        backdropFilter: backdropFilterStyle,
-        top: useTransform(scrollYBoundedProgressDelayed, [0, 1], [0, -72]),
-        opacity: useTransform(scrollYBoundedProgressDelayed, [0, 1], [1, 0]),
+        backdropFilter: disableBlur ? 'none' : backdropFilter,
+        top: disableBlur ? 0 : top,
+        opacity: disableBlur ? 1 : opacity,
       }}
       onScroll={e => console.log('Navbar scroll:', e)}
       boxShadow={showShadow ? 'lg' : 'none'}
