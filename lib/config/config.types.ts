@@ -68,6 +68,7 @@ export interface NetworkConfig {
   minConfirmations?: number
   pools: PoolsConfig
   layerZeroChainId?: number
+  supportsVeBalSync?: boolean
 }
 
 export interface Config {

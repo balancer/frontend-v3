@@ -50,6 +50,7 @@ const networkConfig: NetworkConfig = {
   },
   pools: convertHexToLowerCase({ issues: {} }),
   layerZeroChainId: 184,
+  supportsVeBalSync: true,
 }
 
 export default networkConfig

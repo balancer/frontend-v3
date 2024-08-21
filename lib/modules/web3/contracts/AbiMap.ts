@@ -1,5 +1,6 @@
 import { FeeDistributorStaticAbi } from './abi/FeeDistributorStaticAbi'
 import { LiquidityGaugeAbi } from './abi/LiquidityGaugeAbi'
+import { GaugeWorkingBalanceHelperAbi } from './abi/gaugeWorkingBalanceHelper'
 import {
   balancerMinterAbi,
   balancerV2BalancerRelayerV6Abi,
@@ -17,6 +18,7 @@ export const AbiMap = {
   'balancer.minter': balancerMinterAbi,
   'balancer.relayerV6': balancerV2BalancerRelayerV6Abi,
   'balancer.feeDistributorStatic': FeeDistributorStaticAbi,
+  'balancer.gaugeWorkingBalanceHelperAbi': GaugeWorkingBalanceHelperAbi,
   'balancer.feeDistributor': feeDistributorAbi,
   'balancer.veDelegationProxy': veDelegationProxyAbi,
   'balancer.veDelegationProxyL2': VeDelegationProxyL2Abi,

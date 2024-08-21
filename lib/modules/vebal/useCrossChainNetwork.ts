@@ -1,10 +1,10 @@
 import { useMemo, useCallback } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useUserAccount } from '../web3/useUserAccount'
 import networkConfigs from '@/lib/config/networks'
 import { OmniEscrowLock } from './useOmniEscrowLocksQuery'
 import { useVotingEscrowLocksQuery, VotingEscrowLock } from './useVotingEscrowLocksQuery'
 import { bn } from '@/lib/shared/utils/numbers'
+import { useUserAccount } from '../web3/UserAccountProvider'
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',

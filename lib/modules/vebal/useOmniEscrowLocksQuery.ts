@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query"
+import { useQuery } from '@tanstack/react-query'
 
 export interface OmniEscrowLock {
   id: string
@@ -18,7 +18,7 @@ export interface OmniEscrowLockResponse {
 export function useOmniEscrowLocksQuery(address: string) {
   const queryKey = ['OmniEscrowLocks', address]
 
-  const fetchOmniEscrowLocks = async () => {
+  const fetchOmniEscrowLocks = async (): Promise<OmniEscrowLockResponse> => {
     // Mocked data
     return {
       omniVotingEscrowLocks: [],

@@ -5,7 +5,7 @@ import { NetworkConfig } from '../config.types'
 import { CSP_ISSUE_POOL_IDS } from '../../shared/data/csp-issue'
 import { SupportedWrapHandler } from '@/lib/modules/swap/swap.types'
 
-const networkConfig = {
+const networkConfig: NetworkConfig = {
   chainId: 1,
   name: 'Ethereum Mainnet',
   shortName: 'Ethereum',

@@ -67,6 +67,7 @@ const networkConfig: NetworkConfig = {
     },
   }),
   layerZeroChainId: 110,
+  supportsVeBalSync: true,
 }
 
 export default networkConfig
