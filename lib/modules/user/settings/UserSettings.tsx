@@ -16,14 +16,12 @@ import {
   PopoverTrigger,
   VStack,
   Text,
-  Tooltip,
   Switch,
 } from '@chakra-ui/react'
 import { useUserSettings } from './UserSettingsProvider'
 import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
-import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 
 export function SlippageInput() {
   const { slippage, setSlippage } = useUserSettings()
@@ -72,8 +70,15 @@ function EnableSignaturesSelect() {
   return <Switch isChecked={enableSignatures === 'yes'} onChange={handleChange} />
 }
 
-// eslint-disable-next-line max-len
-const signaturesTooltipLabel = `It's recommended to turn on signatures for gas-free transactions, where possible. However, if your wallet doesn't support the signing of signatures, you can turn it off.`
+function ToggleAllowSounds() {
+  const { allowSounds, setAllowSounds } = useUserSettings()
+
+  const handleChange = () => {
+    setAllowSounds(allowSounds === 'yes' ? 'no' : 'yes')
+  }
+
+  return <Switch isChecked={allowSounds === 'yes'} onChange={handleChange} />
+}
 
 export function UserSettings() {
   return (
@@ -93,7 +98,7 @@ export function UserSettings() {
               Settings
             </Heading>
           </HStack>
-          <VStack align="start" spacing="md" p="md">
+          <VStack align="start" spacing="lg" p="md">
             <Box w="full">
               <Heading size="sm" pb="2">
                 Currency
@@ -107,13 +112,24 @@ export function UserSettings() {
               <SlippageInput />
             </Box>
             <Box w="full">
-              <HStack pb="sm">
-                <Heading size="sm">Use Signatures</Heading>
-                <Tooltip label={signaturesTooltipLabel} fontSize="sm">
-                  <InfoIcon />
-                </Tooltip>
-              </HStack>
+              <Heading size="sm" pb="xs">
+                Use Signatures
+              </Heading>
+              <Text fontSize="sm" pb="sm" color="font.secondary">
+                Signatures allow for gas-free transactions, where possible. If your wallet
+                doesn&apos;t support signatures, you can turn it off.
+              </Text>
               <EnableSignaturesSelect />
+            </Box>
+            <Box w="full">
+              <Heading size="sm" pb="xs">
+                Sound effects
+              </Heading>
+              <Text fontSize="sm" pb="sm" color="font.secondary">
+                Allow sound effects for successful transactions. Disable if you prefer a silent
+                experience.
+              </Text>
+              <ToggleAllowSounds />
             </Box>
           </VStack>
         </PopoverBody>
