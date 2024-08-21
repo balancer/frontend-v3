@@ -23,13 +23,6 @@ const aprItems = [
     apr: 0.01914598038405333,
     type: 'STAKING',
   },
-  {
-    __typename: 'GqlPoolAprItem',
-    id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr',
-    title: 'BAL reward APR',
-    apr: 0.01914598038405333,
-    type: 'STAKING',
-  },
 ] as GqlPoolAprItem[]
 
 const vebalBoost = undefined
