@@ -30,7 +30,7 @@ const networksByChainId = keyBy(config.networks, 'chainId')
  * param is not provided or incorrect, it will return the default network config.
  */
 export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
-  const defaultNetwork = networksByChainId[process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || 250]
+  const defaultNetwork = networksByChainId[process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || 1]
 
   if (!chain) return defaultNetwork
 
