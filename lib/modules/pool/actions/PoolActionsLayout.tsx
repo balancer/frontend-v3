@@ -14,9 +14,8 @@ export function PoolActionsLayout({ children }: Props) {
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
-  const bg = useColorModeValue('whiteAlpha.100', 'blackAlpha.500')
-  const fontColor = useColorModeValue('font.dark', 'font.light')
-  const blur = useColorModeValue('blur(8px) hue-rotate(90deg)', 'blur(3px) hue-rotate(90deg)')
+  const bg = useColorModeValue('blackAlpha.800', 'blackAlpha.700')
+  const blur = useColorModeValue('blur(8px)', 'blur(5px)')
 
   return (
     <Box
@@ -29,7 +28,7 @@ export function PoolActionsLayout({ children }: Props) {
       onClick={redirectToPoolPage}
     >
       <VStack w="full" bg={bg} backdropFilter={blur} zIndex={51} onClick={redirectToPoolPage}>
-        <Navbar leftSlot={<PoolName pool={pool} color={fontColor} />} disableBlur />
+        <Navbar leftSlot={<PoolName pool={pool} color="font.light" />} disableBlur />
         <Box w="full" px={['0', 'md']} pt="72px">
           <Card
             position="relative"
