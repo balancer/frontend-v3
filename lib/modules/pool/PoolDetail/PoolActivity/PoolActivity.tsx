@@ -35,9 +35,15 @@ function Content() {
         alignItems="start"
       >
         <VStack alignItems="flex-start" gap="0.5">
-          <Heading fontWeight="bold" size="h5">
-            Pool activity
-          </Heading>
+          <Box
+            transform={!isChartView ? 'translateY(4px)' : '0'}
+            transition="transform 0.2s var(--ease-out-cubic)"
+          >
+            <Heading fontWeight="bold" size="h5">
+              Pool activity
+            </Heading>
+          </Box>
+
           {isChartView &&
             (isLoading ? (
               <Skeleton height="20px" w="100px" />

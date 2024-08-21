@@ -4,11 +4,15 @@ import ReactECharts from 'echarts-for-react'
 import { Box, Button, Divider, HStack, Skeleton, Text, useTheme } from '@chakra-ui/react'
 import { usePoolActivityChart } from './usePoolActivityChart'
 import { FC, PropsWithChildren } from 'react'
-import { motion } from 'framer-motion'
+import { motion, easeOut } from 'framer-motion'
 import { usePoolActivity } from '../PoolActivity/usePoolActivity'
 
 const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
-  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    transition={{ duration: 0.5, delay: 0.2 }}
+  >
     {children}
   </motion.div>
 )
@@ -41,7 +45,7 @@ export function PoolActivityChart() {
           <motion.div
             initial={{ height: 90 }}
             animate={{ height: chartHeight, opacity: isExpanded ? [0, 1] : 1 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.2, ease: easeOut }}
           >
             <ReactECharts
               style={{ height: `${chartHeight}px` }}
@@ -52,7 +56,11 @@ export function PoolActivityChart() {
           </motion.div>
         </Box>
       )}
-      {isExpanded && <Divider pt="2" mb="4" />}
+      {isExpanded && (
+        <AnimateOpacity>
+          <Divider pt="2" mb="4" />
+        </AnimateOpacity>
+      )}
       {!isLoading && (
         <HStack>
           <Button variant="secondary" onClick={() => setIsExpanded(!isExpanded)} size="sm">
