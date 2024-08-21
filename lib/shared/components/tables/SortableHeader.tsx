@@ -1,4 +1,4 @@
-import { Box, GridItem, HStack, Text } from '@chakra-ui/react'
+import { Box, Button, GridItem, HStack, Text } from '@chakra-ui/react'
 import { SortableIcon } from '../icons/SortableIcon'
 import { ArrowDownIcon } from '../icons/ArrowDownIcon'
 import { ArrowUpIcon } from '../icons/ArrowUpIcon'
@@ -19,40 +19,23 @@ export function SortableHeader({
   align = 'left',
 }: SortableHeaderProps) {
   const renderSortIcon = () => {
-    return (
-      <HStack gap="0" w="20px">
-        {!isSorted ? (
-          <>
-            <SortableIcon />
-          </>
-        ) : (
-          <Box as="span">{sorting === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />}</Box>
-        )}
-      </HStack>
-    )
+    return !isSorted ? <SortableIcon /> : sorting === 'asc' ? <ArrowUpIcon /> : <ArrowDownIcon />
   }
 
   const color = isSorted ? 'font.highlight' : 'font.primary'
 
   return (
-    <GridItem>
-      <HStack
-        gap="0"
-        justifyContent={align === 'left' ? 'flex-start' : 'flex-end'}
-        alignItems="center"
-      >
-        <Text
-          fontWeight="bold"
-          color={color}
-          cursor="pointer"
-          onClick={() => onSort(label.toLowerCase())}
-        >
-          {label}
-        </Text>
-        <Box fontSize="xs" ml={1} color={color}>
-          {renderSortIcon()}
-        </Box>
-      </HStack>
+    <GridItem justifySelf={align === 'left' ? 'start' : 'end'}>
+      <Button size="sm" variant="ghost">
+        <HStack gap="0" alignItems="center">
+          <Text onClick={() => onSort(label.toLowerCase())} color={color} fontWeight="bold">
+            {label}
+          </Text>
+          <Box fontSize="xs" ml="1" color={color}>
+            {renderSortIcon()}
+          </Box>
+        </HStack>
+      </Button>
     </GridItem>
   )
 }

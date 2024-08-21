@@ -22,7 +22,7 @@ export function PoolActivityTableHeader({ ...rest }) {
       toggleSorting()
     } else {
       setSortingBy(newSortingBy)
-      setSorting(Sorting.asc)
+      setSorting(newSortingBy === SortingBy.action ? Sorting.asc : Sorting.desc)
     }
   }
 

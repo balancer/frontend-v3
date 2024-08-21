@@ -195,6 +195,7 @@ function _usePoolActivity() {
     (events: PoolActivityEl[], sortBy: SortingBy, order: Sorting) => {
       return [...events].sort((a, b) => {
         let compareValue = a[0] - b[0]
+
         switch (sortBy) {
           case SortingBy.time:
             compareValue = a[0] - b[0]
@@ -206,6 +207,7 @@ function _usePoolActivity() {
             compareValue = sortAlphabetically(a[2].action, b[2].action)
             break
         }
+
         return order === Sorting.asc ? compareValue : -compareValue
       })
     },
