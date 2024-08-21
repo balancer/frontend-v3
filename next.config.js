@@ -21,7 +21,6 @@ const nextConfig = {
       },
     ],
   },
-  pageExtensions: ['tsx', `${process.env.PROTOCOL}.tsx`, 'ts'],
 
   // Safe App setup
   headers: manifestHeaders,
