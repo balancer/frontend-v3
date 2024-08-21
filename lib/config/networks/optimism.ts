@@ -58,14 +58,6 @@ const networkConfig: NetworkConfig = {
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Optimism],
     },
   }),
-  features: {
-    mabeets: false,
-    vebal: false,
-    sftmx: false,
-    masterchef: false,
-    gauge: true,
-  },
-  default: false,
 }
 
 export default networkConfig

@@ -8,7 +8,7 @@ import { BalancerLogo } from '../imgs/BalancerLogo'
 import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { UserSettings } from '@/lib/modules/user/settings/UserSettings'
 import RecentTransactions from '../other/RecentTransactions'
-import { isBalancer, isDev, isStaging } from '@/lib/config/app.config'
+import { getGqlChain, isDev, isStaging } from '@/lib/config/app.config'
 import { staggeredFadeIn, fadeIn } from '@/lib/shared/utils/animations'
 import { motion, useMotionTemplate, useMotionValue, useScroll, useTransform } from 'framer-motion'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
@@ -17,7 +17,9 @@ import { useNav } from './useNav'
 import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useFeatures } from '../../hooks/useFeatures'
+import { Features } from '@/lib/config/config.types'
+import { hasFeature } from '@/lib/config/hasFeature'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 type Props = {
   leftSlot?: React.ReactNode
@@ -46,7 +48,9 @@ function useBoundedScroll(threshold: number) {
 
 function NavLinks({ ...props }: BoxProps) {
   const { appLinks, beetsLinks, AppLink } = useNav()
-  const { mabeets, vebal, sftmx } = useFeatures()
+  const { chain: _chain } = useUserAccount()
+
+  const chain = _chain?.id ? getGqlChain(_chain?.id) : getProjectConfig().defaultNetwork
 
   return (
     <HStack spacing="lg" fontWeight="medium" {...props}>
@@ -55,19 +59,19 @@ function NavLinks({ ...props }: BoxProps) {
           <AppLink href={link.href} label={link.label} />
         </Box>
       ))}
-      {vebal && isBalancer && (
+      {hasFeature(chain, Features.vebal) && (
         <Box as={motion.div} variants={fadeIn}>
           <VeBalLink />
         </Box>
       )}
-      {mabeets && (
+      {hasFeature(chain, Features.mabeets) && (
         <AppLink
           key={beetsLinks.mabeets.href}
           href={beetsLinks.mabeets.href}
           label={beetsLinks.mabeets.label}
         />
       )}
-      {sftmx && (
+      {hasFeature(chain, Features.sftmx) && (
         <AppLink
           key={beetsLinks.sftmx.href}
           href={beetsLinks.sftmx.href}

@@ -21,12 +21,17 @@ import { BalancerLogoType } from '../imgs/BalancerLogoType'
 import { useNav } from './useNav'
 import { useRouter } from 'next/navigation'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
-import { useFeatures } from '../../hooks/useFeatures'
-import { isBalancer } from '@/lib/config/app.config'
+import { getGqlChain } from '@/lib/config/app.config'
+import { Features } from '@/lib/config/config.types'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { hasFeature } from '@/lib/config/hasFeature'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 function NavLinks({ onClick }: { onClick?: () => void }) {
   const { appLinks, beetsLinks, AppLink } = useNav()
-  const { mabeets, vebal, sftmx } = useFeatures()
+  const { chain: _chain } = useUserAccount()
+
+  const chain = _chain?.id ? getGqlChain(_chain?.id) : getProjectConfig().defaultNetwork
 
   return (
     <VStack align="start" w="full">
@@ -39,8 +44,8 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
           fontSize="xl"
         />
       ))}
-      {vebal && isBalancer && <VeBalLink fontSize="xl" />}
-      {mabeets && (
+      {hasFeature(chain, Features.vebal) && <VeBalLink fontSize="xl" />}
+      {hasFeature(chain, Features.mabeets) && (
         <AppLink
           key={beetsLinks.mabeets.href}
           href={beetsLinks.mabeets.href}
@@ -49,7 +54,7 @@ function NavLinks({ onClick }: { onClick?: () => void }) {
           fontSize="xl"
         />
       )}
-      {sftmx && (
+      {hasFeature(chain, Features.sftmx) && (
         <AppLink
           key={beetsLinks.sftmx.href}
           href={beetsLinks.sftmx.href}

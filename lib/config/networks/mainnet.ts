@@ -123,14 +123,6 @@ const networkConfig = {
       ],
     },
   }),
-  features: {
-    mabeets: false,
-    vebal: true,
-    sftmx: false,
-    masterchef: false,
-    gauge: true,
-  },
-  default: true,
 } as const satisfies NetworkConfig
 
 export default networkConfig

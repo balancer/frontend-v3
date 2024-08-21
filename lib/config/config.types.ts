@@ -54,7 +54,7 @@ export interface BlockExplorerConfig {
 
 export type SupportedChainId = (typeof chains)[number]['id']
 
-enum Features {
+export enum Features {
   mabeets = 'mabeets',
   vebal = 'vebal',
   sftmx = 'sftmx',
@@ -74,8 +74,6 @@ export interface NetworkConfig {
   contracts: ContractsConfig
   minConfirmations?: number
   pools: PoolsConfig
-  features: { [key in Features]: boolean }
-  default: boolean
 }
 
 export interface Config {
@@ -103,4 +101,7 @@ export interface ProjectConfig {
   supportedNetworks: GqlChain[]
   corePoolId: string // this prop is used to adjust the color of the SparklesIcon
   variantConfig?: VariantConfig
+  features: { [key in GqlChain]: Features[] }
+  defaultNetwork: GqlChain
+  defaultChainId: number
 }

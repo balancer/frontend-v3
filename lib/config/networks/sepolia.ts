@@ -40,14 +40,6 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: {},
   }),
-  features: {
-    mabeets: false,
-    vebal: true,
-    sftmx: false,
-    masterchef: false,
-    gauge: true,
-  },
-  default: false,
 }
 
 export default networkConfig
