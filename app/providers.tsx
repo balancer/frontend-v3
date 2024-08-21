@@ -18,13 +18,7 @@ export function Providers({ children }: { children: ReactNode }) {
           <Web3Provider wagmiConfig={wagmiConfig}>
             <ApolloClientProvider>
               <ApolloGlobalDataProvider>
-                <UserSettingsProvider
-                  initCurrency={undefined}
-                  initSlippage={undefined}
-                  initEnableSignatures={undefined}
-                  initPoolListView={undefined}
-                  initAcceptedPolicies={undefined}
-                >
+                <UserSettingsProvider>
                   <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
                 </UserSettingsProvider>
               </ApolloGlobalDataProvider>
