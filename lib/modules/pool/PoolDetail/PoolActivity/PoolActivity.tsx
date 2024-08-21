@@ -38,13 +38,14 @@ function Content() {
           <Heading fontWeight="bold" size="h5">
             Pool activity
           </Heading>
-          {isLoading ? (
-            <Skeleton height="20px" w="100px" />
-          ) : (
-            <Text fontWeight="medium" variant="secondary" fontSize="sm">
-              {transactionsLabel}
-            </Text>
-          )}
+          {isChartView &&
+            (isLoading ? (
+              <Skeleton height="20px" w="100px" />
+            ) : (
+              <Text fontWeight="medium" variant="secondary" fontSize="sm">
+                {transactionsLabel}
+              </Text>
+            ))}
         </VStack>
         <HStack>
           <ButtonGroup
