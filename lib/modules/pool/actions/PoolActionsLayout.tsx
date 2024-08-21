@@ -1,7 +1,7 @@
 'use client'
 
 import { Navbar } from '@/lib/shared/components/navs/Navbar'
-import { Box, VStack, Card } from '@chakra-ui/react'
+import { Box, VStack, Card, useColorModeValue } from '@chakra-ui/react'
 import { PropsWithChildren } from 'react'
 import { PoolActionsNav } from './PoolActionsNav'
 import { usePool } from '../PoolProvider'
@@ -14,6 +14,10 @@ export function PoolActionsLayout({ children }: Props) {
   const { pool } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
 
+  const bg = useColorModeValue('whiteAlpha.100', 'blackAlpha.500')
+  const fontColor = useColorModeValue('font.dark', 'font.light')
+  const blur = useColorModeValue('blur(8px) hue-rotate(90deg)', 'blur(3px) hue-rotate(90deg)')
+
   return (
     <Box
       pos="absolute"
@@ -24,14 +28,8 @@ export function PoolActionsLayout({ children }: Props) {
       zIndex={100}
       onClick={redirectToPoolPage}
     >
-      <VStack
-        w="full"
-        bg="blackAlpha.700"
-        backdropFilter="blur(3px) hue-rotate(90deg)"
-        zIndex={51}
-        onClick={redirectToPoolPage}
-      >
-        <Navbar leftSlot={<PoolName pool={pool} color="font.light" />} />
+      <VStack w="full" bg={bg} backdropFilter={blur} zIndex={51} onClick={redirectToPoolPage}>
+        <Navbar leftSlot={<PoolName pool={pool} color={fontColor} />} />
         <Box w="full" px={['0', 'md']} pt="72px">
           <Card
             position="relative"
