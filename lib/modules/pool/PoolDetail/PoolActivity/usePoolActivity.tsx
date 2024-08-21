@@ -90,7 +90,10 @@ function _usePoolActivity() {
           })
         }
 
-        if (item.__typename === 'GqlPoolSwapEventV3') {
+        if (
+          item.__typename === 'GqlPoolSwapEventV3' ||
+          item.__typename === 'GqlPoolSwapEventCowAmm'
+        ) {
           tokens.push({
             token: getToken(item.tokenIn.address, _chain),
             amount: item.tokenIn.amount,

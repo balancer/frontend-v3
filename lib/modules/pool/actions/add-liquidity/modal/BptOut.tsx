@@ -42,7 +42,7 @@ export function ReceiptBptOut({
   )
 }
 
-export function QuoteBptOut({ label }: { label?: string }) {
+export function QuoteBptOut({ label, isLoading = false }: { label?: string; isLoading?: boolean }) {
   const { simulationQuery } = useAddLiquidity()
   const bptOut = simulationQuery?.data?.bptOut
   const bptOutUnits = bptOut ? formatUnits(bptOut.amount, BPT_DECIMALS) : '0'
@@ -56,5 +56,5 @@ export function QuoteBptOut({ label }: { label?: string }) {
     ? 'You will get'
     : 'You will get (if no slippage)'
 
-  return <BptRow label={_label} bptAmount={bptOutUnits} pool={pool} />
+  return <BptRow label={_label} bptAmount={bptOutUnits} pool={pool} isLoading={isLoading} />
 }

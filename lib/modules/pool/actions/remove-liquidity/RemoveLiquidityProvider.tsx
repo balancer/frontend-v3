@@ -143,8 +143,9 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   const removeLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const removeLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
 
-  const hasQuoteContext = quoteAmountsOut.length > 0
+  const hasQuoteContext = !!simulationQuery.data
 
   /**
    * Methods
@@ -257,6 +258,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     removeLiquidityTxHash,
     hasQuoteContext,
     amountsOut,
+    removeLiquidityTxSuccess,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,

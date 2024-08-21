@@ -13,7 +13,7 @@ export default function Terms() {
           <div className="subsection">
             <h1>Balancer Terms of Use</h1>
             <p>
-              <em>Last updated: October 2023</em>
+              <em>Last updated: August 2024</em>
             </p>
             <p>
               <em className="font-semibold">
@@ -43,6 +43,13 @@ export default function Terms() {
               interfaces. These Terms apply to you (“You” or “you”) as a user of our Site including
               all the products, services, tools and information, without limitation, made available
               on the Site.
+            </p>
+            <p>
+              To avoid any confusion, you agree a) you retain full control, at all times, over your
+              cryptocurrency assets, b) there are no intermediaries involved when you interact with
+              the Balancer Protocol and c) the online interface (UI) is a mere graphical interface
+              for you to interact with the Balancer protocol, which can be accessed through other
+              means, including other interfaces.
             </p>
             <p>
               You must be able to form a legally binding contract online either as an individual or

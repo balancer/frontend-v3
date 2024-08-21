@@ -19,7 +19,7 @@ export function BptRow({
   return (
     <VStack align="start" spacing="md">
       <HStack justify="space-between" w="full">
-        <Text color="grayText">{label}</Text>
+        {!isLoading && <Text color="grayText">{label}</Text>}
         {rightLabel && <Text color="grayText">{rightLabel}</Text>}
       </HStack>
       <TokenRow
