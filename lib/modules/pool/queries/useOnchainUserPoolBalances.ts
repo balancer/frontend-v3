@@ -111,11 +111,19 @@ function overwriteOnchainPoolBalanceData(
 
     // Unstaked balances
     const onchainUnstakedBalances = ocUnstakedBalances[pool.id]
+    if (!onchainUnstakedBalances) {
+      return pool
+    }
+
     const onchainUnstakedBalance = onchainUnstakedBalances.unstakedBalance as HumanAmount
     const onchainUnstakedBalanceUsd = bn(onchainUnstakedBalance).times(bptPrice).toNumber()
 
     // Staked balances
     const onchainStakedBalances = stakedBalancesByPoolId[pool.id]
+
+    if (!onchainStakedBalances) {
+      return pool
+    }
     const onchainTotalStakedBalance = safeSum(
       onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance))
     )
