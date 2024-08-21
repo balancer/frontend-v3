@@ -23,6 +23,7 @@ import {
 } from './poolActivity.types'
 import { PaginationState } from '@/lib/shared/components/pagination/pagination.types'
 import { usePoolActivityViewType } from '../PoolActivityViewType/usePoolActivityViewType'
+import { sortAlphabetically } from '@/lib/shared/utils/sorting'
 
 export type PoolActivityResponse = ReturnType<typeof _usePoolActivity>
 export const PoolActivityContext = createContext<PoolActivityResponse | null>(null)
@@ -30,7 +31,6 @@ export const PoolActivityContext = createContext<PoolActivityResponse | null>(nu
 function _usePoolActivity() {
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
-  const _chain = slugToChainMap[chain as ChainSlug]
   const { getToken } = useTokens()
   const [sorting, setSorting] = useState<Sorting>(Sorting.desc)
   const [sortingBy, setSortingBy] = useState<SortingBy>(SortingBy.time)
@@ -38,6 +38,8 @@ function _usePoolActivity() {
   const [skip, setSkip] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const { isChartView } = usePoolActivityViewType()
+
+  const _chain = slugToChainMap[chain as ChainSlug]
 
   const tabsList = useMemo(() => {
     const poolType = pool?.type
@@ -179,16 +181,6 @@ function _usePoolActivity() {
       console.error(e)
       return ''
     }
-  }
-
-  function sortAlphabetically(a: string, b: string) {
-    if (a < b) {
-      return -1
-    }
-    if (a > b) {
-      return 1
-    }
-    return 0
   }
 
   const sortPoolEvents = useCallback(
