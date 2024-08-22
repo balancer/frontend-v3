@@ -28,7 +28,7 @@ export function PoolActivityTableHeader({ ...rest }) {
 
   return (
     <>
-      <Divider />
+      <Divider w="full" />
       <Grid {...rest} px={['sm', 'ms']} py="xs" w="full">
         <GridItem>
           <Text fontWeight="bold">User</Text>
@@ -57,7 +57,7 @@ export function PoolActivityTableHeader({ ...rest }) {
           align="right"
         />
       </Grid>
-      <Divider />
+      <Divider w="full" />
     </>
   )
 }
