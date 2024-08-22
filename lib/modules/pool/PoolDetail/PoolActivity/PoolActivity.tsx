@@ -1,4 +1,15 @@
-import { Card, Heading, Stack, VStack, Text, HStack, Skeleton, Box } from '@chakra-ui/react'
+import {
+  Card,
+  Heading,
+  Stack,
+  VStack,
+  Text,
+  HStack,
+  Skeleton,
+  Box,
+  IconButton,
+} from '@chakra-ui/react'
+import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { PoolActivityProvider, usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
@@ -20,7 +31,15 @@ export function PoolActivity() {
 }
 
 function Content() {
-  const { transactionsLabel, activeTab, tabsList, setActiveTab, isLoading } = usePoolActivity()
+  const {
+    transactionsLabel,
+    activeTab,
+    tabsList,
+    setActiveTab,
+    isLoading,
+    isExpanded,
+    setIsExpanded,
+  } = usePoolActivity()
 
   const { isChartView, isListView } = usePoolActivityViewType()
 
@@ -64,6 +83,15 @@ function Content() {
             groupId="pool-activity"
           />
           <PoolActivityViewType />
+          {isChartView && (
+            <IconButton
+              aria-label={isExpanded ? 'Minimize chart' : 'Expand chart'}
+              icon={isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              onClick={() => setIsExpanded(!isExpanded)}
+              size="sm"
+              variant="ghost"
+            />
+          )}
         </HStack>
       </Stack>
       <Box mt="4">
