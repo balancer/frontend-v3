@@ -27,6 +27,7 @@ interface Props {
   setPageSize: (page: number) => void
   pageSize: number
   changeSize?: boolean
+  isSmall?: boolean
 }
 
 export function Pagination({
@@ -42,10 +43,11 @@ export function Pagination({
   setPageSize,
   pageSize,
   changeSize = true,
+  isSmall = false, // set to true when table is NOT directly used in a card
   ...rest
 }: Props) {
   return (
-    <Center w="full" {...rest}>
+    <Center w={{ base: isSmall ? '90vw' : '95vw', lg: 'full' }} {...rest}>
       <Grid
         w={{ base: 'full', lg: '75%' }}
         mt={{ base: '4', lg: '8' }}
