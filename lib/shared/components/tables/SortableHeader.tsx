@@ -26,9 +26,9 @@ export function SortableHeader({
 
   return (
     <GridItem justifySelf={align === 'left' ? 'start' : 'end'}>
-      <Button size="sm" variant="ghost">
+      <Button size="sm" variant="ghost" onClick={() => onSort(label.toLowerCase())}>
         <HStack gap="0" alignItems="center">
-          <Text onClick={() => onSort(label.toLowerCase())} color={color} fontWeight="bold">
+          <Text color={color} fontWeight="bold">
             {label}
           </Text>
           <Box fontSize="xs" ml="1" color={color}>
