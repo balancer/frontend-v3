@@ -107,6 +107,7 @@ function MainAprTooltip({
       totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
       totalBaseVeBalText="Total base APR"
       customPopoverContent={customPopoverContent}
+      vebalBoost={vebalBoost}
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">

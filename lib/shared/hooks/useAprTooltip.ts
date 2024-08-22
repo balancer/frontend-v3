@@ -50,7 +50,7 @@ export const TOTAL_APR_TYPES = [
 
 function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
   return aprItems.reduce((acc, item) => {
-    if (item.title !== 'BAL reward APR') {
+    if (item.type !== GqlPoolAprItemType.StakingBoost) {
       return acc.plus(bn(item.apr))
     }
 
@@ -69,30 +69,16 @@ export function useAprTooltip({
 }) {
   const colorMode = useThemeColorMode()
 
-  // There may be two instances of 'BAL reward APR'. We need to remove the second one
-  let hasBalReward = false
-  const filteredAprItems = aprItems.filter(item => {
-    if (item.title === 'BAL reward APR') {
-      if (hasBalReward) {
-        return false
-      }
-
-      hasBalReward = true
-    }
-
-    return true
-  })
-
   const hasVeBalBoost = !!aprItems.find(
     item => item.title === 'BAL reward APR' && item.type === GqlPoolAprItemType.StakingBoost
   )
 
   // Swap fees
-  const swapFee = filteredAprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
+  const swapFee = aprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
   const swapFeesDisplayed = numberFormatter(swapFee ? swapFee.apr.toString() : '0')
 
   // Yield bearing tokens
-  const yieldBearingTokens = filteredAprItems.filter(item => {
+  const yieldBearingTokens = aprItems.filter(item => {
     return item.type === GqlPoolAprItemType.IbYield
   })
 
@@ -107,7 +93,7 @@ export function useAprTooltip({
   )
 
   // Staking incentives
-  const stakingIncentives = filteredAprItems.filter(item => {
+  const stakingIncentives = aprItems.filter(item => {
     return item.type === GqlPoolAprItemType.Staking && item.title.indexOf('BAL reward') === -1
   })
 
@@ -117,34 +103,34 @@ export function useAprTooltip({
     tooltipText: stakingTokenTooltipText,
   }))
 
-  const votingApr = filteredAprItems.find(item => item.type === GqlPoolAprItemType.Voting)
+  const votingApr = aprItems.find(item => item.type === GqlPoolAprItemType.Voting)
   const votingAprDisplayed = numberFormatter(votingApr ? votingApr.apr.toString() : '0')
 
-  const lockingApr = filteredAprItems.find(item => item.type === GqlPoolAprItemType.Locking)
+  const lockingApr = aprItems.find(item => item.type === GqlPoolAprItemType.Locking)
   const lockingAprDisplayed = numberFormatter(lockingApr ? lockingApr.apr.toString() : '0')
 
   // Merkl incentives
-  const merklIncentives = filterByType(filteredAprItems, GqlPoolAprItemType.Merkl)
+  const merklIncentives = filterByType(aprItems, GqlPoolAprItemType.Merkl)
   const hasMerklIncentives = merklIncentives.length > 0
   const merklIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(merklIncentives)
 
   // Surplus incentives
-  const surplusIncentives = filterByType(filteredAprItems, GqlPoolAprItemType.Surplus)
+  const surplusIncentives = filterByType(aprItems, GqlPoolAprItemType.Surplus)
   const hasSurplusIncentives = surplusIncentives.length > 0
   const surplusIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(surplusIncentives)
 
   // Bal Reward
-  const balReward = filteredAprItems.find(item => item.title === 'BAL reward APR')
+  const balReward = aprItems.find(item => item.type === GqlPoolAprItemType.Staking)
 
-  const maxVeBal = balReward ? absMaxApr(filteredAprItems, vebalBoost) : bn(0)
+  const maxVeBal = balReward ? absMaxApr(aprItems, vebalBoost) : bn(0)
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
-  const totalBase = filteredAprItems
+  const totalBase = aprItems
     .filter(item => TOTAL_BASE_APR_TYPES.includes(item.type))
     .reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalBaseDisplayed = numberFormatter(totalBase.toString())
 
-  const totalCombined = filteredAprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
+  const totalCombined = aprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalCombinedDisplayed = numberFormatter(totalCombined.toString())
 
   const extraBalAprDisplayed = balReward ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)

@@ -65,9 +65,13 @@ export function useVebalBoost(pools: Pool[]) {
     const gauges = pools.map(p => {
       if (p.staking?.gauge?.status === 'KILLED') return []
 
+      const gaugeAddress = p.staking?.gauge?.gaugeAddress
+
+      if (!gaugeAddress) return []
+
       return {
         chain: p.chain,
-        gaugeAddress: p.staking?.gauge?.gaugeAddress || '',
+        gaugeAddress,
         poolId: p.id,
       }
     })

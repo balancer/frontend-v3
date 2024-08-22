@@ -34,12 +34,12 @@ describe('useAprTooltip', () => {
     expect(fNum('apr', totalBaseDisplayed)).toBe('2.66%') // 0.07 + 1.91 + 0.68 = 2.66
 
     const extraBalApr = result.current.extraBalAprDisplayed
-    expect(extraBalApr.toFixed()).toBe('0.0287')
-    expect(fNum('apr', extraBalApr)).toBe('2.87%')
+    expect(extraBalApr.toFixed()).toBe('0.0563')
+    expect(fNum('apr', extraBalApr)).toBe('5.63%')
 
     const maxVeBalApr = result.current.maxVeBalDisplayed
-    expect(maxVeBalApr.toFixed()).toBe('0.0553')
-    expect(fNum('apr', maxVeBalApr)).toBe('5.53%') // 2.66 + 2.87 = 5.53
+    expect(maxVeBalApr.toFixed()).toBe('0.0829')
+    expect(fNum('apr', maxVeBalApr)).toBe('8.29%')
   })
 })
 
@@ -97,16 +97,9 @@ it('When the pool has BAL staking incentives (inside the veBAL system)', () => {
       type: GqlPoolAprItemType.Staking,
       apr: 0.01454219612063976,
     },
-    {
-      __typename: 'GqlPoolAprItem',
-      id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr',
-      title: 'BAL reward APR',
-      type: GqlPoolAprItemType.StakingBoost,
-      apr: 0.021813294180959626,
-    },
   ]
 
   const result = testUseAprTooltip({ aprItems })
 
-  expect(result.current.hasVeBalBoost).toBeTruthy()
+  expect(result.current.hasVeBalBoost).toBeFalsy()
 })
