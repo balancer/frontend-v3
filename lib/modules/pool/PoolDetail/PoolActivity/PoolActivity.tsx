@@ -9,7 +9,7 @@ import {
   Box,
   IconButton,
 } from '@chakra-ui/react'
-import { ChevronUpIcon, ChevronDownIcon } from '@chakra-ui/icons'
+import { Maximize2, Minimize2 } from 'react-feather'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { PoolActivityProvider, usePoolActivity } from './usePoolActivity'
 import { PoolActivityChart } from '../PoolActivityChart/PoolActivityChart'
@@ -44,7 +44,7 @@ function Content() {
   const { isChartView, isListView } = usePoolActivityViewType()
 
   return (
-    <Card>
+    <Card role="group">
       <Stack
         w="full"
         direction={{ base: 'column', md: 'row' }}
@@ -83,15 +83,42 @@ function Content() {
             groupId="pool-activity"
           />
           <PoolActivityViewType />
-          {isChartView && (
+          <Box shadow={isChartView ? '2xl' : 'none'} h="34px" w="34px" borderRadius="full">
             <IconButton
               aria-label={isExpanded ? 'Minimize chart' : 'Expand chart'}
-              icon={isExpanded ? <ChevronUpIcon /> : <ChevronDownIcon />}
+              icon={isExpanded ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
               onClick={() => setIsExpanded(!isExpanded)}
               size="sm"
-              variant="ghost"
+              variant="outline"
+              borderRadius="full"
+              h="34px"
+              w="34px"
+              transition="transform 0.2s var(--ease-out-cubic)"
+              _groupHover={
+                isChartView && !isExpanded
+                  ? {
+                      border: '1px solid',
+                      borderColor: 'font.highlight',
+                      color: 'font.maxContrast',
+                      transform: 'scale(1.1)',
+                      '::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        backgroundColor: 'font.highlight',
+                        zIndex: -1,
+                        borderRadius: 'inherit',
+                        opacity: 0.1,
+                      },
+                    }
+                  : undefined
+              }
+              isDisabled={!isChartView}
             />
-          )}
+          </Box>
         </HStack>
       </Stack>
       <Box mt="4">
