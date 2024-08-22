@@ -24,6 +24,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     unstakedBalanceByPoolId,
     isLoading: isLoadingUnstakedPoolBalances,
+    isFetching: isFetchingUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
     error: unstakedPoolBalancesError,
   } = useUserUnstakedBalance(pools)
@@ -31,6 +32,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     stakedBalancesByPoolId,
     isLoading: isLoadingStakedPoolBalances,
+    isFetching: isFetchingStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
   } = useUserStakedBalance(pools)
@@ -40,6 +42,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   }
 
   const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
+  const isFetching = isFetchingUnstakedPoolBalances || isFetchingStakedPoolBalances
 
   const enrichedPools = isLoading
     ? pools
@@ -57,6 +60,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   return {
     data: enrichedPools,
     isLoading,
+    isFetching,
     refetchUnstakedBalances,
     refetchedStakedBalances,
     refetch,

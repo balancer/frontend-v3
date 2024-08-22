@@ -78,6 +78,7 @@ export function useUserStakedBalance(pools: Pool[] = []) {
   return {
     stakedBalancesByPoolId,
     isLoading,
+    isFetching,
     refetch,
     error,
   }

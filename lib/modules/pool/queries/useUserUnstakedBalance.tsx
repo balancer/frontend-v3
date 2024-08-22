@@ -67,6 +67,7 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
   return {
     unstakedBalanceByPoolId,
     isLoading,
+    isFetching,
     refetch,
     error,
   }
