@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "^0.22.2",
+    "@balancer/sdk": "^0.23.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.1",
@@ -82,8 +82,8 @@
     "use-debounce": "^10.0.0",
     "use-sound": "^4.0.1",
     "usehooks-ts": "^2.9.2",
-    "viem": "^2.16.3",
-    "wagmi": "^2.12.1"
+    "viem": "^2.19.3",
+    "wagmi": "^2.12.5"
   },
   "devDependencies": {
     "@apollo/experimental-nextjs-app-support": "^0.8.0",

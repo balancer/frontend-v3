@@ -26,6 +26,8 @@ export function TokenRowGroup({
 
   const usdValue = totalUSDValue || _totalUSDValue
 
+  const hasMultipleAmounts = amounts.length > 1
+
   return (
     <VStack align="start" spacing="md">
       <HStack justify="space-between" w="full">
@@ -33,7 +35,7 @@ export function TokenRowGroup({
         {isLoading ? (
           <Skeleton h="5" w="12" />
         ) : (
-          <Text>{toCurrency(usdValue, { abbreviated: false })}</Text>
+          hasMultipleAmounts && <Text>{toCurrency(usdValue, { abbreviated: false })}</Text>
         )}
       </HStack>
       {amounts.map((amount, index) => {

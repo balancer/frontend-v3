@@ -10,15 +10,21 @@ import { QuoteBptOut, ReceiptBptOut } from './BptOut'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/useTransactionLogsQuery'
+import { AddLiquidityReceiptResult } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { StakingOptions } from './StakingOptions'
 import { isVebalPool } from '../../../pool.helpers'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
 import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
+import { useMemo } from 'react'
 
-export function AddLiquiditySummary() {
+export function AddLiquiditySummary({
+  isLoading: isLoadingReceipt,
+  error,
+  sentTokens,
+  receivedBptUnits,
+}: AddLiquidityReceiptResult) {
   const {
     totalUSDValue,
     simulationQuery,
@@ -33,28 +39,27 @@ export function AddLiquiditySummary() {
   const { isMobile } = useBreakpoints()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const vebalRedirectModal = useDisclosure()
-  const {
-    isLoading: isLoadingReceipt,
-    error,
-    sentTokens,
-    receivedBptUnits,
-  } = useAddLiquidityReceipt({
-    txHash: addLiquidityTxHash,
-    userAddress,
-  })
 
   // Order amountsIn like the form inputs which uses the tokens array.
   const amountsIn = tokens
     .map(token => humanAmountsIn.find(amount => amount.tokenAddress === token?.address))
     .filter(Boolean) as HumanTokenAmountWithAddress[]
 
+  const shouldShowErrors = hasQuoteContext ? addLiquidityTxSuccess : addLiquidityTxHash
+  const shouldShowReceipt = addLiquidityTxHash && !isLoadingReceipt && sentTokens.length > 0
+
+  const isLoadingTokens = useMemo(() => {
+    if (hasQuoteContext) return shouldShowReceipt && isLoadingReceipt
+    return isLoadingReceipt
+  }, [hasQuoteContext, isLoadingReceipt, shouldShowReceipt])
+
   if (!isUserAddressLoading && !userAddress) {
     return <BalAlert status="warning" content="User is not connected" />
   }
-  if (addLiquidityTxSuccess && error) {
+  if (shouldShowErrors && error) {
     return <BalAlert status="warning" content="We were unable to find this transaction hash" />
   }
-  if (addLiquidityTxSuccess && !isLoadingReceipt && !sentTokens.length) {
+  if (shouldShowErrors && !isLoadingReceipt && !sentTokens.length) {
     return (
       <BalAlert
         status="warning"
@@ -62,8 +67,6 @@ export function AddLiquiditySummary() {
       />
     )
   }
-
-  const shouldShowReceipt = addLiquidityTxHash && !isLoadingReceipt && sentTokens.length > 0
 
   return (
     <AnimateHeightChange spacing="sm">
@@ -73,11 +76,12 @@ export function AddLiquiditySummary() {
 
       <Card variant="modalSubSection">
         <TokenRowGroup
-          label={shouldShowReceipt ? 'You added' : "You're adding"}
+          label={shouldShowReceipt || !hasQuoteContext ? 'You added' : "You're adding"}
           amounts={shouldShowReceipt ? sentTokens : amountsIn}
-          totalUSDValue={totalUSDValue}
+          totalUSDValue={hasQuoteContext ? totalUSDValue : undefined}
           chain={pool.chain}
-          isLoading={shouldShowReceipt ? isLoadingReceipt : false}
+          tokens={tokens}
+          isLoading={isLoadingTokens}
         />
       </Card>
 
@@ -85,7 +89,7 @@ export function AddLiquiditySummary() {
         {shouldShowReceipt ? (
           <ReceiptBptOut actualBptOut={receivedBptUnits} isLoading={isLoadingReceipt} />
         ) : (
-          <QuoteBptOut />
+          <QuoteBptOut isLoading={isLoadingTokens} />
         )}
       </Card>
 
@@ -112,7 +116,7 @@ export function AddLiquiditySummary() {
             </Card>
           )}
         </CardPopAnim>
-      ) : (
+      ) : hasQuoteContext ? (
         <CardPopAnim key="price-impact-details">
           <Card variant="modalSubSection">
             <VStack align="start" spacing="sm">
@@ -124,7 +128,7 @@ export function AddLiquiditySummary() {
             </VStack>
           </Card>
         </CardPopAnim>
-      )}
+      ) : null}
     </AnimateHeightChange>
   )
 }

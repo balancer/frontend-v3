@@ -485,6 +485,23 @@ query GetPoolEvents(
         amount
       }
     }
+    ... on GqlPoolSwapEventCowAmm {
+      tokenIn {
+        address
+        amount
+        valueUSD
+      }
+      tokenOut {
+        address
+        amount
+        valueUSD
+      }
+      surplus {
+        address
+        amount
+        valueUSD
+      }
+    }
     ... on GqlPoolAddRemoveEventV3 {
       tokens {
         address

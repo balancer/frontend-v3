@@ -7,6 +7,7 @@ import { GithubIcon } from '../icons/social/GithubIcon'
 import { useParams } from 'next/navigation'
 import NextLink from 'next/link'
 import { Link, LinkProps } from '@chakra-ui/react'
+import { isDev, isStaging } from '@/lib/config/app.config'
 
 export function useNav() {
   const pathname = usePathname()
@@ -28,6 +29,14 @@ export function useNav() {
       label: 'Portfolio',
     },
   ]
+
+  // To-do: Remove this when veBAL is live
+  if (isDev || isStaging) {
+    appLinks.push({
+      href: '/vebal',
+      label: 'veBAL (wip)',
+    })
+  }
 
   const beetsLinks = {
     mabeets: { href: '/mabeets', label: 'maBEETS' },

@@ -5,7 +5,7 @@ import { MobileStepTracker } from '../../transactions/transaction-steps/step-tra
 import { SwapDetails } from '../SwapDetails'
 import { SwapRate } from '../SwapRate'
 import { useSwap } from '../SwapProvider'
-import { useSwapReceipt } from '../../transactions/transaction-steps/useTransactionLogsQuery'
+import { SwapReceiptResult } from '../../transactions/transaction-steps/receipts/receipt.hooks'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { HumanAmount } from '@balancer/sdk'
@@ -13,7 +13,12 @@ import { slippageDiffLabel } from '@/lib/shared/utils/slippage'
 import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
 
-export function SwapSummary() {
+export function SwapSummary({
+  isLoading: isLoadingReceipt,
+  receivedToken,
+  sentToken,
+  error,
+}: SwapReceiptResult) {
   const { isMobile } = useBreakpoints()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
   const {
@@ -25,44 +30,35 @@ export function SwapSummary() {
     swapTxHash,
     swapTxConfirmed,
     simulationQuery,
+    hasQuoteContext,
   } = useSwap()
-
-  const {
-    isLoading: isLoadingReceipt,
-    error,
-    sentToken,
-    receivedToken,
-  } = useSwapReceipt({
-    txHash: swapTxHash,
-    userAddress,
-    chain: selectedChain,
-  })
 
   const expectedTokenOut = simulationQuery?.data?.returnAmount as HumanAmount
 
-  if (!isUserAddressLoading && !userAddress) {
-    return <BalAlert status="warning" content="User is not connected" />
-  }
-  if (swapTxHash && error) {
-    return <BalAlert status="warning" content="We were unable to find this transaction hash" />
-  }
-  if (swapTxHash && !isLoadingReceipt && (!receivedToken || !sentToken)) {
-    return (
-      <BalAlert
-        status="warning"
-        content="We were unable to find logs for this transaction hash and the connected account"
-      />
-    )
-  }
-
   const shouldShowReceipt =
     !isWrap && !!swapTxHash && !isLoadingReceipt && !!receivedToken && !!sentToken
+  const shouldShowErrors = hasQuoteContext ? swapTxConfirmed : swapTxHash
   const isWrapComplete = isWrap && swapTxHash && swapTxConfirmed
 
   function tokenOutLabel() {
     if (shouldShowReceipt || isWrapComplete) return 'You got'
     if (isWrap) return "You'll get"
     return "You'll get (if no slippage)"
+  }
+
+  if (!isUserAddressLoading && !userAddress) {
+    return <BalAlert status="warning" content="User is not connected" />
+  }
+  if (shouldShowErrors && error) {
+    return <BalAlert status="warning" content="We were unable to find this transaction hash" />
+  }
+  if (shouldShowErrors && !isLoadingReceipt && (!receivedToken || !sentToken)) {
+    return (
+      <BalAlert
+        status="warning"
+        content="We were unable to find logs for this transaction hash and the connected account"
+      />
+    )
   }
 
   return (
