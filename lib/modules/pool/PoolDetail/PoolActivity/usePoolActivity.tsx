@@ -276,6 +276,7 @@ function _usePoolActivity() {
     getDateCaption,
     setPagination,
     sortPoolEvents,
+    setSkip,
   }
 }
 

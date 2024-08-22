@@ -15,6 +15,7 @@ export function PoolActivityTableHeader({ ...rest }) {
     sortingBy,
     sorting,
     isSortedByAction,
+    setSkip,
   } = usePoolActivity()
 
   const handleSort = (newSortingBy: SortingBy) => {
@@ -23,6 +24,7 @@ export function PoolActivityTableHeader({ ...rest }) {
     } else {
       setSortingBy(newSortingBy)
       setSorting(newSortingBy === SortingBy.action ? Sorting.asc : Sorting.desc)
+      setSkip(0)
     }
   }
 
