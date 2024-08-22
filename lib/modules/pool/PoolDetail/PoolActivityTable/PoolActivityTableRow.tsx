@@ -78,7 +78,7 @@ function TransactionDetails({
   const tokensWithAmount = tokens.filter(token => token.amount !== '0')
 
   return (
-    <HStack>
+    <HStack wrap="wrap">
       {tokensWithAmount.map((token, index) => {
         return (
           <>
