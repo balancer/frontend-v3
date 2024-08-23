@@ -43,6 +43,27 @@ function Content() {
 
   const { isChartView, isListView } = usePoolActivityViewType()
 
+  const groupHoverProps = {
+    _groupHover: {
+      border: '1px solid',
+      borderColor: 'font.highlight',
+      color: 'font.maxContrast',
+      transform: 'scale(1.1)',
+      '::before': {
+        content: '""',
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'font.highlight',
+        zIndex: -1,
+        borderRadius: 'inherit',
+        opacity: 0.1,
+      },
+    },
+  }
+
   return (
     <Card role="group">
       <Stack
@@ -62,7 +83,6 @@ function Content() {
               Pool activity
             </Heading>
           </Box>
-
           {isChartView &&
             (isLoading ? (
               <Skeleton height="20px" w="100px" />
@@ -94,28 +114,7 @@ function Content() {
               h="34px"
               w="34px"
               transition="transform 0.2s var(--ease-out-cubic)"
-              _groupHover={
-                isChartView && !isExpanded
-                  ? {
-                      border: '1px solid',
-                      borderColor: 'font.highlight',
-                      color: 'font.maxContrast',
-                      transform: 'scale(1.1)',
-                      '::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        backgroundColor: 'font.highlight',
-                        zIndex: -1,
-                        borderRadius: 'inherit',
-                        opacity: 0.1,
-                      },
-                    }
-                  : undefined
-              }
+              {...(isChartView && !isExpanded && groupHoverProps)}
               isDisabled={!isChartView}
             />
           </Box>
