@@ -8,6 +8,7 @@ import { balancerV2WeightedPoolV4Abi } from '../../web3/contracts/abi/generated'
 import { Pool } from '../PoolProvider'
 import { BPT_DECIMALS } from '../pool.constants'
 import { calcBptPrice } from '../pool.helpers'
+import { useMemo } from 'react'
 
 export type UnstakedBalanceByPoolId = ReturnType<
   typeof useUserUnstakedBalance
@@ -22,6 +23,7 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
   const {
     data: unstakedPoolBalances = [],
     isLoading,
+    isFetching,
     refetch,
     error,
   } = useReadContracts({
@@ -42,23 +44,30 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
   })
 
   // for each pool get the unstaked balance
-  const balances = unstakedPoolBalances.map((rawBalance, index) => {
-    const pool = pools[index]
-    const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
-    const humanUnstakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
-    return {
-      poolId: pool.id,
-      rawUnstakedBalance: rawBalance,
-      unstakedBalance: humanUnstakedBalance,
-      unstakedBalanceUsd: bn(humanUnstakedBalance).times(bptPrice),
-    }
-  })
+  const balances = useMemo(() => {
+    if (isFetching) return []
+
+    return unstakedPoolBalances.map((rawBalance, index) => {
+      const pool = pools[index]
+      const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
+      const humanUnstakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
+
+      return {
+        poolId: pool.id,
+        rawUnstakedBalance: rawBalance,
+        unstakedBalance: humanUnstakedBalance,
+        unstakedBalanceUsd: bn(humanUnstakedBalance).times(bptPrice),
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, unstakedPoolBalances, pools, userAddress, isFetching])
 
   const unstakedBalanceByPoolId = keyBy(balances, 'poolId')
 
   return {
     unstakedBalanceByPoolId,
     isLoading,
+    isFetching,
     refetch,
     error,
   }
