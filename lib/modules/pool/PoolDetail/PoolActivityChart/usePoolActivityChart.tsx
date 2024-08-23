@@ -36,7 +36,8 @@ const getDefaultPoolActivityChartOptions = (
   minDate: number,
   maxDate: number,
   maxYAxisValue: number,
-  sortedPoolEvents: PoolActivityEl[]
+  sortedPoolEvents: PoolActivityEl[],
+  isLoading: boolean
 ): echarts.EChartsCoreOption => {
   const toolTipTheme = {
     heading: 'font-weight: bold; color: #E5D3BE',
@@ -220,7 +221,7 @@ const getDefaultPoolActivityChartOptions = (
       },
     ],
     title: {
-      show: !sortedPoolEvents.length,
+      show: !sortedPoolEvents.length && !isLoading,
       textStyle: {
         color: 'grey',
         fontSize: 20,
@@ -251,7 +252,8 @@ export function usePoolActivityChart() {
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
   const theme = useChakraTheme()
-  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue, isExpanded } = usePoolActivity()
+  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue, isExpanded, isLoading } =
+    usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
   const chartHeight = isExpanded ? 400 : 90
 
@@ -267,7 +269,8 @@ export function usePoolActivityChart() {
       minDate,
       maxDate,
       maxYAxisValue,
-      sortedPoolEvents
+      sortedPoolEvents,
+      isLoading
     ),
     eChartsRef,
     chartHeight,
