@@ -2,7 +2,7 @@ import { PaginatedTable } from '@/lib/shared/components/tables/PaginatedTable'
 import { usePortfolio } from '../PortfolioProvider'
 import { PortfolioTableHeader } from './PortfolioTableHeader'
 import { PortfolioTableRow } from './PortfolioTableRow'
-import { Center, Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
+import { Card, Center, Checkbox, HStack, Heading, Stack, Text } from '@chakra-ui/react'
 import { useMemo, useState } from 'react'
 import { GqlPoolOrderBy } from '@/lib/shared/services/api/generated/graphql'
 import { useVebalBoost } from '../../vebal/useVebalBoost'
@@ -151,33 +151,42 @@ export function PortfolioTable() {
           <Heading size="lg">Balancer portfolio</Heading>
         </HStack>
         {isConnected ? (
-          <PaginatedTable
-            items={sortedPools}
-            loading={isLoadingPortfolio}
-            renderTableHeader={() => (
-              <PortfolioTableHeader
-                currentSortingObj={currentSortingObj}
-                setCurrentSortingObj={setCurrentSortingObj}
-                {...rowProps}
-              />
-            )}
-            renderTableRow={(item: ExpandedPoolInfo, index) => {
-              return (
-                <PortfolioTableRow
-                  keyValue={index}
-                  pool={item}
-                  veBalBoostMap={veBalBoostMap}
-                  {...rowProps}
-                />
-              )
-            }}
-            showPagination={false}
-            paginationProps={null}
+          <Card
+            p={{ base: '0', sm: '0' }}
             w={{ base: '100vw', lg: 'full' }}
             alignItems="flex-start"
             position="relative"
             left={{ base: '-4px', sm: '0' }}
-          />
+          >
+            <PaginatedTable
+              items={sortedPools}
+              loading={isLoadingPortfolio}
+              renderTableHeader={() => (
+                <PortfolioTableHeader
+                  currentSortingObj={currentSortingObj}
+                  setCurrentSortingObj={setCurrentSortingObj}
+                  {...rowProps}
+                />
+              )}
+              renderTableRow={(item: ExpandedPoolInfo, index) => {
+                return (
+                  <PortfolioTableRow
+                    keyValue={index}
+                    pool={item}
+                    veBalBoostMap={veBalBoostMap}
+                    {...rowProps}
+                  />
+                )
+              }}
+              showPagination={false}
+              paginationProps={null}
+              w={{ base: '100vw', lg: 'full' }}
+              alignItems="flex-start"
+              position="relative"
+              left={{ base: '-4px', sm: '0' }}
+              noItemsFoundLabel="No pools found"
+            />
+          </Card>
         ) : (
           <Center h="400px" border="1px dashed" borderColor="border.base" rounded="lg">
             <ConnectWallet variant="primary" size="lg" />

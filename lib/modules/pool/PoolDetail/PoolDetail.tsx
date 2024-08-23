@@ -2,7 +2,6 @@
 
 import { VStack, Stack } from '@chakra-ui/react'
 import { PoolComposition } from './PoolComposition/PoolComposition'
-import { PoolActivityChart } from './PoolActivityChart/PoolActivityChart'
 import { PoolInfoLayout } from './PoolInfo/PoolInfoLayout'
 import { usePool } from '../PoolProvider'
 import PoolMyLiquidity from './PoolMyLiquidity'
@@ -20,6 +19,7 @@ import { usePoolEvents } from '../usePoolEvents'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import { CowFooter } from '@/app/(app)/pools/cow/CowFooter'
 import { CowPoolBanner } from '@/app/(app)/pools/cow/CowPoolBanner'
+import { PoolActivity } from './PoolActivity/PoolActivity'
 
 export function PoolDetail() {
   const { pool, chain } = usePool()
@@ -85,7 +85,7 @@ export function PoolDetail() {
                 <PoolUserEvents />
               </Stack>
             )}
-            <PoolActivityChart />
+            <PoolActivity />
             <PoolComposition />
             <PoolInfoLayout />
           </VStack>

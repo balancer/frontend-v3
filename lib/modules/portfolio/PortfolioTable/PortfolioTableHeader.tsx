@@ -1,7 +1,7 @@
 import { Grid, GridItem, Icon, Text, VStack } from '@chakra-ui/react'
 
 import { Globe } from 'react-feather'
-import PoolListSortButton from '../../pool/PoolList/PoolListTable/PoolListSortButton'
+import { SortableHeader } from '@/lib/shared/components/tables/SortableHeader'
 import { PortfolioTableSortingId, PortfolioSortingData, portfolioOrderBy } from './PortfolioTable'
 
 const setIsDesc = (id: PortfolioTableSortingId, currentSortingObj: PortfolioSortingData) =>
@@ -35,22 +35,23 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
         </Text>
       </GridItem>
       {portfolioOrderBy.map((orderByItem, index) => (
-        <GridItem key={index} justifySelf="end">
-          <PoolListSortButton
-            title={orderByItem.title}
-            isCurrentSort={orderByItem.id === currentSortingObj.id}
-            isDesc={currentSortingObj.desc}
-            onClick={
-              orderByItem.id === currentSortingObj.id
-                ? () =>
-                    setCurrentSortingObj({
-                      id: orderByItem.id,
-                      desc: setIsDesc(orderByItem.id, currentSortingObj),
-                    })
-                : () => setCurrentSortingObj({ id: orderByItem.id, desc: false })
+        <SortableHeader
+          key={index}
+          label={orderByItem.title}
+          isSorted={orderByItem.id === currentSortingObj.id}
+          sorting={currentSortingObj.desc ? 'desc' : 'asc'}
+          onSort={() => {
+            if (orderByItem.id === currentSortingObj.id) {
+              setCurrentSortingObj({
+                id: orderByItem.id,
+                desc: setIsDesc(orderByItem.id, currentSortingObj),
+              })
+            } else {
+              setCurrentSortingObj({ id: orderByItem.id, desc: false })
             }
-          />
-        </GridItem>
+          }}
+          align="right"
+        />
       ))}
     </Grid>
   )
