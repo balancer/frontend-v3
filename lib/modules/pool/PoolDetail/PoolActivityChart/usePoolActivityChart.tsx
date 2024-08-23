@@ -244,14 +244,14 @@ function getSymbolSize(dataItem?: PoolActivityEl) {
   return 80
 }
 
-export function usePoolActivityChart(isExpanded: boolean) {
+export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
   const theme = useChakraTheme()
-  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue } = usePoolActivity()
+  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue, isExpanded } = usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
   const chartHeight = isExpanded ? 400 : 90
 

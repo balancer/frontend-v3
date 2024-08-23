@@ -19,7 +19,7 @@ const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
 
 export function PoolActivityChart() {
   const { isExpanded, isLoading } = usePoolActivity()
-  const { chartOption, eChartsRef, chartHeight } = usePoolActivityChart(isExpanded)
+  const { chartOption, eChartsRef, chartHeight } = usePoolActivityChart()
   const theme = useTheme()
 
   const legendTabs = [
