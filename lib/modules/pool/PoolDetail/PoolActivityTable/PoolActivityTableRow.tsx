@@ -28,6 +28,7 @@ import {
 import { PoolActivityEl, PoolActivityTokens } from '../PoolActivity/poolActivity.types'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { fNum } from '@/lib/shared/utils/numbers'
+import React from 'react'
 
 interface Props extends GridProps {
   event: PoolActivityEl
@@ -74,16 +75,18 @@ function TransactionDetails({
   action,
   tokens,
   ...badgeProps
-}: { action: 'swap' | 'add' | 'remove'; tokens: PoolActivityTokens[] } & BadgeProps) {
+}: {
+  action: 'swap' | 'add' | 'remove'
+  tokens: PoolActivityTokens[]
+} & BadgeProps) {
   const tokensWithAmount = tokens.filter(token => token.amount !== '0')
 
   return (
     <HStack wrap="wrap">
       {tokensWithAmount.map((token, index) => {
         return (
-          <>
+          <React.Fragment key={index}>
             <Badge
-              key={index}
               {...badgeProps}
               display="flex"
               alignItems="center"
@@ -104,7 +107,7 @@ function TransactionDetails({
             {tokensWithAmount.length > 1 && tokensWithAmount.length - 1 > index && (
               <Text>{action === 'swap' ? '→' : '+'}</Text>
             )}
-          </>
+          </React.Fragment>
         )
       })}
     </HStack>
