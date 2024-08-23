@@ -70,9 +70,7 @@ export function useAprTooltip({
 }) {
   const colorMode = useThemeColorMode()
 
-  const hasVeBalBoost = !!aprItems.find(
-    item => item.title === 'BAL reward APR' && item.type === GqlPoolAprItemType.StakingBoost
-  )
+  const hasVeBalBoost = !!aprItems.find(item => item.type === GqlPoolAprItemType.StakingBoost)
 
   // Swap fees
   const swapFee = aprItems.find(item => item.type === GqlPoolAprItemType.SwapFee)
@@ -121,9 +119,12 @@ export function useAprTooltip({
   const surplusIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(surplusIncentives)
 
   // Bal Reward
-  const balReward = aprItems.find(item => item.type === GqlPoolAprItemType.Staking)
+  const balReward = aprItems.find(
+    // TO-DO refactor this so not to rely on the title
+    item => item.type === GqlPoolAprItemType.Staking && item.title === 'BAL reward APR'
+  )
 
-  const maxVeBal = balReward ? absMaxApr(aprItems, vebalBoost) : bn(0)
+  const maxVeBal = hasVeBalBoost ? absMaxApr(aprItems, vebalBoost) : bn(0)
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
 
   const totalBase = aprItems
@@ -134,7 +135,7 @@ export function useAprTooltip({
   const totalCombined = aprItems.reduce((acc, item) => acc.plus(item.apr), bn(0))
   const totalCombinedDisplayed = numberFormatter(totalCombined.toString())
 
-  const extraBalAprDisplayed = balReward ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)
+  const extraBalAprDisplayed = hasVeBalBoost ? maxVeBalDisplayed.minus(totalBaseDisplayed) : bn(0)
 
   if (balReward) {
     stakingIncentivesDisplayed.push({
@@ -184,7 +185,6 @@ export function useAprTooltip({
     isVotingPresent,
     isLockingAprPresent,
     subitemPopoverAprItemProps,
-    balReward,
     hasVeBalBoost,
     maxVeBal,
     totalBase,
