@@ -50,11 +50,12 @@ export const TOTAL_APR_TYPES = [
 
 function absMaxApr(aprItems: GqlPoolAprItem[], boost?: number) {
   return aprItems.reduce((acc, item) => {
-    if (item.type !== GqlPoolAprItemType.StakingBoost) {
-      return acc.plus(bn(item.apr))
+    const hasBoost = boost && boost > 1
+    if (hasBoost && item.type === GqlPoolAprItemType.Staking) {
+      return acc.plus(bn(item.apr).times(boost))
     }
 
-    return acc.plus(bn(item.apr).times(boost && boost > 1 ? boost : 2.5))
+    return acc.plus(bn(item.apr))
   }, bn(0))
 }
 
