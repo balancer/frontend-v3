@@ -2,9 +2,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef } from 'react'
+import { useRef } from 'react'
 import { useParams } from 'next/navigation'
-import { format } from 'date-fns'
+import { differenceInDays, format } from 'date-fns'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
@@ -32,7 +32,11 @@ const getDefaultPoolActivityChartOptions = (
   isMobile = false,
   is2xl = false,
   isExpanded = false,
-  chain: GqlChain
+  chain: GqlChain,
+  minDate: number,
+  maxDate: number,
+  maxYAxisValue: number,
+  sortedPoolEvents: PoolActivityEl[]
 ): echarts.EChartsCoreOption => {
   const toolTipTheme = {
     heading: 'font-weight: bold; color: #E5D3BE',
@@ -44,22 +48,24 @@ const getDefaultPoolActivityChartOptions = (
 
   return {
     grid: {
-      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '60',
+      left: isExpanded ? (isMobile ? '15%' : '60') : '2.5%',
       right: '10',
       top: '7.5%',
-      bottom: !isExpanded ? '50%' : '10.5%',
+      bottom: isExpanded ? '10.5%' : '50%',
       containLabel: false,
     },
     xAxis: {
-      show: isExpanded,
+      show: isExpanded && sortedPoolEvents.length,
       type: 'time',
       minorSplitLine: { show: false },
       axisTick: { show: false },
       splitNumber: 3,
       axisLabel: {
-        formatter: (value: number) => {
-          return format(new Date(value * 1000), 'MMM d')
-        },
+        formatter: (value: number) =>
+          format(
+            new Date(value * 1000),
+            `MMM d${differenceInDays(maxDate, minDate) < 1 ? ' HH:mm' : ''}`
+          ),
         color: theme.semanticTokens.colors.font.primary[colorMode],
         opacity: 0.5,
         interval: 'auto',
@@ -75,15 +81,18 @@ const getDefaultPoolActivityChartOptions = (
         },
       },
       axisLine: { show: false },
-      splitArea: {
-        show: false,
-        areaStyle: {
-          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
-        },
-      },
+      // TODO: is this needed?
+      // splitArea: {
+      //   show: false,
+      //   areaStyle: {
+      //     color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+      //   },
+      // },
+      min: minDate,
+      max: maxDate,
     },
     yAxis: {
-      show: isExpanded,
+      show: isExpanded && sortedPoolEvents.length,
       type: 'value',
       axisLine: { show: false },
       minorSplitLine: { show: false },
@@ -99,6 +108,7 @@ const getDefaultPoolActivityChartOptions = (
         showMaxLabel: true,
         showMinLabel: true,
       },
+      max: maxYAxisValue,
     },
     tooltip: {
       triggerOn: 'mousemove|click',
@@ -181,6 +191,44 @@ const getDefaultPoolActivityChartOptions = (
       `
       },
     },
+    series: [
+      {
+        name: 'Events',
+        itemStyle: {
+          color: function (param: any) {
+            const action = param.data[2].action
+
+            return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: theme.semanticTokens.colors.chart.pool.scatter[action].from,
+              },
+              {
+                offset: 1,
+                color: theme.semanticTokens.colors.chart.pool.scatter[action].to,
+              },
+            ])
+          },
+        },
+        emphasis: {
+          focus: 'self',
+          scale: 1.5,
+        },
+        symbolSize: getSymbolSize,
+        data: sortedPoolEvents,
+        type: 'scatter',
+      },
+    ],
+    title: {
+      show: !sortedPoolEvents.length,
+      textStyle: {
+        color: 'grey',
+        fontSize: 20,
+      },
+      text: 'No events to show',
+      left: 'center',
+      top: 'center',
+    },
   }
 }
 
@@ -203,106 +251,9 @@ export function usePoolActivityChart(isExpanded: boolean) {
   const { toCurrency } = useCurrency()
   const { chain } = useParams()
   const theme = useChakraTheme()
-  const { poolEventsForChart, activeTab } = usePoolActivity()
+  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue } = usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
-  const chartHeight = isExpanded ? 300 : 90
-
-  const options = useMemo(() => {
-    return {
-      joinOption: {
-        name: 'Add',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.add.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.add.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: poolEventsForChart.filter(event => event[2].action === 'add'),
-        type: 'scatter',
-      },
-      exitOption: {
-        name: 'Remove',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.remove.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.remove.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: poolEventsForChart.filter(event => event[2].action === 'remove'),
-        type: 'scatter',
-      },
-      swapOption: {
-        name: 'Swap',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.swap.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.swap.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: poolEventsForChart.filter(event => event[2].action === 'swap'),
-        type: 'scatter',
-      },
-    }
-  }, [poolEventsForChart])
-
-  useEffect(() => {
-    const instance = eChartsRef.current?.getEchartsInstance()
-    if (!instance) return
-
-    const { joinOption, exitOption, swapOption } = options
-
-    switch (activeTab.value) {
-      case 'adds':
-        return instance.setOption({
-          series: [{ data: joinOption.data }, { data: [] }, { data: [] }],
-        })
-      case 'removes':
-        return instance.setOption({
-          series: [{ data: [] }, { data: exitOption.data }, { data: [] }],
-        })
-      case 'swaps':
-        return instance.setOption({
-          series: [{ data: [] }, { data: [] }, { data: swapOption.data }],
-        })
-      default:
-        return instance.setOption({
-          series: [joinOption, exitOption, swapOption],
-        })
-    }
-  }, [activeTab, poolEventsForChart, options])
+  const chartHeight = isExpanded ? 400 : 90
 
   return {
     chartOption: getDefaultPoolActivityChartOptions(
@@ -312,7 +263,11 @@ export function usePoolActivityChart(isExpanded: boolean) {
       isMobile,
       is2xl,
       isExpanded,
-      _chain
+      _chain,
+      minDate,
+      maxDate,
+      maxYAxisValue,
+      sortedPoolEvents
     ),
     eChartsRef,
     chartHeight,

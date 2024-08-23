@@ -28,6 +28,8 @@ import { sortAlphabetically } from '@/lib/shared/utils/sorting'
 export type PoolActivityResponse = ReturnType<typeof _usePoolActivity>
 export const PoolActivityContext = createContext<PoolActivityResponse | null>(null)
 
+const MAX_EVENTS = 500
+
 function _usePoolActivity() {
   const { id: poolId, variant, chain } = useParams()
   const { pool } = usePool()
@@ -68,9 +70,26 @@ function _usePoolActivity() {
   const { loading, data: response } = usePoolEvents({
     poolIdIn: [poolId] as string[],
     chainIn: [_chain],
+    first: MAX_EVENTS,
+    skip: 0,
   })
 
   const count = response?.poolEvents.length ?? 0
+
+  const minDate = useMemo(() => {
+    if (!response) return 0
+    return Math.min(...response.poolEvents.map(event => event.timestamp))
+  }, [response])
+
+  const maxDate = useMemo(() => {
+    if (!response) return 0
+    return Math.max(...response.poolEvents.map(event => event.timestamp))
+  }, [response])
+
+  const maxYAxisValue = useMemo(() => {
+    if (!response) return 0
+    return Math.max(...response.poolEvents.map(event => event.valueUSD))
+  }, [response])
 
   const poolActivityData = useMemo(() => {
     if (!response) return { adds: [], removes: [], swaps: [] }
@@ -147,40 +166,8 @@ function _usePoolActivity() {
   }
 
   function getDateCaption() {
-    try {
-      let diffInDays = 0
-      const firstAddTimeStamp = poolActivityData.adds[poolActivityData.adds.length - 1]?.[0] ?? 0
-      const firstRemoveTimeStamp =
-        poolActivityData.removes[poolActivityData.removes.length - 1]?.[0] ?? 0
-      const firstSwapTimeStamp = poolActivityData.swaps[poolActivityData.swaps.length - 1]?.[0] ?? 0
-
-      if (activeTab.value === 'adds' && firstAddTimeStamp) {
-        diffInDays = differenceInCalendarDays(new Date(), new Date(firstAddTimeStamp * 1000))
-      }
-
-      if (activeTab.value === 'removes' && firstRemoveTimeStamp) {
-        const timestamp = firstRemoveTimeStamp
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'swaps' && firstSwapTimeStamp) {
-        const timestamp = poolActivityData.swaps[poolActivityData.swaps.length - 1][0]
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'all') {
-        const timestamps = [firstAddTimeStamp, firstRemoveTimeStamp, firstSwapTimeStamp].filter(
-          Boolean
-        )
-        const lastTimestamp = Math.min(...timestamps)
-        diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
-      }
-
-      return diffInDays > 0 ? `in last ${diffInDays} days` : 'today'
-    } catch (e) {
-      console.error(e)
-      return ''
-    }
+    const diffInDays = differenceInCalendarDays(new Date(), minDate * 1000)
+    return diffInDays > 0 ? `in last ${diffInDays} days` : 'today'
   }
 
   const sortPoolEvents = useCallback(
@@ -216,10 +203,9 @@ function _usePoolActivity() {
 
   const sortedPoolEvents = useMemo(() => {
     const sortedEvents = sortPoolEvents(poolEvents, sortingBy, sorting)
-    const sortedEventsLength = sortedEvents.length > 500 ? 500 : sortedEvents.length
 
     return isChartView
-      ? sortedEvents.slice(0, sortedEventsLength)
+      ? sortedEvents.slice(0, sortedEvents.length)
       : sortedEvents.slice(
           pagination.pageIndex * pagination.pageSize,
           pagination.pageSize * (pagination.pageIndex + 1)
@@ -234,19 +220,8 @@ function _usePoolActivity() {
     return !!poolEvents.length && poolEvents.length > pagination.pageSize
   }, [poolEvents, pagination])
 
-  const sortedPoolEventsLength = useMemo(() => sortedPoolEvents.length, [sortedPoolEvents])
-
-  const poolEventsForChart = useMemo(() => {
-    const truncatedLength = sortedPoolEventsLength > 500 ? 500 : sortedPoolEventsLength
-
-    return sortedPoolEvents.slice(0, truncatedLength)
-  }, [sortedPoolEvents])
-
   const transactionsLabel = useMemo(() => {
-    return `${fNum(
-      'integer',
-      isChartView ? poolEventsForChart.length : poolEvents.length
-    )} ${getTitle()} ${getDateCaption()}`
+    return `${fNum('integer', poolEvents.length)} ${getTitle()} ${getDateCaption()}`
   }, [poolEvents, getTitle, getDateCaption])
 
   return {
@@ -256,7 +231,6 @@ function _usePoolActivity() {
     activeTab,
     tabsList,
     poolActivityData,
-    poolEventsForChart,
     transactionsLabel,
     pagination,
     sortedPoolEvents,
@@ -267,6 +241,9 @@ function _usePoolActivity() {
     isSortedByTime: sortingBy === SortingBy.time,
     isSortedByValue: sortingBy === SortingBy.value,
     isSortedByAction: sortingBy === SortingBy.action,
+    minDate,
+    maxDate,
+    maxYAxisValue,
     setSorting,
     toggleSorting,
     setSortingBy,
