@@ -5,9 +5,9 @@ export function ArrowDownIcon() {
       <path
         d="M8 3.332v9.333m0 0 4.666-4.667M8 12.665 3.333 7.998"
         stroke="currentColor"
-        stroke-width="1.333"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

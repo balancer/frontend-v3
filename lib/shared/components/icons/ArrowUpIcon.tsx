@@ -5,9 +5,9 @@ export function ArrowUpIcon() {
       <path
         d="M8 12.665V3.332m0 0L3.332 7.999M8 3.332l4.667 4.667"
         stroke="currentColor"
-        stroke-width="1.333"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.333"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

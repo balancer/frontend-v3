@@ -11,9 +11,9 @@ export function TableIcon({ size = 16 }: { size?: number }) {
       <path
         d="M.75 2h5.5m3.5 0h5.5M.75 6h5.5m3.5 0h5.5M.75 10h5.5m3.5 0h5.5M.75 14h5.5m3.5 0h5.5"
         stroke="currentColor"
-        stroke-width="1.5"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )

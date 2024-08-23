@@ -5,8 +5,8 @@ export function SortableIcon() {
       <path
         d="m1 6 2.667-2.666m0 0 2.666 2.667M3.667 3.334v9.333M13 10.001l-2.666 2.666m0 0-2.667-2.666m2.667 2.666V3.334"
         stroke="currentColor"
-        stroke-linecap="round"
-        stroke-linejoin="round"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   )
