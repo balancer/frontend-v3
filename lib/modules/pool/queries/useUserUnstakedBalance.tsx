@@ -45,7 +45,7 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
 
   // for each pool get the unstaked balance
   const balances = useMemo(() => {
-    if (isFetching) return []
+    if (isFetching || !userAddress) return []
 
     return unstakedPoolBalances.map((rawBalance, index) => {
       const pool = pools[index]

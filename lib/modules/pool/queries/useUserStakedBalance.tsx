@@ -37,7 +37,7 @@ export function useUserStakedBalance(pools: Pool[] = []) {
 
   // for each pool replicate APIs GqlPoolUserBalance.stakedBalances api's type
   const stakedBalances = useMemo(() => {
-    if (isFetching) return []
+    if (isFetching || !userAddress) return []
 
     return stakedPoolBalances.map((rawBalance, index) => {
       const stakingAddress = contracts[index]?.address
