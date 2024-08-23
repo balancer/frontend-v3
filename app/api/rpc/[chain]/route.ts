@@ -6,18 +6,17 @@ type Params = {
   }
 }
 
-const INFURA_KEY = process.env.PRIVATE_INFURA_KEY || ''
 const ALCHEMY_KEY = process.env.PRIVATE_ALCHEMY_KEY || ''
 
 const chainToRpcMap: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: `https://mainnet.infura.io/v3/${INFURA_KEY}`,
-  [GqlChain.Arbitrum]: `https://arbitrum-mainnet.infura.io/v3/${INFURA_KEY}`,
-  [GqlChain.Optimism]: `https://optimism-mainnet.infura.io/v3/${INFURA_KEY}`,
-  [GqlChain.Base]: `https://base-mainnet.infura.io/v3/${INFURA_KEY}`,
+  [GqlChain.Mainnet]: `https://eth-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [GqlChain.Arbitrum]: `https://arb-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [GqlChain.Optimism]: `https://opt-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
+  [GqlChain.Base]: `https://base-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [GqlChain.Polygon]: `https://polygon-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
-  [GqlChain.Avalanche]: `https://avalanche-mainnet.infura.io/v3/${INFURA_KEY}`,
+  [GqlChain.Avalanche]: `https://avax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [GqlChain.Fantom]: `https://fantom-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
-  [GqlChain.Sepolia]: `https://sepolia.infura.io/v3/${INFURA_KEY}`,
+  [GqlChain.Sepolia]: `https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [GqlChain.Fraxtal]: `https://frax-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [GqlChain.Gnosis]: `https://gnosis-mainnet.g.alchemy.com/v2/${ALCHEMY_KEY}`,
   [GqlChain.Mode]: undefined,
