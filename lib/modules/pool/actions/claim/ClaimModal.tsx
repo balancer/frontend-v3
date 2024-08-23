@@ -84,7 +84,7 @@ export function ClaimModal({
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}
-        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
+        <TransactionModalHeader label="Claim incentives" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
           <AnimateHeightChange spacing="sm">
