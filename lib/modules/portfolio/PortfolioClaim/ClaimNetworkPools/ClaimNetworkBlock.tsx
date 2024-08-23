@@ -22,24 +22,22 @@ export function ClaimNetworkBlock({
   const { toCurrency } = useCurrency()
   const { isDesktop, isMobile } = useBreakpoints()
 
-  const iconSize = isDesktop ? 14 : 8
+  const iconSize = isDesktop ? 12 : 8
   return (
     <Card
       variant="level1"
       p={['sm', 'md']}
       shadow="xl"
-      border="1px solid"
-      borderColor="border.base"
       flex="1"
       w="full"
       onClick={isMobile ? onClick : undefined}
     >
       <Flex justifyContent="space-between" alignItems="center">
-        <HStack>
+        <HStack gap="ms">
           <NetworkIcon chain={chain} size={iconSize} />
 
           <Stack gap={1}>
-            <Heading size={['sm', 'md']} textTransform={'capitalize'}>
+            <Heading size="sm" textTransform={'capitalize'}>
               {title || chainToSlugMap[chain]}
             </Heading>
             {isDesktop && (
