@@ -34,3 +34,13 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 ## Testing
 
 See [TESTING.md](./test/TESTING.md).
+
+## Environment variables
+
+This project uses [cross-env](https://www.npmjs.com/package/cross-env) to provide environment
+variables with command line.
+
+```bash
+# Works well on windows/posix systems
+$ cross-env PROTOCOL=bal pnpm dev
+```

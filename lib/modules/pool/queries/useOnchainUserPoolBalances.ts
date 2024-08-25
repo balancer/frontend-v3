@@ -24,6 +24,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     unstakedBalanceByPoolId,
     isLoading: isLoadingUnstakedPoolBalances,
+    isFetching: isFetchingUnstakedPoolBalances,
     refetch: refetchUnstakedBalances,
     error: unstakedPoolBalancesError,
   } = useUserUnstakedBalance(pools)
@@ -31,6 +32,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   const {
     stakedBalancesByPoolId,
     isLoading: isLoadingStakedPoolBalances,
+    isFetching: isFetchingStakedPoolBalances,
     refetch: refetchedStakedBalances,
     error: stakedPoolBalancesError,
   } = useUserStakedBalance(pools)
@@ -40,6 +42,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   }
 
   const isLoading = isLoadingUnstakedPoolBalances || isLoadingStakedPoolBalances
+  const isFetching = isFetchingUnstakedPoolBalances || isFetchingStakedPoolBalances
 
   const enrichedPools = isLoading
     ? pools
@@ -57,6 +60,7 @@ export function useOnchainUserPoolBalances(pools: Pool[] = []) {
   return {
     data: enrichedPools,
     isLoading,
+    isFetching,
     refetchUnstakedBalances,
     refetchedStakedBalances,
     refetch,
@@ -111,11 +115,19 @@ function overwriteOnchainPoolBalanceData(
 
     // Unstaked balances
     const onchainUnstakedBalances = ocUnstakedBalances[pool.id]
+    if (!onchainUnstakedBalances) {
+      return pool
+    }
+
     const onchainUnstakedBalance = onchainUnstakedBalances.unstakedBalance as HumanAmount
     const onchainUnstakedBalanceUsd = bn(onchainUnstakedBalance).times(bptPrice).toNumber()
 
     // Staked balances
     const onchainStakedBalances = stakedBalancesByPoolId[pool.id]
+
+    if (!onchainStakedBalances) {
+      return pool
+    }
     const onchainTotalStakedBalance = safeSum(
       onchainStakedBalances.map(stakedBalance => bn(stakedBalance.balance))
     )

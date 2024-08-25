@@ -23,7 +23,6 @@ import { keyBy } from 'lodash'
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
 */
-fraxtal.rpcUrls
 export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: 'https://eth.llamarpc.com',
   [GqlChain.Arbitrum]: 'https://arbitrum.llamarpc.com',
@@ -39,25 +38,19 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
 }
 
-// Helpful for injecting fork RPCs for specific chains.
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  /*
-    Using alternative rpc url as the default one (cloudflare-eth.com) is leading to 429 rate limit issues:
-    1. Lower request limit
-    2. 429s are difficult to handle (due to CORS): https://community.cloudflare.com/t/cors-on-rate-limit-429/270010/11
-  */
-  [GqlChain.Mainnet]: 'https://ethereum-rpc.publicnode.com',
-  [GqlChain.Arbitrum]: undefined,
-  [GqlChain.Base]: undefined,
-  [GqlChain.Avalanche]: 'https://avalanche-c-chain-rpc.publicnode.com',
-  [GqlChain.Fantom]: undefined,
-  [GqlChain.Gnosis]: 'https://gnosis-rpc.publicnode.com',
-  [GqlChain.Optimism]: undefined,
-  [GqlChain.Polygon]: undefined,
-  [GqlChain.Zkevm]: undefined,
-  [GqlChain.Sepolia]: undefined,
+  [GqlChain.Mainnet]: `/api/rpc/${GqlChain.Mainnet}`,
+  [GqlChain.Arbitrum]: `/api/rpc/${GqlChain.Arbitrum}`,
+  [GqlChain.Base]: `/api/rpc/${GqlChain.Base}`,
+  [GqlChain.Avalanche]: `/api/rpc/${GqlChain.Avalanche}`,
+  [GqlChain.Fantom]: `/api/rpc/${GqlChain.Fantom}`,
+  [GqlChain.Gnosis]: `/api/rpc/${GqlChain.Gnosis}`,
+  [GqlChain.Optimism]: `/api/rpc/${GqlChain.Optimism}`,
+  [GqlChain.Polygon]: `/api/rpc/${GqlChain.Polygon}`,
+  [GqlChain.Zkevm]: `/api/rpc/${GqlChain.Zkevm}`,
+  [GqlChain.Sepolia]: `/api/rpc/${GqlChain.Sepolia}`,
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: undefined,
+  [GqlChain.Fraxtal]: `/api/rpc/${GqlChain.Fraxtal}`,
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }

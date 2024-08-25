@@ -281,8 +281,7 @@ export default function Privacy() {
                   </ul>
                 </li>
               </ul>
-
-              <h5 id="rebasing-token" className="anchor">
+              <h5 id="rebasing-tokens" className="anchor">
                 Rebasing tokens
               </h5>
               <p>
