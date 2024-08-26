@@ -44,7 +44,11 @@ export class GaugeService {
       calls.push(...rewardsCalls)
     }
 
-    calls.push(this.getGaugeEncodeWithdrawCallData({ gauge: gauges[0], sender, recipient, amount }))
+    const gauge = gauges[0]
+
+    if (gauge) {
+      calls.push(this.getGaugeEncodeWithdrawCallData({ gauge, sender, recipient, amount }))
+    }
 
     return calls
   }

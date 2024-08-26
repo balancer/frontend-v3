@@ -66,7 +66,7 @@ export async function GET(request: Request, { params: { address } }: Params) {
       data: [check],
     }: ReputationResponse = await res.json()
 
-    const isAuthorized = check.recommendation !== 'Deny'
+    const isAuthorized = check ? check.recommendation !== 'Deny' : false
 
     return NextResponse.json({ isAuthorized })
   } catch (err) {

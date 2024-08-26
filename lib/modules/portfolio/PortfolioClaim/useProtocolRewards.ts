@@ -36,9 +36,10 @@ export function useProtocolRewards() {
       select: data => {
         return (data as bigint[]).map((clBalance, index) => {
           const tokenAddress = claimableVeBalRewardsTokens[index]
-          const tokenPrice = priceFor(tokenAddress, networkConfigs.MAINNET.chain)
+          const tokenPrice = tokenAddress ? priceFor(tokenAddress, networkConfigs.MAINNET.chain) : 0
           const decimals =
-            getToken(tokenAddress, networkConfigs.MAINNET.chain)?.decimals || BPT_DECIMALS
+            (tokenAddress && getToken(tokenAddress, networkConfigs.MAINNET.chain)?.decimals) ||
+            BPT_DECIMALS
           const humanBalance = formatUnits(clBalance, decimals)
           return {
             tokenAddress,

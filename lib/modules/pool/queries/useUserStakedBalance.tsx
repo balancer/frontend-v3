@@ -4,7 +4,7 @@ import {
   GqlUserStakedBalance,
 } from '@/lib/shared/services/api/generated/graphql'
 import { bn } from '@/lib/shared/utils/numbers'
-import { groupBy } from 'lodash'
+import { compact, groupBy } from 'lodash'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { useUserAccount } from '../../web3/UserAccountProvider'
@@ -37,32 +37,37 @@ export function useUserStakedBalance(pools: Pool[] = []) {
 
   // for each pool replicate APIs GqlPoolUserBalance.stakedBalances api's type
   const stakedBalances = useMemo(() => {
-    if (isFetching || !userAddress) return []
+    if (isFetching) return []
 
-    return stakedPoolBalances.map((rawBalance, index) => {
-      const stakingAddress = contracts[index]?.address
-      const pool = poolByStaking[stakingAddress]
-      const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
-      const humanStakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
+    return compact(
+      stakedPoolBalances.map((rawBalance, index) => {
+        const stakingAddress = contracts[index]?.address
+        if (!stakingAddress) return undefined
+        const pool = poolByStaking[stakingAddress]
+        if (!pool) return undefined
 
-      const stakingType =
-        stakingAddress === pool.staking?.aura?.auraPoolAddress
-          ? GqlPoolStakingType.Aura
-          : GqlPoolStakingType.Gauge
+        const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
+        const humanStakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
 
-      const stakedBalance: GqlUserStakedBalance = {
-        __typename: 'GqlUserStakedBalance',
-        stakingId: stakingAddress,
-        balance: humanStakedBalance,
-        balanceUsd: bn(humanStakedBalance).times(bptPrice).toNumber(),
-        stakingType,
-      }
+        const stakingType =
+          stakingAddress === pool.staking?.aura?.auraPoolAddress
+            ? GqlPoolStakingType.Aura
+            : GqlPoolStakingType.Gauge
 
-      return {
-        poolId: pool.id,
-        ...stakedBalance,
-      }
-    })
+        const stakedBalance: GqlUserStakedBalance = {
+          __typename: 'GqlUserStakedBalance',
+          stakingId: stakingAddress,
+          balance: humanStakedBalance,
+          balanceUsd: bn(humanStakedBalance).times(bptPrice).toNumber(),
+          stakingType,
+        }
+
+        return {
+          poolId: pool.id,
+          ...stakedBalance,
+        }
+      })
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stakedPoolBalances, contracts, poolByStaking, userAddress, isFetching])
 
@@ -93,15 +98,20 @@ function poolContracts(poolByStaking: Record<Address, Pool>, userAddress: Addres
   const stakingAbi = balancerV2GaugeV5Abi
 
   const stakingAddresses = Object.keys(poolByStaking) as Address[]
-  return stakingAddresses.map(
-    stakingAddress =>
-      ({
+  return compact(
+    stakingAddresses.map(stakingAddress => {
+      const pool = poolByStaking[stakingAddress]
+
+      if (!pool) return undefined
+
+      return {
         abi: stakingAbi,
         address: stakingAddress,
         functionName: 'balanceOf',
         args: [userAddress],
-        chainId: getChainId(poolByStaking[stakingAddress].chain),
-      } as const)
+        chainId: getChainId(pool.chain),
+      } as const
+    })
   )
 }
 

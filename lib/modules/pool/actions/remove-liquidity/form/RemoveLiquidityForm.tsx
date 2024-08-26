@@ -33,7 +33,7 @@ const TABS: ButtonGroupOption[] = [
     value: 'single',
     label: 'Single token',
   },
-]
+] as const
 
 export function RemoveLiquidityForm() {
   const {

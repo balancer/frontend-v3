@@ -1,6 +1,6 @@
 import { getChainId } from '@/lib/config/app.config'
 import { bn } from '@/lib/shared/utils/numbers'
-import { keyBy } from 'lodash'
+import { compact, keyBy } from 'lodash'
 import { Address, formatUnits } from 'viem'
 import { useReadContracts } from 'wagmi'
 import { useUserAccount } from '../../web3/UserAccountProvider'
@@ -45,20 +45,24 @@ export function useUserUnstakedBalance(pools: Pool[] = []) {
 
   // for each pool get the unstaked balance
   const balances = useMemo(() => {
-    if (isFetching || !userAddress) return []
+    if (isFetching) return []
 
-    return unstakedPoolBalances.map((rawBalance, index) => {
-      const pool = pools[index]
-      const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
-      const humanUnstakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
+    return compact(
+      unstakedPoolBalances.map((rawBalance, index) => {
+        const pool = pools[index]
+        if (!pool) return undefined
 
-      return {
-        poolId: pool.id,
-        rawUnstakedBalance: rawBalance,
-        unstakedBalance: humanUnstakedBalance,
-        unstakedBalanceUsd: bn(humanUnstakedBalance).times(bptPrice),
-      }
-    })
+        const bptPrice = calcBptPrice(pool.dynamicData.totalLiquidity, pool.dynamicData.totalShares)
+        const humanUnstakedBalance = formatUnits(rawBalance || 0n, BPT_DECIMALS)
+
+        return {
+          poolId: pool.id,
+          rawUnstakedBalance: rawBalance,
+          unstakedBalance: humanUnstakedBalance,
+          unstakedBalanceUsd: bn(humanUnstakedBalance).times(bptPrice),
+        }
+      })
+    )
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isLoading, unstakedPoolBalances, pools, userAddress, isFetching])
 
