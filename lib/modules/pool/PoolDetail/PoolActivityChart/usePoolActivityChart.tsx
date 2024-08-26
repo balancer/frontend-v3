@@ -2,25 +2,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useRef } from 'react'
 import { useParams } from 'next/navigation'
-import { differenceInCalendarDays, format } from 'date-fns'
-import { usePool } from '../../PoolProvider'
-import { PoolVariant, BaseVariant } from '../../pool.types'
-import {
-  GqlChain,
-  GqlPoolType,
-  GqlPoolEventType,
-  GqlToken,
-} from '@/lib/shared/services/api/generated/graphql'
+import { differenceInDays, format } from 'date-fns'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { ButtonGroupOption } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
 import { ColorMode, useTheme as useChakraTheme } from '@chakra-ui/react'
 import { useTheme as useNextTheme } from 'next-themes'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
-import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-
 import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
@@ -28,23 +18,12 @@ import {
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { NumberFormatter } from '@/lib/shared/utils/numbers'
-import { usePoolEvents } from '../../usePoolEvents'
-
-type ChartInfoTokens = {
-  token?: GqlToken
-  amount: string
-}
-
-export type ChartInfoMetaData = {
-  userAddress: string
-  tokens: ChartInfoTokens[]
-  tx: string
-  usdValue: string
-}
-
-type ChartEl = [number, string, ChartInfoMetaData]
-
-export type ChartInfo = Record<'adds' | 'removes' | 'swaps', ChartEl[]>
+import { usePoolActivity } from '../PoolActivity/usePoolActivity'
+import {
+  PoolActivityMetaData,
+  PoolActivityTokens,
+  PoolActivityEl,
+} from '../PoolActivity/poolActivity.types'
 
 const getDefaultPoolActivityChartOptions = (
   nextTheme: ColorMode = 'dark',
@@ -53,7 +32,12 @@ const getDefaultPoolActivityChartOptions = (
   isMobile = false,
   is2xl = false,
   isExpanded = false,
-  chain: GqlChain
+  chain: GqlChain,
+  minDate: number,
+  maxDate: number,
+  maxYAxisValue: number,
+  sortedPoolEvents: PoolActivityEl[],
+  isLoading: boolean
 ): echarts.EChartsCoreOption => {
   const toolTipTheme = {
     heading: 'font-weight: bold; color: #E5D3BE',
@@ -65,22 +49,24 @@ const getDefaultPoolActivityChartOptions = (
 
   return {
     grid: {
-      left: !isExpanded ? '2.5%' : isMobile ? '15%' : '60',
+      left: isExpanded ? (isMobile ? '15%' : '60') : '2.5%',
       right: '10',
       top: '7.5%',
-      bottom: !isExpanded ? '50%' : '10.5%',
+      bottom: isExpanded ? '10.5%' : '50%',
       containLabel: false,
     },
     xAxis: {
-      show: isExpanded,
+      show: isExpanded && sortedPoolEvents.length,
       type: 'time',
       minorSplitLine: { show: false },
       axisTick: { show: false },
       splitNumber: 3,
       axisLabel: {
-        formatter: (value: number) => {
-          return format(new Date(value * 1000), 'MMM d')
-        },
+        formatter: (value: number) =>
+          format(
+            new Date(value * 1000),
+            `MMM d${differenceInDays(maxDate, minDate) < 1 ? ' HH:mm' : ''}`
+          ),
         color: theme.semanticTokens.colors.font.primary[colorMode],
         opacity: 0.5,
         interval: 'auto',
@@ -96,15 +82,18 @@ const getDefaultPoolActivityChartOptions = (
         },
       },
       axisLine: { show: false },
-      splitArea: {
-        show: false,
-        areaStyle: {
-          color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
-        },
-      },
+      // TODO: is this needed?
+      // splitArea: {
+      //   show: false,
+      //   areaStyle: {
+      //     color: ['rgba(250,250,250,0.3)', 'rgba(200,200,200,0.3)'],
+      //   },
+      // },
+      min: minDate,
+      max: maxDate,
     },
     yAxis: {
-      show: isExpanded,
+      show: isExpanded && sortedPoolEvents.length,
       type: 'value',
       axisLine: { show: false },
       minorSplitLine: { show: false },
@@ -120,6 +109,7 @@ const getDefaultPoolActivityChartOptions = (
         showMaxLabel: true,
         showMinLabel: true,
       },
+      max: maxYAxisValue,
     },
     tooltip: {
       triggerOn: 'mousemove|click',
@@ -133,13 +123,13 @@ const getDefaultPoolActivityChartOptions = (
       formatter: (params: any) => {
         const data = Array.isArray(params) ? params[0] : params
         const timestamp = data.value[0]
-        const metaData = data.data[2] as ChartInfoMetaData
+        const metaData = data.data[2] as PoolActivityMetaData
         const userAddress = metaData.userAddress
         const tokens = metaData.tokens.filter(token => {
           if (!token.token) return false
           if (Number(token.amount) === 0) return false
           return true
-        }) as ChartInfoTokens[]
+        }) as PoolActivityTokens[]
 
         const tx = metaData.tx
         const txLink = getBlockExplorerTxUrl(tx, chain)
@@ -202,10 +192,48 @@ const getDefaultPoolActivityChartOptions = (
       `
       },
     },
+    series: [
+      {
+        name: 'Events',
+        itemStyle: {
+          color: function (param: any) {
+            const action = param.data[2].action
+
+            return new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+              {
+                offset: 0,
+                color: theme.semanticTokens.colors.chart.pool.scatter[action].from,
+              },
+              {
+                offset: 1,
+                color: theme.semanticTokens.colors.chart.pool.scatter[action].to,
+              },
+            ])
+          },
+        },
+        emphasis: {
+          focus: 'self',
+          scale: 1.5,
+        },
+        symbolSize: getSymbolSize,
+        data: sortedPoolEvents,
+        type: 'scatter',
+      },
+    ],
+    title: {
+      show: !sortedPoolEvents.length && !isLoading,
+      textStyle: {
+        color: 'grey',
+        fontSize: 20,
+      },
+      text: 'No events to show',
+      left: 'center',
+      top: 'center',
+    },
   }
 }
 
-function getSymbolSize(dataItem?: ChartEl) {
+function getSymbolSize(dataItem?: PoolActivityEl) {
   if (!dataItem) return 0
 
   const value = Number(dataItem[2].usdValue)
@@ -217,294 +245,19 @@ function getSymbolSize(dataItem?: ChartEl) {
   return 80
 }
 
-export type PoolActivityChartTab = 'all' | 'adds' | 'swaps' | 'removes'
-
-export interface PoolActivityChartTypeTab {
-  value: string
-  label: string
-}
-
-export function getPoolActivityTabsList({
-  variant,
-  poolType,
-}: {
-  variant: PoolVariant
-  poolType: GqlPoolType
-}): PoolActivityChartTypeTab[] {
-  if (poolType === GqlPoolType.LiquidityBootstrapping && variant === BaseVariant.v2) {
-    return [
-      {
-        value: 'adds',
-        label: 'Adds',
-      },
-      {
-        value: 'removes',
-        label: 'Removes',
-      },
-    ]
-  }
-
-  return [
-    {
-      value: 'all',
-      label: 'All',
-    },
-    {
-      value: 'adds',
-      label: 'Adds',
-    },
-    {
-      value: 'removes',
-      label: 'Removes',
-    },
-    {
-      value: 'swaps',
-      label: 'Swaps',
-    },
-  ]
-}
-
-export function usePoolActivityChart(isExpanded: boolean) {
+export function usePoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile, is2xl } = useBreakpoints()
   const { theme: nextTheme } = useNextTheme()
-  const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
-  const { id: poolId, variant, chain } = useParams()
-  const { pool } = usePool()
+  const { chain } = useParams()
   const theme = useChakraTheme()
+  const { sortedPoolEvents, minDate, maxDate, maxYAxisValue, isExpanded, isLoading } =
+    usePoolActivity()
   const _chain = slugToChainMap[chain as ChainSlug]
-
-  const tabsList = useMemo(() => {
-    const poolType = pool?.type
-    if (!poolType || typeof variant !== 'string') return []
-
-    return getPoolActivityTabsList({
-      variant: variant as PoolVariant,
-      poolType: poolType,
-    })
-  }, [pool?.type, variant])
-
-  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
-
-  const { loading, data: response } = usePoolEvents({
-    poolIdIn: [poolId] as string[],
-    chainIn: [_chain],
-  })
-
-  const chartData = useMemo(() => {
-    if (!response) return { adds: [], removes: [], swaps: [] }
-    const { poolEvents: events } = response
-
-    const data = events.reduce(
-      (acc: ChartInfo, item) => {
-        const { type, timestamp, valueUSD, userAddress, tx } = item
-
-        const usdValue = valueUSD.toString() ?? ''
-        const tokens: ChartInfoTokens[] = []
-
-        if (item.__typename === 'GqlPoolAddRemoveEventV3') {
-          item.tokens.forEach(token => {
-            tokens.push({
-              token: getToken(token.address, _chain),
-              amount: token.amount,
-            })
-          })
-        }
-
-        if (
-          item.__typename === 'GqlPoolSwapEventV3' ||
-          item.__typename === 'GqlPoolSwapEventCowAmm'
-        ) {
-          tokens.push({
-            token: getToken(item.tokenIn.address, _chain),
-            amount: item.tokenIn.amount,
-          })
-          tokens.push({
-            token: getToken(item.tokenOut.address, _chain),
-            amount: item.tokenOut.amount,
-          })
-        }
-
-        const chartYAxisValue = isExpanded ? usdValue : '0'
-
-        if (type === GqlPoolEventType.Add) {
-          acc.adds.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Remove) {
-          acc.removes.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-        if (type === GqlPoolEventType.Swap) {
-          acc.swaps.push([timestamp, chartYAxisValue, { userAddress, tokens, usdValue, tx }])
-        }
-
-        return acc
-      },
-      { adds: [], removes: [], swaps: [] }
-    )
-
-    return data
-  }, [response, isExpanded])
-
-  const options = useMemo(() => {
-    return {
-      joinOption: {
-        name: 'Add',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.add.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.add.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: chartData.adds,
-        type: 'scatter',
-      },
-      exitOption: {
-        name: 'Remove',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.remove.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.remove.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: chartData.removes,
-        type: 'scatter',
-      },
-      swapOption: {
-        name: 'Swap',
-        itemStyle: {
-          color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-            {
-              offset: 0,
-              color: theme.semanticTokens.colors.chart.pool.scatter.swap.from,
-            },
-            {
-              offset: 1,
-              color: theme.semanticTokens.colors.chart.pool.scatter.swap.to,
-            },
-          ]),
-        },
-        emphasis: {
-          focus: 'self',
-          scale: 1.5,
-        },
-        symbolSize: getSymbolSize,
-        data: chartData.swaps,
-        type: 'scatter',
-      },
-    }
-  }, [chartData])
-
-  useEffect(() => {
-    const instance = eChartsRef.current?.getEchartsInstance()
-    if (!instance) return
-
-    const { joinOption, exitOption, swapOption } = options
-
-    switch (activeTab.value) {
-      case 'adds':
-        return instance.setOption({
-          series: [{ data: joinOption.data }, { data: [] }, { data: [] }],
-        })
-      case 'removes':
-        return instance.setOption({
-          series: [{ data: [] }, { data: exitOption.data }, { data: [] }],
-        })
-      case 'swaps':
-        return instance.setOption({
-          series: [{ data: [] }, { data: [] }, { data: swapOption.data }],
-        })
-      default:
-        return instance.setOption({
-          series: [joinOption, exitOption, swapOption],
-        })
-    }
-  }, [activeTab, chartData, options])
-
-  function getChartDateCaption() {
-    try {
-      let diffInDays = 0
-      const firstAddTimeStamp = chartData.adds[chartData.adds.length - 1]?.[0] ?? 0
-      const firstRemoveTimeStamp = chartData.removes[chartData.removes.length - 1]?.[0] ?? 0
-      const firstSwapTimeStamp = chartData.swaps[chartData.swaps.length - 1]?.[0] ?? 0
-
-      if (activeTab.value === 'adds' && firstAddTimeStamp) {
-        diffInDays = differenceInCalendarDays(new Date(), new Date(firstAddTimeStamp * 1000))
-      }
-
-      if (activeTab.value === 'removes' && firstRemoveTimeStamp) {
-        const timestamp = firstRemoveTimeStamp
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'swaps' && firstSwapTimeStamp) {
-        const timestamp = chartData.swaps[chartData.swaps.length - 1][0]
-        diffInDays = differenceInCalendarDays(new Date(), new Date(timestamp * 1000))
-      }
-
-      if (activeTab.value === 'all') {
-        const timestamps = [firstAddTimeStamp, firstRemoveTimeStamp, firstSwapTimeStamp].filter(
-          Boolean
-        )
-        const lastTimestamp = Math.min(...timestamps)
-        diffInDays = differenceInCalendarDays(new Date(), new Date(lastTimestamp * 1000))
-      }
-
-      return diffInDays > 0 ? `In last ${diffInDays} days` : 'today'
-    } catch (e) {
-      console.error(e)
-      return ''
-    }
-  }
-
-  function getChartTitle() {
-    if (activeTab.value === 'all') {
-      return 'transactions'
-    }
-
-    return activeTab.value
-  }
-
-  const dataSize = useMemo(() => {
-    let dataSize = 0
-
-    if (['all', 'adds'].includes(activeTab.value)) {
-      dataSize += chartData.adds.length
-    }
-    if (['all', 'removes'].includes(activeTab.value)) {
-      dataSize += chartData.removes.length
-    }
-    if (['all', 'swaps'].includes(activeTab.value)) {
-      dataSize += chartData.swaps.length
-    }
-
-    return dataSize
-  }, [activeTab, chartData])
+  const chartHeight = isExpanded ? 400 : 90
 
   return {
-    isLoading: loading,
     chartOption: getDefaultPoolActivityChartOptions(
       nextTheme as ColorMode,
       theme,
@@ -512,15 +265,14 @@ export function usePoolActivityChart(isExpanded: boolean) {
       isMobile,
       is2xl,
       isExpanded,
-      _chain
+      _chain,
+      minDate,
+      maxDate,
+      maxYAxisValue,
+      sortedPoolEvents,
+      isLoading
     ),
-    activeTab,
-    setActiveTab,
-    tabsList,
     eChartsRef,
-    chartData,
-    getChartDateCaption,
-    getChartTitle,
-    dataSize,
+    chartHeight,
   }
 }

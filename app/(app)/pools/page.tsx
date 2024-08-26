@@ -4,7 +4,7 @@ import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 
 import { Box, Skeleton } from '@chakra-ui/react'
 import { Suspense } from 'react'
-import { CowPromolBanner } from './cow/CowPromoBanner'
+import { CowPromoBanner } from './cow/CowPromoBanner'
 
 export default async function PoolsPage() {
   return (
@@ -18,7 +18,7 @@ export default async function PoolsPage() {
           </FadeInOnView> */}
           <FadeInOnView animateOnce={false}>
             <Box>
-              <CowPromolBanner />
+              <CowPromoBanner />
             </Box>
           </FadeInOnView>
         </DefaultPageContainer>

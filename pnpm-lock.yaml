@@ -83,12 +83,6 @@ importers:
       echarts-for-react:
         specifier: ^3.0.2
         version: 3.0.2(echarts@5.4.3)(react@18.2.0)
-      eslint:
-        specifier: 8.43.0
-        version: 8.43.0
-      eslint-config-next:
-        specifier: 14.0.1
-        version: 14.0.1(eslint@8.43.0)(typescript@5.4.5)
       fathom-client:
         specifier: ^3.7.0
         version: 3.7.0
@@ -261,9 +255,18 @@ importers:
       concurrently:
         specifier: ^8.2.2
         version: 8.2.2
+      cross-env:
+        specifier: ^7.0.3
+        version: 7.0.3
       cross-fetch:
         specifier: ^4.0.0
         version: 4.0.0
+      eslint:
+        specifier: 8.43.0
+        version: 8.43.0
+      eslint-config-next:
+        specifier: 14.0.1
+        version: 14.0.1(eslint@8.43.0)(typescript@5.4.5)
       eslint-config-prettier:
         specifier: ^8.8.0
         version: 8.10.0(eslint@8.43.0)
@@ -4993,6 +4996,11 @@ packages:
   crc-32@1.2.2:
     resolution: {integrity: sha512-ROmzCKrTnOwybPcJApAA6WBWij23HVfGVNKqqrZpuyZOHqK2CwHSvpGuyt/UNNvaIjEd8X5IFGp4Mh+Ie1IHJQ==}
     engines: {node: '>=0.8'}
+    hasBin: true
+
+  cross-env@7.0.3:
+    resolution: {integrity: sha512-+/HKd6EgcQCJGh2PSjZuUitQBQynKor4wrFbRg4DtAgS1aWO+gU52xpH7M9ScGgXSYmAVS9bIJ8EzuaGw0oNAw==}
+    engines: {node: '>=10.14', npm: '>=6', yarn: '>=1'}
     hasBin: true
 
   cross-fetch@3.1.8:
@@ -15608,6 +15616,10 @@ snapshots:
       typescript: 5.4.5
 
   crc-32@1.2.2: {}
+
+  cross-env@7.0.3:
+    dependencies:
+      cross-spawn: 7.0.3
 
   cross-fetch@3.1.8:
     dependencies:

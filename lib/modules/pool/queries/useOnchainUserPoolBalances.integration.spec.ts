@@ -58,7 +58,7 @@ describe('fetches onchain and overrides user balances', async () => {
 
     const result = await testUseChainPoolBalances(poolMockWithUndefinedStaking)
 
-    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+    await waitFor(() => expect(result.current.isFetching).toBeFalsy())
 
     expect(result.current.data[0].userBalance?.walletBalance).toBe('50')
   })
@@ -89,7 +89,7 @@ describe('fetches onchain and overrides user balances', async () => {
 
     const result = await testUseChainPoolBalances(poolMockWithEmptyGaugeAddress)
 
-    await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+    await waitFor(() => expect(result.current.isFetching).toBeFalsy())
     expect(result.current.data[0].userBalance?.walletBalance).toBe('60')
   })
 

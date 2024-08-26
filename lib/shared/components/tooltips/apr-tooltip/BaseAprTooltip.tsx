@@ -31,7 +31,7 @@ interface Props {
   placement?: PlacementWithLogical
   poolId: string
   vebalBoost?: string
-  totalBaseText: string | ((balReward?: GqlPoolAprItem) => string)
+  totalBaseText: string | ((hasVeBalBoost?: boolean) => string)
   totalBaseVeBalText: string
   totalVeBalTitle?: string
   maxVeBalText: string
@@ -96,7 +96,6 @@ function BaseAprTooltip({
     yieldBearingTokensDisplayed,
     stakingIncentivesDisplayed,
     subitemPopoverAprItemProps,
-    balReward,
     hasVeBalBoost,
     totalBase,
     maxVeBal,
@@ -116,7 +115,7 @@ function BaseAprTooltip({
   const totalBaseTitle = isVebal
     ? totalBaseVeBalText
     : typeof totalBaseText === 'function'
-    ? totalBaseText(balReward)
+    ? totalBaseText(hasVeBalBoost)
     : totalBaseText
 
   const popoverContent = customPopoverContent || (

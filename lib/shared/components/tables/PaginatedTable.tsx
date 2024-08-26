@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Card, Center, Text, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Center, Text, Spinner, VStack } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -9,6 +9,7 @@ interface Props<T> extends BoxProps {
   renderTableRow: (item: T, index: number) => React.ReactNode
   showPagination: boolean
   paginationProps: any // TODO: type this
+  noItemsFoundLabel: string
 }
 
 export function PaginatedTable({
@@ -18,10 +19,10 @@ export function PaginatedTable({
   renderTableHeader,
   showPagination,
   paginationProps,
-  ...rest
+  noItemsFoundLabel,
 }: Props<any>) {
   return (
-    <Card {...rest} p={{ base: '0', sm: '0' }}>
+    <>
       <VStack w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">
@@ -34,13 +35,11 @@ export function PaginatedTable({
               ))}
             </VStack>
           )}
-
           {!loading && items.length === 0 && (
             <Center py="2xl">
-              <Text color="font.secondary">No pools found</Text>
+              <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
-
           {loading && items.length === 0 && (
             <Center py="2xl">
               <Box
@@ -64,7 +63,6 @@ export function PaginatedTable({
               </Box>
             </Center>
           )}
-
           {loading && (
             <Box py="2xl">
               <Box
@@ -91,6 +89,6 @@ export function PaginatedTable({
         </Box>
       </VStack>
       {showPagination && <Pagination p="md" {...paginationProps} />}
-    </Card>
+    </>
   )
 }
