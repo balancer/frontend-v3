@@ -1,11 +1,6 @@
 'use client'
 
-import {
-  GqlChain,
-  GqlPoolTokenDetail,
-  GqlPoolTokenDisplay,
-} from '@/lib/shared/services/api/generated/graphql'
-import { Pool } from '../../PoolProvider'
+import { GqlChain, GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { Box, VStack, useTheme } from '@chakra-ui/react'
@@ -20,8 +15,9 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 
 export interface PoolWeightChartProps {
-  pool: Pool
+  displayTokens: GqlPoolTokenDetail[]
   chain: GqlChain
+  totalLiquidity: string
   hasLegend?: boolean
   isSmall?: boolean
   colors?: PoolWeightChartColorDef[]
@@ -153,23 +149,18 @@ function InnerSymbolCircle({ opacity }: { opacity: string; isSmall: boolean }) {
 }
 
 export function PoolWeightChart({
-  pool,
+  displayTokens,
   chain,
   hasLegend,
   isSmall,
   colors = DEFAULT_POOL_WEIGHT_CHART_COLORS,
+  totalLiquidity,
 }: PoolWeightChartProps) {
   const chartSizeValues = isSmall ? smallSize : normalSize
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const theme = useTheme()
   const colorMode = useThemeColorMode()
   const { calcWeightForBalance } = useTokens()
-
-  const displayTokens = pool.poolTokens.filter(token =>
-    pool.displayTokens.find(
-      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
-    )
-  ) as GqlPoolTokenDetail[]
 
   const chartOption = useMemo(() => {
     return {
@@ -208,12 +199,7 @@ export function PoolWeightChart({
             scale: false,
           },
           data: displayTokens.map((token, i) => ({
-            value: calcWeightForBalance(
-              token.address,
-              token.balance,
-              pool.dynamicData.totalLiquidity,
-              chain
-            ),
+            value: calcWeightForBalance(token.address, token.balance, totalLiquidity, chain),
             name: token.symbol,
             itemStyle: {
               color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
@@ -232,7 +218,7 @@ export function PoolWeightChart({
       ],
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, colorMode])
+  }, [displayTokens, totalLiquidity, chain, colorMode])
 
   return (
     <VStack>
@@ -319,7 +305,7 @@ export function PoolWeightChart({
           />
         </Box>
       </Box>
-      {hasLegend && <PoolWeightChartLegend pool={pool} colors={colors} />}
+      {hasLegend && <PoolWeightChartLegend displayTokens={displayTokens} colors={colors} />}
     </VStack>
   )
 }
