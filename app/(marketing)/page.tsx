@@ -1,28 +1,13 @@
 'use client'
 
-import { ReactLenis } from '@studio-freight/react-lenis'
-import { Box } from '@chakra-ui/react'
-import { AnimatedSVG } from '@/lib/shared/components/marketing/AnimatedSVG'
-import { HomeHero } from '@/lib/shared/components/marketing/HomeHero'
-import { HomeBuilders } from '@/lib/shared/components/marketing/HomeBuilders'
-import { HomeProtocols } from '@/lib/shared/components/marketing/HomeProtocols'
-import { HomeActivity } from '@/lib/shared/components/marketing/HomeActivity'
-import { isBeets } from '@/lib/config/app.config'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import dynamic from 'next/dynamic'
 
 export default function Home() {
-  return isBeets ? (
-    <h1>Hello, Beets Marketing!</h1>
-  ) : (
-    <ReactLenis root options={{ lerp: 0.1, duration: 1.5 }}>
-      <Box className="homepage" overflowX="hidden">
-        <HomeHero />
-        <Box height={{ base: '100px', md: '200px' }} zIndex="-1" position="relative">
-          <AnimatedSVG />
-        </Box>
-        <HomeBuilders />
-        <HomeProtocols />
-        <HomeActivity />
-      </Box>
-    </ReactLenis>
+  const { projectId } = getProjectConfig()
+  const HomeContent = dynamic(() =>
+    import(`@/lib/shared/components/marketing/Home.${projectId}`).then(mod => mod.HomeContent)
   )
+
+  return <HomeContent />
 }
