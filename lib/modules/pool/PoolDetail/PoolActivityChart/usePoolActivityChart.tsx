@@ -4,7 +4,7 @@
 import * as echarts from 'echarts/core'
 import { useRef } from 'react'
 import { useParams } from 'next/navigation'
-import { differenceInDays, format } from 'date-fns'
+import { secondsToMilliseconds, differenceInDays, format } from 'date-fns'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
 import { ChainSlug, slugToChainMap } from '../../pool.utils'
@@ -65,7 +65,11 @@ const getDefaultPoolActivityChartOptions = (
         formatter: (value: number) =>
           format(
             new Date(value * 1000),
-            `MMM d${differenceInDays(maxDate, minDate) < 1 ? ' HH:mm' : ''}`
+            `MMM d${
+              differenceInDays(secondsToMilliseconds(maxDate), secondsToMilliseconds(minDate)) < 1
+                ? ' HH:mm'
+                : ''
+            }`
           ),
         color: theme.semanticTokens.colors.font.primary[colorMode],
         opacity: 0.5,
