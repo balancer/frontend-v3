@@ -65,9 +65,10 @@ export function ClaimNetworkPools() {
               {poolsWithChain.map(([chain, pools], index) => (
                 <motion.div
                   key={chain}
-                  initial={{ opacity: 0, scale: 0.97 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.1, ease: easeOut }}
+                  transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
+                  style={{ transformOrigin: 'top' }}
                 >
                   <ClaimNetworkBlock
                     chain={pools[0].chain}
@@ -81,9 +82,10 @@ export function ClaimNetworkPools() {
 
               {hasProtocolRewards && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.97 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: poolsWithChain.length * 0.1, ease: easeOut }}
+                  transition={{ duration: 0.3, delay: poolsWithChain.length * 0.12, ease: easeOut }}
+                  style={{ transformOrigin: 'top' }}
                 >
                   <ClaimNetworkBlock
                     chain={GqlChain.Mainnet}
