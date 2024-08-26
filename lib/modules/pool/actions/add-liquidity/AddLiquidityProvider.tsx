@@ -59,7 +59,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const wNativeAsset = getWrappedNativeAssetToken(chain)
 
   function setInitialHumanAmountsIn() {
-    const amountsIn = pool.allTokens.map(
+    const amountsIn = pool.poolTokens.map(
       token =>
         ({
           tokenAddress: token.address,
@@ -82,8 +82,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
 
   function getPoolTokens() {
     if (isNonComposableStable(pool.type)) return pool.poolTokens
-    if (isGyro(pool.type)) return pool.allTokens
-    return pool.allTokens.filter(token => token.isMainToken)
+    if (isGyro(pool.type)) return pool.poolTokens
+    return pool.poolTokens
   }
 
   const tokens = getPoolTokens()
