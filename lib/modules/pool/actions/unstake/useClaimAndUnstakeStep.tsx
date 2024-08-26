@@ -50,10 +50,10 @@ export function useClaimAndUnstakeStep({
   const labels: TransactionLabels = {
     init: 'Claim & unstake',
     title: 'Claim & unstake',
-    description: 'Claim rewards and unstake LP tokens from gauge.',
+    description: 'Claim incentives and unstake LP tokens from gauge.',
     confirming: 'Confirming claim & unstake...',
     confirmed: `Claimed & unstaked!`,
-    tooltip: 'Claim rewards and unstake LP tokens from gauge.',
+    tooltip: 'Claim incentives and unstake LP tokens from gauge.',
   }
 
   const stakingService = pool.staking

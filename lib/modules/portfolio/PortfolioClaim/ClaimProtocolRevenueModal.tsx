@@ -67,7 +67,7 @@ export default function ClaimProtocolRevenueModal({ isOpen, onClose }: Props) {
           <DesktopStepTracker transactionSteps={transactionSteps} chain={GqlChain.Mainnet} />
         )}
         <TransactionModalHeader
-          label="Claim protocol rewards"
+          label="Claim protocol revenue share"
           txHash={claimTxHash}
           chain={GqlChain.Mainnet}
         />
