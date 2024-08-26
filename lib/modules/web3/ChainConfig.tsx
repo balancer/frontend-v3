@@ -40,21 +40,28 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
 }
 
 const baseUrl = getBaseUrl()
-const privateRpcUrl = (networkName: string) => `${baseUrl}/api/rpc/${networkName}`
+const shouldUsePrivateRpc = !!process.env.PRIVATE_ALCHEMY_KEY
+const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
+const getRpcOverride = (chain: GqlChain) => {
+  if (shouldUsePrivateRpc) {
+    return getPrivateRpcUrl(chain)
+  }
+  return undefined
+}
 
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: privateRpcUrl(GqlChain.Mainnet),
-  [GqlChain.Arbitrum]: privateRpcUrl(GqlChain.Arbitrum),
-  [GqlChain.Base]: privateRpcUrl(GqlChain.Base),
-  [GqlChain.Avalanche]: privateRpcUrl(GqlChain.Avalanche),
-  [GqlChain.Fantom]: privateRpcUrl(GqlChain.Fantom),
-  [GqlChain.Gnosis]: privateRpcUrl(GqlChain.Gnosis),
-  [GqlChain.Optimism]: privateRpcUrl(GqlChain.Optimism),
-  [GqlChain.Polygon]: privateRpcUrl(GqlChain.Polygon),
-  [GqlChain.Zkevm]: privateRpcUrl(GqlChain.Zkevm),
-  [GqlChain.Sepolia]: privateRpcUrl(GqlChain.Sepolia),
+  [GqlChain.Mainnet]: getRpcOverride(GqlChain.Mainnet),
+  [GqlChain.Arbitrum]: getRpcOverride(GqlChain.Arbitrum),
+  [GqlChain.Base]: getRpcOverride(GqlChain.Base),
+  [GqlChain.Avalanche]: getRpcOverride(GqlChain.Avalanche),
+  [GqlChain.Fantom]: getRpcOverride(GqlChain.Fantom),
+  [GqlChain.Gnosis]: getRpcOverride(GqlChain.Gnosis),
+  [GqlChain.Optimism]: getRpcOverride(GqlChain.Optimism),
+  [GqlChain.Polygon]: getRpcOverride(GqlChain.Polygon),
+  [GqlChain.Zkevm]: getRpcOverride(GqlChain.Zkevm),
+  [GqlChain.Sepolia]: getRpcOverride(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: privateRpcUrl(GqlChain.Fraxtal),
+  [GqlChain.Fraxtal]: getRpcOverride(GqlChain.Fraxtal),
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
