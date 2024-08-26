@@ -23,7 +23,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro, isNonComposableStable } from '../../pool.helpers'
+import { isComposableStable } from '../../pool.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
@@ -81,8 +81,10 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   }
 
   function getPoolTokens() {
-    if (isNonComposableStable(pool.type)) return pool.poolTokens
-    if (isGyro(pool.type)) return pool.poolTokens
+    // TODO add exception for composable pools where we can allow adding
+    // liquidity with nested tokens
+    if (isComposableStable(pool.type)) return pool.poolTokens
+
     return pool.poolTokens
   }
 

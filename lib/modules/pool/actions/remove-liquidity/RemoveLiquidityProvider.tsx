@@ -17,7 +17,7 @@ import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { isCowAmmPool, isGyro, isNonComposableStable } from '../../pool.helpers'
+import { isComposableStable, isCowAmmPool } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
@@ -74,9 +74,11 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
   function getPoolTokens() {
-    if (isNonComposableStable(pool.type)) return pool.poolTokens
-    if (isGyro(pool.type)) return pool.allTokens
-    return pool.allTokens.filter(token => token.isMainToken)
+    // TODO add exception for composable pools where we can allow adding
+    // liquidity with nested tokens
+    if (isComposableStable(pool.type)) return pool.poolTokens
+
+    return pool.poolTokens
   }
 
   const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
