@@ -38,6 +38,17 @@ export default function Page() {
         learnMoreLink="https://balancer.fi"
         status="error"
       />
+      <BalAlert
+        content={
+          <BalAlertContent
+            title="Info alert"
+            description="With description in the next line (forceColumnMode)"
+            forceColumnMode
+          ></BalAlertContent>
+        }
+        status="info"
+      />
+
       <GenericError
         error={new TestError(exceptionName, exceptionMessage)}
         maxWidth="500"

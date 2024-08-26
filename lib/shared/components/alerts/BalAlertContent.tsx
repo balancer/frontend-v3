@@ -8,6 +8,7 @@ type AlertContentProps = {
   title?: string
   description?: ReactNode | string
   tooltipLabel?: string
+  forceColumnMode?: boolean
 }
 
 // Utility component to display a title, description, optional tooltip and other nested components (buttons, links...) within an alert
@@ -15,12 +16,17 @@ export function BalAlertContent({
   title,
   description,
   tooltipLabel,
+  // Set to true to always display the title and description in a column layout
+  forceColumnMode = false,
   children,
 }: PropsWithChildren<AlertContentProps>) {
   return (
     <HStack w="full" flexWrap="wrap" justifyContent="space-between">
       <HStack maxWidth={{ base: '100%', md: '80%' }} flexWrap="wrap">
-        <Flex direction={{ base: 'column', md: 'row' }} gap={{ base: '0', md: 'sm' }}>
+        <Flex
+          direction={forceColumnMode ? 'column' : { base: 'column', md: 'row' }}
+          gap={forceColumnMode ? '0' : { base: '0', md: 'sm' }}
+        >
           <HStack gap="xs">
             {title && (
               <Text fontWeight="bold" color="black" minWidth="max-content">

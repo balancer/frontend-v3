@@ -36,6 +36,7 @@ import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { parseSwapError } from './swap.helpers'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { ConnectWallet } from '../web3/ConnectWallet'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 export function SwapForm() {
   const {
@@ -130,6 +131,7 @@ export function SwapForm() {
           </CardHeader>
           <CardBody as={VStack} align="start">
             <VStack spacing="md" w="full">
+              <SafeAppAlert />
               <ChainSelect
                 value={selectedChain}
                 onChange={newValue => {
