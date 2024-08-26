@@ -3,10 +3,14 @@ import { BalAlert } from './BalAlert'
 import { BalAlertButtonLink } from './BalAlertButtonLink'
 import { BalAlertContent } from './BalAlertContent'
 import { useWalletConnectMetadata } from '@/lib/modules/web3/useWalletConnectMetadata'
+import { useBreakpoints } from '../../hooks/useBreakpoints'
 
 export function SafeAppAlert() {
+  const { isMobile } = useBreakpoints()
   const { isSafeAccountViaWalletConnect } = useWalletConnectMetadata()
-  if (isSafeAccountViaWalletConnect) return <BalAlert content={<Title />} status="info" />
+  if (isSafeAccountViaWalletConnect && !isMobile) {
+    return <BalAlert content={<Title />} status="info" />
+  }
   return null
 }
 
