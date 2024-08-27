@@ -37,7 +37,11 @@ export function useClaimAllRewardsStep({
   const { claimableRewards: nonBalRewards, refetchClaimableRewards } = claimableBalancesQuery
   const { balRewardsData: balRewards, refetchBalRewards } = balTokenRewardsQuery
 
-  const pool = pools[0] // TODO: Should check if pools is empty
+  const pool = pools[0]
+  if (!pool) {
+    throw new Error('Pools should contain at least one element')
+  }
+
   const chain = pool.chain as GqlChain
   const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
   const gaugeAddresses = pools.flatMap(pool => allClaimableGaugeAddressesFor(pool))
