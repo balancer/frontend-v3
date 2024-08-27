@@ -62,6 +62,10 @@ export async function GET(request: Request, { params: { address } }: Params) {
       },
     })
 
+    if (!res.ok) {
+      throw new Error('Failed to fetch reputation. Response status: ' + res.status)
+    }
+
     const response: ReputationResponse = await res.json()
     const recommendation = response.data[0]?.recommendation
     if (!recommendation) {
