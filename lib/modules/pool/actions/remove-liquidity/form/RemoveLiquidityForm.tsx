@@ -33,6 +33,7 @@ import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -117,6 +118,7 @@ export function RemoveLiquidityForm() {
             </HStack>
           </CardHeader>
           <VStack spacing="md" align="start">
+            <SafeAppAlert />
             {!requiresProportionalInput(pool.type) && (
               <HStack>
                 <ButtonGroup
