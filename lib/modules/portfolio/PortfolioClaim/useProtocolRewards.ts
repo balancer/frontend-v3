@@ -53,7 +53,7 @@ export function useProtocolRewards() {
   })
 
   return {
-    protocolRewardsData,
+    protocolRewardsData: isConnected ? protocolRewardsData : [],
     isLoadingProtocolRewards,
     protocolRewardsError,
     hasLoadedProtocolRewards: status === 'success',
