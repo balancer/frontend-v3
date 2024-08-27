@@ -12,7 +12,7 @@ export function getPaginationProps(
       : Math.floor(totalRowCount / pagination.pageSize) + 1 // add extra page to account for remainder
 
   const canPreviousPage = pagination.pageIndex - 1 > -1
-  const canNextPage = pagination.pageIndex + 1 <= totalPageCount
+  const canNextPage = pagination.pageIndex + 1 < totalPageCount
   const currentPageNumber = pagination.pageIndex + 1
   const pageSize = pagination.pageSize
 

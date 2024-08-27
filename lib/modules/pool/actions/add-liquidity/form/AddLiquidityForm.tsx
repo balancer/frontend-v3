@@ -10,6 +10,7 @@ import {
   Grid,
   GridItem,
   HStack,
+  Skeleton,
   Text,
   Tooltip,
   VStack,
@@ -91,10 +92,13 @@ function AddLiquidityMainForm() {
     setPriceImpact(priceImpactQuery.data)
   }, [priceImpactQuery.data])
 
-  const priceImpactLabel =
-    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-'
+  const hasPriceImpact = priceImpact !== undefined && priceImpact !== null
+  const priceImpactLabel = hasPriceImpact ? fNum('priceImpact', priceImpact) : '-'
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
+
+  const isLoading = simulationQuery.isLoading || priceImpactQuery.isLoading
+  const isFetching = simulationQuery.isFetching || priceImpactQuery.isFetching
 
   const onModalOpen = async () => {
     previewModalDisclosure.onOpen()
@@ -176,9 +180,13 @@ function AddLiquidityMainForm() {
                   <Text variant="secondary" fontSize="sm" color="font.secondary">
                     Price impact:{' '}
                   </Text>
-                  <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                    {priceImpactLabel}
-                  </Text>
+                  {isFetching ? (
+                    <Skeleton w="40px" h="16px" />
+                  ) : (
+                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                      {priceImpactLabel}
+                    </Text>
+                  )}
                 </HStack>
               }
               accordionPanelComponent={
@@ -186,6 +194,7 @@ function AddLiquidityMainForm() {
                   totalUSDValue={totalUSDValue}
                   bptAmount={simulationQuery.data?.bptOut.amount}
                   isAddLiquidity
+                  isLoading={isFetching}
                 />
               }
             />
@@ -230,7 +239,7 @@ function AddLiquidityMainForm() {
                 w="full"
                 size="lg"
                 isDisabled={isDisabled}
-                isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
+                isLoading={isLoading}
                 onClick={() => !isDisabled && onModalOpen()}
               >
                 Next

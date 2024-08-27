@@ -75,13 +75,10 @@ export function PoolComposition() {
   const { calcTotalUsdValue } = useTokens()
 
   const displayTokens = getPoolDisplayTokens(pool)
+  const totalLiquidity = calcTotalUsdValue(displayTokens, chain)
 
   const CardContentBlock = () => (
-    <CardContent
-      totalLiquidity={calcTotalUsdValue(displayTokens, chain)}
-      displayTokens={displayTokens}
-      chain={chain}
-    />
+    <CardContent totalLiquidity={totalLiquidity} displayTokens={displayTokens} chain={chain} />
   )
 
   return (
@@ -116,7 +113,11 @@ export function PoolComposition() {
           {isLoading ? (
             <Skeleton w="full" h="full" />
           ) : (
-            <PoolWeightChart pool={pool} chain={chain} />
+            <PoolWeightChart
+              displayTokens={displayTokens}
+              chain={chain}
+              totalLiquidity={totalLiquidity}
+            />
           )}
         </NoisyCard>
       </Stack>
