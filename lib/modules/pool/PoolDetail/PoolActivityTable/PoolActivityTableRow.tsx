@@ -16,7 +16,6 @@ import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useEnsAvatar, useEnsName } from 'wagmi'
-import { usePool } from '../../PoolProvider'
 import { getChainId } from '@/lib/config/app.config'
 import { createAvatar } from '@dicebear/core'
 import { identicon } from '@dicebear/collection'
@@ -29,6 +28,7 @@ import { PoolActivityEl, PoolActivityTokens } from '../PoolActivity/poolActivity
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { fNum } from '@/lib/shared/utils/numbers'
 import React from 'react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 interface Props extends GridProps {
   event: PoolActivityEl
@@ -36,8 +36,7 @@ interface Props extends GridProps {
 }
 
 function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
-  const { chain } = usePool()
-  const chainId = getChainId(chain)
+  const chainId = getChainId(GqlChain.Mainnet) // perform ENS lookup through mainnet
   const { data: name } = useEnsName({ address: userAddress, chainId })
 
   const { data: ensAvatar } = useEnsAvatar({
