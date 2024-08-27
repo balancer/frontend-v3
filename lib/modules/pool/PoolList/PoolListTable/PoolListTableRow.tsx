@@ -23,8 +23,6 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  console.log({ isBeets })
-
   return (
     <FadeInOnView>
       <Box
