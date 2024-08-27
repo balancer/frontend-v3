@@ -16,7 +16,6 @@ import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useEnsAvatar, useEnsName } from 'wagmi'
-import { usePool } from '../../PoolProvider'
 import { getChainId } from '@/lib/config/app.config'
 import { createAvatar } from '@dicebear/core'
 import { identicon } from '@dicebear/collection'
@@ -29,15 +28,16 @@ import { PoolActivityEl, PoolActivityTokens } from '../PoolActivity/poolActivity
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { fNum } from '@/lib/shared/utils/numbers'
 import React from 'react'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { usePool } from '../../PoolProvider'
 
 interface Props extends GridProps {
   event: PoolActivityEl
   keyValue: number
 }
 
-function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
-  const { chain } = usePool()
-  const chainId = getChainId(chain)
+function EnsOrAddress({ userAddress, chain }: { userAddress: `0x${string}`; chain: GqlChain }) {
+  const chainId = getChainId(GqlChain.Mainnet) // perform ENS lookup through mainnet
   const { data: name } = useEnsName({ address: userAddress, chainId })
 
   const { data: ensAvatar } = useEnsAvatar({
@@ -50,7 +50,7 @@ function EnsOrAddress({ userAddress }: { userAddress: `0x${string}` }) {
   })
 
   return (
-    <Link target="_blank" href={getBlockExplorerAddressUrl(userAddress)}>
+    <Link target="_blank" href={getBlockExplorerAddressUrl(userAddress, chain)}>
       <HStack>
         <Image
           src={ensAvatar || fallbackSVG.toDataUriSync()}
@@ -117,6 +117,7 @@ function TransactionDetails({
 export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
   const { toCurrency } = useCurrency()
   const theme = useTheme()
+  const { chain } = usePool()
 
   const poolEvent = event[2]
 
@@ -134,7 +135,7 @@ export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
       >
         <Grid {...rest} py={{ base: 'ms', md: 'md' }} pr="4">
           <GridItem>
-            <EnsOrAddress userAddress={poolEvent.userAddress as `0x${string}`} />
+            <EnsOrAddress userAddress={poolEvent.userAddress as `0x${string}`} chain={chain} />
           </GridItem>
           <GridItem>
             <HStack>
@@ -162,7 +163,7 @@ export function PoolActivityTableRow({ event, keyValue, ...rest }: Props) {
             <Text>{toCurrency(poolEvent.usdValue)}</Text>
           </GridItem>
           <GridItem>
-            <Link target="_blank" href={getBlockExplorerTxUrl(poolEvent.tx)}>
+            <Link target="_blank" href={getBlockExplorerTxUrl(poolEvent.tx, chain)}>
               <HStack gap="0.5" justifyContent="flex-end">
                 <Text>
                   {formatDistanceToNow(new Date(secondsToMilliseconds(event[0])), {
