@@ -9,6 +9,7 @@ import { includesAddress, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
 import { InputAmount } from '@balancer/sdk'
+import { Pool } from '../pool/PoolProvider'
 
 export function isNativeAsset(token: TokenBase | string, chain: GqlChain | SupportedChainId) {
   return nativeAssetFilter(chain)(token)
@@ -109,4 +110,23 @@ export function requiresDoubleApproval(
     getNetworkConfig(chainId).tokens.doubleApprovalRequired || [],
     tokenAddress
   )
+}
+
+type PoolToken = Pool['poolTokens'][0]
+export function getLeafTokens(poolTokens: PoolToken[]) {
+  const leafTokens: PoolToken[] = []
+
+  poolTokens.forEach(poolToken => {
+    if (poolToken.nestedPool) {
+      const nestedTokens = poolToken.nestedPool.tokens.filter(
+        // Exclude the pool token itself
+        t => !isSameAddress(t.address, poolToken.address)
+      ) as PoolToken[]
+      leafTokens.push(...nestedTokens)
+    } else {
+      leafTokens.push(poolToken)
+    }
+  })
+
+  return leafTokens
 }
