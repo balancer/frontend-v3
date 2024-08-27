@@ -9,12 +9,12 @@ export function SafeAppAlert() {
   const { isMobile } = useBreakpoints()
   const { isSafeAccountViaWalletConnect } = useWalletConnectMetadata()
   if (isSafeAccountViaWalletConnect && !isMobile) {
-    return <BalAlert content={<Title />} status="info" />
+    return <BalAlert content={<Content />} status="info" />
   }
   return null
 }
 
-function Title() {
+function Content() {
   return (
     <HStack flexWrap={{ base: 'wrap', md: 'nowrap' }}>
       <BalAlertContent
