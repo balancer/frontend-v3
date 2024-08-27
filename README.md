@@ -38,5 +38,6 @@ See [TESTING.md](./test/TESTING.md).
 ## Developing in Windows
 
 To develop in Windows you need to use WSL2. Learn more about it
-[here](https://learn.microsoft.com/en-us/windows/wsl/about). With WSL2 all environment variables
-will be correctly set without having to use `cross-env`.
+[here](https://learn.microsoft.com/en-us/windows/wsl/about).
+
+With WSL2 all environment variables will be correctly set without having to use `cross-env`.
