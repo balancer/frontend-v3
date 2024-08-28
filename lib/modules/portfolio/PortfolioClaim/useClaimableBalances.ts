@@ -113,7 +113,7 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
     })
     .filter(Boolean) as ClaimableReward[]
 
-  const claimableRewardsByPoolMap = useMemo(() => {
+  const claimableRewardsByPoolMap: Record<string, ClaimableReward[]> = useMemo(() => {
     return groupBy(claimableRewards, 'poolId')
   }, [claimableRewards])
 
