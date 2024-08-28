@@ -22,6 +22,20 @@ export interface ClaimableReward {
 
 export type ClaimableBalancesResult = ReturnType<typeof useClaimableBalances>
 
+interface GaugeClaimRewardItem {
+  tokenAddress: Address
+  gaugeAddress: Address
+  pool: ClaimablePool
+}
+
+// filter out duplicated tokens inside the same gauge
+function filterSameGaugesRewards(rewards: GaugeClaimRewardItem[]): GaugeClaimRewardItem[] {
+  return rewards.filter(
+    (v, i, a) =>
+      a.findIndex(t => t.tokenAddress === v.tokenAddress && t.gaugeAddress === v.gaugeAddress) === i
+  )
+}
+
 export function useClaimableBalances(pools: ClaimablePool[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor, getToken } = useTokens()
@@ -30,28 +44,31 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
   const rewardTokensList = useMemo(
     () =>
       pools.flatMap(pool => {
-        const otherGauges = pool.staking?.gauge?.otherGauges || []
-        const rewardTokensAddresses =
-          pool.staking?.gauge?.rewards.map(r => ({
-            tokenAddress: r.tokenAddress,
-            gaugeAddress: pool.staking?.gauge?.gaugeAddress,
-          })) || []
+        const otherGaugesList = pool.staking?.gauge?.otherGauges || []
+        const gaugeRewardTokens = pool.staking?.gauge?.rewards || []
 
-        const otherRewardTokensAddresses = otherGauges.flatMap(gauge =>
+        const rewardTokensAddresses = gaugeRewardTokens.map(r => ({
+          tokenAddress: r.tokenAddress,
+          gaugeAddress: pool.staking?.gauge?.gaugeAddress,
+        }))
+
+        const otherRewardTokensAddresses = otherGaugesList.flatMap(gauge =>
           gauge.rewards.map(r => {
             return { tokenAddress: r.tokenAddress, gaugeAddress: gauge.gaugeAddress }
           })
         )
 
-        return [...rewardTokensAddresses, ...otherRewardTokensAddresses]
-          .map(v => {
-            return {
-              pool,
-              tokenAddress: v.tokenAddress as Address,
-              gaugeAddress: v.gaugeAddress as Address,
-            }
-          })
-          .filter((v, i, a) => a.findIndex(t => t.tokenAddress === v.tokenAddress) === i)
+        const allGaugesRewards = [...rewardTokensAddresses, ...otherRewardTokensAddresses]
+
+        const gaugesRewardsList = allGaugesRewards.map(v => {
+          return {
+            pool,
+            tokenAddress: v.tokenAddress as Address,
+            gaugeAddress: v.gaugeAddress as Address,
+          }
+        })
+
+        return filterSameGaugesRewards(gaugesRewardsList)
       }),
     [pools]
   )
