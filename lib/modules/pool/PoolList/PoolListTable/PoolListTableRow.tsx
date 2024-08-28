@@ -12,7 +12,6 @@ import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { Features } from '@/lib/config/config.types'
 import { hasFeature } from '@/lib/config/hasFeature'
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -25,8 +24,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  const chain = getProjectConfig().defaultNetwork
-  const showPoolName = hasFeature(chain, Features.poolname)
+  const showPoolName = hasFeature(pool.chain, Features.poolname)
 
   return (
     <FadeInOnView>
