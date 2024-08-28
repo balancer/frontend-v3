@@ -260,7 +260,12 @@ function shouldIgnore(e: Error): boolean {
   */
   if (e.message.includes('ResizeObserver loop limit exceeded')) return true
 
-  if (isUserRejectedError(e)) return true
+  /*
+    Wallet Connect bug when switching certain networks.
+    It does not crash the app.
+    More info: https://github.com/MetaMask/metamask-mobile/issues/9157
+  */
+  if (e.message.includes('Missing or invalid. emit() chainId')) return true
 
   return false
 }

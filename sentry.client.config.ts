@@ -68,10 +68,19 @@ Sentry.init({
       'swap',
     ]
     const criticalFlowPath = criticalFlowPaths.find(path => event.request?.url?.includes(path))
-    if (!criticalFlowPath) return event
+    if (!criticalFlowPath) return handleNonFatalError(event)
     return handleFatalError(event, criticalFlowPath)
   },
 })
+
+function handleNonFatalError(event: Sentry.ErrorEvent): Sentry.ErrorEvent | null {
+  if (event?.exception?.values?.length) {
+    const firstValue = event.exception.values[0]
+    if (shouldIgnoreError(new Error(firstValue.value))) return null
+  }
+
+  return event
+}
 
 function handleFatalError(
   event: Sentry.ErrorEvent,
