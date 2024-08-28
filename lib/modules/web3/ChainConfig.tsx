@@ -28,7 +28,7 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Arbitrum]: 'https://arbitrum.llamarpc.com',
   [GqlChain.Base]: 'https://base.llamarpc.com',
   [GqlChain.Avalanche]: 'https://avalanche.drpc.org',
-  [GqlChain.Fantom]: 'https://1rpc.io/ftm',
+  [GqlChain.Fantom]: 'https://rpcapi.fantom.network',
   [GqlChain.Gnosis]: 'https://gnosis.drpc.org',
   [GqlChain.Optimism]: 'https://optimism.drpc.org',
   [GqlChain.Polygon]: 'https://polygon.llamarpc.com',
