@@ -43,13 +43,15 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
           })
         )
 
-        return [...rewardTokensAddresses, ...otherRewardTokensAddresses].map(v => {
-          return {
-            pool,
-            tokenAddress: v.tokenAddress as Address,
-            gaugeAddress: v.gaugeAddress as Address,
-          }
-        })
+        return [...rewardTokensAddresses, ...otherRewardTokensAddresses]
+          .map(v => {
+            return {
+              pool,
+              tokenAddress: v.tokenAddress as Address,
+              gaugeAddress: v.gaugeAddress as Address,
+            }
+          })
+          .filter((v, i, a) => a.findIndex(t => t.tokenAddress === v.tokenAddress) === i)
       }),
     [pools]
   )
