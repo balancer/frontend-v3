@@ -22,12 +22,29 @@ export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === 'staging'
 
 const networksByChainId = keyBy(config.networks, 'chainId')
 
+// we can't get this from the project config because that will give an initialization error
+function getDefaultChainId() {
+  let defaultChainId
+
+  switch (process.env.NEXT_PUBLIC_PROJECT_ID) {
+    case 'beets':
+      defaultChainId = 250
+      break
+    case 'balancer':
+    default:
+      defaultChainId = 1
+      break
+  }
+
+  return defaultChainId
+}
+
 /**
  * Fetches network config by chainId or network name type from API (GqlChain). If chain
  * param is not provided or incorrect, it will return the default network config.
  */
 export function getNetworkConfig(chain?: GqlChain | number): NetworkConfig {
-  const defaultNetwork = networksByChainId[process.env.NEXT_PUBLIC_DEFAULT_CHAIN_ID || 1]
+  const defaultNetwork = networksByChainId[getDefaultChainId()]
 
   if (!chain) return defaultNetwork
 
