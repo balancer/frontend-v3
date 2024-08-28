@@ -50,6 +50,13 @@ Sentry.init({
 
   beforeSend(event) {
     /*
+      The transaction values in the nextjs-sentry integration are misleading
+      so we replace them with the url of the request that caused the error
+    */
+    if (event.transaction) {
+      event.transaction = event.request?.url || ''
+    }
+    /*
       Ensure that we capture all possible errors, including the ones that NextJS/React Error boundaries can't properly catch.
       If the error comes from a flow url, we tag it as fatal and add custom exception type for better traceability/grouping.
       More info:
