@@ -178,8 +178,10 @@ function _usePortfolio() {
 
   const rewardsByChainMap = useMemo(() => {
     return portfolioData.stakedPools?.reduce((acc: Record<string, PoolRewardsData[]>, pool) => {
+      const poolReward = poolRewardsMap[pool.id]
+      const poolRewards = poolReward ? [poolReward] : []
       if (!acc[pool.chain]) acc[pool.chain] = []
-      acc[pool.chain].push(poolRewardsMap[pool.id])
+      acc[pool.chain].push(...poolRewards)
       return acc
     }, {})
   }, [portfolioData.stakedPools, poolRewardsMap])
@@ -199,8 +201,6 @@ function _usePortfolio() {
   }, [portfolioData.stakedPools, poolRewardsMap])
 
   const totalFiatClaimableBalanceByChain = useMemo(() => {
-    if (!userAddress) return {}
-
     return Object.entries(poolsByChainMap).reduce(
       (acc: Record<string, BigNumber>, [chain, pools]) => {
         const sum = pools.reduce((total, pool) => {
@@ -213,16 +213,14 @@ function _usePortfolio() {
       },
       {}
     )
-  }, [poolsByChainMap, poolRewardsMap, userAddress])
+  }, [poolsByChainMap, poolRewardsMap])
 
   const protocolRewardsBalance = useMemo(() => {
-    if (!userAddress) return bn(0)
-
     return protocolRewardsData.reduce((acc, reward) => {
       acc = acc.plus(reward.fiatBalance)
       return acc
     }, bn(0))
-  }, [protocolRewardsData, userAddress])
+  }, [protocolRewardsData])
 
   const refetchClaimPoolData = useCallback(() => {
     refetchBalRewards()
