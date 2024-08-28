@@ -17,10 +17,20 @@ import { PoolCategory } from './getPoolCategories'
 import { usePool } from '../PoolProvider'
 import { usePoolCategories } from './PoolCategoriesProvider'
 import NextLink from 'next/link'
+import { isInteger, toNumber } from 'lodash'
 
 function PoolCategoryBadge({ category }: { category: PoolCategory }) {
   const { getCategoryIconSrc } = usePoolCategories()
   const categoryIconSrc = getCategoryIconSrc(category)
+
+  function CategoryValue() {
+    if (category.value) {
+      if (category.id.includes('points') && isInteger(toNumber(category.value))) {
+        return <Text ml="xs" mr="xs">{`${category.value}x`}</Text>
+      }
+    }
+    return null
+  }
 
   return (
     <Popover trigger="hover">
@@ -63,6 +73,7 @@ function PoolCategoryBadge({ category }: { category: PoolCategory }) {
                 {category.name}
               </Text>
             )}
+            <CategoryValue />
           </Badge>
         </HStack>
       </PopoverTrigger>
