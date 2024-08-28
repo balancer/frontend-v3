@@ -9,7 +9,7 @@ export function overflowProtected(value: Numberish, decimalLimit: number): strin
   const stringValue = value.toString()
   const [numberSegment, decimalSegment] = stringValue.split('.')
 
-  if (decimalSegment && decimalSegment.length > decimalLimit) {
+  if (numberSegment && decimalSegment && decimalSegment.length > decimalLimit) {
     const maxLength = numberSegment.length + decimalLimit + 1
     return stringValue.slice(0, maxLength)
   } else return stringValue
