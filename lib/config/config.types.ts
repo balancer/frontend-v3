@@ -61,6 +61,7 @@ export enum Features {
   sftmx = 'sftmx',
   masterchef = 'masterchef',
   gauge = 'gauge',
+  poolname = 'poolname',
 }
 
 export interface NetworkConfig {

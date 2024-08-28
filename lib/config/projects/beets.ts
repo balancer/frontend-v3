@@ -10,8 +10,8 @@ export const ProjectConfigBeets: ProjectConfig = {
   supportedNetworks: beetsSupportedNetworks,
   corePoolId: '0x9e4341acef4147196e99d648c5e43b3fc9d026780002000000000000000005ec', // maBEETS BEETS8020 (Fresh BEETS) pool on Fantom
   features: {
-    [GqlChain.Fantom]: [Features.mabeets, Features.sftmx, Features.masterchef],
-    [GqlChain.Optimism]: [Features.gauge],
+    [GqlChain.Fantom]: [Features.mabeets, Features.sftmx, Features.masterchef, Features.poolname],
+    [GqlChain.Optimism]: [Features.gauge, Features.poolname],
     [GqlChain.Arbitrum]: [],
     [GqlChain.Avalanche]: [],
     [GqlChain.Base]: [],

@@ -19,7 +19,7 @@ import {
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
-import { isBeets } from '@/lib/config/app.config'
+import { getGqlChain } from '@/lib/config/app.config'
 import { getBaseUrl } from '@/lib/shared/utils/urls'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
@@ -85,8 +85,8 @@ const gqlChainToWagmiChainMap = {
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
 
-const customChain = isBeets ? customFantom : customMainnet
-const chainToFilter = isBeets ? GqlChain.Fantom : GqlChain.Mainnet
+const chainToFilter = getGqlChain(getProjectConfig().defaultChainId)
+const customChain = gqlChainToWagmiChainMap[chainToFilter]
 
 export const chains: readonly [Chain, ...Chain[]] = [
   customChain,

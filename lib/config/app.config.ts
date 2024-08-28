@@ -20,9 +20,6 @@ export const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'dev'
 export const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'prod'
 export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === 'staging'
 
-export const isBeets = process.env.NEXT_PUBLIC_PROJECT_ID === 'beets'
-export const isBalancer = process.env.NEXT_PUBLIC_PROJECT_ID === 'balancer'
-
 const networksByChainId = keyBy(config.networks, 'chainId')
 
 /**
