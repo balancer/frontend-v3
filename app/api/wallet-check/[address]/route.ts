@@ -1,4 +1,3 @@
-import { isProd } from '@/lib/config/app.config'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
 import { hours } from '@/lib/shared/utils/time'
 import { NextResponse } from 'next/server'
@@ -13,44 +12,18 @@ type ReputationResponse = {
   data: Array<{ flags: string[]; address: string; recommendation: string }>
 }
 
-async function getAuthKey(): Promise<string | null> {
-  try {
-    const res = await fetch('https://api.hypernative.xyz/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email: process.env.PRIVATE_HYPERNATIVE_EMAIL || '',
-        password: process.env.PRIVATE_HYPERNATIVE_PASSWORD || '',
-      }),
-      next: {
-        revalidate: hours(12).toSecs(), // Token needs to be refetched every 24 hours. Set to 12 hours to be safe.
-      },
-    })
-    const {
-      data: { token },
-    } = await res.json()
-
-    return token
-  } catch (err) {
-    const error = ensureError(err)
-    if (isProd) captureError(error)
-
-    return null
-  }
-}
-
 export async function GET(request: Request, { params: { address } }: Params) {
   try {
-    const apiKey = await getAuthKey()
-    if (!apiKey) return NextResponse.json({ isAuthorized: true })
+    if (!process.env.PRIVATE_HYPERNATIVE_API_ID || !process.env.PRIVATE_HYPERNATIVE_API_SECRET) {
+      return NextResponse.json({ isAuthorized: true })
+    }
 
     const res = await fetch('https://api.hypernative.xyz/assets/reputation/addresses', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
+        'x-client-id': process.env.PRIVATE_HYPERNATIVE_API_ID,
+        'x-client-secret': process.env.PRIVATE_HYPERNATIVE_API_SECRET,
       },
       body: JSON.stringify({
         addresses: [address],
