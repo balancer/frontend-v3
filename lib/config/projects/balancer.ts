@@ -45,5 +45,4 @@ export const ProjectConfigBalancer: ProjectConfig = {
     [GqlChain.Fantom]: [],
   },
   defaultNetwork: GqlChain.Mainnet,
-  defaultChainId: 1,
 }

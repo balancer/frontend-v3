@@ -105,5 +105,4 @@ export interface ProjectConfig {
   variantConfig?: VariantConfig
   features: { [key in GqlChain]: Features[] }
   defaultNetwork: GqlChain
-  defaultChainId: number
 }

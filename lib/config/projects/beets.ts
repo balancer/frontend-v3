@@ -24,5 +24,4 @@ export const ProjectConfigBeets: ProjectConfig = {
     [GqlChain.Zkevm]: [],
   },
   defaultNetwork: GqlChain.Fantom,
-  defaultChainId: 250,
 }

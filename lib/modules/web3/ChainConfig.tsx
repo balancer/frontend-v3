@@ -15,11 +15,9 @@ import {
   polygonZkEvm,
   sepolia,
 } from 'wagmi/chains'
-
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
-import { getGqlChain } from '@/lib/config/app.config'
 import { getBaseUrl } from '@/lib/shared/utils/urls'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
@@ -85,7 +83,7 @@ const gqlChainToWagmiChainMap = {
 
 export const supportedNetworks = getProjectConfig().supportedNetworks
 
-const chainToFilter = getGqlChain(getProjectConfig().defaultChainId)
+const chainToFilter = getProjectConfig().defaultNetwork
 const customChain = gqlChainToWagmiChainMap[chainToFilter]
 
 export const chains: readonly [Chain, ...Chain[]] = [

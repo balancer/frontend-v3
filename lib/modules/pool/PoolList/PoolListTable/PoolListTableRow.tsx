@@ -10,7 +10,6 @@ import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
 import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { getGqlChain } from '@/lib/config/app.config'
 import { Features } from '@/lib/config/config.types'
 import { hasFeature } from '@/lib/config/hasFeature'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
@@ -26,8 +25,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  const chainId = getProjectConfig().defaultChainId
-  const chain = getGqlChain(chainId)
+  const chain = getProjectConfig().defaultNetwork
   const showPoolName = hasFeature(chain, Features.poolname)
 
   return (
