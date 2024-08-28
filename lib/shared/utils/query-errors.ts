@@ -265,7 +265,7 @@ function shouldIgnore(e: Error): boolean {
   /*
     Some extensions cause this error
     Examples: https://balancer-labs.sentry.io/issues/5623611453/
-    Theres is a little risk that we eventually introduce a bug with an infinite loop but it should be easy to detect
+    Theres is a risk that we eventually introduce a bug with an infinite loop but it should be easy to detect
   */
   if (e.message.startsWith('Maximum call stack size exceeded')) return true
 
