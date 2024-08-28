@@ -11,6 +11,7 @@ import { setTag, setUser } from '@sentry/nextjs'
 import { config, isProd } from '@/lib/config/app.config'
 import { captureError, ensureError } from '@/lib/shared/utils/errors'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { useSafeAppConnectionGuard } from './useSafeAppConnectionGuard'
 
 async function isAuthorizedAddress(address: Address): Promise<boolean> {
   try {
@@ -70,6 +71,8 @@ export function _useUserAccount() {
     connector: isMounted ? query.connector : undefined,
     isBlocked,
   }
+
+  useSafeAppConnectionGuard(result.connector, result.chainId)
 
   useEffect(() => {
     if (result.userAddress) {

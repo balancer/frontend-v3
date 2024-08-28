@@ -62,11 +62,13 @@ export async function GET(request: Request, { params: { address } }: Params) {
       },
     })
 
-    const {
-      data: [check],
-    }: ReputationResponse = await res.json()
+    const response: ReputationResponse = await res.json()
+    const recommendation = response.data[0]?.recommendation
+    if (!recommendation) {
+      throw new Error('Invalid reputation response: ' + JSON.stringify(response.data))
+    }
 
-    const isAuthorized = check.recommendation !== 'Deny'
+    const isAuthorized = recommendation !== 'Deny'
 
     return NextResponse.json({ isAuthorized })
   } catch (err) {

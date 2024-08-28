@@ -20,6 +20,7 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
 import { isBeets } from '@/lib/config/app.config'
+import { getBaseUrl } from '@/lib/shared/utils/urls'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
@@ -39,19 +40,29 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
 }
 
+const baseUrl = getBaseUrl()
+const shouldUsePrivateRpc = !!process.env.PRIVATE_ALCHEMY_KEY
+const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
+const getRpcOverride = (chain: GqlChain) => {
+  if (shouldUsePrivateRpc) {
+    return getPrivateRpcUrl(chain)
+  }
+  return undefined
+}
+
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: `/api/rpc/${GqlChain.Mainnet}`,
-  [GqlChain.Arbitrum]: `/api/rpc/${GqlChain.Arbitrum}`,
-  [GqlChain.Base]: `/api/rpc/${GqlChain.Base}`,
-  [GqlChain.Avalanche]: `/api/rpc/${GqlChain.Avalanche}`,
-  [GqlChain.Fantom]: `/api/rpc/${GqlChain.Fantom}`,
-  [GqlChain.Gnosis]: `/api/rpc/${GqlChain.Gnosis}`,
-  [GqlChain.Optimism]: `/api/rpc/${GqlChain.Optimism}`,
-  [GqlChain.Polygon]: `/api/rpc/${GqlChain.Polygon}`,
-  [GqlChain.Zkevm]: `/api/rpc/${GqlChain.Zkevm}`,
-  [GqlChain.Sepolia]: `/api/rpc/${GqlChain.Sepolia}`,
+  [GqlChain.Mainnet]: getRpcOverride(GqlChain.Mainnet),
+  [GqlChain.Arbitrum]: getRpcOverride(GqlChain.Arbitrum),
+  [GqlChain.Base]: getRpcOverride(GqlChain.Base),
+  [GqlChain.Avalanche]: getRpcOverride(GqlChain.Avalanche),
+  [GqlChain.Fantom]: getRpcOverride(GqlChain.Fantom),
+  [GqlChain.Gnosis]: getRpcOverride(GqlChain.Gnosis),
+  [GqlChain.Optimism]: getRpcOverride(GqlChain.Optimism),
+  [GqlChain.Polygon]: getRpcOverride(GqlChain.Polygon),
+  [GqlChain.Zkevm]: getRpcOverride(GqlChain.Zkevm),
+  [GqlChain.Sepolia]: getRpcOverride(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: `/api/rpc/${GqlChain.Fraxtal}`,
+  [GqlChain.Fraxtal]: getRpcOverride(GqlChain.Fraxtal),
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
