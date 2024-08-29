@@ -9,90 +9,98 @@ import { AbiMap } from '../../web3/contracts/AbiMap'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
+import { GqlChain, GqlPoolStakingGaugeReward } from '@/lib/shared/services/api/generated/graphql'
+import { groupBy, uniqBy } from 'lodash'
 
-export interface ClaimableReward {
+interface ClaimableRewardRef {
+  tokenAddress: Address
+  gaugeAddress: Address
+  chain: GqlChain
+  poolId: string
+}
+
+export interface ClaimableReward extends ClaimableRewardRef {
   balance: bigint
   decimals?: number
   humanBalance: string
-  gaugeAddress: string
-  pool: ClaimablePool
-  tokenAddress: Address
   fiatBalance: BigNumber
 }
 
 export type ClaimableBalancesResult = ReturnType<typeof useClaimableBalances>
 
+const getClaimableRewardRefs = (rewards: GqlPoolStakingGaugeReward[], pool: ClaimablePool) => {
+  return rewards.map(reward => ({
+    chain: pool.chain,
+    poolId: pool.id,
+    tokenAddress: reward.tokenAddress as Address,
+    gaugeAddress: pool.staking?.gauge?.gaugeAddress as Address,
+  }))
+}
+
 export function useClaimableBalances(pools: ClaimablePool[]) {
   const { userAddress, isConnected } = useUserAccount()
   const { priceFor, getToken } = useTokens()
 
-  // Get list of all reward tokens from provided pools
-  const rewardTokensList = useMemo(
+  // List of all reward tokens from provided pools
+  const rewardTokenRefs: ClaimableRewardRef[] = useMemo(
     () =>
       pools.flatMap(pool => {
         const otherGauges = pool.staking?.gauge?.otherGauges || []
-        const rewardTokensAddresses =
-          pool.staking?.gauge?.rewards.map(r => ({
-            tokenAddress: r.tokenAddress,
-            gaugeAddress: pool.staking?.gauge?.gaugeAddress,
-          })) || []
+        const gaugeRewardTokens = pool.staking?.gauge?.rewards || []
 
-        const otherRewardTokensAddresses = otherGauges.flatMap(gauge =>
-          gauge.rewards.map(r => {
-            return { tokenAddress: r.tokenAddress, gaugeAddress: gauge.gaugeAddress }
-          })
+        const otherRewardTokenRefs = otherGauges.flatMap(gauge =>
+          getClaimableRewardRefs(gauge.rewards, pool)
         )
 
-        return [...rewardTokensAddresses, ...otherRewardTokensAddresses].map(v => {
-          return {
-            pool,
-            tokenAddress: v.tokenAddress as Address,
-            gaugeAddress: v.gaugeAddress as Address,
-          }
-        })
+        const allRewardTokenRefs = [
+          ...getClaimableRewardRefs(gaugeRewardTokens, pool),
+          ...otherRewardTokenRefs,
+        ]
+
+        return uniqBy(allRewardTokenRefs, reward => `${reward.gaugeAddress}.${reward.tokenAddress}`)
       }),
     [pools]
   )
 
   // Get claimable rewards for each reward token
-  const poolsRewardTokensRequests = rewardTokensList.map(r => {
+  const claimableRewardContractCalls = rewardTokenRefs.map(rewardRef => {
     return {
-      chainId: getChainId(r.pool.chain),
-      id: `${r.gaugeAddress}.${r.tokenAddress}`,
+      chainId: getChainId(rewardRef.chain),
+      id: `${rewardRef.gaugeAddress}.${rewardRef.tokenAddress}`,
       abi: AbiMap['balancer.gaugeV5'],
-      address: r.gaugeAddress,
+      address: rewardRef.gaugeAddress,
       functionName: 'claimable_reward',
-      args: [userAddress, r.tokenAddress],
+      args: [userAddress, rewardRef.tokenAddress],
     }
   })
 
   const { data, refetch, isLoading, status }: UseReadContractsReturnType = useReadContracts({
-    contracts: poolsRewardTokensRequests,
+    contracts: claimableRewardContractCalls,
     query: { enabled: isConnected },
   })
 
   // Format claimable rewards data
-  const poolRewardTokensData = (data || [])
+  const claimableRewards = (data || [])
     .map((data, i) => {
       if (data.status === 'failure') return // Discard calls with error
 
       const balance = data.result as bigint
       if (!balance) return // Discard calls with no reward
 
-      const gaugeData = rewardTokensList[i]
+      const rewardTokenRef = rewardTokenRefs[i]
 
-      if (!gaugeData) return
+      if (!rewardTokenRef) return
 
-      const gaugeAddress = gaugeData.gaugeAddress
-      const tokenAddress = gaugeData.tokenAddress
-      const tokenPrice = priceFor(tokenAddress, gaugeData.pool.chain)
-      const decimals = getToken(tokenAddress, gaugeData.pool.chain)?.decimals || BPT_DECIMALS
+      const { gaugeAddress, tokenAddress, chain, poolId } = rewardTokenRef
+      const tokenPrice = priceFor(tokenAddress, chain)
+      const decimals = getToken(tokenAddress, chain)?.decimals || BPT_DECIMALS
       const fiatBalance = tokenPrice
         ? bn(formatUnits(balance, decimals)).multipliedBy(tokenPrice)
         : bn(0)
 
       const reward: ClaimableReward = {
-        pool: gaugeData.pool,
+        chain,
+        poolId,
         tokenAddress,
         gaugeAddress,
         balance,
@@ -105,18 +113,13 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
     })
     .filter(Boolean) as ClaimableReward[]
 
-  const claimableRewardsByPoolMap = useMemo(() => {
-    return poolRewardTokensData.reduce((acc: Record<string, ClaimableReward[]>, reward) => {
-      const poolId = reward.pool.id
-      if (!acc[poolId]) acc[poolId] = []
-      acc[poolId].push(reward)
-      return acc
-    }, {})
-  }, [poolRewardTokensData])
+  const claimableRewardsByPoolMap: Record<string, ClaimableReward[]> = useMemo(() => {
+    return groupBy(claimableRewards, 'poolId')
+  }, [claimableRewards])
 
   return {
     claimableRewardsByPoolMap,
-    claimableRewards: poolRewardTokensData,
+    claimableRewards,
     refetchClaimableRewards: refetch,
     isLoadingClaimableRewards: isLoading,
     isLoadedClaimableRewards: status === 'success',
