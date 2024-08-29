@@ -63,18 +63,23 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
   const { data, error } = await getPoolQuery(chain, id)
 
   if (error) {
-    let alert = (
-      <BalAlert
-        status="warning"
-        content="Our API data provider appears to be having issues..."
-        ssr
-      />
-    )
     if (error?.message === 'Pool with id does not exist') {
       const error = `Pool with id not found in ${chain} (${id})`
-      alert = <BalAlert status="error" content={error} ssr />
+      return (
+        <DefaultPageContainer>
+          <BalAlert status="error" content={error} ssr />
+        </DefaultPageContainer>
+      )
     }
-    return <DefaultPageContainer>{alert}</DefaultPageContainer>
+    return (
+      <DefaultPageContainer>
+        <BalAlert
+          status="warning"
+          content="Our API data provider appears to be having issues..."
+          ssr
+        />
+      </DefaultPageContainer>
+    )
   }
 
   if (!data) return null
