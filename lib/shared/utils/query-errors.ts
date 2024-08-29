@@ -265,9 +265,13 @@ function shouldIgnore(e: Error): boolean {
   /*
     Some extensions cause this error
     Examples: https://balancer-labs.sentry.io/issues/5623611453/
-    Theres is a risk that we eventually introduce a bug with an infinite loop but it should be easy to detect
   */
-  if (e.message.startsWith('Maximum call stack size exceeded')) return true
+  if (
+    e.message.startsWith('Maximum call stack size exceeded') &&
+    e.stack?.includes('injectWalletGuard.js')
+  ) {
+    return true
+  }
 
   return false
 }
