@@ -12,6 +12,7 @@ import { arrayToSentence } from '@/lib/shared/utils/strings'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { ensureError } from '@/lib/shared/utils/errors'
+import { captureException } from '@sentry/nextjs'
 
 type Props = PropsWithChildren<{
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
@@ -71,6 +72,7 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
         </DefaultPageContainer>
       )
     }
+    captureException(error, { level: 'fatal' })
     return (
       <DefaultPageContainer>
         <BalAlert
