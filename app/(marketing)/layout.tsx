@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { Box } from '@chakra-ui/react'
 import { Metadata } from 'next'
 import { PropsWithChildren } from 'react'
 
@@ -11,5 +12,5 @@ export const metadata: Metadata = {
 }
 
 export default function MarketingLayout({ children }: PropsWithChildren) {
-  return <>{children}</>
+  return <Box pt="72px">{children}</Box>
 }

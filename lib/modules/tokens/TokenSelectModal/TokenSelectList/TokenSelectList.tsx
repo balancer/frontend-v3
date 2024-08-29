@@ -140,7 +140,10 @@ export function TokenSelectList({
   const hotkeyOpts = { enableOnFormTags: true }
 
   const selectActiveToken = () => {
-    onTokenSelect(tokensToShow[activeIndex])
+    const token = tokensToShow[activeIndex]
+    if (token) {
+      onTokenSelect(token)
+    }
   }
 
   useHotkeys('up', decrementActiveIndex, hotkeyOpts)

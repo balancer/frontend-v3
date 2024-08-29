@@ -31,7 +31,7 @@ export function SearchInput({
   const debouncedChangeHandler = useDebounce(changeHandler, defaultDebounceMs)
 
   return (
-    <InputGroup size="md" px="1">
+    <InputGroup size="md">
       <Input
         {...register(SEARCH)}
         id={SEARCH}

@@ -10,6 +10,7 @@ export type PoolCategory = {
   id: string
   name: string
   description: string
+  value?: string
   url?: string
   fileIcon?: string
   iconUrl?: string

@@ -139,7 +139,8 @@ function _usePortfolio() {
   )
 
   // Protocol rewards
-  const { protocolRewardsData, isLoadingProtocolRewards } = useProtocolRewards()
+  const { protocolRewardsData, isLoadingProtocolRewards, refetchProtocolRewards } =
+    useProtocolRewards()
 
   // Other tokens rewards
   const {
@@ -177,8 +178,10 @@ function _usePortfolio() {
 
   const rewardsByChainMap = useMemo(() => {
     return portfolioData.stakedPools?.reduce((acc: Record<string, PoolRewardsData[]>, pool) => {
+      const poolReward = poolRewardsMap[pool.id]
+      const poolRewards = poolReward ? [poolReward] : []
       if (!acc[pool.chain]) acc[pool.chain] = []
-      acc[pool.chain].push(poolRewardsMap[pool.id])
+      acc[pool.chain].push(...poolRewards)
       return acc
     }, {})
   }, [portfolioData.stakedPools, poolRewardsMap])
@@ -237,6 +240,7 @@ function _usePortfolio() {
     protocolRewardsBalance,
     rewardsByChainMap,
     refetchClaimPoolData,
+    refetchProtocolRewards,
     isLoadingBalRewards,
     isLoadingProtocolRewards,
     isLoadingClaimableRewards,

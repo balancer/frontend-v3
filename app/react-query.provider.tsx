@@ -14,7 +14,11 @@ export const queryClient = new QueryClient({
     // Global handler for every react-query error
     onError: (error, query) => {
       if (shouldIgnoreError(error)) return
-      console.log('Sentry capturing error: ', { meta: query?.meta, error })
+      console.log('Sentry capturing error: ', {
+        meta: query?.meta,
+        error,
+        queryKey: query.queryKey,
+      })
 
       if (query?.meta) return captureSentryError(error, query?.meta as SentryMetadata)
 
@@ -22,6 +26,19 @@ export const queryClient = new QueryClient({
       captureError(error, { extra: { queryKey: query.queryKey } })
     },
   }),
+})
+
+queryClient.setDefaultOptions({
+  queries: {
+    /* Avoids problems in simulation and build queries when the user navigates away from the page while waiting for a tx confirmation.
+      Without this option, navigating to another tab and coming back was causing useRemoveLiquidityBuildCallDataQuery to be undefined leading to unexpected thrown errors.
+
+      This is equivalent to setting the old keepPreviousData: true option
+      More info:
+        https://github.com/TanStack/query/discussions/6460
+    */
+    placeholderData: (prev: any) => prev,
+  },
 })
 
 export function ReactQueryClientProvider({ children }: { children: ReactNode | ReactNode[] }) {

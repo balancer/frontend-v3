@@ -31,7 +31,7 @@ interface Props {
   placement?: PlacementWithLogical
   poolId: string
   vebalBoost?: string
-  totalBaseText: string | ((balReward?: GqlPoolAprItem) => string)
+  totalBaseText: string | ((hasVeBalBoost?: boolean) => string)
   totalBaseVeBalText: string
   totalVeBalTitle?: string
   maxVeBalText: string
@@ -96,7 +96,7 @@ function BaseAprTooltip({
     yieldBearingTokensDisplayed,
     stakingIncentivesDisplayed,
     subitemPopoverAprItemProps,
-    balReward,
+    hasVeBalBoost,
     totalBase,
     maxVeBal,
     lockingAprDisplayed,
@@ -115,7 +115,7 @@ function BaseAprTooltip({
   const totalBaseTitle = isVebal
     ? totalBaseVeBalText
     : typeof totalBaseText === 'function'
-    ? totalBaseText(balReward)
+    ? totalBaseText(hasVeBalBoost)
     : totalBaseText
 
   const popoverContent = customPopoverContent || (
@@ -188,7 +188,7 @@ function BaseAprTooltip({
         <TooltipAprItem
           {...basePopoverAprItemProps}
           displayValueFormatter={usedDisplayValueFormatter}
-          title="Surplus"
+          title="Prevented LVR"
           apr={surplusIncentivesAprDisplayed}
           tooltipText={surplusIncentivesTooltipText}
         />
@@ -246,7 +246,7 @@ function BaseAprTooltip({
           </Stack>
         </>
       )}
-      {balReward && (
+      {hasVeBalBoost && (
         <>
           <Divider />
           <Stack roundedBottom="md" gap={0}>

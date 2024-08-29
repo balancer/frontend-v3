@@ -7,7 +7,17 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { Box, Button, Card, CardHeader, HStack, Text, Tooltip, VStack } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Card,
+  CardHeader,
+  HStack,
+  Skeleton,
+  Text,
+  Tooltip,
+  VStack,
+} from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
@@ -23,6 +33,7 @@ import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -33,7 +44,7 @@ const TABS: ButtonGroupOption[] = [
     value: 'single',
     label: 'Single token',
   },
-]
+] as const
 
 export function RemoveLiquidityForm() {
   const {
@@ -64,8 +75,10 @@ export function RemoveLiquidityForm() {
     setPriceImpact(priceImpactQuery.data)
   }, [priceImpactQuery.data])
 
-  const priceImpactLabel =
-    priceImpact !== undefined && priceImpact !== null ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
+  const hasPriceImpact = priceImpact !== undefined && priceImpact !== null
+  const priceImpactLabel = hasPriceImpact ? fNum('priceImpact', priceImpact) : '-' // If it's 0 we want to display 0.
+
+  const isFetching = simulationQuery.isFetching || priceImpactQuery.isFetching
 
   function toggleTab(option: ButtonGroupOption) {
     setActiveTab(option)
@@ -96,7 +109,7 @@ export function RemoveLiquidityForm() {
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>
-      <Box h="full" w="full" maxW="lg" mx="auto">
+      <Box h="full" w="full" maxW="lg" mx="auto" pb="2xl">
         <Card>
           <CardHeader>
             <HStack justify="space-between" w="full">
@@ -105,6 +118,7 @@ export function RemoveLiquidityForm() {
             </HStack>
           </CardHeader>
           <VStack spacing="md" align="start">
+            <SafeAppAlert />
             {!requiresProportionalInput(pool.type) && (
               <HStack>
                 <ButtonGroup
@@ -142,18 +156,23 @@ export function RemoveLiquidityForm() {
                 setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 accordionButtonComponent={
                   <HStack>
-                    <Text variant="secondary" fontSize="sm" color="gray.400">
+                    <Text variant="secondary" fontSize="sm" color="font.secondary">
                       Price impact:{' '}
                     </Text>
-                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                      {priceImpactLabel}
-                    </Text>
+                    {isFetching ? (
+                      <Skeleton w="40px" h="16px" />
+                    ) : (
+                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        {priceImpactLabel}
+                      </Text>
+                    )}
                   </HStack>
                 }
                 accordionPanelComponent={
                   <PoolActionsPriceImpactDetails
                     totalUSDValue={totalUSDValue}
                     bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                    isLoading={isFetching}
                   />
                 }
                 isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}

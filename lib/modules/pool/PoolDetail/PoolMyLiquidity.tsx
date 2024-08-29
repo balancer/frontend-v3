@@ -8,6 +8,7 @@ import {
   Divider,
   Button,
   Card,
+  Flex,
   HStack,
   Heading,
   Skeleton,
@@ -199,9 +200,11 @@ export default function PoolMyLiquidity() {
   const poolTokenBalancesForTab = calcUserPoolTokenBalances()
 
   function tokenBalanceFor(tokenAddress: string) {
-    if (!isConnected || isConnecting) return '0'
+    const poolTokenBalance = poolTokenBalancesForTab[tokenAddress]
 
-    return poolTokenBalancesForTab[tokenAddress].amount
+    if (!isConnected || isConnecting || !poolTokenBalance) return '0'
+
+    return poolTokenBalance.amount
   }
 
   const canStake = getCanStake(pool)
@@ -222,7 +225,13 @@ export default function PoolMyLiquidity() {
   return (
     <Card ref={myLiquiditySectionRef} h="fit-content">
       <VStack spacing="md" width="full">
-        <HStack width="full" justifyContent="space-between">
+        <Flex
+          width="full"
+          justifyContent="space-between"
+          direction={{ base: 'column', sm: 'row' }}
+          gap="ms"
+          alignItems="start"
+        >
           <Heading bg="font.special" backgroundClip="text" fontWeight="bold" size="h5">
             My liquidity
           </Heading>
@@ -232,8 +241,9 @@ export default function PoolMyLiquidity() {
             options={options}
             onChange={handleTabChanged}
             groupId="my-liquidity"
+            width="max-content"
           />
-        </HStack>
+        </Flex>
         <Divider />
         <VStack spacing="md" width="full">
           <HStack width="full" justifyContent="space-between">
@@ -299,6 +309,7 @@ export default function PoolMyLiquidity() {
               variant="primary"
               flex="1"
               isDisabled={isAddLiquidityBlocked}
+              maxW="120px"
             >
               Add
             </Button>
@@ -307,9 +318,13 @@ export default function PoolMyLiquidity() {
               variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
               isDisabled={!hasUnstakedBalance}
               flex="1"
+              maxW="120px"
             >
               Remove
             </Button>
+            <Text variant="secondary" opacity="0.25" px={{ base: '0', sm: 'ms' }}>
+              |
+            </Text>
             {isVeBal ? (
               <VeBalLink
                 flex="1"
@@ -326,6 +341,7 @@ export default function PoolMyLiquidity() {
                   variant={canStake && hasUnstakedBalance ? 'secondary' : 'disabled'}
                   isDisabled={!(canStake && hasUnstakedBalance)}
                   flex="1"
+                  maxW="120px"
                 >
                   Stake
                 </Button>
@@ -336,6 +352,7 @@ export default function PoolMyLiquidity() {
                       variant="secondary"
                       rightIcon={<InfoOutlineIcon fontSize="sm" />}
                       flex="1"
+                      maxW="120px"
                     >
                       Migrate stake
                     </Button>
@@ -346,6 +363,7 @@ export default function PoolMyLiquidity() {
                     variant={hasGaugeStakedBalance ? 'tertiary' : 'disabled'}
                     isDisabled={!hasGaugeStakedBalance}
                     flex="1"
+                    maxW="120px"
                   >
                     Unstake
                   </Button>

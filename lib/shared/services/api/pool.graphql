@@ -19,6 +19,7 @@ query GetPool($id: String!, $chain: GqlChain!, $userAddress: String) {
       totalLiquidity
       totalShares
       fees24h
+      surplus24h
       swapFee
       volume24h
       holdersCount
@@ -426,6 +427,7 @@ query GetPoolSnapshots($poolId: String!, $range: GqlPoolSnapshotDataRange!, $cha
     totalLiquidity
     volume24h
     fees24h
+    surplus24h
     sharePrice
   }
 }
@@ -481,6 +483,23 @@ query GetPoolEvents(
       tokenOut {
         address
         amount
+      }
+    }
+    ... on GqlPoolSwapEventCowAmm {
+      tokenIn {
+        address
+        amount
+        valueUSD
+      }
+      tokenOut {
+        address
+        amount
+        valueUSD
+      }
+      surplus {
+        address
+        amount
+        valueUSD
       }
     }
     ... on GqlPoolAddRemoveEventV3 {

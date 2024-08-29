@@ -4,7 +4,12 @@ import { useMemo } from 'react'
 import { ClaimAllRewardsStepParams, useClaimAllRewardsStep } from './useClaimAllRewardsStep'
 
 export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
-  const { chain } = params.pools[0]
+  const pool = params.pools[0]
+  if (!pool) {
+    throw new Error('Pools should contain at least one element')
+  }
+
+  const { chain } = pool
 
   const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } =
     useApproveMinterStep(chain)

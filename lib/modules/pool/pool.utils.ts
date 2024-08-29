@@ -5,6 +5,8 @@ import {
   GqlPoolTokenDetail,
   GqlPoolType,
   GqlPoolAprItem,
+  GqlPoolTokenDisplay,
+  GqlPoolAprItemType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
 import {
@@ -22,6 +24,7 @@ import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { Pool } from './PoolProvider'
 import BigNumber from 'bignumber.js'
+import { TOTAL_APR_TYPES } from '@/lib/shared/hooks/useAprTooltip'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -109,22 +112,25 @@ export function getTotalApr(
   let minTotal = bn(0)
   let maxTotal = bn(0)
   const boost = vebalBoost || 1
-  let usedBalReward = false
 
-  aprItems.forEach(item => {
-    if (item.title === 'BAL reward APR') {
-      if (!usedBalReward) {
-        minTotal = bn(item.apr).times(boost).plus(minTotal)
-        maxTotal = bn(item.apr).times(2.5).plus(maxTotal)
-        usedBalReward = true
+  aprItems
+    // Filter known APR types to avoid including new unknown API types that are not yet displayed in the APR tooltip
+    .filter(item => TOTAL_APR_TYPES.includes(item.type))
+    .forEach(item => {
+      if (item.type === GqlPoolAprItemType.StakingBoost) {
+        maxTotal = bn(item.apr).times(boost).plus(maxTotal)
+        return
       }
 
-      return
-    }
+      if (item.type === GqlPoolAprItemType.Staking) {
+        minTotal = bn(item.apr).plus(minTotal)
+        maxTotal = bn(item.apr).plus(maxTotal)
+        return
+      }
 
-    minTotal = bn(item.apr).plus(minTotal)
-    maxTotal = bn(item.apr).plus(maxTotal)
-  })
+      minTotal = bn(item.apr).plus(minTotal)
+      maxTotal = bn(item.apr).plus(maxTotal)
+    })
 
   return [minTotal, maxTotal]
 }
@@ -262,4 +268,16 @@ export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string 
 
 export function getAuraPoolLink(chainId: number, pid: string) {
   return `https://app.aura.finance/#/${chainId}/pool/${pid}`
+}
+
+export function shouldHideSwapFee(poolType: GqlPoolType) {
+  return poolType === GqlPoolType.CowAmm
+}
+
+export function getPoolDisplayTokens(pool: Pool) {
+  return pool.poolTokens.filter(token =>
+    pool.displayTokens.find(
+      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
+    )
+  ) as GqlPoolTokenDetail[]
 }

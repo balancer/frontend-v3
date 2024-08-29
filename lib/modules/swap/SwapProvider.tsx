@@ -408,6 +408,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
   const swapTxHash = urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const swapTxConfirmed = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
 
@@ -554,6 +555,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     swapTxHash,
     hasQuoteContext,
     isWrap,
+    swapTxConfirmed,
     replaceUrlPath,
     resetSwapAmounts,
     setTokenSelectKey,

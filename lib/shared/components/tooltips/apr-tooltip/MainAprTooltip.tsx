@@ -104,9 +104,10 @@ function MainAprTooltip({
     <BaseAprTooltip
       {...props}
       maxVeBalText="Max veBAL APR"
-      totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
+      totalBaseText={hasVeBalBoost => `Total ${hasVeBalBoost ? 'base' : ''} APR`}
       totalBaseVeBalText="Total base APR"
       customPopoverContent={customPopoverContent}
+      vebalBoost={vebalBoost}
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
@@ -118,10 +119,12 @@ function MainAprTooltip({
             >
               {!onlySparkles && (
                 <Text
-                  {...textProps}
-                  textAlign="right"
+                  textAlign="left"
                   color={isOpen ? hoverColor : 'font.primary'}
                   textDecoration={isLBP(pool.type) ? 'line-through' : 'none'}
+                  whiteSpace="pre-wrap"
+                  noOfLines={2}
+                  {...textProps}
                 >
                   {apr || aprToShow}
                   {aprLabel ? ' APR' : ''}

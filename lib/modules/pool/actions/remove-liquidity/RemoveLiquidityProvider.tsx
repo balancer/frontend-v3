@@ -43,7 +43,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const [quoteAmountsOut, setQuoteAmountsOut] = useState<TokenAmount[]>([])
   const [quotePriceImpact, setQuotePriceImpact] = useState<number>()
 
-  const { pool, bptPrice } = usePool()
+  const { pool, bptPrice, isLoading } = usePool()
   const { getToken, usdValueForToken, getNativeAssetToken, getWrappedNativeAssetToken } =
     useTokens()
   const { isConnected } = useUserAccount()
@@ -63,7 +63,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   const handler = useMemo(
     () => selectRemoveLiquidityHandler(pool, removalType),
-    [pool.id, removalType]
+    [pool.id, removalType, isLoading]
   )
 
   const totalUsdFromBprPrice = bn(humanBptIn).times(bptPrice).toFixed()
@@ -143,8 +143,9 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   const removeLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+  const removeLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
 
-  const hasQuoteContext = quoteAmountsOut.length > 0
+  const hasQuoteContext = !!simulationQuery.data
 
   /**
    * Methods
@@ -257,6 +258,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     removeLiquidityTxHash,
     hasQuoteContext,
     amountsOut,
+    removeLiquidityTxSuccess,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,

@@ -9,16 +9,15 @@ import { RemoveLiquidityTimeout } from './RemoveLiquidityTimeout'
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
-import { RemoveLiquidityPreview } from './RemoveLiquidityPreview'
 import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
-import { AnimatePresence, motion } from 'framer-motion'
 import { ActionModalFooter } from '../../../../../shared/components/modals/ActionModalFooter'
-import { RemoveLiquidityReceipt } from './RemoveLiquidityReceipt'
 import { usePoolRedirect } from '../../../pool.hooks'
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
-import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { useResetStepIndexOnOpen } from '../../useResetStepIndexOnOpen'
+import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChanged'
+import { RemoveLiquiditySummary } from './RemoveLiquiditySummary'
+import { useRemoveLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 type Props = {
   isOpen: boolean
@@ -36,10 +35,15 @@ export function RemoveLiquidityModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
-  const { pool } = usePool()
+  const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
-  const isMounted = useIsMounted()
+
+  const receiptProps = useRemoveLiquidityReceipt({
+    chain,
+    txHash: removeLiquidityTxHash,
+    userAddress,
+  })
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -49,10 +53,7 @@ export function RemoveLiquidityModal({
     }
   }, [removeLiquidityTxHash])
 
-  useEffect(() => {
-    if (isMounted) redirectToPoolPage()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userAddress])
+  useOnUserAccountChanged(redirectToPoolPage)
 
   return (
     <Modal
@@ -61,11 +62,12 @@ export function RemoveLiquidityModal({
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
+      preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!removeLiquidityTxHash && hasQuoteContext} />
 
-      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
+      <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop && hasQuoteContext)}>
         {isDesktop && hasQuoteContext && (
           <DesktopStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
         )}
@@ -75,36 +77,15 @@ export function RemoveLiquidityModal({
           timeout={<RemoveLiquidityTimeout />}
           txHash={removeLiquidityTxHash}
           chain={pool.chain}
+          isReceiptLoading={receiptProps.isLoading}
         />
 
         <ModalCloseButton />
         <ModalBody>
-          <AnimatePresence mode="wait" initial={false}>
-            {removeLiquidityTxHash ? (
-              <motion.div
-                key="receipt"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <RemoveLiquidityReceipt txHash={removeLiquidityTxHash} />
-              </motion.div>
-            ) : (
-              <motion.div
-                key="preview"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.3 }}
-              >
-                <RemoveLiquidityPreview />
-              </motion.div>
-            )}
-          </AnimatePresence>
+          <RemoveLiquiditySummary {...receiptProps} />
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!removeLiquidityTxHash}
+          isSuccess={!!removeLiquidityTxHash && !receiptProps.isLoading}
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}

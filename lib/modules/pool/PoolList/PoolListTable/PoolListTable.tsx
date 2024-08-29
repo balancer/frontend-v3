@@ -6,7 +6,7 @@ import { PoolListTableHeader } from './PoolListTableHeader'
 import { PoolListTableRow } from './PoolListTableRow'
 import { getPaginationProps } from '@/lib/shared/components/pagination/getPaginationProps'
 import { PoolListItem } from '../../pool.types'
-import { Skeleton } from '@chakra-ui/react'
+import { Card, Skeleton } from '@chakra-ui/react'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 
 interface Props {
@@ -36,19 +36,24 @@ export function PoolListTable({ pools, count, loading }: Props) {
   if (!isMounted) return <Skeleton height="500px" w="full" />
 
   return (
-    <PaginatedTable
-      items={pools}
-      loading={loading}
-      renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
-      renderTableRow={(item: PoolListItem, index) => {
-        return <PoolListTableRow keyValue={index} pool={item} {...rowProps} />
-      }}
-      showPagination={showPagination}
-      paginationProps={paginationProps}
+    <Card
+      p={{ base: '0', sm: '0' }}
       w={{ base: '100vw', lg: 'full' }}
       alignItems="flex-start"
       position="relative"
       left={{ base: '-4px', sm: '0' }}
-    />
+    >
+      <PaginatedTable
+        items={pools}
+        loading={loading}
+        renderTableHeader={() => <PoolListTableHeader {...rowProps} />}
+        renderTableRow={(item: PoolListItem, index) => {
+          return <PoolListTableRow keyValue={index} pool={item} {...rowProps} />
+        }}
+        showPagination={showPagination}
+        paginationProps={paginationProps}
+        noItemsFoundLabel="No pools found"
+      />
+    </Card>
   )
 }

@@ -18,10 +18,9 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
+ * AddLiquidityHandler interface for strictly proportional adds, e.g. where the user
+ * specifies the token amounts in. It uses the Balancer SDK to calculate the BPT
+ * out with the current pools state, then uses that bptOut for the query.
  */
 export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -35,8 +34,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   }
 
   public async simulate(
-    humanAmountsIn: HumanTokenAmountWithAddress[],
-    slippagePercent: string
+    humanAmountsIn: HumanTokenAmountWithAddress[]
   ): Promise<SdkQueryAddLiquidityOutput> {
     // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
     const humanAmountIn = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
@@ -46,21 +44,9 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       humanAmountIn
     )
 
-    if (slippagePercent) {
-      // We need to subtract slippage from the bpt amount to ensure the
-      // transaction can be successful. If we don't do this and the user has
-      // maxxed out one of their balances, it's very likely that the transaction
-      // will fail because if there is any slippage then the transaction would
-      // require more than one of their token balances as an amount in.
-      bptAmount.rawAmount = Slippage.fromPercentage(slippagePercent as HumanAmount).applyTo(
-        bptAmount.rawAmount,
-        -1
-      )
-    }
-
     const addLiquidity = new AddLiquidity()
 
-    const addLiquidityInput = this.constructSdkInput(humanAmountsIn, bptAmount)
+    const addLiquidityInput = this.constructSdkInput(bptAmount)
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
@@ -68,7 +54,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
 
   public async buildCallData({
     account,
-    slippagePercent,
     queryOutput,
     humanAmountsIn,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
@@ -76,7 +61,12 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
 
     const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
-      slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
+      // Setting slippage to zero ensures the build call can't fail if the user
+      // maxes out their balance. It can result in a tx failure if the pool
+      // state changes significantly in the background. The assumption is that
+      // this should be rare. If not, we will have to re-introduce slippage here
+      // and limit the user input amounts to their balance - slippage.
+      slippage: Slippage.fromPercentage('0' as HumanAmount),
       sender: account,
       recipient: account,
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
@@ -94,10 +84,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(
-    humanAmountsIn: HumanTokenAmountWithAddress[],
-    bptOut: InputAmount
-  ): AddLiquidityProportionalInput {
+  private constructSdkInput(bptOut: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),

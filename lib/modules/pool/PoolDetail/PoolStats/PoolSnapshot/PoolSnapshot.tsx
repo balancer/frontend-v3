@@ -36,7 +36,7 @@ const TABS = [
     value: 'myStats',
     label: 'My stats',
   },
-]
+] as const
 
 export function PoolSnapshot({ ...props }: CardProps) {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
@@ -71,6 +71,7 @@ export function PoolSnapshot({ ...props }: CardProps) {
           p={{ base: 'sm', md: 'md' }}
           zIndex={1}
           h="full"
+          role="group"
         >
           <ButtonGroup
             size="xxs"

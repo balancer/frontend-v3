@@ -38,22 +38,19 @@ export default function NetworkClaim() {
 
   const [modalPools, setModalPools] = useState<Pool[]>([])
 
-  const hasMultipleClaims = pools?.length > 1
+  const hasMultipleClaims = pools ? pools.length > 1 : false
 
   return (
     <TransactionStateProvider>
       <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
-        <HStack pb="3" justifyContent="space-between">
-          <HStack spacing="sm">
-            <NetworkIcon chain={gqlChain} size={16} />
+        <HStack pb="1" justifyContent="space-between">
+          <HStack spacing="xs">
+            <NetworkIcon chain={gqlChain} size={12} />
             <Stack spacing="none">
-              <Heading size="md">{chainName}</Heading>
-              <Text variant="secondary" fontWeight="700">
-                Liquidity incentives
-              </Text>
+              <Heading size="md">{chainName} incentives</Heading>
             </Stack>
           </HStack>
-          <Heading size="lg" variant="special">
+          <Heading size="md" variant="special">
             {claimableFiatBalance && toCurrency(claimableFiatBalance)}
           </Heading>
         </HStack>
@@ -68,7 +65,7 @@ export default function NetworkClaim() {
                     <VStack align="start">
                       <HStack w="full">
                         <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
-                        <Text fontSize="xl" variant="special" ml="auto">
+                        <Text fontWeight="bold" variant="special" ml="auto">
                           {toCurrency(
                             poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0
                           )}
@@ -84,6 +81,7 @@ export default function NetworkClaim() {
                             variant="secondary"
                             size="sm"
                             ml="auto"
+                            minW="60px"
                           >
                             Claim
                           </Button>

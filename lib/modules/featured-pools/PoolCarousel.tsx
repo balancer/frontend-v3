@@ -9,9 +9,10 @@ import { useSwipeable } from 'react-swipeable'
 
 type Props = {
   featuredPools: GetFeaturedPoolsQuery['featuredPools']
+  getGraphic: (index: number) => JSX.Element | null
 }
 
-export function PoolCarousel({ featuredPools, ...rest }: Props & BoxProps) {
+export function PoolCarousel({ featuredPools, getGraphic, ...rest }: Props & BoxProps) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [direction, setDirection] = useState<'left' | 'right'>('left')
   const swipeHandlers = useSwipeable({
@@ -37,7 +38,7 @@ export function PoolCarousel({ featuredPools, ...rest }: Props & BoxProps) {
   const currentPool = featuredPools[currentIndex].pool as Pool
 
   return (
-    <Box {...swipeHandlers} {...rest}>
+    <Box {...swipeHandlers} {...rest} zIndex={9999}>
       <Card
         w="full"
         pos="relative"
@@ -46,6 +47,7 @@ export function PoolCarousel({ featuredPools, ...rest }: Props & BoxProps) {
         justifyContent="center"
         position="relative"
         paddingTop="26px !important"
+        zIndex={9999}
       >
         <Box position="absolute" top="0">
           <Text color="font.secondary" variant="eyebrow" px="4" py="1.5" fontSize="10px">
@@ -55,15 +57,16 @@ export function PoolCarousel({ featuredPools, ...rest }: Props & BoxProps) {
         <Box pos="absolute" w="8" h="full" top="0" left="0" cursor="pointer" onClick={prev} />
         <Box pos="absolute" w="8" h="full" top="0" right="0" cursor="pointer" onClick={next} />
         <FeaturePoolCard
+          key={`pool-carousel-card-${currentIndex}`}
           pool={currentPool}
           chain={currentPool.chain}
           bgSize="300px"
-          hasLegend={false}
           isCarousel
           isSmall
           carouselIndex={currentIndex}
           carouselDirection={direction}
           featuredReason={featuredPools[currentIndex].description}
+          graphic={getGraphic(currentIndex)}
         />
       </Card>
       <Center w="full" mt="md">

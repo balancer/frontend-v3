@@ -16,6 +16,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { usePoolEnrichWithOnChainData } from '@/lib/modules/pool/queries/usePoolEnrichWithOnChainData'
 import { useOnchainUserPoolBalances } from './queries/useOnchainUserPoolBalances'
 import { ApiErrorAlert } from '@/lib/shared/components/errors/ApiErrorAlert'
+import { useInvalidVariantRedirect } from './pool.hooks'
 
 export type UsePoolResponse = ReturnType<typeof _usePool> & {
   chain: GqlChain
@@ -30,6 +31,7 @@ export function _usePool({
   chain,
   initialData,
 }: FetchPoolProps & { initialData: GetPoolQuery }) {
+  useInvalidVariantRedirect(initialData.pool)
   const { userAddress } = useUserAccount()
   const queryVariables = { id, chain, userAddress: userAddress.toLowerCase() }
 

@@ -51,14 +51,15 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
     // forkBlockNumber: 19769489n,
-    forkBlockNumber: 20061849n,
+    // forkBlockNumber: 20061849n,
+    forkBlockNumber: 20474895n,
   },
   Polygon: {
     networkName: 'Polygon',
     fallBackRpc: 'https://polygon-rpc.com',
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
-    forkBlockNumber: 57569322n,
+    forkBlockNumber: 60496806n,
   },
   Sepolia: {
     networkName: 'Sepolia',

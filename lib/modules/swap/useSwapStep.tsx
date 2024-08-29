@@ -43,7 +43,7 @@ export function useSwapStep({
     simulationQuery,
     wethIsEth,
     swapState,
-    enabled: isBuildQueryEnabled,
+    enabled: isBuildQueryEnabled && !!simulationQuery.data,
   })
 
   const tokenInSymbol = tokenInInfo?.symbol || 'Unknown'

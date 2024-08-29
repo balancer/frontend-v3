@@ -41,13 +41,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const [wethIsEth, setWethIsEth] = useState(false)
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
-  const { pool, refetch: refetchPool } = usePool()
+  const { pool, refetch: refetchPool, isLoading } = usePool()
   const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
     useTokens()
   const { isConnected } = useUserAccount()
   const { hasValidationErrors } = useTokenInputsValidation()
 
-  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
+  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id, isLoading])
 
   /**
    * Helper functions & variables
@@ -130,6 +130,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const addLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
 
+  const addLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
+
   const hasQuoteContext = !!simulationQuery.data
 
   async function refetchQuote() {
@@ -192,6 +194,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     urlTxHash,
     addLiquidityTxHash,
     hasQuoteContext,
+    addLiquidityTxSuccess,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,

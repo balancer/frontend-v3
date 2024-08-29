@@ -4,7 +4,7 @@
 import { useEffect, useState } from 'react'
 import { getTransactionState, TransactionState, TransactionStep } from './lib'
 import { useTransactionState } from './TransactionStateProvider'
-import useSound from 'use-sound'
+import { useTxSound } from './useTxSound'
 
 export type TransactionStepsResponse = ReturnType<typeof useTransactionSteps>
 
@@ -22,9 +22,9 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   const isOnSuccessCalled = (stepId: string) => !!onSuccessCalled[stepId]
 
   const { getTransaction, resetTransactionState } = useTransactionState()
-  const [playGong] = useSound('/sounds/gong.mp3')
+  const { playTxSound } = useTxSound()
 
-  const currentStep = steps?.[currentStepIndex]
+  const currentStep = steps[currentStepIndex]
   const currentTransaction = currentStep ? getTransaction(currentStep.id) : undefined
   const isCurrentStepComplete = currentStep?.isComplete() || false
   const lastStepIndex = steps?.length ? steps.length - 1 : 0
@@ -35,6 +35,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   const lastTransactionConfirmingOrConfirmed =
     lastTransactionState === TransactionState.Confirming ||
     lastTransactionState === TransactionState.Completed
+  const lastTransactionConfirmed = lastTransactionState === TransactionState.Completed
 
   function isLastStep(index: number) {
     return steps?.length ? index === lastStepIndex : false
@@ -84,8 +85,8 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // On last transaction success, play success sound.
   // TODO move this to a global tx state management system in later refactor.
   useEffect(() => {
-    if (lastTransaction?.result.isSuccess) {
-      playGong()
+    if (lastTransaction?.result.isSuccess && currentStep) {
+      playTxSound(currentStep.stepType)
     }
   }, [lastTransaction?.result.isSuccess])
 
@@ -98,6 +99,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
     lastTransaction,
     lastTransactionState,
     lastTransactionConfirmingOrConfirmed,
+    lastTransactionConfirmed,
     isLastStep,
     setCurrentStepIndex,
     resetTransactionSteps,

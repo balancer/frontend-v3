@@ -16,7 +16,9 @@ export const config: Config = {
   networks,
 }
 
+export const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'dev'
 export const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'prod'
+export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === 'staging'
 
 const networksByChainId = keyBy(config.networks, 'chainId')
 

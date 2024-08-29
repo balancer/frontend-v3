@@ -13,7 +13,6 @@ import {
   IconButton,
   Button,
   Box,
-  Text,
   CardHeader,
   CardFooter,
   CardBody,
@@ -37,6 +36,7 @@ import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { parseSwapError } from './swap.helpers'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { ConnectWallet } from '../web3/ConnectWallet'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 export function SwapForm() {
   const {
@@ -82,6 +82,7 @@ export function SwapForm() {
   }
 
   function handleTokenSelect(token: GqlToken) {
+    if (!token) return
     if (tokenSelectKey === 'tokenIn') {
       setTokenIn(token.address as Address)
     } else if (tokenSelectKey === 'tokenOut') {
@@ -130,6 +131,7 @@ export function SwapForm() {
           </CardHeader>
           <CardBody as={VStack} align="start">
             <VStack spacing="md" w="full">
+              <SafeAppAlert />
               <ChainSelect
                 value={selectedChain}
                 onChange={newValue => {
@@ -194,9 +196,7 @@ export function SwapForm() {
 
               {simulationQuery.isError && (
                 <ErrorAlert title="Error fetching swap">
-                  <Text color="font.maxContrast" variant="secondary">
-                    {parseSwapError(simulationQuery.error?.message)}
-                  </Text>
+                  {parseSwapError(simulationQuery.error?.message)}
                 </ErrorAlert>
               )}
             </VStack>

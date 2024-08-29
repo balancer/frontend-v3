@@ -25,10 +25,10 @@ const aprItems = [
   },
   {
     __typename: 'GqlPoolAprItem',
-    id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr',
+    id: '0x79ef6103a513951a3b25743db509e267685726b7-BAL-apr-boost',
     title: 'BAL reward APR',
-    apr: 0.01914598038405333,
-    type: 'STAKING',
+    apr: 0.02249044497633304,
+    type: 'STAKING_BOOST',
   },
 ] as GqlPoolAprItem[]
 
