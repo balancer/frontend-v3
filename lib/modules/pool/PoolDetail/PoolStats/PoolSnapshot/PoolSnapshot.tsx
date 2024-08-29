@@ -8,9 +8,10 @@ import { ZenGarden } from '@/lib/shared/components/zen/ZenGarden'
 import ButtonGroup, {
   ButtonGroupOption,
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { UserSnapshotValues } from './UserSnapshotValues'
 import { PoolSnapshotValues } from './PoolSnapshotValues'
 import { hasTotalBalance } from '../../../user-balance.helpers'
+import dynamic from 'next/dynamic'
+import { getStakingType } from '@/lib/shared/utils/staking'
 
 const COMMON_NOISY_CARD_PROPS: { contentProps: BoxProps; cardProps: BoxProps } = {
   contentProps: {
@@ -41,6 +42,11 @@ const TABS = [
 export function PoolSnapshot({ ...props }: CardProps) {
   const [activeTab, setActiveTab] = useState<ButtonGroupOption>(TABS[0])
   const { pool } = usePool()
+  const stakingType = getStakingType(pool)
+
+  const UserSnapshotValues = dynamic(() =>
+    import(`./UserSnapshotValues.${stakingType}`).then(mod => mod.UserSnapshotValues)
+  )
 
   function handleTabChanged(option: ButtonGroupOption) {
     setActiveTab(option)
