@@ -11,7 +11,7 @@ import {
   Link,
   Skeleton,
 } from '@chakra-ui/react'
-import { usePool } from '../PoolProvider'
+import { usePool } from '../../PoolProvider'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
@@ -19,13 +19,15 @@ import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
-import { PoolEventItem, usePoolEvents } from '../usePoolEvents'
-import { calcTotalStakedBalance, getUserTotalBalance } from '../user-balance.helpers'
+import { PoolEventItem, usePoolEvents } from '../../usePoolEvents'
+import { calcTotalStakedBalance, getUserTotalBalance } from '../../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
-import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
 import { isEmpty } from 'lodash'
-import { useUserAccount } from '../../web3/UserAccountProvider'
-import { isVebalPool } from '../pool.helpers'
+import { useUserAccount } from '../../../web3/UserAccountProvider'
+import { isVebalPool } from '../../pool.helpers'
+import { hasFeature } from '@/lib/config/hasFeature'
+import { Features } from '@/lib/config/config.types'
+import dynamic from 'next/dynamic'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -112,8 +114,8 @@ export default function PoolUserEvents() {
   const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
-  const { veBalBoostMap } = useVebalBoost([pool])
   const { userAddress } = useUserAccount()
+
   const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
     chainIn: [chain],
     poolIdIn: [pool.id],
@@ -121,7 +123,8 @@ export default function PoolUserEvents() {
   })
 
   const isVeBal = isVebalPool(pool.id)
-  const showBoostValue = !isVeBal
+  const showBoostValue = hasFeature(chain, Features.vebal) && !isVeBal
+  const BoostText = dynamic(() => import(`./BoostText`).then(mod => mod.BoostText))
 
   // keep this card the same height as the 'My liquidity' section
   useLayoutEffect(() => {
@@ -159,16 +162,6 @@ export default function PoolUserEvents() {
       return fNum('stakedPercentage', ratio)
     }
   }, [pool])
-
-  const boost = useMemo(() => {
-    const boost = veBalBoostMap[pool.id]
-
-    if (!boost || boost === '1') {
-      return '1.00'
-    }
-
-    return fNum('boost', bn(boost))
-  }, [veBalBoostMap, pool])
 
   return (
     <Card h={height}>
@@ -226,16 +219,7 @@ export default function PoolUserEvents() {
             <Text variant="secondary" fontSize="0.85rem">
               {`${stakedPercentage} ${getShareTitle()}`}
             </Text>
-            {showBoostValue && (
-              <>
-                <Text variant="secondary" fontSize="0.85rem">
-                  &middot;
-                </Text>
-                <Text variant="secondary" fontSize="0.85rem">
-                  {`${boost}x boost`}
-                </Text>
-              </>
-            )}
+            {showBoostValue && <BoostText pool={pool} />}
           </HStack>
         </VStack>
       )}
