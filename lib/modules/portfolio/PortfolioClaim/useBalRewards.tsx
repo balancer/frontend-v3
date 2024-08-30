@@ -13,6 +13,7 @@ import { useUserAccount } from '../../web3/UserAccountProvider'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { balancerV2GaugeV5Abi } from '../../web3/contracts/abi/generated'
 import { WriteContractParameters } from 'wagmi/actions'
+import { compact } from 'lodash'
 
 export interface BalTokenReward {
   balance: bigint
@@ -39,8 +40,10 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
 
   function claimableTokensCall(
     gaugeAddress: Address | string
-  ): WriteContractParameters<typeof balancerV2GaugeV5Abi, 'claimable_tokens'> {
+  ): WriteContractParameters<typeof balancerV2GaugeV5Abi, 'claimable_tokens'> | undefined {
     const pool = poolByGaugeMap[gaugeAddress]
+
+    if (!pool) return undefined
 
     return {
       abi: AbiMap['balancer.gaugeV5'],
@@ -51,7 +54,7 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
     } as const
   }
 
-  const contractCalls = gaugeAddresses.map(claimableTokensCall)
+  const contractCalls = compact(gaugeAddresses.map(claimableTokensCall))
 
   const {
     data: claimableTokensData,
@@ -75,8 +78,10 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
         if (!balance || bn(balance).isZero()) return // Discard pool without claimable balance
 
         const contractCall = contractCalls[i]
+        if (!contractCall) return
         const gaugeAddress = contractCall.address as Address
         const pool = poolByGaugeMap[gaugeAddress]
+        if (!pool) return
         const balTokenAddress = networkConfigs[pool.chain].tokens.addresses.bal
         const tokenPrice = balTokenAddress ? priceFor(balTokenAddress, pool.chain) : 0
         const fiatBalance = tokenPrice

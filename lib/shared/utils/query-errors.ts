@@ -260,7 +260,37 @@ function shouldIgnore(e: Error): boolean {
   */
   if (e.message.includes('ResizeObserver loop limit exceeded')) return true
 
-  if (isUserRejectedError(e)) return true
+  /*
+    Wallet Connect bug when switching certain networks.
+    It does not crash the app.
+    More info: https://github.com/MetaMask/metamask-mobile/issues/9157
+  */
+  if (e.message.includes('Missing or invalid. emit() chainId')) return true
+
+  /*
+    Some extensions cause this error
+    Examples: https://balancer-labs.sentry.io/issues/5623611453/
+  */
+  if (
+    e.message.startsWith('Maximum call stack size exceeded') &&
+    e.stack?.includes('injectWalletGuard.js')
+  ) {
+    return true
+  }
+
+  /*
+    Wagmi error which does not crash.
+    Can be reproduced by:
+      1. Connect with Rabby
+      2. Disconnect Rabby from the app
+      3. Click "Connect wallet" and chose WalletConnect
+  */
+  if (
+    e.message === "Cannot read properties of undefined (reading 'address')" &&
+    e.stack?.includes('getWalletClient.js')
+  ) {
+    return true
+  }
 
   return false
 }

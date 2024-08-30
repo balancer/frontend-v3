@@ -51,7 +51,7 @@ export function useRemoveLiquidityBuildCallDataQuery({
     poolId: pool.id,
     humanBptIn: debouncedHumanBptIn,
     tokenOut: singleTokenOutAddress, // only required by SingleToken removal
-    wethIsEth, // only required by SingleToken removal
+    wethIsEth,
   }
 
   const queryKey = removeLiquidityKeys.buildCallData(params)

@@ -24,7 +24,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   const { getTransaction, resetTransactionState } = useTransactionState()
   const { playTxSound } = useTxSound()
 
-  const currentStep = steps?.[currentStepIndex]
+  const currentStep = steps[currentStepIndex]
   const currentTransaction = currentStep ? getTransaction(currentStep.id) : undefined
   const isCurrentStepComplete = currentStep?.isComplete() || false
   const lastStepIndex = steps?.length ? steps.length - 1 : 0
@@ -85,7 +85,7 @@ export function useTransactionSteps(steps: TransactionStep[] = [], isLoading = f
   // On last transaction success, play success sound.
   // TODO move this to a global tx state management system in later refactor.
   useEffect(() => {
-    if (lastTransaction?.result.isSuccess) {
+    if (lastTransaction?.result.isSuccess && currentStep) {
       playTxSound(currentStep.stepType)
     }
   }, [lastTransaction?.result.isSuccess])

@@ -1,7 +1,7 @@
 'use client'
 
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { FeaturedPool } from '../../PoolProvider'
+import { GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
 import { Box, VStack, useTheme } from '@chakra-ui/react'
@@ -14,7 +14,7 @@ import ReactECharts from 'echarts-for-react'
 import * as echarts from 'echarts/core'
 
 interface PoolWeightChartProps {
-  pool: FeaturedPool
+  displayTokens: GqlPoolTokenDetail[]
   chain: GqlChain
   hasLegend?: boolean
   isSmall?: boolean
@@ -138,7 +138,7 @@ function InnerSymbolCircle({ opacity }: { opacity: string; isSmall: boolean }) {
 }
 
 export function FeaturedPoolWeightChart({
-  pool,
+  displayTokens,
   chain,
   hasLegend,
   isSmall,
@@ -185,7 +185,7 @@ export function FeaturedPoolWeightChart({
           emphasis: {
             scale: false,
           },
-          data: pool.displayTokens.map((token, i) => ({
+          data: displayTokens.map((token, i) => ({
             value: parseFloat(token.weight || '0') * 100,
             name: token.symbol,
             itemStyle: {
@@ -205,7 +205,7 @@ export function FeaturedPoolWeightChart({
       ],
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pool, colorMode])
+  }, [displayTokens, colorMode])
 
   return (
     <VStack>
@@ -292,7 +292,7 @@ export function FeaturedPoolWeightChart({
           />
         </Box>
       </Box>
-      {hasLegend && <PoolWeightChartLegend pool={pool} colors={colors} />}
+      {hasLegend && <PoolWeightChartLegend displayTokens={displayTokens} colors={colors} />}
     </VStack>
   )
 }
