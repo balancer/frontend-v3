@@ -48,12 +48,12 @@ export const portfolioOrderBy: {
 ]
 
 const numberColumnWidth = '125px'
-const furthestLeftColWidth = '140px'
+const furthestLeftColWidth = '110px'
 
 const rowProps = {
   px: [0, 4],
   gridTemplateColumns: `32px minmax(320px, 1fr) 100px
-  ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 145px`,
+  ${furthestLeftColWidth} ${numberColumnWidth} ${numberColumnWidth} 160px`,
   alignItems: 'center',
   gap: { base: 'xxs', xl: 'lg' },
 }
