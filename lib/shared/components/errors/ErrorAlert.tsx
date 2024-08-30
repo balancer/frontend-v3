@@ -5,7 +5,7 @@ import { PropsWithChildren } from 'react'
 import { XCircle } from 'react-feather'
 
 type Props = AlertProps & {
-  title: string
+  title?: string
 }
 
 export function ErrorAlert({ title, children, ...rest }: PropsWithChildren<Props>) {
@@ -13,7 +13,7 @@ export function ErrorAlert({ title, children, ...rest }: PropsWithChildren<Props
     <Alert rounded="md" status="error" mb="0" {...rest}>
       <AlertIcon as={XCircle} boxSize="1.5em" />
       <Box ml="md" maxHeight="160" overflowY="auto" paddingRight="2">
-        <AlertTitle color="black">{title}</AlertTitle>
+        {title && <AlertTitle color="black">{title}</AlertTitle>}
         <AlertDescription>{children}</AlertDescription>
       </Box>
     </Alert>
