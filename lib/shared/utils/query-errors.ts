@@ -278,5 +278,19 @@ function shouldIgnore(e: Error): boolean {
     return true
   }
 
+  /*
+    Wagmi error which does not crash.
+    Can be reproduced by:
+      1. Connect with Rabby
+      2. Disconnect Rabby from the app
+      3. Click "Connect wallet" and chose WalletConnect
+  */
+  if (
+    e.message === "Cannot read properties of undefined (reading 'address')" &&
+    e.stack?.includes('getWalletClient.js')
+  ) {
+    return true
+  }
+
   return false
 }
