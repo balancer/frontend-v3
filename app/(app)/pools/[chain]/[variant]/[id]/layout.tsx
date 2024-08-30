@@ -65,7 +65,7 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
 
   if (error) {
     if (error?.message === 'Pool with id does not exist') {
-      const error = `Pool with id not found in ${chain} (${id})`
+      const error = `Pool not found on ${chain}, ID (${id})`
       return (
         <DefaultPageContainer>
           <BalAlert status="error" content={error} ssr />
