@@ -55,6 +55,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     slippagePercent,
     queryOutput,
     relayerApprovalSignature,
+    humanAmountsIn,
   }: NestedBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidityNested()
 
@@ -63,7 +64,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
       relayerApprovalSignature,
-      wethIsEth: false, // assuming we don't want to use the native asset over the wrapped native asset for now.
+      wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
     })
 
     return {
