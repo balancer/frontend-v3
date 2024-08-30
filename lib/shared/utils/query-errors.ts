@@ -267,5 +267,16 @@ function shouldIgnore(e: Error): boolean {
   */
   if (e.message.includes('Missing or invalid. emit() chainId')) return true
 
+  /*
+    Some extensions cause this error
+    Examples: https://balancer-labs.sentry.io/issues/5623611453/
+  */
+  if (
+    e.message.startsWith('Maximum call stack size exceeded') &&
+    e.stack?.includes('injectWalletGuard.js')
+  ) {
+    return true
+  }
+
   return false
 }
