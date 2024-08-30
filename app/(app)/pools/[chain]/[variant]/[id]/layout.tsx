@@ -77,7 +77,7 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
       <DefaultPageContainer>
         <BalAlert
           status="warning"
-          content="Our API data provider appears to be having issues..."
+          content="Failed to fetch pool"
           ssr
         />
       </DefaultPageContainer>
