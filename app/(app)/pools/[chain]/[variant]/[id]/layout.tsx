@@ -9,8 +9,6 @@ import { Metadata } from 'next'
 import { PoolProvider } from '@/lib/modules/pool/PoolProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { arrayToSentence } from '@/lib/shared/utils/strings'
-import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
-import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { ensureError } from '@/lib/shared/utils/errors'
 import { captureException } from '@sentry/nextjs'
 
@@ -65,23 +63,13 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
 
   if (error) {
     if (error?.message === 'Pool with id does not exist') {
-      const error = `Pool not found on ${chain}, ID (${id})`
-      return (
-        <DefaultPageContainer>
-          <BalAlert status="error" content={error} ssr />
-        </DefaultPageContainer>
-      )
+      const error = `Pool not found on ${chain}, ID: ${id}`
+      throw new Error(error)
     }
+
     captureException(error, { level: 'fatal' })
-    return (
-      <DefaultPageContainer>
-        <BalAlert
-          status="warning"
-          content="Failed to fetch pool"
-          ssr
-        />
-      </DefaultPageContainer>
-    )
+
+    throw new Error('Failed to fetch pool')
   }
 
   if (!data) return null
