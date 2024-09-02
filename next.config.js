@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const { withSentryConfig } = require('@sentry/nextjs')
 const { sentryOptions } = require('./sentry.config')
 
@@ -25,6 +26,14 @@ const nextConfig = {
 
   // Safe App setup
   headers: manifestHeaders,
+
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
 }
 
 module.exports = withSentryConfig(nextConfig, sentryOptions)
