@@ -1,77 +1,44 @@
 'use client'
 
-import {
-  ErrorBoundary as BaseErrorBoundary,
-  ErrorBoundaryProps as BaseErrorBoundaryProps,
-  FallbackProps as BaseFallbackProps,
-} from 'react-error-boundary'
-import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import { Button, Link, Stack } from '@chakra-ui/react'
-import NextLink from 'next/link'
-import { isDev, isStaging } from '@/lib/config/app.config'
-import { useLocationFullPath } from '@/lib/shared/hooks/useLocationFullPath'
-import { PropsWithChildren, ReactNode } from 'react'
+import { FallbackProps } from 'react-error-boundary'
+import { Button, Box, Text, Heading, VStack } from '@chakra-ui/react'
+import { ensureError } from '../../utils/errors'
+import { DefaultPageContainer } from '../containers/DefaultPageContainer'
 
-export interface ErrorBoundaryProps extends PropsWithChildren {
-  fallback?: BaseErrorBoundaryProps['fallback']
-  fallbackRender?: BaseErrorBoundaryProps['fallbackRender']
-  onReset?: BaseFallbackProps['resetErrorBoundary']
-}
-
-export interface FallbackProps {
-  error: BaseFallbackProps['error']
-  resetErrorBoundary?: BaseFallbackProps['resetErrorBoundary']
-  title?: string
-  showReloadButton?: boolean
-  customButton?: ReactNode
-}
-
-export function DefaultFallbackRender({
+export function BoundaryError({
   error,
   resetErrorBoundary,
-  title,
-  customButton,
-  showReloadButton = true,
-}: FallbackProps) {
-  const showResetButton = isDev || isStaging
-
-  const path = useLocationFullPath()
-
-  const showButtons = customButton || showReloadButton || showResetButton
+}: {
+  error: Error & { digest?: string }
+  resetErrorBoundary: () => void
+}) {
+  const _error = ensureError(error)
 
   return (
-    <div role="alert">
-      <GenericError error={error} customErrorName={title} />
-      {showButtons && (
-        <Stack direction="row" mt="4" spacing="4">
-          {customButton}
-          {showReloadButton && (
-            <Link as={NextLink} href={path}>
-              <Button variant="outline">Reload Page</Button>
-            </Link>
-          )}
-          {showResetButton && resetErrorBoundary && (
-            <Button variant="outline" onClick={() => resetErrorBoundary()}>
-              Try Reset (dev)
-            </Button>
-          )}
-        </Stack>
-      )}
-    </div>
+    <Box w="full" minH="200px" border="2px dashed" borderColor="red.500" p="md" rounded="lg">
+      <VStack align="start" spacing="md">
+        <Heading size="md">Something went wrong! :(</Heading>
+        <VStack align="start" spacing="xs">
+          <Text>
+            {_error?.name
+              ? `${_error?.name}: ${_error?.shortMessage || ''}`
+              : _error?.shortMessage || ''}
+          </Text>
+          <Text>{_error?.message}</Text>
+        </VStack>
+
+        <Button size="sm" onClick={resetErrorBoundary}>
+          Try again
+        </Button>
+      </VStack>
+    </Box>
   )
 }
 
-export function ErrorBoundary({ children, fallback, onReset, fallbackRender }: ErrorBoundaryProps) {
-  if (fallback) {
-    return <BaseErrorBoundary fallback={fallback}>{children}</BaseErrorBoundary>
-  }
-
+export function PageErrorBoundary(props: FallbackProps) {
   return (
-    <BaseErrorBoundary
-      onReset={onReset}
-      FallbackComponent={fallbackRender ?? DefaultFallbackRender}
-    >
-      {children}
-    </BaseErrorBoundary>
+    <DefaultPageContainer>
+      <BoundaryError {...props} />
+    </DefaultPageContainer>
   )
 }

@@ -29,9 +29,7 @@ export default function GlobalError({
     Sentry.captureException(error)
   }, [error])
 
-  const title = error.digest
-    ? `Something went wrong (Digest - ${error.digest})`
-    : 'Something went wrong'
+  const title = error.digest ? `Something went wrong (${error.digest})` : 'Something went wrong'
 
   return (
     <html>
