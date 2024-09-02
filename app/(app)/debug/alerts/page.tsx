@@ -5,9 +5,7 @@ import { BalAlertButton } from '@/lib/shared/components/alerts/BalAlertButton'
 import { BalAlertContent } from '@/lib/shared/components/alerts/BalAlertContent'
 import { useGlobalAlerts } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
 import { GenericError } from '@/lib/shared/components/errors/GenericError'
-import { Button, Text, VStack } from '@chakra-ui/react'
-import { ErrorBoundary } from '@/lib/shared/components/errors/ErrorBoundary'
-import { useEffect, useState } from 'react'
+import { Button, VStack } from '@chakra-ui/react'
 
 const exceptionName = 'Error fetching swap'
 const exceptionMessage = `Execution reverted for an unknown reason. Raw Call Arguments:
@@ -57,7 +55,6 @@ export default function Page() {
       >
         Show global warning alert
       </Button>
-      <DebugErrorBoundary />
     </VStack>
   )
 }
@@ -72,54 +69,4 @@ function TitleWithButton({ title }: { title: string }) {
       <BalAlertButton onClick={() => console.log('Clicked')}>Click me</BalAlertButton>
     </BalAlertContent>
   )
-}
-
-function DebugErrorBoundary() {
-  const [error, setError] = useState<Error | undefined>()
-
-  function generateDelayedError() {
-    setTimeout(() => {
-      setError(new TestError(exceptionName, exceptionMessage))
-    }, 3000)
-  }
-
-  function onReset() {
-    setError(undefined)
-    generateDelayedError()
-  }
-
-  useEffect(() => {
-    generateDelayedError()
-  }, [])
-
-  return (
-    <VStack width="full">
-      <Text fontWeight="bold">Default Error Boundary</Text>
-      <ErrorBoundary onReset={onReset}>
-        <Throwable error={error} />
-      </ErrorBoundary>
-      <Text fontWeight="bold">Resetable Error Boundary</Text>
-      <ErrorBoundary
-        onReset={onReset}
-        fallbackRender={({ resetErrorBoundary }) => (
-          <Button color="font.warning" onClick={resetErrorBoundary}>
-            Try Reset Error
-          </Button>
-        )}
-      >
-        <Throwable error={error} />
-      </ErrorBoundary>
-      <Text fontWeight="bold">Custom Error Boundary</Text>
-      <ErrorBoundary fallback={<Text color="font.warning">Custom Error Content</Text>}>
-        <Throwable error={error} />
-      </ErrorBoundary>
-    </VStack>
-  )
-}
-
-function Throwable({ error }: { error?: Error }) {
-  if (error) {
-    throw error
-  }
-  return <Text>Waiting for error...</Text>
 }
