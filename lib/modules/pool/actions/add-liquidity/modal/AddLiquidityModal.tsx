@@ -66,7 +66,7 @@ export function AddLiquidityModal({
   })
 
   function onModalClose() {
-    recentTransactions.recoverUnconfirmedTransactions()
+    recentTransactions.recheckUnconfirmedTransactions()
     onClose()
   }
 

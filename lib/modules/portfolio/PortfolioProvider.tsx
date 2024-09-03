@@ -13,7 +13,6 @@ import { useUserAccount } from '../web3/UserAccountProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { useOnchainUserPoolBalances } from '../pool/queries/useOnchainUserPoolBalances'
 import { Pool } from '../pool/PoolProvider'
-import { useRecentTransactions } from '../transactions/RecentTransactionsProvider'
 import { isAfter } from 'date-fns'
 import { compact, uniq, uniqBy } from 'lodash'
 import {
@@ -22,6 +21,7 @@ import {
   getUserTotalBalanceUsd,
 } from '../pool/user-balance.helpers'
 import { getTimestamp } from '@/lib/shared/utils/time'
+import { useTransactionState } from '../transactions/transaction-steps/TransactionStateProvider'
 
 export interface ClaimableBalanceResult {
   status: 'success' | 'error'
@@ -40,7 +40,7 @@ export type UsePortfolio = ReturnType<typeof _usePortfolio>
 
 function _usePortfolio() {
   const { userAddress, isConnected } = useUserAccount()
-  const { transactions } = useRecentTransactions()
+  const { transactions } = useTransactionState()
 
   const fiveMinutesAgo = getTimestamp().minsAgo(5)
   const chainIn = getProjectConfig().supportedNetworks

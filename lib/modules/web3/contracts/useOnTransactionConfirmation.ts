@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
 import { Address } from 'viem'
-import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { AnalyticsEvent, trackEvent } from '@/lib/shared/services/fathom/Fathom'
+import { useTransactionState } from '../../transactions/transaction-steps/TransactionStateProvider'
 
 type updateTrackedTransactionRequest = {
   labels: TransactionLabels
@@ -15,20 +15,20 @@ export function useOnTransactionConfirmation({
   hash,
   status,
 }: updateTrackedTransactionRequest) {
-  const { updateTrackedTransaction } = useRecentTransactions()
+  const { recentTransactions } = useTransactionState()
 
   // on confirmation, update tx in tx cache
   useEffect(() => {
     if (hash) {
       if (status === 'reverted') {
         trackEvent(AnalyticsEvent.TransactionReverted)
-        updateTrackedTransaction(hash, {
+        recentTransactions.updateTrackedTransaction(hash, {
           label: labels.reverted,
           status: 'reverted',
         })
       } else {
         trackEvent(AnalyticsEvent.TransactionConfirmed)
-        updateTrackedTransaction(hash, {
+        recentTransactions.updateTrackedTransaction(hash, {
           label: labels.confirmed,
           status: 'confirmed',
         })

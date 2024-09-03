@@ -12,7 +12,6 @@ import {
 } from '@/lib/modules/tokens/__mocks__/token.builders'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { TokensProvider } from '@/lib/modules/tokens/TokensProvider'
-import { RecentTransactionsProvider } from '@/lib/modules/transactions/RecentTransactionsProvider'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { UserSettingsProvider } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { UserAccountProvider } from '@/lib/modules/web3/UserAccountProvider'
@@ -79,7 +78,7 @@ function GlobalProviders({ children }: WrapperProps) {
                   initEnableSignatures="yes"
                   initAcceptedPolicies={undefined}
                 >
-                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                  <TransactionStateProvider>{children}</TransactionStateProvider>
                 </UserSettingsProvider>
               </TokensProvider>
             </UserAccountProvider>

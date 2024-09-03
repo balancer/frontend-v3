@@ -1,9 +1,9 @@
 import { useEffect } from 'react'
 import { Address } from 'viem'
-import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { AnalyticsEvent, trackEvent } from '@/lib/shared/services/fathom/Fathom'
+import { useTransactionState } from '../../transactions/transaction-steps/TransactionStateProvider'
 
 type NewTrackedTransactionRequest = {
   labels: TransactionLabels
@@ -12,13 +12,13 @@ type NewTrackedTransactionRequest = {
 }
 
 export function useOnTransactionSubmission({ labels, hash, chain }: NewTrackedTransactionRequest) {
-  const { addTrackedTransaction } = useRecentTransactions()
+  const { recentTransactions } = useTransactionState()
 
   // on successful submission to chain, add tx to cache
   useEffect(() => {
     if (hash) {
       trackEvent(AnalyticsEvent.TransactionSubmitted)
-      addTrackedTransaction({
+      recentTransactions.addTrackedTransaction({
         hash,
         chain,
         label: labels.confirming || 'Confirming transaction',

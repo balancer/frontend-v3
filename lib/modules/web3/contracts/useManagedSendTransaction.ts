@@ -5,19 +5,19 @@ import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/tra
 import { useEffect } from 'react'
 import { useEstimateGas, useSendTransaction, useWaitForTransactionReceipt } from 'wagmi'
 import { TransactionConfig, TransactionExecution, TransactionSimulation } from './contract.types'
-import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
-import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { getGqlChain } from '@/lib/config/app.config'
 import { useChainSwitch } from '../useChainSwitch'
 import {
   captureWagmiExecutionError,
   sentryMetaForWagmiExecution,
 } from '@/lib/shared/utils/query-errors'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { useTransactionState } from '../../transactions/transaction-steps/TransactionStateProvider'
+import { useOnTransactionSubmission } from './useOnTransactionSubmission'
+import { getGqlChain } from '@/lib/config/app.config'
+import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -34,7 +34,7 @@ export function useManagedSendTransaction({
   const chainId = txConfig?.chainId || mainnet.id
   const { shouldChangeNetwork } = useChainSwitch(chainId)
   const { minConfirmations } = useNetworkConfig()
-  const { updateTrackedTransaction } = useRecentTransactions()
+  const { recentTransactions } = useTransactionState()
 
   const estimateGasQuery = useEstimateGas({
     ...txConfig,
@@ -71,33 +71,10 @@ export function useManagedSendTransaction({
     isSafeTxLoading,
   }
 
-  // when the transaction is successfully submitted to the chain
-  // start monitoring the hash
-  //
-  // when the transaction has an execution error, update that within
-  // the global transaction cache too
-  useEffect(() => {
-    if (bundle?.execution?.data) {
-      // add transaction here
-    }
-  }, [bundle.execution?.data])
-
-  // when the transaction has an execution error, update that within
-  // the global transaction cache
-  // this can either be an execution error or a confirmation error
-  useEffect(() => {
-    if (bundle?.execution?.error) {
-      // monitor execution error here
-    }
-    if (bundle?.result?.error) {
-      // monitor confirmation error here
-    }
-  }, [bundle.execution?.error, bundle.result?.error])
-
   useEffect(() => {
     if (transactionStatusQuery.error) {
       if (txHash) {
-        updateTrackedTransaction(txHash, {
+        recentTransactions.updateTrackedTransaction(txHash, {
           status: 'timeout',
           label: 'Transaction timeout',
           duration: null,
