@@ -1,5 +1,3 @@
-'use client'
-
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import dynamic from 'next/dynamic'
 
