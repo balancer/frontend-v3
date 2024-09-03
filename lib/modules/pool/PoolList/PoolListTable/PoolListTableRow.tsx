@@ -10,8 +10,8 @@ import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
 import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Features } from '@/lib/config/config.types'
-import { hasFeature } from '@/lib/config/hasFeature'
+import { hasOption } from '@/lib/config/hasOption'
+import { Options } from '@/lib/config/config.types'
 
 interface Props extends GridProps {
   pool: PoolListItem
@@ -24,7 +24,7 @@ export function PoolListTableRow({ pool, keyValue, ...rest }: Props) {
   const { userAddress } = usePoolListQueryState()
   const { toCurrency } = useCurrency()
 
-  const showPoolName = hasFeature(pool.chain, Features.poolname)
+  const showPoolName = hasOption(Options.poolname)
 
   return (
     <FadeInOnView>

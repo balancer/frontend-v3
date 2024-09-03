@@ -61,6 +61,9 @@ export enum Features {
   sftmx = 'sftmx',
   masterchef = 'masterchef',
   gauge = 'gauge',
+}
+
+export enum Options {
   poolname = 'poolname',
 }
 
@@ -104,5 +107,6 @@ export interface ProjectConfig {
   corePoolId: string // this prop is used to adjust the color of the SparklesIcon
   variantConfig?: VariantConfig
   features: { [key in GqlChain]: Features[] }
+  options: Options[]
   defaultNetwork: GqlChain
 }

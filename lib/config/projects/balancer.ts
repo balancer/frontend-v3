@@ -44,5 +44,6 @@ export const ProjectConfigBalancer: ProjectConfig = {
     [GqlChain.Sepolia]: [Features.vebal, Features.gauge],
     [GqlChain.Fantom]: [],
   },
+  options: [],
   defaultNetwork: GqlChain.Mainnet,
 }
