@@ -17,7 +17,7 @@ import { useNav } from './useNav'
 import { useEffect, useMemo, useState } from 'react'
 import { usePathname } from 'next/navigation'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { Features } from '@/lib/config/config.types'
+import { Feature } from '@/lib/config/config.types'
 import { hasFeature } from '@/lib/config/hasFeature'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
@@ -48,37 +48,27 @@ function useBoundedScroll(threshold: number) {
 }
 
 function NavLinks({ ...props }: BoxProps) {
-  const { appLinks, beetsLinks, AppLink } = useNav()
+  const { projectExtraAppLinks, ProjectAppLinks, AppLink } = useNav()
   const { chain: _chain } = useUserAccount()
+  const { defaultNetwork, features } = getProjectConfig()
 
-  const chain = _chain?.id ? getGqlChain(_chain?.id) : getProjectConfig().defaultNetwork
+  const chain = _chain?.id ? getGqlChain(_chain?.id) : defaultNetwork
+  const projectLinks = projectExtraAppLinks()
+  const projectFeature = features ? features[chain] : []
 
   return (
     <HStack spacing="lg" fontWeight="medium" {...props}>
-      {appLinks.map(link => (
-        <Box key={link.href} as={motion.div} variants={fadeIn}>
-          <AppLink href={link.href} label={link.label} />
-        </Box>
-      ))}
-      {hasFeature(chain, Features.vebal) && (
+      <ProjectAppLinks />
+      {hasFeature(chain, Feature.vebal) && (
         <Box as={motion.div} variants={fadeIn}>
           <VeBalLink />
         </Box>
       )}
-      {hasFeature(chain, Features.mabeets) && (
-        <AppLink
-          key={beetsLinks.mabeets.href}
-          href={beetsLinks.mabeets.href}
-          label={beetsLinks.mabeets.label}
-        />
-      )}
-      {hasFeature(chain, Features.sftmx) && (
-        <AppLink
-          key={beetsLinks.sftmx.href}
-          href={beetsLinks.sftmx.href}
-          label={beetsLinks.sftmx.label}
-        />
-      )}
+      {projectFeature &&
+        projectFeature.map(
+          feature =>
+            projectLinks.find(link => (link.label.toLowerCase() as Feature) === feature)?.component
+        )}
       {(isDev || isStaging) && (
         <Box as={motion.div} variants={fadeIn}>
           <AppLink href="/debug" label="Debug" />
