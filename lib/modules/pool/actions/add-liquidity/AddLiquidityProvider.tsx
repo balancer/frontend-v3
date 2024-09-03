@@ -30,6 +30,8 @@ import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
+import { useUnmount } from 'usehooks-ts'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -133,6 +135,19 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const addLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
+
+  const { resetTransactionState } = useTransactionState()
+
+  // TODO: This can be a shared hook that receives add/remove/swapLiquidityTxHash as parameter
+  useUnmount(() => {
+    const shouldResetTransactionState =
+      addLiquidityTxHash && !window.location.pathname.includes(addLiquidityTxHash)
+
+    if (shouldResetTransactionState) {
+      console.log('resting transaction state when unmounting summary page')
+      resetTransactionState()
+    }
+  })
 
   async function refetchQuote() {
     if (requiresProportionalInput(pool.type)) {

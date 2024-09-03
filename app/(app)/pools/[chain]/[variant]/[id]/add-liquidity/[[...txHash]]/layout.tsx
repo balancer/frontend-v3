@@ -6,7 +6,6 @@ import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignature
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { Alert } from '@chakra-ui/react'
-import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { PropsWithChildren } from 'react'
 import { isHash } from 'viem'
 import { usePoolRedirect } from '@/lib/modules/pool/pool.hooks'
@@ -38,15 +37,13 @@ export default function AddLiquidityLayout({ params: { txHash }, children }: Pro
 
   return (
     <DefaultPageContainer>
-      <TransactionStateProvider>
-        <RelayerSignatureProvider>
-          <TokenInputsValidationProvider>
-            <AddLiquidityProvider urlTxHash={urlTxHash}>
-              <PriceImpactProvider>{children}</PriceImpactProvider>
-            </AddLiquidityProvider>
-          </TokenInputsValidationProvider>
-        </RelayerSignatureProvider>
-      </TransactionStateProvider>
+      <RelayerSignatureProvider>
+        <TokenInputsValidationProvider>
+          <AddLiquidityProvider urlTxHash={urlTxHash}>
+            <PriceImpactProvider>{children}</PriceImpactProvider>
+          </AddLiquidityProvider>
+        </TokenInputsValidationProvider>
+      </RelayerSignatureProvider>
     </DefaultPageContainer>
   )
 }

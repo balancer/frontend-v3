@@ -18,6 +18,7 @@ import { useOnUserAccountChanged } from '@/lib/modules/web3/useOnUserAccountChan
 import { AddLiquiditySummary } from './AddLiquiditySummary'
 import { useAddLiquidityReceipt } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { useTransactionState } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 
 type Props = {
   isOpen: boolean
@@ -34,8 +35,13 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash, hasQuoteContext, setInitialHumanAmountsIn } =
-    useAddLiquidity()
+  const {
+    transactionSteps,
+    addLiquidityTxHash,
+    urlTxHash,
+    hasQuoteContext,
+    setInitialHumanAmountsIn,
+  } = useAddLiquidity()
   const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
@@ -44,6 +50,7 @@ export function AddLiquidityModal({
     txHash: addLiquidityTxHash,
     userAddress,
   })
+  const { recentTransactions } = useTransactionState()
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
@@ -58,10 +65,15 @@ export function AddLiquidityModal({
     onClose()
   })
 
+  function onModalClose() {
+    recentTransactions.recoverUnconfirmedTransactions()
+    onClose()
+  }
+
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={onModalClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
@@ -90,6 +102,7 @@ export function AddLiquidityModal({
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
+          urlTxHash={urlTxHash}
         />
       </ModalContent>
     </Modal>

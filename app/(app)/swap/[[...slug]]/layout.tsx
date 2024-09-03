@@ -5,7 +5,6 @@ import { SwapProvider } from '@/lib/modules/swap/SwapProvider'
 import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvider'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { PropsWithChildren } from 'react'
 import { PriceImpactProvider } from '@/lib/modules/price-impact/PriceImpactProvider'
@@ -28,17 +27,15 @@ export default function SwapLayout({ params: { slug }, children }: Props) {
 
   return (
     <DefaultPageContainer minH="100vh">
-      <TransactionStateProvider>
-        <RelayerSignatureProvider>
-          <TokenInputsValidationProvider>
-            <TokenBalancesProvider initTokens={initTokens}>
-              <PriceImpactProvider>
-                <SwapProvider pathParams={{ ...pathParams }}>{children}</SwapProvider>
-              </PriceImpactProvider>
-            </TokenBalancesProvider>
-          </TokenInputsValidationProvider>
-        </RelayerSignatureProvider>
-      </TransactionStateProvider>
+      <RelayerSignatureProvider>
+        <TokenInputsValidationProvider>
+          <TokenBalancesProvider initTokens={initTokens}>
+            <PriceImpactProvider>
+              <SwapProvider pathParams={{ ...pathParams }}>{children}</SwapProvider>
+            </PriceImpactProvider>
+          </TokenBalancesProvider>
+        </TokenInputsValidationProvider>
+      </RelayerSignatureProvider>
     </DefaultPageContainer>
   )
 }
