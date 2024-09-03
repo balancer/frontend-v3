@@ -64,7 +64,7 @@ export function PaginatedTable({
             </Center>
           )}
           {loading && (
-            <Box py="2xl">
+            <Box>
               <Box
                 style={{
                   position: 'absolute',
