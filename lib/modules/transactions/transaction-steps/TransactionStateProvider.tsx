@@ -4,7 +4,7 @@ import { createContext, PropsWithChildren, useState } from 'react'
 import { ManagedResult } from './lib'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { TransactionResult } from '../../web3/contracts/contract.types'
-import { RecentTransactionsResponse, useRecentTransactions } from '../useRecentTransactions'
+import { RecentTransactionsResponse, _useRecentTransactions } from '../useRecentTransactions'
 
 export function _useTransactionState(recentTransactions: RecentTransactionsResponse) {
   const [transactionMap, setTransactionMap] = useState<Map<string, ManagedResult>>(new Map())
@@ -46,7 +46,7 @@ export type TransactionStateResponse = ReturnType<typeof _useTransactionState>
 export const TransactionStateContext = createContext<TransactionStateResponse | null>(null)
 
 export function TransactionStateProvider({ children }: PropsWithChildren) {
-  const recentTransactions = useRecentTransactions()
+  const recentTransactions = _useRecentTransactions()
   const hook = _useTransactionState(recentTransactions)
 
   return (

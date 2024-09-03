@@ -16,7 +16,7 @@ import { waitForTransactionReceipt } from 'wagmi/actions'
 import { getWaitForReceiptTimeout } from '../web3/contracts/wagmi-helpers'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 
-export type RecentTransactionsResponse = ReturnType<typeof useRecentTransactions>
+export type RecentTransactionsResponse = ReturnType<typeof _useRecentTransactions>
 export const TransactionsContext = createContext<RecentTransactionsResponse | null>(null)
 const NUM_RECENT_TRANSACTIONS = 20
 
@@ -61,7 +61,8 @@ export const TransactionStatusToastStatusMapping: Record<TransactionStatus, Aler
   unknown: 'warning',
 }
 
-export function useRecentTransactions() {
+// This hook is only called from the TransactionStateProvider to unsure the transactions are managed globally
+export function _useRecentTransactions() {
   const [transactions, setTransactions] = useState<Record<string, TrackedTransaction>>({})
   const toast = useToast()
   const publicClient = usePublicClient()
@@ -71,6 +72,7 @@ export function useRecentTransactions() {
   // load from localStorage on mount
   useEffect(() => {
     loadTransactionsFromLocalStorage()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // when loading transactions from the localStorage cache and we identify any unconfirmed
