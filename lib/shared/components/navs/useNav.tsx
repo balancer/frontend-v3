@@ -9,7 +9,6 @@ import NextLink from 'next/link'
 import { Link, LinkProps } from '@chakra-ui/react'
 import { isDev, isStaging } from '@/lib/config/app.config'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { Feature } from '@/lib/config/config.types'
 
 export function useNav() {
   const pathname = usePathname()
