@@ -46,9 +46,8 @@ export const SparklesIcon = ({
   const { corePoolId } = getProjectConfig()
   const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
-  const hasRewardApr = pool.dynamicData.aprItems.some(
-    item => item.type === GqlPoolAprItemType.VebalEmissions
-  )
+  const hasRewardApr =
+    pool.dynamicData.aprItems.filter(item => item.type !== GqlPoolAprItemType.SwapFee).length > 0
 
   let gradFromColor = theme.colors.sparkles.default.from
   let gradToColor = theme.colors.sparkles.default.to
