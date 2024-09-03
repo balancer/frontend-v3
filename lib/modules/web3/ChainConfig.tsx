@@ -63,15 +63,12 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: getRpcOverride(GqlChain.Fraxtal),
 }
 
-const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
-const customFantom = { iconUrl: '/images/chains/FANTOM.svg', ...fantom }
-
 const gqlChainToWagmiChainMap = {
-  [GqlChain.Mainnet]: customMainnet,
+  [GqlChain.Mainnet]: { iconUrl: '/images/chains/MAINNET.svg', ...mainnet },
   [GqlChain.Arbitrum]: { iconUrl: '/images/chains/ARBITRUM.svg', ...arbitrum },
   [GqlChain.Base]: { iconUrl: '/images/chains/BASE.svg', ...base },
   [GqlChain.Avalanche]: { iconUrl: '/images/chains/AVALANCHE.svg', ...avalanche },
-  [GqlChain.Fantom]: customFantom,
+  [GqlChain.Fantom]: { iconUrl: '/images/chains/FANTOM.svg', ...fantom },
   [GqlChain.Gnosis]: { iconUrl: '/images/chains/GNOSIS.svg', ...gnosis },
   [GqlChain.Optimism]: { iconUrl: '/images/chains/OPTIMISM.svg', ...optimism },
   [GqlChain.Polygon]: { iconUrl: '/images/chains/POLYGON.svg', ...polygon },
