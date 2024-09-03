@@ -4,7 +4,7 @@
   "description": "Balancer is a battle-tested toolkit for true AMM experimentation and innovation.",
   "icons": [
     {
-      "src": "/balancer.svg",
+      "src": "/images/icons/balancer.svg",
       "sizes": "any",
       "type": "image/svg+xml"
     }
