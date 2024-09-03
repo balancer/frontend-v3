@@ -17,6 +17,7 @@ import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { GqlPoolAprItemType } from '@/lib/shared/services/api/generated/graphql'
 
 interface Props
   extends Omit<
@@ -45,7 +46,9 @@ export const SparklesIcon = ({
   const { corePoolId } = getProjectConfig()
   const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
-  const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
+  const hasRewardApr = pool.dynamicData.aprItems.some(
+    item => item.type === GqlPoolAprItemType.VebalEmissions
+  )
 
   let gradFromColor = theme.colors.sparkles.default.from
   let gradToColor = theme.colors.sparkles.default.to
