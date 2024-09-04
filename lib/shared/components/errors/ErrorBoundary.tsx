@@ -4,14 +4,11 @@ import { FallbackProps } from 'react-error-boundary'
 import { Button, Box, Text, Heading, VStack } from '@chakra-ui/react'
 import { ensureError } from '../../utils/errors'
 import { DefaultPageContainer } from '../containers/DefaultPageContainer'
+import { captureSentryError } from '../../utils/query-errors'
 
-export function BoundaryError({
-  error,
-  resetErrorBoundary,
-}: {
-  error: Error & { digest?: string }
-  resetErrorBoundary: () => void
-}) {
+export function BoundaryError({ error, resetErrorBoundary }: FallbackProps) {
+  captureSentryError(error, { errorMessage: error.message })
+
   const _error = ensureError(error)
 
   return (

@@ -10,7 +10,6 @@ import { PoolProvider } from '@/lib/modules/pool/PoolProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { arrayToSentence } from '@/lib/shared/utils/strings'
 import { ensureError } from '@/lib/shared/utils/errors'
-import { captureException } from '@sentry/nextjs'
 
 type Props = PropsWithChildren<{
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
@@ -63,11 +62,8 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
 
   if (error) {
     if (error?.message === 'Pool with id does not exist') {
-      const error = `Pool not found on ${chain}, ID: ${id}`
-      throw new Error(error)
+      throw new Error(`Pool not found on ${chain}, ID: ${id}`)
     }
-
-    captureException(error, { level: 'fatal' })
 
     throw new Error('Failed to fetch pool')
   }
