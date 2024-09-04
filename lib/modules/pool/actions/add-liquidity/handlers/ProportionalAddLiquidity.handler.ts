@@ -8,7 +8,6 @@ import {
   HumanAmount,
   InputAmount,
   Slippage,
-  calculateProportionalAmounts,
 } from '@balancer/sdk'
 import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
@@ -36,17 +35,11 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   public async simulate(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): Promise<SdkQueryAddLiquidityOutput> {
-    // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
-    const humanAmountIn = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
-
-    const { bptAmount } = calculateProportionalAmounts(
-      this.helpers.poolStateWithBalances,
-      humanAmountIn
-    )
+    const referenceAmount = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
 
     const addLiquidity = new AddLiquidity()
 
-    const addLiquidityInput = this.constructSdkInput(bptAmount)
+    const addLiquidityInput = this.constructSdkInput(referenceAmount)
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
@@ -84,11 +77,11 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(bptOut: InputAmount): AddLiquidityProportionalInput {
+  private constructSdkInput(referenceAmount: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
       rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      bptOut,
+      referenceAmount,
       kind: AddLiquidityKind.Proportional,
     }
   }
