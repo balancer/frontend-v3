@@ -3,14 +3,12 @@
 
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
-import { useMakeVarPersisted } from '@/lib/shared/hooks/useMakeVarPersisted'
 import { LABELS } from '@/lib/shared/labels'
 import { GqlChain, GqlSorSwapType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
-import { useReactiveVar } from '@apollo/client'
 import { useDisclosure } from '@chakra-ui/react'
 import { invert } from 'lodash'
 import { PropsWithChildren, createContext, useEffect, useState } from 'react'
@@ -37,25 +35,23 @@ export type PathParams = {
 }
 
 export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
-  const swapStateVar = useMakeVarPersisted<SwapState>(
-    {
-      tokenIn: {
-        address: emptyAddress,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-      tokenOut: {
-        address: emptyAddress,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-      swapType: GqlSorSwapType.ExactIn,
-      selectedChain: GqlChain.Mainnet,
+  const initialSwapState = {
+    tokenIn: {
+      address: emptyAddress,
+      amount: '',
+      scaledAmount: BigInt(0),
     },
-    'swapState'
-  )
+    tokenOut: {
+      address: emptyAddress,
+      amount: '',
+      scaledAmount: BigInt(0),
+    },
+    swapType: GqlSorSwapType.ExactIn,
+    selectedChain: GqlChain.Mainnet,
+  }
 
-  const swapState = useReactiveVar(swapStateVar)
+  const [swapState, setSwapState] = useState<SwapState>(initialSwapState)
+
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [initUserChain, setInitUserChain] = useState<GqlChain | undefined>(undefined)
 
@@ -68,29 +64,18 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
 
-  const isTokenInSet = swapState.tokenIn.address !== emptyAddress
-  const isTokenOutSet = swapState.tokenOut.address !== emptyAddress
-
   const tokenInInfo = getToken(swapState.tokenIn.address, swapState.selectedChain)
   const tokenOutInfo = getToken(swapState.tokenOut.address, swapState.selectedChain)
 
-  if ((isTokenInSet && !tokenInInfo) || (isTokenOutSet && !tokenOutInfo)) {
-    try {
-      setDefaultTokens()
-    } catch (error) {
-      throw new Error('Token metadata not found')
-    }
-  }
-
   function setSelectedChain(_selectedChain: GqlChain) {
     const defaultTokenState = getDefaultTokenState(_selectedChain)
-    swapStateVar(defaultTokenState)
+    setSwapState(defaultTokenState)
   }
 
   function setTokenIn(tokenAddress: Address) {
     const isSameAsTokenOut = isSameAddress(tokenAddress, swapState.tokenOut.address)
 
-    swapStateVar({
+    setSwapState({
       ...swapState,
       tokenIn: {
         ...swapState.tokenIn,
@@ -105,7 +90,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   function setTokenOut(tokenAddress: Address) {
     const isSameAsTokenIn = isSameAddress(tokenAddress, swapState.tokenIn.address)
 
-    swapStateVar({
+    setSwapState({
       ...swapState,
       tokenOut: {
         ...swapState.tokenOut,
@@ -118,7 +103,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function switchTokens() {
-    swapStateVar({
+    setSwapState({
       ...swapState,
       tokenIn: swapState.tokenOut,
       tokenOut: swapState.tokenIn,
@@ -132,18 +117,17 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
-    const state = swapStateVar()
     const newState = {
-      ...state,
+      ...swapState,
       tokenIn: {
-        ...state.tokenIn,
+        ...swapState.tokenIn,
         amount,
         scaledAmount: scaleTokenAmount(amount, tokenInInfo),
       },
     }
 
     if (userTriggered) {
-      swapStateVar({
+      setSwapState({
         ...newState,
         swapType: GqlSorSwapType.ExactIn,
       })
@@ -151,7 +135,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     } else {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from the other input.
-      swapStateVar(newState)
+      setSwapState(newState)
     }
   }
 
@@ -159,18 +143,17 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
   ) {
-    const state = swapStateVar()
     const newState = {
-      ...state,
+      ...swapState,
       tokenOut: {
-        ...state.tokenOut,
+        ...swapState.tokenOut,
         amount,
         scaledAmount: scaleTokenAmount(amount, tokenOutInfo),
       },
     }
 
     if (userTriggered) {
-      swapStateVar({
+      setSwapState({
         ...newState,
         swapType: GqlSorSwapType.ExactOut,
       })
@@ -179,7 +162,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
       // Sometimes we want to set the amount without triggering a fetch or
       // swapType change, like when we populate the amount after a change from
       // the other input.
-      swapStateVar(newState)
+      setSwapState(newState)
     }
   }
 
@@ -204,7 +187,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   }
 
   function setDefaultTokens() {
-    swapStateVar(getDefaultTokenState(swapState.selectedChain))
+    setSwapState(getDefaultTokenState(swapState.selectedChain))
   }
 
   function scaleTokenAmount(amount: string, token: GqlToken | undefined): bigint {
