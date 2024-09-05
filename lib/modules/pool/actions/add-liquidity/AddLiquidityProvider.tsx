@@ -17,6 +17,7 @@ import {
   injectNativeAsset,
   replaceWrappedWithNativeAsset,
   requiresProportionalInput,
+  supportsNestedActions,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
@@ -30,6 +31,7 @@ import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
+import { getLeafTokens } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -59,7 +61,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const wNativeAsset = getWrappedNativeAssetToken(chain)
 
   function setInitialHumanAmountsIn() {
-    const amountsIn = pool.poolTokens.map(
+    const amountsIn = getPoolTokens().map(
       token =>
         ({
           tokenAddress: token.address,
@@ -84,6 +86,9 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     // TODO add exception for composable pools where we can allow adding
     // liquidity with nested tokens
     if (isComposableStable(pool.type)) return pool.poolTokens
+    if (supportsNestedActions(pool)) {
+      return getLeafTokens(pool.poolTokens)
+    }
 
     return pool.poolTokens
   }
