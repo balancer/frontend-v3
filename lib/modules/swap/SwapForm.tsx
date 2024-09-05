@@ -1,67 +1,49 @@
 'use client'
 
 import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
-import { GqlChain, GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
 import {
+  Box,
+  Button,
   Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Center,
   HStack,
-  VStack,
-  Tooltip,
-  useDisclosure,
   IconButton,
-  Button,
-  Box,
-  CardHeader,
-  CardFooter,
-  CardBody,
+  Tooltip,
+  VStack,
+  useDisclosure,
 } from '@chakra-ui/react'
-import { useRef, useState } from 'react'
-import { useSwap } from './SwapProvider'
-import { TokenSelectModal } from '../tokens/TokenSelectModal/TokenSelectModal'
-import { Address } from 'viem'
-import { SwapPreviewModal } from './modal/SwapModal'
-import { TransactionSettings } from '../user/settings/TransactionSettings'
-import { PriceImpactAccordion } from '../price-impact/PriceImpactAccordion'
-import { ChainSelect } from '../chains/ChainSelect'
-import { CheckCircle, Link, Repeat } from 'react-feather'
-import { SwapRate } from './SwapRate'
-import { SwapDetails } from './SwapDetails'
 import { capitalize } from 'lodash'
-import { motion, easeOut } from 'framer-motion'
-import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
-import { parseSwapError } from './swap.helpers'
-import { useUserAccount } from '../web3/UserAccountProvider'
+import { useRef, useState } from 'react'
+import { CheckCircle, Link, Repeat } from 'react-feather'
+import { ChainSelect } from '../chains/ChainSelect'
+import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { ConnectWallet } from '../web3/ConnectWallet'
-import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import { useUserAccount } from '../web3/UserAccountProvider'
+import { useSwap } from './SwapProvider'
 
 export function SwapForm() {
   const {
     tokenIn,
     tokenOut,
     selectedChain,
-    tokens,
-    tokenSelectKey,
     isDisabled,
     disabledReason,
     previewModalDisclosure,
     simulationQuery,
     swapAction,
-    swapTxHash,
-    transactionSteps,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
     setTokenSelectKey,
-    setTokenIn,
-    setTokenOut,
     switchTokens,
-    setNeedsToAcceptHighPI,
-    resetSwapAmounts,
-    replaceUrlPath,
   } = useSwap()
   const [copiedDeepLink, setCopiedDeepLink] = useState(false)
   const tokenSelectDisclosure = useDisclosure()
@@ -81,29 +63,9 @@ export function SwapForm() {
     setTimeout(() => setCopiedDeepLink(false), 2000)
   }
 
-  function handleTokenSelect(token: GqlToken) {
-    if (!token) return
-    if (tokenSelectKey === 'tokenIn') {
-      setTokenIn(token.address as Address)
-    } else if (tokenSelectKey === 'tokenOut') {
-      setTokenOut(token.address as Address)
-    } else {
-      console.error('Unhandled token select key', tokenSelectKey)
-    }
-  }
-
   function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
     setTokenSelectKey(tokenSelectKey)
     tokenSelectDisclosure.onOpen()
-  }
-
-  function onModalClose() {
-    previewModalDisclosure.onClose()
-    if (swapTxHash) {
-      resetSwapAmounts()
-      replaceUrlPath()
-      transactionSteps.resetTransactionSteps()
-    }
   }
 
   return (
@@ -178,27 +140,6 @@ export function SwapForm() {
                   }
                 />
               </VStack>
-              {!!simulationQuery.data && (
-                <motion.div
-                  style={{ width: '100%', transformOrigin: 'top' }}
-                  initial={{ opacity: 0, scaleY: 0.9 }}
-                  animate={{ opacity: 1, scaleY: 1 }}
-                  transition={{ duration: 0.3, ease: easeOut }}
-                >
-                  <PriceImpactAccordion
-                    setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-                    accordionButtonComponent={<SwapRate />}
-                    accordionPanelComponent={<SwapDetails />}
-                    isDisabled={!simulationQuery.data}
-                  />
-                </motion.div>
-              )}
-
-              {simulationQuery.isError && (
-                <ErrorAlert title="Error fetching swap">
-                  {parseSwapError(simulationQuery.error?.message)}
-                </ErrorAlert>
-              )}
             </VStack>
           </CardBody>
           <CardFooter>
@@ -229,22 +170,6 @@ export function SwapForm() {
           </CardFooter>
         </Card>
       </Center>
-      <TokenSelectModal
-        finalFocusRef={tokenSelectKey === 'tokenIn' ? finalRefTokenIn : finalRefTokenOut}
-        chain={selectedChain}
-        tokens={tokens}
-        currentToken={tokenSelectKey === 'tokenIn' ? tokenIn.address : tokenOut.address}
-        isOpen={tokenSelectDisclosure.isOpen}
-        onOpen={tokenSelectDisclosure.onOpen}
-        onClose={tokenSelectDisclosure.onClose}
-        onTokenSelect={handleTokenSelect}
-      />
-      <SwapPreviewModal
-        finalFocusRef={nextBtn}
-        isOpen={previewModalDisclosure.isOpen}
-        onOpen={previewModalDisclosure.onOpen}
-        onClose={onModalClose}
-      />
     </FadeInOnView>
   )
 }
