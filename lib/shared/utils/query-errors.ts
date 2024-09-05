@@ -279,6 +279,14 @@ function shouldIgnore(e: Error): boolean {
   }
 
   /*
+    com.okex.wallet injects code that causes this error
+    Examples: https://balancer-labs.sentry.io/issues/5687846148/
+  */
+  if (e.message.startsWith('Cannot redefine property:') && e.stack?.includes('inject.bundle.js')) {
+    return true
+  }
+
+  /*
     Wagmi error which does not crash.
     Can be reproduced by:
       1. Connect with Rabby
