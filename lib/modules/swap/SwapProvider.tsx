@@ -48,26 +48,6 @@ export type PathParams = {
   urlTxHash?: Hash
 }
 
-function selectSwapHandler(
-  tokenInAddress: Address,
-  tokenOutAddress: Address,
-  chain: GqlChain,
-  swapType: GqlSorSwapType,
-  apolloClient: ApolloClient<object>,
-  tokens: GqlToken[]
-): SwapHandler {
-  if (isNativeWrap(tokenInAddress, tokenOutAddress, chain)) {
-    return new NativeWrapHandler(apolloClient)
-  } else if (isSupportedWrap(tokenInAddress, tokenOutAddress, chain)) {
-    const WrapHandler = getWrapHandlerClass(tokenInAddress, tokenOutAddress, chain)
-    return new WrapHandler()
-  } else if (isAuraBalSwap(tokenInAddress, tokenOutAddress, chain, swapType)) {
-    return new AuraBalSwapHandler(tokens)
-  }
-
-  return new DefaultSwapHandler(apolloClient)
-}
-
 export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const swapStateVar = useMakeVarPersisted<SwapState>(
     {
@@ -102,18 +82,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   const previewModalDisclosure = useDisclosure()
 
   const client = useApolloClient()
-  const handler = useMemo(
-    () =>
-      selectSwapHandler(
-        swapState.tokenIn.address,
-        swapState.tokenOut.address,
-        swapState.selectedChain,
-        swapState.swapType,
-        client,
-        tokens
-      ),
-    [swapState.tokenIn.address, swapState.tokenOut.address, swapState.selectedChain]
-  )
 
   const isTokenInSet = swapState.tokenIn.address !== emptyAddress
   const isTokenOutSet = swapState.tokenOut.address !== emptyAddress
@@ -369,7 +337,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    handler,
     resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,

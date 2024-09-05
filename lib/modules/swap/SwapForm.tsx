@@ -1,9 +1,7 @@
 'use client'
 
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { Card, CardBody, CardHeader, Center, HStack, VStack } from '@chakra-ui/react'
-import { capitalize } from 'lodash'
-import { TransactionSettings } from '../user/settings/TransactionSettings'
+import { Card, CardBody, Center, VStack } from '@chakra-ui/react'
 import { useSwap } from './SwapProvider'
 
 export function SwapForm() {

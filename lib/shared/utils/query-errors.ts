@@ -7,7 +7,6 @@ import {
   stringifyHumanAmountsIn,
 } from '@/lib/modules/pool/actions/add-liquidity/queries/add-liquidity-keys'
 import { RemoveLiquidityParams } from '@/lib/modules/pool/actions/remove-liquidity/queries/remove-liquidity-keys'
-import { SimulateSwapParams } from '@/lib/modules/swap/queries/useSimulateSwapQuery'
 import { isProd } from '@/lib/config/app.config'
 import { SwapState } from '@/lib/modules/swap/swap.types'
 import { SwapHandler } from '@/lib/modules/swap/handlers/Swap.handler'
@@ -40,10 +39,7 @@ export type SwapBuildCallExtras = {
   slippage: string
   wethIsEth: boolean
 }
-export function sentryMetaForSwapHandler(
-  errorMessage: string,
-  params: SimulateSwapParams | SwapBuildCallExtras
-) {
+export function sentryMetaForSwapHandler(errorMessage: string, params: SwapBuildCallExtras) {
   return createSwapHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
@@ -141,7 +137,7 @@ function createRemoveHandlerMetadata(
 function createSwapHandlerMetadata(
   errorName: string,
   errorMessage: string,
-  params: SimulateSwapParams | SwapBuildCallExtras
+  params: SwapBuildCallExtras
 ) {
   const { handler, ...rest } = params
   const extra: Extras = {
