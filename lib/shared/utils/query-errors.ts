@@ -300,5 +300,16 @@ function shouldIgnore(e: Error): boolean {
     return true
   }
 
+  /*
+    Waller Connect bug
+    More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
+  */
+  if (
+    e.message.startsWith(
+      'Error: WebSocket connection failed for host: wss://relay.walletconnect.com'
+    )
+  )
+    return true
+
   return false
 }
