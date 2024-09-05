@@ -2,7 +2,6 @@
 
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Card, CardBody, CardHeader, Center, HStack, VStack } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
@@ -20,9 +19,6 @@ export function SwapForm() {
     setSelectedChain,
     setTokenInAmount,
   } = useSwap()
-  const isMounted = useIsMounted()
-
-  const isLoadingSwaps = simulationQuery.isLoading
 
   return (
     <FadeInOnView>
@@ -43,15 +39,8 @@ export function SwapForm() {
           </CardHeader>
           <CardBody as={VStack} align="start">
             <VStack spacing="md" w="full">
-              <SafeAppAlert />
-              <ChainSelect
-                value={selectedChain}
-                onChange={newValue => {
-                  setSelectedChain(newValue as GqlChain)
-                  setTokenInAmount('')
-                }}
-              />
               <VStack w="full">
+                {selectedChain && <div>selectedChain {selectedChain}</div>}
                 {tokenIn && <div>tokenIn.address {tokenIn.address}</div>}
                 {tokenOut && <div>tokenOut.address {tokenOut.address}</div>}
               </VStack>
