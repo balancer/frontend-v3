@@ -7,7 +7,6 @@ import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { HumanAmount } from '@balancer/sdk'
 import {
-  Box,
   Button,
   Card,
   CardBody,
@@ -15,14 +14,12 @@ import {
   CardHeader,
   Center,
   HStack,
-  IconButton,
   Tooltip,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
 import { useRef } from 'react'
-import { Repeat } from 'react-feather'
 import { ChainSelect } from '../chains/ChainSelect'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { ConnectWallet } from '../web3/ConnectWallet'
@@ -43,7 +40,6 @@ export function SwapForm() {
     setTokenInAmount,
     setTokenOutAmount,
     setTokenSelectKey,
-    switchTokens,
   } = useSwap()
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
@@ -97,22 +93,6 @@ export function SwapForm() {
                   onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
                   toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
                 />
-                <Box position="relative" border="red 1px solid">
-                  <IconButton
-                    position="absolute"
-                    variant="tertiary"
-                    size="sm"
-                    fontSize="2xl"
-                    ml="-4"
-                    mt="-4"
-                    w="8"
-                    h="8"
-                    isRound={true}
-                    aria-label="Switch tokens"
-                    icon={<Repeat size={16} />}
-                    onClick={switchTokens}
-                  />
-                </Box>
                 <TokenInput
                   ref={finalRefTokenOut}
                   address={tokenOut.address}
