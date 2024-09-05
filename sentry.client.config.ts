@@ -75,17 +75,16 @@ Sentry.init({
       'swap',
     ]
     const criticalFlowPath = criticalFlowPaths.find(path => event.request?.url?.includes(path))
-    if (!criticalFlowPath) return handleNonFatalError(event)
+    if (!criticalFlowPath || isNonFatalError(event)) {
+      return handleNonFatalError(event)
+    }
     return handleFatalError(event, criticalFlowPath)
   },
 })
 
 function handleNonFatalError(event: Sentry.ErrorEvent): Sentry.ErrorEvent | null {
-  if (event?.exception?.values?.length) {
-    const firstValue = event.exception.values[0]
-    if (shouldIgnoreError(new Error(firstValue.value))) return null
-  }
-
+  const firstValue = getFirstExceptionValue(event)
+  if (firstValue && shouldIgnoreError(new Error(firstValue.value))) return null
   return event
 }
 
@@ -116,4 +115,18 @@ function uppercaseSegment(path: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join('')
+}
+
+// Detect errors that are not considered fatal even if they happen in a critical path
+function isNonFatalError(event: Sentry.ErrorEvent) {
+  const firstValue = getFirstExceptionValue(event)
+  if (firstValue?.value === 'Invalid swap: must contain at least 1 path.') return true
+
+  return false
+}
+
+function getFirstExceptionValue(event: Sentry.ErrorEvent) {
+  if (event?.exception?.values?.length) {
+    return event.exception.values[0]
+  }
 }
