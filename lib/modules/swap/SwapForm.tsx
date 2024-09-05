@@ -1,24 +1,13 @@
 'use client'
 
-import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Card, CardBody, CardHeader, Center, HStack, VStack } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
-import { ChainSelect } from '../chains/ChainSelect'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { useSwap } from './SwapProvider'
 
 export function SwapForm() {
-  const {
-    tokenIn,
-    tokenOut,
-    selectedChain,
-    simulationQuery,
-    swapAction,
-    setSelectedChain,
-    setTokenInAmount,
-  } = useSwap()
+  const { tokenIn, tokenOut, selectedChain, swapAction } = useSwap()
 
   return (
     <FadeInOnView>
