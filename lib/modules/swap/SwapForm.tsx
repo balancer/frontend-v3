@@ -21,8 +21,8 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
-import { useRef, useState } from 'react'
-import { CheckCircle, Link, Repeat } from 'react-feather'
+import { useRef } from 'react'
+import { Repeat } from 'react-feather'
 import { ChainSelect } from '../chains/ChainSelect'
 import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { ConnectWallet } from '../web3/ConnectWallet'
@@ -45,7 +45,6 @@ export function SwapForm() {
     setTokenSelectKey,
     switchTokens,
   } = useSwap()
-  const [copiedDeepLink, setCopiedDeepLink] = useState(false)
   const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
   const finalRefTokenIn = useRef(null)
@@ -56,12 +55,6 @@ export function SwapForm() {
   const isLoadingSwaps = simulationQuery.isLoading
   const isLoading = isLoadingSwaps || !isMounted
   const loadingText = isLoading ? 'Fetching swap...' : undefined
-
-  function copyDeepLink() {
-    navigator.clipboard.writeText(window.location.href)
-    setCopiedDeepLink(true)
-    setTimeout(() => setCopiedDeepLink(false), 2000)
-  }
 
   function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
     setTokenSelectKey(tokenSelectKey)
@@ -82,12 +75,6 @@ export function SwapForm() {
           <CardHeader as={HStack} w="full" justify="space-between" zIndex={11}>
             <span>{capitalize(swapAction)}</span>
             <HStack>
-              <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy swap link'}>
-                <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
-                  {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
-                </Button>
-              </Tooltip>
-
               <TransactionSettings size="sm" />
             </HStack>
           </CardHeader>
