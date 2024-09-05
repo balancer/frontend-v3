@@ -10,11 +10,10 @@ import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn } from '@/lib/shared/utils/numbers'
-import { ApolloClient, useApolloClient, useReactiveVar } from '@apollo/client'
-import { HumanAmount } from '@balancer/sdk'
+import { useReactiveVar } from '@apollo/client'
 import { useDisclosure } from '@chakra-ui/react'
 import { invert } from 'lodash'
-import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
+import { PropsWithChildren, createContext, useEffect, useState } from 'react'
 import { Address, Hash, isAddress, parseUnits } from 'viem'
 import { ChainSlug, slugToChainMap } from '../pool/pool.utils'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
@@ -22,18 +21,7 @@ import { useTokenInputsValidation } from '../tokens/TokenInputsValidationProvide
 import { useTokens } from '../tokens/TokensProvider'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { emptyAddress } from '../web3/contracts/wagmi-helpers'
-import { AuraBalSwapHandler } from './handlers/AuraBalSwap.handler'
-import { DefaultSwapHandler } from './handlers/DefaultSwap.handler'
-import { NativeWrapHandler } from './handlers/NativeWrap.handler'
-import { SwapHandler } from './handlers/Swap.handler'
-import { isAuraBalSwap } from './swap.helpers'
 import { SwapState } from './swap.types'
-import {
-  getWrapHandlerClass,
-  getWrapperForBaseToken,
-  isNativeWrap,
-  isSupportedWrap,
-} from './wrap.helpers'
 
 export type UseSwapResponse = ReturnType<typeof _useSwap>
 export const SwapContext = createContext<UseSwapResponse | null>(null)
@@ -68,20 +56,17 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   )
 
   const swapState = useReactiveVar(swapStateVar)
-  const [needsToAcceptHighPI, setNeedsToAcceptHighPI] = useState(false)
   const [tokenSelectKey, setTokenSelectKey] = useState<'tokenIn' | 'tokenOut'>('tokenIn')
   const [initUserChain, setInitUserChain] = useState<GqlChain | undefined>(undefined)
 
   const { isConnected } = useUserAccount()
   const { chain: walletChain } = useNetworkConfig()
-  const { getToken, getTokensByChain, usdValueForToken } = useTokens()
-  const { tokens, setTokens } = useTokenBalances()
+  const { getToken } = useTokens()
+  const { tokens } = useTokenBalances()
   const { hasValidationErrors } = useTokenInputsValidation()
 
   const networkConfig = getNetworkConfig(swapState.selectedChain)
   const previewModalDisclosure = useDisclosure()
-
-  const client = useApolloClient()
 
   const isTokenInSet = swapState.tokenIn.address !== emptyAddress
   const isTokenOutSet = swapState.tokenOut.address !== emptyAddress
@@ -218,24 +203,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     }
   }
 
-  function resetSwapAmounts() {
-    const state = swapStateVar()
-
-    swapStateVar({
-      ...state,
-      tokenIn: {
-        ...state.tokenIn,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-      tokenOut: {
-        ...state.tokenOut,
-        amount: '',
-        scaledAmount: BigInt(0),
-      },
-    })
-  }
-
   function setDefaultTokens() {
     swapStateVar(getDefaultTokenState(swapState.selectedChain))
   }
@@ -279,14 +246,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     setSelectedChain(_chain)
   }
 
-  function setInitialAmounts(slugAmountIn?: string, slugAmountOut?: string) {
-    if (slugAmountIn && !slugAmountOut && bn(slugAmountIn).gt(0)) {
-      setTokenInAmount(slugAmountIn as HumanAmount)
-    } else if (slugAmountOut && bn(slugAmountOut).gt(0)) {
-      setTokenOutAmount(slugAmountOut as HumanAmount)
-    } else resetSwapAmounts()
-  }
-
   // Set state on initial load
   useEffect(() => {
     if (urlTxHash) return
@@ -296,7 +255,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     setInitialChain(chain)
     setInitialTokenIn(tokenIn)
     setInitialTokenOut(tokenOut)
-    setInitialAmounts(amountIn, amountOut)
 
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
@@ -310,21 +268,9 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     }
   }, [walletChain])
 
-  // Check if tokenOut is a base wrap token and set tokenIn as the wrapped token.
-  useEffect(() => {
-    const wrapper = getWrapperForBaseToken(swapState.tokenOut.address, swapState.selectedChain)
-    if (wrapper) setTokenIn(wrapper.wrappedToken)
-  }, [swapState.tokenOut.address])
-
-  // Update selecteable tokens when the chain changes
-  useEffect(() => {
-    setTokens(getTokensByChain(swapState.selectedChain))
-  }, [swapState.selectedChain])
-
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [!validAmountOut, 'Invalid amount out'],
-    [needsToAcceptHighPI, 'Accept high price impact first'],
     [hasValidationErrors, 'Invalid input']
   )
 
@@ -337,7 +283,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     isDisabled,
     disabledReason,
     previewModalDisclosure,
-    resetSwapAmounts,
     setTokenSelectKey,
     setSelectedChain,
     setTokenInAmount,
@@ -345,7 +290,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     setTokenIn,
     setTokenOut,
     switchTokens,
-    setNeedsToAcceptHighPI,
   }
 }
 
