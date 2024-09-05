@@ -102,17 +102,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     })
   }
 
-  function switchTokens() {
-    setSwapState({
-      ...swapState,
-      tokenIn: swapState.tokenOut,
-      tokenOut: swapState.tokenIn,
-      swapType: GqlSorSwapType.ExactIn,
-    })
-    setTokenInAmount('', { userTriggered: false })
-    setTokenOutAmount('', { userTriggered: false })
-  }
-
   function setTokenInAmount(
     amount: string,
     { userTriggered = true }: { userTriggered?: boolean } = {}
@@ -233,7 +222,7 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
   useEffect(() => {
     if (urlTxHash) return
 
-    const { chain, tokenIn, tokenOut, amountIn, amountOut } = pathParams
+    const { chain, tokenIn, tokenOut } = pathParams
 
     setInitialChain(chain)
     setInitialTokenIn(tokenIn)
@@ -242,14 +231,14 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     if (!swapState.tokenIn.address && !swapState.tokenOut.address) setDefaultTokens()
   }, [])
 
-  // When wallet chain changes, update the swap form chain
-  useEffect(() => {
-    if (isConnected && initUserChain && walletChain !== swapState.selectedChain) {
-      setSelectedChain(walletChain)
-    } else if (isConnected) {
-      setInitUserChain(walletChain)
-    }
-  }, [walletChain])
+  // // When wallet chain changes, update the swap form chain
+  // useEffect(() => {
+  //   if (isConnected && initUserChain && walletChain !== swapState.selectedChain) {
+  //     setSelectedChain(walletChain)
+  //   } else if (isConnected) {
+  //     setInitUserChain(walletChain)
+  //   }
+  // }, [walletChain])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
@@ -272,7 +261,6 @@ export function _useSwap({ urlTxHash, ...pathParams }: PathParams) {
     setTokenOutAmount,
     setTokenIn,
     setTokenOut,
-    switchTokens,
   }
 }
 
