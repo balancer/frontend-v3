@@ -1,11 +1,9 @@
 'use client'
 
-import { TokenInput } from '@/lib/modules/tokens/TokenInput/TokenInput'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { HumanAmount } from '@balancer/sdk'
 import {
   Button,
   Card,
@@ -16,7 +14,6 @@ import {
   HStack,
   Tooltip,
   VStack,
-  useDisclosure,
 } from '@chakra-ui/react'
 import { capitalize } from 'lodash'
 import { useRef } from 'react'
@@ -38,24 +35,14 @@ export function SwapForm() {
     swapAction,
     setSelectedChain,
     setTokenInAmount,
-    setTokenOutAmount,
-    setTokenSelectKey,
   } = useSwap()
-  const tokenSelectDisclosure = useDisclosure()
   const nextBtn = useRef(null)
-  const finalRefTokenIn = useRef(null)
-  const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
   const { isConnected } = useUserAccount()
 
   const isLoadingSwaps = simulationQuery.isLoading
   const isLoading = isLoadingSwaps || !isMounted
   const loadingText = isLoading ? 'Fetching swap...' : undefined
-
-  function openTokenSelectModal(tokenSelectKey: 'tokenIn' | 'tokenOut') {
-    setTokenSelectKey(tokenSelectKey)
-    tokenSelectDisclosure.onOpen()
-  }
 
   return (
     <FadeInOnView>
@@ -85,27 +72,8 @@ export function SwapForm() {
                 }}
               />
               <VStack w="full">
-                <TokenInput
-                  ref={finalRefTokenIn}
-                  address={tokenIn.address}
-                  chain={selectedChain}
-                  value={tokenIn.amount}
-                  onChange={e => setTokenInAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenIn')}
-                />
-                <TokenInput
-                  ref={finalRefTokenOut}
-                  address={tokenOut.address}
-                  chain={selectedChain}
-                  value={tokenOut.amount}
-                  onChange={e => setTokenOutAmount(e.currentTarget.value as HumanAmount)}
-                  toggleTokenSelect={() => openTokenSelectModal('tokenOut')}
-                  hasPriceImpact
-                  disableBalanceValidation
-                  isLoadingPriceImpact={
-                    simulationQuery.isLoading || !simulationQuery.data || !tokenIn.amount
-                  }
-                />
+                {tokenIn && <div>tokenIn.address {tokenIn.address}</div>}
+                {tokenOut && <div>tokenOut.address {tokenOut.address}</div>}
               </VStack>
             </VStack>
           </CardBody>
