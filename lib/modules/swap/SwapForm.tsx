@@ -7,7 +7,7 @@ import { TransactionSettings } from '../user/settings/TransactionSettings'
 import { useSwap } from './SwapProvider'
 
 export function SwapForm() {
-  const { tokenIn, tokenOut, selectedChain, swapAction } = useSwap()
+  const { tokenIn, tokenOut, selectedChain } = useSwap()
 
   return (
     <FadeInOnView>
@@ -20,12 +20,6 @@ export function SwapForm() {
         left={['-12px', '0']}
       >
         <Card rounded="xl">
-          <CardHeader as={HStack} w="full" justify="space-between" zIndex={11}>
-            <span>{capitalize(swapAction)}</span>
-            <HStack>
-              <TransactionSettings size="sm" />
-            </HStack>
-          </CardHeader>
           <CardBody as={VStack} align="start">
             <VStack spacing="md" w="full">
               <VStack w="full">
