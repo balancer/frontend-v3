@@ -24,14 +24,14 @@ export function isWrappedNativeAsset(
 
 export function includesAddress(addresses: string[], address: string): boolean {
   if (!address) return false
-  addresses = addresses.map(a => (a ? a.toLowerCase() : ''))
-  return addresses.includes(address.toLowerCase())
+  const normalizedAddress = address.toLowerCase()
+  return addresses.some(addr => addr.toLowerCase() === normalizedAddress)
 }
 
 export function indexOfAddress(addresses: string[], address: string): number {
   if (!address) return -1
-  addresses = addresses.map(a => (a ? a.toLowerCase() : ''))
-  return addresses.indexOf(address.toLowerCase())
+  const normalizedAddress = address.toLowerCase()
+  return addresses.findIndex(addr => addr.toLowerCase() === normalizedAddress)
 }
 
 function containsAll(addresses1: string[], addresses2: string[]) {
