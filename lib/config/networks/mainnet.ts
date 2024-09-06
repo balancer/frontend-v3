@@ -80,6 +80,7 @@ const networkConfig: NetworkConfig = {
     feeDistributor: '0xD3cf852898b21fc233251427c2DC93d3d604F3BB',
     veDelegationProxy: '0x6f5a2eE11E7a772AeB5114A20d0D7c0ff61EB8A0',
     veBAL: '0xC128a9954e6c874eA3d62ce62B468bA073093F25',
+    omniVotingEscrow: '0x96484f2aBF5e58b15176dbF1A799627B53F13B6d',
   },
 
   pools: convertHexToLowerCase({
@@ -123,6 +124,7 @@ const networkConfig: NetworkConfig = {
         '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003cD',
       ],
     },
+    BoostsEnabled: true,
   }),
 } as const satisfies NetworkConfig
 

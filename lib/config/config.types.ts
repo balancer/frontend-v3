@@ -43,9 +43,12 @@ export interface ContractsConfig {
   feeDistributor?: Address
   veDelegationProxy?: Address
   veBAL?: Address
+  omniVotingEscrow?: Address
+  gaugeWorkingBalanceHelper?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
+  BoostsEnabled?: boolean
 }
 
 export interface BlockExplorerConfig {

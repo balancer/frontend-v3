@@ -1,6 +1,7 @@
 import { FeeDistributorStaticAbi } from './abi/FeeDistributorStaticAbi'
 import { LiquidityGaugeAbi } from './abi/LiquidityGaugeAbi'
 import { GaugeWorkingBalanceHelperAbi } from './abi/gaugeWorkingBalanceHelper'
+import { OmniVotingEscrowAbi } from './abi/OmniVotingEscrowAbi'
 import {
   balancerMinterAbi,
   balancerV2BalancerRelayerV6Abi,
@@ -24,6 +25,7 @@ export const AbiMap = {
   'balancer.veDelegationProxyL2': VeDelegationProxyL2Abi,
   'balancer.veBAL': veBalAbi,
   'balancer.LiquidityGauge': LiquidityGaugeAbi,
+  'balancer.omniVotingEscrowAbi': OmniVotingEscrowAbi,
 }
 
 export type AbiMapType = keyof typeof AbiMap | undefined
