@@ -18,6 +18,7 @@ export function useEstimateSendUserBalance(tokenAddress: Address, layerZeroChain
     args: [layerZeroChainId],
     account: userAddress,
     query: {
+      enabled: !!userAddress,
       select: _data => {
         const [nativeFee, zroFee] = _data
         return { nativeFee: bn(nativeFee), zroFee: bn(zroFee) }
