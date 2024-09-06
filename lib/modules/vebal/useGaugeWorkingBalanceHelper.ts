@@ -1,6 +1,7 @@
 import { useReadContract } from 'wagmi'
-import { GaugeWorkingBalanceHelperAbi } from '../web3/contracts/abi/gaugeWorkingBalanceHelper'
+import { GaugeWorkingBalanceHelperAbi } from '../web3/contracts/abi/GaugeWorkingBalanceHelperAbi'
 import { Address } from '@balancer/sdk'
+import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 export function useGaugeWorkingBalanceHelper(
   chainId: number,
@@ -8,6 +9,8 @@ export function useGaugeWorkingBalanceHelper(
   gauge: string,
   userAddress: string
 ) {
+  const { isConnected } = useUserAccount()
+
   const txQuery = useReadContract({
     chainId: chainId,
     address: contractAddress,
@@ -15,7 +18,7 @@ export function useGaugeWorkingBalanceHelper(
     functionName: 'getWorkingBalanceToSupplyRatios',
     args: [gauge, userAddress],
     query: {
-      enabled: true,
+      enabled: isConnected,
     },
   })
 

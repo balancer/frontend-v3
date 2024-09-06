@@ -1,6 +1,6 @@
 import { FeeDistributorStaticAbi } from './abi/FeeDistributorStaticAbi'
 import { LiquidityGaugeAbi } from './abi/LiquidityGaugeAbi'
-import { GaugeWorkingBalanceHelperAbi } from './abi/gaugeWorkingBalanceHelper'
+import { GaugeWorkingBalanceHelperAbi } from './abi/GaugeWorkingBalanceHelperAbi'
 import { OmniVotingEscrowAbi } from './abi/OmniVotingEscrowAbi'
 import {
   balancerMinterAbi,

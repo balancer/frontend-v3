@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query'
+import { sleep } from '@/lib/shared/utils/sleep'
 
 export interface OmniEscrowLock {
   id: string
@@ -20,6 +21,7 @@ export function useOmniEscrowLocksQuery(address: string) {
 
   const fetchOmniEscrowLocks = async (): Promise<OmniEscrowLockResponse> => {
     // Mocked data
+    await sleep(500)
     return {
       omniVotingEscrowLocks: [],
     }
