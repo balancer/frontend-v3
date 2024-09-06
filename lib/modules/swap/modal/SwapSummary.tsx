@@ -10,7 +10,7 @@ import { useUserAccount } from '../../web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { HumanAmount } from '@balancer/sdk'
 import { slippageDiffLabel } from '@/lib/shared/utils/slippage'
-import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
+import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
 
 export function SwapSummary({
@@ -62,7 +62,7 @@ export function SwapSummary({
   }
 
   return (
-    <AnimateHeightChange spacing="sm" w="full">
+    <AnimatedModalBody spacing="sm" w="full">
       {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={selectedChain} />}
 
       <Card variant="modalSubSection">
@@ -107,6 +107,6 @@ export function SwapSummary({
           </CardPopAnim>
         </>
       )}
-    </AnimateHeightChange>
+    </AnimatedModalBody>
   )
 }

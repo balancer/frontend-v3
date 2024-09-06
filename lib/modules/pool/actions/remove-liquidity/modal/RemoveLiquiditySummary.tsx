@@ -8,7 +8,7 @@ import { parseUnits } from 'viem'
 import { BptRow } from '@/lib/modules/tokens/TokenRow/BptRow'
 import { TokenRowGroup } from '@/lib/modules/tokens/TokenRow/TokenRowGroup'
 import { bn } from '@/lib/shared/utils/numbers'
-import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
+import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { RemoveLiquidityReceiptResult } from '@/lib/modules/transactions/transaction-steps/receipts/receipt.hooks'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
@@ -56,7 +56,7 @@ export function RemoveLiquiditySummary({
   }
 
   return (
-    <AnimateHeightChange spacing="sm">
+    <AnimatedModalBody spacing="sm">
       {isMobile && hasQuoteContext && (
         <MobileStepTracker transactionSteps={transactionSteps} chain={pool.chain} />
       )}
@@ -93,6 +93,6 @@ export function RemoveLiquiditySummary({
           </Card>
         </CardPopAnim>
       )}
-    </AnimateHeightChange>
+    </AnimatedModalBody>
   )
 }

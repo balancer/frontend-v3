@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { PropsWithChildren } from 'react'
 import useMeasure from 'react-use-measure'
 
-export function AnimateHeightChange({ children, ...rest }: PropsWithChildren & StackProps) {
+export function AnimatedModalBody({ children, ...rest }: PropsWithChildren & StackProps) {
   const [ref, { height }] = useMeasure()
 
   return (
