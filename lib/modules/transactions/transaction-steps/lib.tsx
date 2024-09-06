@@ -40,6 +40,7 @@ export type StepType =
   | 'unstake'
   | 'claim'
   | 'swap'
+  | 'crossChainSync'
   | LockActionType
 
 export type TxActionId =
@@ -73,6 +74,7 @@ export type TransactionStep = {
   labels: TransactionLabels
   isComplete: () => boolean
   renderAction: () => React.ReactNode
+  renderContent?: () => React.ReactNode
   // All callbacks should be idempotent
   onSuccess?: () => void
   onActivated?: () => void
