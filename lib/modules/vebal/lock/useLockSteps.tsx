@@ -33,7 +33,7 @@ export function useLockSteps({ lockAmount, lockEndDate, lockActionType }: UseCre
   const amount = lockAmount.rawAmount.toString()
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: mainnetNetworkConfig.contracts.veBAL,
+      spenderAddress: mainnetNetworkConfig.contracts.veBAL!,
       chain: mainnetNetworkConfig.chain,
       approvalAmounts: [lockAmount],
       actionType: 'Locking',
@@ -80,7 +80,7 @@ export function useLockSteps({ lockAmount, lockEndDate, lockActionType }: UseCre
       labels,
       chainId: mainnetNetworkConfig.chainId,
       contractId: 'balancer.veBAL',
-      contractAddress: mainnetNetworkConfig.contracts.veBAL,
+      contractAddress: mainnetNetworkConfig.contracts.veBAL!,
       functionName: getLockContractFunctionName(lockActionType),
       args: getArgs() as any,
       txSimulationMeta,
