@@ -57,7 +57,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const chain = pool.chain
   const nativeAsset = getNativeAssetToken(chain)
   const wNativeAsset = getWrappedNativeAssetToken(chain)
-  const includesWrappedNativeAsset: boolean = pool.poolTokens.some(token =>
+  const includesWrappedNativeAsset: boolean = getPoolTokens().some(token =>
     isWrappedNativeAsset(token.address as Address, chain)
   )
 

@@ -14,17 +14,16 @@ import {
 import { usePool } from '../PoolProvider'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolEventsQuery, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
-import { PoolEventItem, usePoolEvents } from '../usePoolEvents'
+import { PoolEventItem } from '../usePoolEvents'
 import { calcTotalStakedBalance, getUserTotalBalance } from '../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
 import { isEmpty } from 'lodash'
-import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isVebalPool } from '../pool.helpers'
 
 type PoolEventRowProps = {
@@ -106,19 +105,19 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 }
 
-export default function PoolUserEvents() {
+export default function PoolUserEvents({
+  userPoolEvents,
+  isLoading,
+}: {
+  userPoolEvents: GetPoolEventsQuery['poolEvents'] | undefined
+  isLoading: boolean
+}) {
   const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
   const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
   const { veBalBoostMap } = useVebalBoost([pool])
-  const { userAddress } = useUserAccount()
-  const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
-    chainIn: [chain],
-    poolIdIn: [pool.id],
-    userAddress,
-  })
 
   const isVeBal = isVebalPool(pool.id)
   const showBoostValue = !isVeBal
@@ -132,10 +131,10 @@ export default function PoolUserEvents() {
   }, [])
 
   useEffect(() => {
-    if (!isLoading && userPoolEventsData?.poolEvents.length) {
-      setPoolEvents(userPoolEventsData.poolEvents)
+    if (!isLoading && userPoolEvents?.length) {
+      setPoolEvents(userPoolEvents)
     }
-  }, [userPoolEventsData, isLoading])
+  }, [userPoolEvents, isLoading])
 
   function getShareTitle() {
     if (isVeBal) {

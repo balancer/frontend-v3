@@ -6,6 +6,8 @@ import { FilterTags, PoolListFilters, useFilterTagsVisible } from './PoolListFil
 import { PoolListTable } from './PoolListTable/PoolListTable'
 import { usePoolList } from './PoolListProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
+import { ErrorBoundary } from 'react-error-boundary'
+import { BoundaryError } from '@/lib/shared/components/errors/ErrorBoundary'
 
 export function PoolListLayout() {
   const { pools, loading, count } = usePoolList()
@@ -65,7 +67,9 @@ export function PoolListLayout() {
           <PoolListFilters />
         </Stack>
       </Stack>
-      <PoolListTable pools={pools} count={count || 0} loading={loading} />
+      <ErrorBoundary FallbackComponent={BoundaryError}>
+        <PoolListTable pools={pools} count={count || 0} loading={loading} />
+      </ErrorBoundary>
     </VStack>
   )
 }

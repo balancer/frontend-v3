@@ -12,7 +12,7 @@ import { useRouter } from 'next/navigation'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { useHasMerklRewards } from '../../merkl/useHasMerklRewards'
 import { MerklAlert } from '../../merkl/MerklAlert'
-import { motion } from 'framer-motion'
+import { motion, easeOut } from 'framer-motion'
 
 export function ClaimNetworkPools() {
   const {
@@ -62,28 +62,33 @@ export function ClaimNetworkPools() {
               </Center>
             )}
             <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
-              {poolsWithChain.map(([chain, pools], index) => (
-                <motion.div
-                  key={chain}
-                  initial={{ opacity: 0, translateX: 5 }}
-                  animate={{ opacity: 1, translateX: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.2 }}
-                >
-                  <ClaimNetworkBlock
-                    chain={pools[0].chain}
-                    networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
-                      pools[0].chain
-                    ].toNumber()}
-                    onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
-                  />
-                </motion.div>
-              ))}
+              {poolsWithChain.map(
+                ([chain, pools], index) =>
+                  pools[0] && (
+                    <motion.div
+                      key={chain}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
+                      style={{ transformOrigin: 'top' }}
+                    >
+                      <ClaimNetworkBlock
+                        chain={pools[0].chain}
+                        networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
+                          pools[0].chain
+                        ].toNumber()}
+                        onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
+                      />
+                    </motion.div>
+                  )
+              )}
 
               {hasProtocolRewards && (
                 <motion.div
-                  initial={{ opacity: 0, translateX: 5 }}
-                  animate={{ opacity: 1, translateX: 0 }}
-                  transition={{ duration: 0.5, delay: poolsWithChain.length * 0.2 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: poolsWithChain.length * 0.12, ease: easeOut }}
+                  style={{ transformOrigin: 'top' }}
                 >
                   <ClaimNetworkBlock
                     chain={GqlChain.Mainnet}

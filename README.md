@@ -35,12 +35,9 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 See [TESTING.md](./test/TESTING.md).
 
-## Environment variables
+## Developing in Windows
 
-This project uses [cross-env](https://www.npmjs.com/package/cross-env) to provide environment
-variables with command line.
+To develop in Windows you need to use WSL2. Learn more about it
+[here](https://learn.microsoft.com/en-us/windows/wsl/about).
 
-```bash
-# Works well on windows/posix systems
-$ cross-env PROTOCOL=bal pnpm dev
-```
+With WSL2 all environment variables will be correctly set without having to use `cross-env`.

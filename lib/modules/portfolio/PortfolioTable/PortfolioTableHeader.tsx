@@ -50,7 +50,7 @@ export function PortfolioTableHeader({ currentSortingObj, setCurrentSortingObj, 
               setCurrentSortingObj({ id: orderByItem.id, desc: false })
             }
           }}
-          align="right"
+          align={index === 0 ? 'left' : 'right'}
         />
       ))}
     </Grid>

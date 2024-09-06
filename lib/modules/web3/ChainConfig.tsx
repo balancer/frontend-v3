@@ -19,6 +19,7 @@ import {
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
+import { getBaseUrl } from '@/lib/shared/utils/urls'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
@@ -38,19 +39,22 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
 }
 
+const baseUrl = getBaseUrl()
+const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
+
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: `/api/rpc/${GqlChain.Mainnet}`,
-  [GqlChain.Arbitrum]: `/api/rpc/${GqlChain.Arbitrum}`,
-  [GqlChain.Base]: `/api/rpc/${GqlChain.Base}`,
-  [GqlChain.Avalanche]: `/api/rpc/${GqlChain.Avalanche}`,
-  [GqlChain.Fantom]: `/api/rpc/${GqlChain.Fantom}`,
-  [GqlChain.Gnosis]: `/api/rpc/${GqlChain.Gnosis}`,
-  [GqlChain.Optimism]: `/api/rpc/${GqlChain.Optimism}`,
-  [GqlChain.Polygon]: `/api/rpc/${GqlChain.Polygon}`,
-  [GqlChain.Zkevm]: `/api/rpc/${GqlChain.Zkevm}`,
-  [GqlChain.Sepolia]: `/api/rpc/${GqlChain.Sepolia}`,
+  [GqlChain.Mainnet]: getPrivateRpcUrl(GqlChain.Mainnet),
+  [GqlChain.Arbitrum]: getPrivateRpcUrl(GqlChain.Arbitrum),
+  [GqlChain.Base]: getPrivateRpcUrl(GqlChain.Base),
+  [GqlChain.Avalanche]: getPrivateRpcUrl(GqlChain.Avalanche),
+  [GqlChain.Fantom]: getPrivateRpcUrl(GqlChain.Fantom),
+  [GqlChain.Gnosis]: getPrivateRpcUrl(GqlChain.Gnosis),
+  [GqlChain.Optimism]: getPrivateRpcUrl(GqlChain.Optimism),
+  [GqlChain.Polygon]: getPrivateRpcUrl(GqlChain.Polygon),
+  [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
+  [GqlChain.Sepolia]: getPrivateRpcUrl(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: `/api/rpc/${GqlChain.Fraxtal}`,
+  [GqlChain.Fraxtal]: getPrivateRpcUrl(GqlChain.Fraxtal),
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }

@@ -101,13 +101,14 @@ export function parseSwapReceipt({
   const outgoingData = getOutgoingLogs(receiptLogs, userAddress)[0]
   const sentTokenValue = outgoingData?.args?.value || 0n
   const sentTokenAddress = outgoingData?.address
-  const sentToken = getToken(sentTokenAddress, chain)
+  const sentToken = sentTokenAddress ? getToken(sentTokenAddress, chain) : undefined
 
-  const sentHumanAmountWithAddress: HumanTokenAmountWithAddress = bn(sentTokenValue).gt(0)
-    ? _toHumanAmountWithAddress(sentTokenAddress, outgoingData?.args?.value, sentToken?.decimals)
-    : bn(nativeAssetSent).gt(0)
-    ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18)
-    : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
+  const sentHumanAmountWithAddress: HumanTokenAmountWithAddress =
+    bn(sentTokenValue).gt(0) && sentTokenAddress
+      ? _toHumanAmountWithAddress(sentTokenAddress, outgoingData?.args?.value, sentToken?.decimals)
+      : bn(nativeAssetSent).gt(0)
+      ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetSent, 18)
+      : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
 
   /**
    * GET RECEIVED AMOUNT
@@ -118,13 +119,14 @@ export function parseSwapReceipt({
   const incomingData = getIncomingLogs(receiptLogs, userAddress)[0]
   const receivedTokenValue = incomingData?.args?.value || 0n
   const receivedTokenAddress = incomingData?.address
-  const receivedToken = getToken(receivedTokenAddress, chain)
+  const receivedToken = receivedTokenAddress ? getToken(receivedTokenAddress, chain) : undefined
 
-  const receivedHumanAmountWithAddress = bn(receivedTokenValue).gt(0)
-    ? _toHumanAmountWithAddress(receivedTokenAddress, receivedTokenValue, receivedToken?.decimals)
-    : bn(nativeAssetReceived).gt(0)
-    ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetReceived, 18)
-    : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
+  const receivedHumanAmountWithAddress =
+    bn(receivedTokenValue).gt(0) && receivedTokenAddress
+      ? _toHumanAmountWithAddress(receivedTokenAddress, receivedTokenValue, receivedToken?.decimals)
+      : bn(nativeAssetReceived).gt(0)
+      ? _toHumanAmountWithAddress(getNativeAssetAddress(chain), nativeAssetReceived, 18)
+      : { tokenAddress: emptyAddress, humanAmount: '0' as HumanAmount }
 
   return {
     sentToken: sentHumanAmountWithAddress,

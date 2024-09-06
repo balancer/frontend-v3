@@ -18,7 +18,7 @@ export function PoolName({ pool, MemoizedMainAprTooltip, isCarousel, ...rest }: 
   const displayTokens = pool.displayTokens
 
   return (
-    <HStack alignItems="center" justify="center" wrap="wrap" gap="xxs" px="sm">
+    <HStack alignItems="center" justify="start" wrap="wrap" gap="xxs" px="sm">
       {displayTokens.map((token, idx) => {
         return (
           <HStack key={token.address} alignItems="center" justify="center" gap="xxs">

@@ -9,8 +9,8 @@ export type ButtonGroupOption = {
 }
 
 type Props = {
-  currentOption: ButtonGroupOption
-  options: ButtonGroupOption[]
+  currentOption?: ButtonGroupOption
+  options: Readonly<ButtonGroupOption[]>
   onChange: (option: ButtonGroupOption) => void
   size?: ButtonProps['size']
   width?: string
@@ -29,7 +29,7 @@ export default function ButtonGroup({
     <LayoutGroup id={groupId}>
       <HStack rounded="md" p="1" spacing="1" background="level0" shadow="innerXl">
         {options.map(option => {
-          const isActive = currentOption.value === option.value
+          const isActive = currentOption?.value === option.value
           return (
             <Button
               onClick={() => onChange(option)}
