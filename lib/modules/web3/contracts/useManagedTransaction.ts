@@ -1,20 +1,26 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { getGqlChain } from '@/lib/config/app.config'
+import { getGqlChain, isDev } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
-import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
+import { Abi, Address, ContractFunctionArgs, ContractFunctionName, Hash } from 'viem'
 import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
 import { AbiMap } from './AbiMap'
-import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
+import {
+  TransactionConfig,
+  TransactionExecution,
+  TransactionSimulation,
+  WriteAbiMutability,
+} from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useTxHash } from '../safe.hooks'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { useMockedTxHash } from '@/lib/modules/web3/contracts/useMockedTxHash'
 
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
@@ -28,6 +34,7 @@ export interface ManagedTransactionInput {
   args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
   txSimulationMeta?: Record<string, unknown>
   enabled: boolean
+  txConfig?: Partial<TransactionConfig>
 }
 
 export function useManagedTransaction({
@@ -39,6 +46,7 @@ export function useManagedTransaction({
   args,
   txSimulationMeta,
   enabled = true,
+  txConfig,
 }: ManagedTransactionInput) {
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
@@ -50,15 +58,22 @@ export function useManagedTransaction({
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: args as any,
     chainId,
+    ...txConfig,
     query: {
       enabled: enabled && !shouldChangeNetwork,
       meta: txSimulationMeta,
     },
   })
 
+  // dev only
+  const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
+
   const writeQuery = useWriteContract()
 
-  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+  const { txHash, isSafeTxLoading } = useTxHash({
+    chainId,
+    wagmiTxHash: mockedTxHash ?? writeQuery.data,
+  })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
@@ -91,6 +106,12 @@ export function useManagedTransaction({
 
   const managedWriteAsync = async () => {
     if (!simulateQuery.data) return
+
+    if (isDev) {
+      const txHash = setMockedTxHash()
+      if (txHash) return
+    }
+
     try {
       await writeQuery.writeContractAsync({
         ...simulateQuery.data.request,
