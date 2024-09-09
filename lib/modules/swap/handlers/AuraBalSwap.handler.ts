@@ -14,6 +14,8 @@ import { isNativeAsset, isSameAddress } from '@/lib/shared/utils/addresses'
 import { bn } from '@/lib/shared/utils/numbers'
 
 export class AuraBalSwapHandler implements SwapHandler {
+  name = 'AuraBalSwapHandler'
+
   constructor(public tokens: GqlToken[]) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<AuraBalSimulateSwapResponse> {
