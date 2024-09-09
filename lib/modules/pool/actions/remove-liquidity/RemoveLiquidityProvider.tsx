@@ -15,10 +15,10 @@ import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHa
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
-import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
+import { emptyTokenAmounts, supportsNestedActions, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { isComposableStable, isCowAmmPool } from '../../pool.helpers'
-import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { isCowAmmPool } from '../../pool.helpers'
+import { getLeafTokens, isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -76,7 +76,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   function getPoolTokens() {
     // TODO add exception for composable pools where we can allow adding
     // liquidity with nested tokens
-    if (isComposableStable(pool.type)) return pool.poolTokens
+    if (supportsNestedActions(pool)) return getLeafTokens(pool.poolTokens)
 
     return pool.poolTokens
   }
