@@ -82,7 +82,7 @@ export function FeaturedPools({
             fontSize="11px"
             position="relative"
           >
-            Featured pools
+            More pools for you
           </Text>
         </Box>
         <HStack w="full" pt="2" gap="md">

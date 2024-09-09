@@ -48,13 +48,13 @@ export default async function PoolsPage() {
 
         <FadeInOnView animateOnce={false}>
           <Box pt="20">
-            <FeaturedPools featuredPools={featuredPools} />
+            <CowPromoBanner />
           </Box>
         </FadeInOnView>
 
         <FadeInOnView animateOnce={false}>
           <Box pt="20" pb="4">
-            <CowPromoBanner />
+            <FeaturedPools featuredPools={featuredPools} />
           </Box>
         </FadeInOnView>
       </DefaultPageContainer>
