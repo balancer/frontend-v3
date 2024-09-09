@@ -2,7 +2,16 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { HStack, VStack, Text, Tooltip, Box } from '@chakra-ui/react'
+import {
+  HStack,
+  VStack,
+  Text,
+  Tooltip,
+  Box,
+  useDisclosure,
+  Button,
+  UseDisclosureProps,
+} from '@chakra-ui/react'
 import { useSwap } from './SwapProvider'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/UserSettingsProvider'
@@ -13,8 +22,9 @@ import { useTokens } from '../tokens/TokensProvider'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import pluralize from 'pluralize'
+import { SwapRoutesModal } from './modal/SwapRoutesModal'
 
-export function OrderRoute() {
+export function OrderRoute({ swapRoutesDisclosure }: { swapRoutesDisclosure: UseDisclosureProps }) {
   const { simulationQuery } = useSwap()
 
   const queryData = simulationQuery.data as SdkSimulateSwapResponse
@@ -22,17 +32,20 @@ export function OrderRoute() {
   const hopCount = queryData.routes[0]?.hops?.length ?? 0
 
   return (
-    <HStack justify="space-between" w="full">
-      <Text color="grayText">Order route</Text>
-      <HStack>
-        <Text color="grayText">
-          BV{orderRouteVersion}: {hopCount} {pluralize('hop', hopCount)}
-        </Text>
-        <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
-          <InfoIcon />
-        </Tooltip>
+    <>
+      <HStack justify="space-between" w="full">
+        <Text color="grayText">Order route</Text>
+        <HStack>
+          <Text color="grayText">
+            BV{orderRouteVersion}: {hopCount} {pluralize('hop', hopCount)}
+          </Text>
+          <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
+            <InfoIcon />
+          </Tooltip>
+        </HStack>
       </HStack>
-    </HStack>
+      <Button onClick={swapRoutesDisclosure.onOpen}>View route</Button>
+    </>
   )
 }
 
@@ -41,8 +54,8 @@ export function SwapDetails() {
   const { slippage, slippageDecimal } = useUserSettings()
   const { usdValueForToken } = useTokens()
   const { tokenInInfo, tokenOutInfo, swapType, tokenIn, tokenOut, handler } = useSwap()
-
   const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
+  const swapRoutesDisclosure = useDisclosure()
 
   const isDefaultSwap = handler instanceof DefaultSwapHandler
   const isNativeWrapOrUnwrap = handler instanceof NativeWrapHandler
@@ -79,56 +92,61 @@ export function SwapDetails() {
         You can change your slippage tolerance in your settings.`
 
   return (
-    <VStack spacing="sm" align="start" w="full" fontSize="sm">
-      <HStack justify="space-between" w="full">
-        <Text color={priceImpactColor}>Price impact</Text>
-        <HStack>
-          {priceImpactLevel === 'unknown' ? (
-            <Text>Unknown</Text>
-          ) : (
-            <NumberText color={priceImpactColor}>
-              -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
-            </NumberText>
-          )}
-          <Tooltip
-            // eslint-disable-next-line max-len
-            label="This is the negative price impact of the swap based on the current market prices of the token in vs token out."
-            fontSize="sm"
-          >
-            {priceImpactLevel === 'low' ? (
-              <InfoIcon />
+    <>
+      <VStack spacing="sm" align="start" w="full" fontSize="sm">
+        <HStack justify="space-between" w="full">
+          <Text color={priceImpactColor}>Price impact</Text>
+          <HStack>
+            {priceImpactLevel === 'unknown' ? (
+              <Text>Unknown</Text>
             ) : (
-              <Box>
-                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
-              </Box>
+              <NumberText color={priceImpactColor}>
+                -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
+              </NumberText>
             )}
-          </Tooltip>
+            <Tooltip
+              // eslint-disable-next-line max-len
+              label="This is the negative price impact of the swap based on the current market prices of the token in vs token out."
+              fontSize="sm"
+            >
+              {priceImpactLevel === 'low' ? (
+                <InfoIcon />
+              ) : (
+                <Box>
+                  <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+                </Box>
+              )}
+            </Tooltip>
+          </HStack>
         </HStack>
-      </HStack>
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">Max slippage</Text>
-        <HStack>
-          <NumberText color="grayText">
-            -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
-          </NumberText>
-          <Tooltip label={slippageLabel} fontSize="sm">
-            <InfoIcon />
-          </Tooltip>
+        <HStack justify="space-between" w="full">
+          <Text color="grayText">Max slippage</Text>
+          <HStack>
+            <NumberText color="grayText">
+              -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
+            </NumberText>
+            <Tooltip label={slippageLabel} fontSize="sm">
+              <InfoIcon />
+            </Tooltip>
+          </HStack>
         </HStack>
-      </HStack>
-      <HStack justify="space-between" w="full">
-        <Text color="grayText">{limitLabel}</Text>
-        <HStack>
-          <NumberText color="grayText">
-            {fNum('token', limitValue, { abbreviated: false })} {limitToken?.symbol}
-          </NumberText>
-          <Tooltip label={limitTooltip} fontSize="sm">
-            <InfoIcon />
-          </Tooltip>
+        <HStack justify="space-between" w="full">
+          <Text color="grayText">{limitLabel}</Text>
+          <HStack>
+            <NumberText color="grayText">
+              {fNum('token', limitValue, { abbreviated: false })} {limitToken?.symbol}
+            </NumberText>
+            <Tooltip label={limitTooltip} fontSize="sm">
+              <InfoIcon />
+            </Tooltip>
+          </HStack>
         </HStack>
-      </HStack>
-
-      {isDefaultSwap && <OrderRoute />}
-    </VStack>
+        {isDefaultSwap && <OrderRoute swapRoutesDisclosure={swapRoutesDisclosure} />}
+      </VStack>
+      <SwapRoutesModal
+        isOpen={swapRoutesDisclosure.isOpen}
+        onClose={swapRoutesDisclosure.onClose}
+      />
+    </>
   )
 }
