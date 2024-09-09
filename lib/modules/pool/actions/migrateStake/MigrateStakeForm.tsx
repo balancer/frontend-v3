@@ -7,7 +7,6 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
-  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react'
 import { useRef } from 'react'
@@ -16,6 +15,7 @@ import { MigrateStakePreview } from './MigrateStakePreview'
 import { MigrateStakeModal } from './MigrateStakeModal'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 import { migrateStakeTooltipLabel } from '../stake.helpers'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function MigrateStakeForm() {
   const nextBtn = useRef(null)
@@ -28,16 +28,16 @@ export function MigrateStakeForm() {
       <Card>
         <CardHeader isTruncated>
           Migrate to new staking gauge{' '}
-          <Tooltip label={migrateStakeTooltipLabel}>
+          <BalTooltip label={migrateStakeTooltipLabel}>
             <InfoOutlineIcon fontSize="sm" color="grayText" />
-          </Tooltip>
+          </BalTooltip>
         </CardHeader>
 
         <CardBody>
           <MigrateStakePreview />
         </CardBody>
         <CardFooter>
-          <Tooltip label={isDisabled ? disabledReason : ''}>
+          <BalTooltip label={isDisabled ? disabledReason : ''}>
             <Button
               ref={nextBtn}
               variant="secondary"
@@ -49,7 +49,7 @@ export function MigrateStakeForm() {
             >
               Next
             </Button>
-          </Tooltip>
+          </BalTooltip>
         </CardFooter>
       </Card>
       <MigrateStakeModal

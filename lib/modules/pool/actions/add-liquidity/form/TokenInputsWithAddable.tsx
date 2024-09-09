@@ -2,7 +2,7 @@
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { Card, HStack, Spacer, VStack, Text, Box, Tooltip } from '@chakra-ui/react'
+import { Card, HStack, Spacer, VStack, Text, Box } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { XOctagon } from 'react-feather'
 import { useAddLiquidity } from '../AddLiquidityProvider'
@@ -12,6 +12,7 @@ import { useMaximumInputs } from './useMaximumInputs'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { hasNoLiquidity } from '../../LiquidityActionHelpers'
 import { usePool } from '../../../PoolProvider'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -136,7 +137,7 @@ export function TokenInputsWithAddable({
               </>
             )}
             {!canMaximize && (
-              <Tooltip
+              <BalTooltip
                 label={
                   requiresProportionalInput
                     ? 'For pools that require proportional liquidity, you need a balance above zero for every token in order to add any liquidity.'
@@ -151,7 +152,7 @@ export function TokenInputsWithAddable({
                     <XOctagon size={14} />
                   </Box>
                 </HStack>
-              </Tooltip>
+              </BalTooltip>
             )}
           </HStack>
         </Card>

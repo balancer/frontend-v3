@@ -12,7 +12,6 @@ import {
   HStack,
   Skeleton,
   Text,
-  Tooltip,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react'
@@ -47,6 +46,7 @@ import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/pric
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -231,7 +231,7 @@ function AddLiquidityMainForm() {
             ></GenericError>
           )}
           {isConnected ? (
-            <Tooltip label={isDisabled ? disabledReason : ''}>
+            <BalTooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
@@ -243,7 +243,7 @@ function AddLiquidityMainForm() {
               >
                 Next
               </Button>
-            </Tooltip>
+            </BalTooltip>
           ) : (
             <ConnectWallet variant="primary" w="full" size="lg" />
           )}

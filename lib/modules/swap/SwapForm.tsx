@@ -8,7 +8,6 @@ import {
   Center,
   HStack,
   VStack,
-  Tooltip,
   useDisclosure,
   IconButton,
   Button,
@@ -37,6 +36,7 @@ import { parseSwapError } from './swap.helpers'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { ConnectWallet } from '../web3/ConnectWallet'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function SwapForm() {
   const {
@@ -120,11 +120,11 @@ export function SwapForm() {
           <CardHeader as={HStack} w="full" justify="space-between" zIndex={11}>
             <span>{capitalize(swapAction)}</span>
             <HStack>
-              <Tooltip label={copiedDeepLink ? 'Copied!' : 'Copy swap link'}>
+              <BalTooltip label={copiedDeepLink ? 'Copied!' : 'Copy swap link'}>
                 <Button variant="tertiary" size="sm" color="grayText" onClick={copyDeepLink}>
                   {copiedDeepLink ? <CheckCircle size={16} /> : <Link size={16} />}
                 </Button>
-              </Tooltip>
+              </BalTooltip>
 
               <TransactionSettings size="sm" />
             </HStack>
@@ -203,7 +203,7 @@ export function SwapForm() {
           </CardBody>
           <CardFooter>
             {isConnected ? (
-              <Tooltip label={isDisabled ? disabledReason : ''}>
+              <BalTooltip label={isDisabled ? disabledReason : ''}>
                 <Button
                   ref={nextBtn}
                   variant="secondary"
@@ -216,7 +216,7 @@ export function SwapForm() {
                 >
                   Next
                 </Button>
-              </Tooltip>
+              </BalTooltip>
             ) : (
               <ConnectWallet
                 variant="primary"

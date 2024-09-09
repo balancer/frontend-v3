@@ -1,6 +1,6 @@
 'use client'
 
-import { Badge, Flex, HStack, Text, Tooltip } from '@chakra-ui/react'
+import { Badge, Flex, HStack, Text } from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
 import Image from 'next/image'
 import { fNum } from '@/lib/shared/utils/numbers'
@@ -8,6 +8,7 @@ import { Repeat } from 'react-feather'
 import { PoolListTokenPills } from '../../PoolList/PoolListTokenPills'
 import { shouldHideSwapFee } from '../../pool.utils'
 import { getChainShortName } from '@/lib/config/app.config'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export default function PoolMetaBadges() {
   const { pool, chain } = usePool()
@@ -33,7 +34,7 @@ export default function PoolMetaBadges() {
       </Badge>
       <PoolListTokenPills pool={pool} py="2" px="sm" />
       {!shouldHideSwapFee(pool.type) && (
-        <Tooltip label="Swap fee">
+        <BalTooltip label="Swap fee">
           <Badge
             fontWeight="normal"
             py="xs"
@@ -52,7 +53,7 @@ export default function PoolMetaBadges() {
               <Text fontSize="sm">{fNum('feePercent', pool.dynamicData.swapFee)}</Text>
             </HStack>
           </Badge>
-        </Tooltip>
+        </BalTooltip>
       )}
     </Flex>
   )

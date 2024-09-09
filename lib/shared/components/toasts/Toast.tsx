@@ -11,11 +11,11 @@ import {
   HStack,
   CircularProgressLabel,
   Text,
-  Tooltip,
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useRef } from 'react'
 import { ArrowUpRight, Check, X } from 'react-feather'
+import BalTooltip from '../tooltips/BalTooltip'
 
 type Props = ToastProps & {
   linkUrl?: string
@@ -76,7 +76,7 @@ export function Toast({ id, status, isClosable, title, description, linkUrl }: P
         {linkUrl && (
           <>
             <div ref={ref} />
-            <Tooltip label="View on explorer" portalProps={{ containerRef: ref }}>
+            <BalTooltip label="View on explorer" portalProps={{ containerRef: ref }}>
               <IconButton
                 as={Link}
                 href={linkUrl}
@@ -90,7 +90,7 @@ export function Toast({ id, status, isClosable, title, description, linkUrl }: P
                 h="6"
                 icon={<ArrowUpRight size={12} strokeWidth={3} />}
               />
-            </Tooltip>
+            </BalTooltip>
           </>
         )}
 

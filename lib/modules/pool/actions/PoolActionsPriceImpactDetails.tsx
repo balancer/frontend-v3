@@ -1,6 +1,6 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
-import { HStack, VStack, Text, Tooltip, Icon, Box, Skeleton } from '@chakra-ui/react'
+import { HStack, VStack, Text, Icon, Box, Skeleton } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -9,6 +9,7 @@ import { ArrowRight } from 'react-feather'
 import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
 import { isNumber } from 'lodash'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -55,7 +56,7 @@ export function PoolActionsPriceImpactDetails({
               {toCurrency(priceImpactUsd, { abbreviated: false })} ({priceImpactLabel})
             </NumberText>
           )}
-          <Tooltip
+          <BalTooltip
             label="In general, adding or removing liquidity in proportional amounts to the token weights
                 of the pool incur low price impact. Adding custom token amounts (non-proportionally)
                 causes the internal prices of the pool to change, as if you were swapping tokens, which 
@@ -69,7 +70,7 @@ export function PoolActionsPriceImpactDetails({
                 <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
               </Box>
             )}
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -82,14 +83,14 @@ export function PoolActionsPriceImpactDetails({
               {toCurrency(maxSlippageUsd, { abbreviated: false })} ({fNum('slippage', slippage)})
             </NumberText>
           )}
-          <Tooltip
+          <BalTooltip
             label="Slippage occurs when market conditions change between the time your order is
                 submitted and the time it gets executed on-chain. Slippage tolerance is the
                 maximum change in price you are willing to accept."
             fontSize="sm"
           >
             <InfoIcon />
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -106,12 +107,12 @@ export function PoolActionsPriceImpactDetails({
               </>
             )}
           </HStack>
-          <Tooltip
+          <BalTooltip
             label="The percentage of the pool that you will own after this transaction."
             fontSize="sm"
           >
             <InfoIcon />
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
     </VStack>

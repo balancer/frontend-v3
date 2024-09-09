@@ -1,7 +1,8 @@
 'use client'
 
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 import { CheckCircleIcon, CopyIcon } from '@chakra-ui/icons'
-import { IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react'
+import { IconButton, IconButtonProps } from '@chakra-ui/react'
 import { useState } from 'react'
 
 export function CopyTokenAddressButton({
@@ -17,7 +18,7 @@ export function CopyTokenAddressButton({
   }
 
   return (
-    <Tooltip label="Copy token address">
+    <BalTooltip label="Copy token address">
       <IconButton
         size="xs"
         isRound
@@ -29,6 +30,6 @@ export function CopyTokenAddressButton({
         onClick={copyToClipboard}
         {...rest}
       />
-    </Tooltip>
+    </BalTooltip>
   )
 }

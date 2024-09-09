@@ -11,7 +11,6 @@ import {
   PopoverContent,
   PopoverTrigger,
   Text,
-  Tooltip,
   VStack,
   Center,
   CircularProgress,
@@ -28,6 +27,7 @@ import { useBlockExplorer } from '../../hooks/useBlockExplorer'
 import { Activity, ArrowUpRight, Check, Clock, X, XOctagon } from 'react-feather'
 import { getChainShortName } from '@/lib/config/app.config'
 import { formatDistanceToNow } from 'date-fns'
+import BalTooltip from '../tooltips/BalTooltip'
 
 function TransactionIcon({ status }: { status: TransactionStatus }) {
   switch (status) {
@@ -85,11 +85,11 @@ function TransactionRow({ transaction }: { transaction: TrackedTransaction }) {
     <HStack key={transaction.hash} py="sm" align="start" w="full">
       <TransactionIcon status={transaction.status} />
       <VStack align="start" w="full" spacing="none">
-        <Tooltip label={label} fontSize="sm">
+        <BalTooltip label={label} fontSize="sm">
           <Text isTruncated maxW="85%">
             {transaction.init}
           </Text>
-        </Tooltip>
+        </BalTooltip>
         <HStack fontSize="xs" spacing="xs">
           <Text color="grayText">
             {transaction.chain ? getChainShortName(transaction.chain) : 'Unknown'},&nbsp;

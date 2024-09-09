@@ -1,12 +1,13 @@
 'use client'
 
-import { Card, CardBody, CardFooter, CardHeader, Button, Tooltip, Box } from '@chakra-ui/react'
+import { Card, CardBody, CardFooter, CardHeader, Button, Box } from '@chakra-ui/react'
 import { useStake } from './StakeProvider'
 import { useRef } from 'react'
 import { StakeModal } from './StakeModal'
 import { StakePreview } from './StakePreview'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function StakeForm() {
   const { isDisabled, disabledReason, isLoading, stakeTxHash, pool } = useStake()
@@ -22,7 +23,7 @@ export function StakeForm() {
           <StakePreview />
         </CardBody>
         <CardFooter>
-          <Tooltip label={isDisabled ? disabledReason : ''}>
+          <BalTooltip label={isDisabled ? disabledReason : ''}>
             <Button
               ref={nextBtn}
               variant="secondary"
@@ -34,7 +35,7 @@ export function StakeForm() {
             >
               Next
             </Button>
-          </Tooltip>
+          </BalTooltip>
         </CardFooter>
       </Card>
       <StakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />

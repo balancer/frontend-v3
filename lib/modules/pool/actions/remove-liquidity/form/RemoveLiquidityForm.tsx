@@ -7,17 +7,7 @@ import ButtonGroup, {
 } from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { InputWithSlider } from '@/lib/shared/components/inputs/InputWithSlider/InputWithSlider'
 import { fNum } from '@/lib/shared/utils/numbers'
-import {
-  Box,
-  Button,
-  Card,
-  CardHeader,
-  HStack,
-  Skeleton,
-  Text,
-  Tooltip,
-  VStack,
-} from '@chakra-ui/react'
+import { Box, Button, Card, CardHeader, HStack, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
 import { RemoveLiquidityModal } from '../modal/RemoveLiquidityModal'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
@@ -34,6 +24,7 @@ import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 const TABS: ButtonGroupOption[] = [
   {
@@ -128,9 +119,9 @@ export function RemoveLiquidityForm() {
                   size="xxs"
                   groupId="remove"
                 />
-                <Tooltip label="Remove liquidity type" fontSize="sm">
+                <BalTooltip label="Remove liquidity type" fontSize="sm">
                   <InfoIcon />
-                </Tooltip>
+                </BalTooltip>
               </HStack>
             )}
             <VStack w="full" spacing="md">
@@ -179,7 +170,7 @@ export function RemoveLiquidityForm() {
               />
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
-            <Tooltip label={isDisabled ? disabledReason : ''}>
+            <BalTooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
@@ -191,7 +182,7 @@ export function RemoveLiquidityForm() {
               >
                 Next
               </Button>
-            </Tooltip>
+            </BalTooltip>
           </VStack>
         </Card>
         <RemoveLiquidityModal

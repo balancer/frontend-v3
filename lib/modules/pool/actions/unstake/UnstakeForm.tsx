@@ -1,12 +1,13 @@
 'use client'
 
-import { Box, Button, Card, CardBody, CardFooter, CardHeader, Tooltip } from '@chakra-ui/react'
+import { Box, Button, Card, CardBody, CardFooter, CardHeader } from '@chakra-ui/react'
 import { useRef } from 'react'
 import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'
 import { UnstakeModal } from './UnstakeModal'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function UnstakeForm() {
   const nextBtn = useRef(null)
@@ -24,7 +25,7 @@ export function UnstakeForm() {
           <UnstakePreview />
         </CardBody>
         <CardFooter>
-          <Tooltip label={isDisabled ? disabledReason : ''}>
+          <BalTooltip label={isDisabled ? disabledReason : ''}>
             <Button
               ref={nextBtn}
               variant="secondary"
@@ -36,7 +37,7 @@ export function UnstakeForm() {
             >
               Next
             </Button>
-          </Tooltip>
+          </BalTooltip>
         </CardFooter>
       </Card>
       <UnstakeModal finalFocusRef={nextBtn} isOpen={isOpen} onOpen={onOpen} onClose={onClose} />

@@ -9,7 +9,6 @@ import {
   PopoverContent,
   PopoverTrigger,
   Text,
-  Tooltip,
 } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { CopyTokenAddressButton } from './CopyTokenAddressButton'
@@ -19,6 +18,7 @@ import { AddTokenToWalletButton } from './AddTokenToWalletButton'
 import { ExternalLink } from 'react-feather'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { useTokens } from './TokensProvider'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 type Props = {
   tokenAddress: string | Address
@@ -62,7 +62,7 @@ export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) 
               <CopyTokenAddressButton tokenAddress={tokenAddress} color="inherit" />
               <AddTokenToWalletButton tokenAddress={tokenAddress} chain={chain} color="inherit" />
               {!isBpt && coingeckoUrl && (
-                <Tooltip label="View on Coingecko">
+                <BalTooltip label="View on Coingecko">
                   <IconButton
                     size="xs"
                     isRound
@@ -76,9 +76,9 @@ export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) 
                     target="_blank"
                     rel="noopener noreferrer"
                   />
-                </Tooltip>
+                </BalTooltip>
               )}
-              <Tooltip label={`View on ${getBlockExplorerName(chain)}`}>
+              <BalTooltip label={`View on ${getBlockExplorerName(chain)}`}>
                 <IconButton
                   size="xs"
                   isRound
@@ -93,7 +93,7 @@ export function TokenInfoPopover({ tokenAddress, chain, isBpt = false }: Props) 
                   target="_blank"
                   rel="noopener noreferrer"
                 />
-              </Tooltip>
+              </BalTooltip>
             </HStack>
           </HStack>
         </PopoverBody>

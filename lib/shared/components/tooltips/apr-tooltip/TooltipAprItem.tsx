@@ -1,6 +1,7 @@
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { BoxProps, TextProps, Box, HStack, Text, Tooltip } from '@chakra-ui/react'
+import { BoxProps, TextProps, Box, HStack, Text } from '@chakra-ui/react'
 import BigNumber from 'bignumber.js'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 const tooltipTextDecorationStyles: TextProps = {
   textDecoration: 'underline',
@@ -58,7 +59,8 @@ export function TooltipAprItem({
         >
           {title}
         </Text>
-        <Tooltip label={tooltipText} fontSize="sm">
+
+        <BalTooltip label={tooltipText} fontSize="sm">
           <Text
             fontWeight={fontWeight}
             fontSize="sm"
@@ -70,7 +72,7 @@ export function TooltipAprItem({
           >
             {displayValueFormatter(apr)}
           </Text>
-        </Tooltip>
+        </BalTooltip>
       </HStack>
       {children}
     </Box>

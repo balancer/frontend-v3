@@ -14,7 +14,6 @@ import {
   Skeleton,
   Text,
   VStack,
-  Tooltip,
   useDisclosure,
 } from '@chakra-ui/react'
 import React, { useMemo, useState, useLayoutEffect } from 'react'
@@ -49,6 +48,7 @@ import {
   PartnerRedirectModal,
   RedirectPartner,
 } from '@/lib/shared/components/modals/PartnerRedirectModal'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 function getTabs(isVeBalPool: boolean) {
   return [
@@ -346,7 +346,7 @@ export default function PoolMyLiquidity() {
                   Stake
                 </Button>
                 {shouldMigrateStake(pool) ? (
-                  <Tooltip label={migrateStakeTooltipLabel}>
+                  <BalTooltip label={migrateStakeTooltipLabel}>
                     <Button
                       onClick={() => router.push(`${pathname}/migrate-stake`)}
                       variant="secondary"
@@ -356,7 +356,7 @@ export default function PoolMyLiquidity() {
                     >
                       Migrate stake
                     </Button>
-                  </Tooltip>
+                  </BalTooltip>
                 ) : (
                   <Button
                     onClick={() => router.push(`${pathname}/unstake`)}

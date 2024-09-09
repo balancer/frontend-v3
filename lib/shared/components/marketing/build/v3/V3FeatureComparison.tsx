@@ -14,12 +14,12 @@ import {
   Th,
   Td,
   TableContainer,
-  Tooltip,
 } from '@chakra-ui/react'
 
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { X, Check } from 'react-feather'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import BalTooltip from '../../../tooltips/BalTooltip'
 
 export function V3FeatureComparison() {
   return (
@@ -56,7 +56,7 @@ export function V3FeatureComparison() {
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Reusable hooks</Text>
 
@@ -69,12 +69,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -88,13 +88,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -105,13 +105,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">BPT managed by vault</Text>
 
@@ -124,12 +124,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -143,13 +143,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -160,13 +160,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Transient accounting (EIP-1153)</Text>
 
@@ -179,12 +179,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -198,13 +198,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -215,13 +215,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Decimal scaling (managed by vault)</Text>
 
@@ -234,12 +234,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -253,13 +253,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -270,13 +270,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Rate scaling (managed by vault)</Text>
 
@@ -289,12 +289,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -308,13 +308,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -325,13 +325,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Liquidity invariant approximation</Text>
 
@@ -344,12 +344,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -363,13 +363,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -380,13 +380,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Linear pools</Text>
 
@@ -399,12 +399,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -415,12 +415,12 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -434,13 +434,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Phantom BPT</Text>
 
@@ -453,12 +453,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -469,12 +469,12 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -488,13 +488,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Internal balances</Text>
 
@@ -507,12 +507,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -523,12 +523,12 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -542,13 +542,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Rebalancers</Text>
 
@@ -561,12 +561,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -577,12 +577,12 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip
+                    <BalTooltip
                       label="Custom logic was allowed in v2 but there was no concept of
                                       reusable hooks."
                     >
@@ -596,13 +596,13 @@ export function V3FeatureComparison() {
                       >
                         <Box as={X} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>
               <Tr>
                 <Td position="relative">
-                  <Tooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
+                  <BalTooltip label="Hooks extend existing pool types at various key points throughout the pool&rsquo;s lifecycle. Hooks can execute actions during pool operation and also compute a dynamic swap fee.">
                     <HStack position="relative" width="max-content" gap="xs" role="group">
                       <Text display="inline">Flash swaps</Text>
 
@@ -615,12 +615,12 @@ export function V3FeatureComparison() {
                         _groupHover={{ opacity: '1', transform: 'scale(1)' }}
                       ></Box>
                     </HStack>
-                  </Tooltip>
+                  </BalTooltip>
                 </Td>
 
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -631,12 +631,12 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
                 <Td textAlign="right">
                   <Box display="flex" justifyContent="flex-end" alignItems="center" mx="xxs">
-                    <Tooltip label="Balancer v3 introduces reusable hooks.">
+                    <BalTooltip label="Balancer v3 introduces reusable hooks.">
                       <Circle
                         bg="green.600"
                         size="5"
@@ -647,7 +647,7 @@ export function V3FeatureComparison() {
                       >
                         <Box as={Check} size={14} color="white" />
                       </Circle>
-                    </Tooltip>
+                    </BalTooltip>
                   </Box>
                 </Td>
               </Tr>

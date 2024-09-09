@@ -2,7 +2,7 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { HStack, VStack, Text, Tooltip, Box } from '@chakra-ui/react'
+import { HStack, VStack, Text, Box } from '@chakra-ui/react'
 import { useSwap } from './SwapProvider'
 import { GqlSorSwapType } from '@/lib/shared/services/api/generated/graphql'
 import { useUserSettings } from '../user/settings/UserSettingsProvider'
@@ -13,6 +13,7 @@ import { useTokens } from '../tokens/TokensProvider'
 import { NativeWrapHandler } from './handlers/NativeWrap.handler'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import pluralize from 'pluralize'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function OrderRoute() {
   const { simulationQuery } = useSwap()
@@ -28,9 +29,9 @@ export function OrderRoute() {
         <Text color="grayText">
           BV{orderRouteVersion}: {hopCount} {pluralize('hop', hopCount)}
         </Text>
-        <Tooltip label="Balancer vault version and number of hops" fontSize="sm">
+        <BalTooltip label="Balancer vault version and number of hops" fontSize="sm">
           <InfoIcon />
-        </Tooltip>
+        </BalTooltip>
       </HStack>
     </HStack>
   )
@@ -90,7 +91,7 @@ export function SwapDetails() {
               -{toCurrency(priceImpacUsd, { abbreviated: false })} (-{priceImpactLabel})
             </NumberText>
           )}
-          <Tooltip
+          <BalTooltip
             // eslint-disable-next-line max-len
             label="This is the negative price impact of the swap based on the current market prices of the token in vs token out."
             fontSize="sm"
@@ -102,7 +103,7 @@ export function SwapDetails() {
                 <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
               </Box>
             )}
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -111,9 +112,9 @@ export function SwapDetails() {
           <NumberText color="grayText">
             -{toCurrency(maxSlippageUsd, { abbreviated: false })} (-{fNum('slippage', _slippage)})
           </NumberText>
-          <Tooltip label={slippageLabel} fontSize="sm">
+          <BalTooltip label={slippageLabel} fontSize="sm">
             <InfoIcon />
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -122,9 +123,9 @@ export function SwapDetails() {
           <NumberText color="grayText">
             {fNum('token', limitValue, { abbreviated: false })} {limitToken?.symbol}
           </NumberText>
-          <Tooltip label={limitTooltip} fontSize="sm">
+          <BalTooltip label={limitTooltip} fontSize="sm">
             <InfoIcon />
-          </Tooltip>
+          </BalTooltip>
         </HStack>
       </HStack>
 

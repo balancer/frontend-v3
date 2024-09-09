@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
-import { Box, Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useTokens } from '../TokensProvider'
 import {
@@ -18,6 +18,7 @@ import { TokenInfoPopover } from '../TokenInfoPopover'
 import { ChevronDown } from 'react-feather'
 import { BullseyeIcon } from '@/lib/shared/components/icons/BullseyeIcon'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 type DataProps = {
   address: Address
@@ -187,11 +188,11 @@ export default function TokenRow({
                       <Text fontWeight="medium" variant="secondary" fontSize="sm">
                         {fNum('weight', targetWeight)}
                       </Text>
-                      <Tooltip label="Target weight">
+                      <BalTooltip label="Target weight">
                         <Box>
                           <BullseyeIcon />
                         </Box>
-                      </Tooltip>
+                      </BalTooltip>
                     </HStack>
                   )}
                 </>

@@ -1,10 +1,11 @@
 'use client'
 
 import { PlusSquareIcon } from '@chakra-ui/icons'
-import { IconButton, IconButtonProps, Tooltip } from '@chakra-ui/react'
+import { IconButton, IconButtonProps } from '@chakra-ui/react'
 import { useWalletClient } from 'wagmi'
 import { useTokens } from './TokensProvider'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export function AddTokenToWalletButton({
   tokenAddress,
@@ -33,7 +34,7 @@ export function AddTokenToWalletButton({
   }
 
   return (
-    <Tooltip label={label}>
+    <BalTooltip label={label}>
       <IconButton
         size="xs"
         isRound
@@ -45,6 +46,6 @@ export function AddTokenToWalletButton({
         onClick={addToWallet}
         {...rest}
       />
-    </Tooltip>
+    </BalTooltip>
   )
 }

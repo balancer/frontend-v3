@@ -1,7 +1,7 @@
 'use client'
 
 import React, { memo, useMemo } from 'react'
-import { Button, HStack, Heading, Skeleton, Text, Tooltip, VStack } from '@chakra-ui/react'
+import { Button, HStack, Heading, Skeleton, Text, VStack } from '@chakra-ui/react'
 import { TokenIconStack } from '../../../../tokens/TokenIconStack'
 import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
@@ -16,6 +16,7 @@ import { bn } from '@/lib/shared/utils/numbers'
 import { ClaimModal } from '../../../actions/claim/ClaimModal'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { calcTotalStakedBalanceUsd } from '../../../user-balance.helpers'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 export type PoolMyStatsValues = {
   myLiquidity: number
@@ -166,7 +167,7 @@ export function UserSnapshotValues() {
             <HStack>
               <Heading size="h4">{toCurrency(poolMyStatsValues.myClaimableRewards)}</Heading>
               <TokenIconStack tokens={tokens} chain={chain} size={20} />
-              <Tooltip label={isDisabled ? disabledReason : ''}>
+              <BalTooltip label={isDisabled ? disabledReason : ''}>
                 <Button
                   variant="primary"
                   w="full"
@@ -176,7 +177,7 @@ export function UserSnapshotValues() {
                 >
                   Claim
                 </Button>
-              </Tooltip>
+              </BalTooltip>
             </HStack>
           )
         ) : (

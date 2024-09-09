@@ -13,7 +13,6 @@ import {
   Link,
   Divider,
   Text,
-  Tooltip,
   VStack,
 } from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
@@ -28,6 +27,7 @@ import Image from 'next/image'
 import { RateProviderInfoPopOver } from './RateProviderInfo'
 import { getBlockExplorerAddressUrl } from '@/lib/shared/hooks/useBlockExplorer'
 import { getRateProviderWarnings } from '@/lib/modules/pool/pool.helpers'
+import BalTooltip from '@/lib/shared/components/tooltips/BalTooltip'
 
 type RateProvider = {
   tokenAddress: Address
@@ -136,7 +136,7 @@ export function PoolContracts({ ...props }: CardProps) {
         {rateProviders.length > 0 && (
           <Grid templateColumns={{ base: '1fr 2fr', md: '1fr 3fr' }} gap="sm" w="full">
             <GridItem>
-              <Tooltip
+              <BalTooltip
                 // eslint-disable-next-line max-len
                 label="Rate Providers are contracts that provide an exchange rate between two assets. This can come from any on-chain source, including oracles or from other calculations. This introduces risks around the rate provider being able to supply accurate and timely exchange rates."
                 fontSize="sm"
@@ -144,7 +144,7 @@ export function PoolContracts({ ...props }: CardProps) {
                 <Text minW="120px" variant="secondary">
                   Rate provider(s):
                 </Text>
-              </Tooltip>
+              </BalTooltip>
             </GridItem>
             <GridItem>
               <VStack alignItems="flex-start">
@@ -153,14 +153,14 @@ export function PoolContracts({ ...props }: CardProps) {
                   return (
                     token && (
                       <HStack key={provider.tokenAddress}>
-                        <Tooltip label={token.symbol} fontSize="sm" shouldWrapChildren>
+                        <BalTooltip label={token.symbol} fontSize="sm" shouldWrapChildren>
                           <TokenIcon
                             chain={chain}
                             address={token.address}
                             size={16}
                             alt={token.address}
                           />
-                        </Tooltip>
+                        </BalTooltip>
                         <Link
                           key={provider.rateProviderAddress}
                           target="_blank"

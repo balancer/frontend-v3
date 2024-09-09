@@ -1,8 +1,9 @@
 'use client'
 
 import { InfoOutlineIcon } from '@chakra-ui/icons'
-import { Box, HStack, Flex, Tooltip, Text } from '@chakra-ui/react'
+import { Box, HStack, Flex, Text } from '@chakra-ui/react'
 import { PropsWithChildren, ReactNode } from 'react'
+import BalTooltip from '../tooltips/BalTooltip'
 
 type AlertContentProps = {
   title?: string
@@ -35,9 +36,9 @@ export function BalAlertContent({
             )}
             {tooltipLabel && (
               <Box position="relative" top="-1.5px" pr="xs">
-                <Tooltip label={tooltipLabel}>
+                <BalTooltip label={tooltipLabel}>
                   <InfoOutlineIcon fontSize="sm" color="font.dark" />
-                </Tooltip>
+                </BalTooltip>
               </Box>
             )}
           </HStack>
