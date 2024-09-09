@@ -30,13 +30,9 @@ export default async function PoolsPage() {
   return (
     <>
       <Box bg="background.level0" borderBottom="1px solid" borderColor="border.base">
-        <DefaultPageContainer pt={['xl', '40px']} pb={['xl', '2xl']}>
-          <FadeInOnView animateOnce={false}>
-            <Box>
-              <HookathonPromoBanner />
-            </Box>
-          </FadeInOnView>
-        </DefaultPageContainer>
+        <FadeInOnView animateOnce={false}>
+          <HookathonPromoBanner />
+        </FadeInOnView>
       </Box>
 
       <DefaultPageContainer pt={['lg', '54px']} pb={['xl', '2xl']} noVerticalPadding>

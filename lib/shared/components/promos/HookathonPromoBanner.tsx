@@ -9,18 +9,18 @@ export function HookathonPromoBanner() {
   return (
     <Box
       position="relative"
-      height="140px"
+      height="300px"
       background={`url('/images/promos/hookathon/hookathon-bg.jpg') no-repeat left center`}
       backgroundSize="cover"
       width="full"
       maxW="100%"
-      rounded="lg"
       overflow="hidden"
       sx={{
         width: '100% !important',
         maxWidth: '100% !important',
       }}
       boxShadow="lg"
+      mt={{ base: '52px', md: '72px' }}
     >
       <Center h="100%" className="copy" zIndex="1">
         <Flex
