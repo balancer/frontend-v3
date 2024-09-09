@@ -85,6 +85,7 @@ Sentry.init({
 function handleNonFatalError(event: Sentry.ErrorEvent): Sentry.ErrorEvent | null {
   const firstValue = getFirstExceptionValue(event)
   if (firstValue && shouldIgnoreException(firstValue)) return null
+  event.level = 'error'
   return event
 }
 
