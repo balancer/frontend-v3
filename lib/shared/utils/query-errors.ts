@@ -238,7 +238,7 @@ export function shouldIgnoreException(sentryException: SentryException) {
   return ignored
 }
 
-export function shouldIgnore(message: string, sentryStack = ''): boolean {
+export function shouldIgnore(message: string, stackTrace = ''): boolean {
   if (isUserRejectedError(new Error(message))) return true
 
   /*
@@ -277,12 +277,8 @@ export function shouldIgnore(message: string, sentryStack = ''): boolean {
   */
   if (
     message.startsWith('Maximum call stack size exceeded') &&
-    sentryStack.includes('injectWalletGuard.js')
+    stackTrace.includes('injectWalletGuard.js')
   ) {
-    return true
-  }
-
-  if (sentryStack.includes('PoolList')) {
     return true
   }
 
@@ -290,7 +286,7 @@ export function shouldIgnore(message: string, sentryStack = ''): boolean {
     com.okex.wallet injects code that causes this error
     Examples: https://balancer-labs.sentry.io/issues/5687846148/
   */
-  if (message.startsWith('Cannot redefine property:') && sentryStack.includes('inject.bundle.js')) {
+  if (message.startsWith('Cannot redefine property:') && stackTrace.includes('inject.bundle.js')) {
     return true
   }
 
@@ -303,7 +299,7 @@ export function shouldIgnore(message: string, sentryStack = ''): boolean {
   */
   if (
     message === "Cannot read properties of undefined (reading 'address')" &&
-    sentryStack.includes('getWalletClient.js')
+    stackTrace.includes('getWalletClient.js')
   ) {
     return true
   }
