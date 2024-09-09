@@ -33,7 +33,7 @@ export function useSwapSteps({
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep(swapState.selectedChain)
 
-  const swapRequiresRelayer = handler.constructor.name === 'AuraBalSwapHandler'
+  const swapRequiresRelayer = handler.name === 'AuraBalSwapHandler'
 
   const humanAmountIn = swapState.tokenIn.amount
   const tokenInAmounts = useMemo(() => {

@@ -9,6 +9,8 @@ import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from 
 import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 
 export class DefaultSwapHandler implements SwapHandler {
+  name = 'DefaultSwapHandler'
+
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SdkSimulateSwapResponse> {
