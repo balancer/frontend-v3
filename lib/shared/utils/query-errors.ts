@@ -238,7 +238,7 @@ export function shouldIgnoreException(sentryException: SentryException) {
   return ignored
 }
 
-function shouldIgnore(message: string, sentryStack: string): boolean {
+export function shouldIgnore(message: string, sentryStack = ''): boolean {
   if (isUserRejectedError(new Error(message))) return true
 
   /*
@@ -314,8 +314,9 @@ function shouldIgnore(message: string, sentryStack: string): boolean {
   */
   if (
     message.startsWith('Error: WebSocket connection failed for host: wss://relay.walletconnect.com')
-  )
+  ) {
     return true
+  }
 
   return false
 }
