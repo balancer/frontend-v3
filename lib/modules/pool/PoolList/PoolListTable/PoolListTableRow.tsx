@@ -1,5 +1,4 @@
 import { Box, Grid, GridItem, GridProps, Text } from '@chakra-ui/react'
-import Link from 'next/link'
 import { getPoolPath, getPoolTypeLabel } from '../../pool.utils'
 import MainAprTooltip from '@/lib/shared/components/tooltips/apr-tooltip/MainAprTooltip'
 import { memo } from 'react'
@@ -10,6 +9,7 @@ import { PoolListItem } from '../../pool.types'
 import { PoolListTokenPills } from '../PoolListTokenPills'
 import { getUserTotalBalanceUsd } from '../../user-balance.helpers'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
+import { Link } from 'next-view-transitions'
 
 interface Props extends GridProps {
   pool: PoolListItem
