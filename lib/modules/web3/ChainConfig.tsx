@@ -48,13 +48,13 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Base]: getPrivateRpcUrl(GqlChain.Base),
   [GqlChain.Avalanche]: getPrivateRpcUrl(GqlChain.Avalanche),
   [GqlChain.Fantom]: getPrivateRpcUrl(GqlChain.Fantom),
-  [GqlChain.Gnosis]: undefined,
+  [GqlChain.Gnosis]: getPrivateRpcUrl(GqlChain.Gnosis),
   [GqlChain.Optimism]: getPrivateRpcUrl(GqlChain.Optimism),
   [GqlChain.Polygon]: getPrivateRpcUrl(GqlChain.Polygon),
   [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
   [GqlChain.Sepolia]: getPrivateRpcUrl(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: getPrivateRpcUrl(GqlChain.Fraxtal),
+  [GqlChain.Fraxtal]: undefined,
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }
