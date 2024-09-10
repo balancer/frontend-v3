@@ -23,7 +23,11 @@ import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn, getXavePoolLink } from '../pool.utils'
+import {
+  getAuraPoolLink,
+  getProportionalExitAmountsFromScaledBptIn,
+  getXavePoolLink,
+} from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
