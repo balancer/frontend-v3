@@ -9,23 +9,26 @@ import { ThemeProvider as ColorThemeProvider } from 'next-themes'
 import { DEFAULT_THEME_COLOR_MODE } from '@/lib/shared/services/chakra/themes/base/foundations'
 import { wagmiConfig } from '@/lib/modules/web3/WagmiConfig'
 import { GlobalAlertsProvider } from '@/lib/shared/components/alerts/GlobalAlertsProvider'
+import { ViewTransitions } from 'next-view-transitions'
 
 export function Providers({ children }: { children: ReactNode }) {
   return (
-    <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
-      <ThemeProvider>
-        <GlobalAlertsProvider>
-          <Web3Provider wagmiConfig={wagmiConfig}>
-            <ApolloClientProvider>
-              <ApolloGlobalDataProvider>
-                <UserSettingsProvider>
-                  <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
-                </UserSettingsProvider>
-              </ApolloGlobalDataProvider>
-            </ApolloClientProvider>
-          </Web3Provider>
-        </GlobalAlertsProvider>
-      </ThemeProvider>
-    </ColorThemeProvider>
+    <ViewTransitions>
+      <ColorThemeProvider defaultTheme={DEFAULT_THEME_COLOR_MODE}>
+        <ThemeProvider>
+          <GlobalAlertsProvider>
+            <Web3Provider wagmiConfig={wagmiConfig}>
+              <ApolloClientProvider>
+                <ApolloGlobalDataProvider>
+                  <UserSettingsProvider>
+                    <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
+                  </UserSettingsProvider>
+                </ApolloGlobalDataProvider>
+              </ApolloClientProvider>
+            </Web3Provider>
+          </GlobalAlertsProvider>
+        </ThemeProvider>
+      </ColorThemeProvider>
+    </ViewTransitions>
   )
 }
