@@ -36,7 +36,7 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Zkevm]: 'https://polygon-zkevm.drpc.org',
   [GqlChain.Sepolia]: 'https://sepolia.gateway.tenderly.co',
   [GqlChain.Mode]: 'https://mode.drpc.org',
-  [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
+  [GqlChain.Fraxtal]: 'https://fraxtal.drpc.org',
 }
 
 const baseUrl = getBaseUrl()
