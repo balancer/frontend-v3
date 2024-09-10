@@ -1,7 +1,6 @@
 import { Box, Breadcrumb, BreadcrumbItem, BreadcrumbLink, Button } from '@chakra-ui/react'
 import { usePool } from '../../PoolProvider'
-import { ChevronRight } from 'react-feather'
-import { BalancerLogo } from '@/lib/shared/components/imgs/BalancerLogo'
+import { ChevronRight, Home } from 'react-feather'
 import { isCowAmmPool } from '../../pool.helpers'
 
 export function PoolBreadcrumbs() {
@@ -23,8 +22,8 @@ export function PoolBreadcrumbs() {
     >
       <BreadcrumbItem>
         <BreadcrumbLink href="/">
-          <Button variant="outline" size="xs">
-            <BalancerLogo width="18px" />
+          <Button variant="link" size="xs" color="grayText">
+            <Home size={16} />
           </Button>
         </BreadcrumbLink>
       </BreadcrumbItem>
