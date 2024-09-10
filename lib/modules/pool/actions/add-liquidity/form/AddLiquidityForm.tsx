@@ -47,6 +47,7 @@ import { cannotCalculatePriceImpactError } from '@/lib/modules/price-impact/pric
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -160,6 +161,7 @@ function AddLiquidityMainForm() {
           {hasNoLiquidity(pool) && (
             <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
           )}
+          <SafeAppAlert />
           {!nestedAddLiquidityEnabled ? (
             <TokenInputsWithAddable
               tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
