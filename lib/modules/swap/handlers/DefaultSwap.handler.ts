@@ -6,7 +6,7 @@ import { Path, Slippage, Swap, SwapKind, TokenAmount } from '@balancer/sdk'
 import { formatUnits } from 'viem'
 import { TransactionConfig } from '../../web3/contracts/contract.types'
 import { SdkBuildSwapInputs, SdkSimulateSwapResponse, SimulateSwapInputs } from '../swap.types'
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
+import { getRpcUrl } from '../../web3/transports'
 
 export class DefaultSwapHandler implements SwapHandler {
   name = 'DefaultSwapHandler'
@@ -15,7 +15,7 @@ export class DefaultSwapHandler implements SwapHandler {
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SdkSimulateSwapResponse> {
     const { chain, swapType } = variables
-    const rpcUrl = getDefaultRpcUrl(getChainId(chain))
+    const rpcUrl = getRpcUrl(getChainId(chain))
 
     const { data } = await this.apolloClient.query({
       query: GetSorSwapsDocument,

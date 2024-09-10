@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
@@ -14,6 +12,7 @@ import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
@@ -80,7 +79,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(referenceAmount: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       referenceAmount,
       kind: AddLiquidityKind.Proportional,
     }
