@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Center, Text, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Center, Text, Spinner, VStack, Skeleton } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -40,30 +40,14 @@ export function PaginatedTable({
               <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
-          {loading && items.length === 0 && (
-            <Center py="2xl">
-              <Box
-                style={{
-                  position: 'absolute',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%',
-                  top: 0,
-                  left: 0,
-                  borderRadius: 10,
-                  zIndex: 10,
-                  backdropFilter: 'blur(3px)',
-                }}
-              >
-                <Center>
-                  <Spinner size="xl" />
-                </Center>
+          {loading &&
+            items.length === 0 &&
+            Array.from({ length: 20 }).map((_, index) => (
+              <Box key={index} w="full" py="xs">
+                <Skeleton height="68px" w="full" />
               </Box>
-            </Center>
-          )}
-          {loading && (
+            ))}
+          {loading && items.length > 0 && (
             <Box>
               <Box
                 style={{
