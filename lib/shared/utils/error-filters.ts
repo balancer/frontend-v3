@@ -9,8 +9,8 @@ export function isUserRejectedError(error: Error): boolean {
 export function isViemHttpFetchError(error?: Error | null): boolean {
   if (!error) return false
   if (
-    error?.message.startsWith('HTTP request failed.') &&
-    error?.message.includes('Failed to fetch')
+    error.message.startsWith('HTTP request failed.') &&
+    error.message.includes('Failed to fetch')
   ) {
     return true
   }
