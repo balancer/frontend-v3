@@ -1,6 +1,6 @@
 'use client'
 
-import { isFx, isNotSupported, shouldBlockAddLiquidity } from '@/lib/modules/pool/pool.helpers'
+import { isNotSupported, shouldBlockAddLiquidity } from '@/lib/modules/pool/pool.helpers'
 import { usePool } from '@/lib/modules/pool/PoolProvider'
 import { RelayerSignatureProvider } from '@/lib/modules/relayer/RelayerSignatureProvider'
 import { TokenInputsValidationProvider } from '@/lib/modules/tokens/TokenInputsValidationProvider'
@@ -24,17 +24,15 @@ export default function AddLiquidityLayout({ params: { txHash }, children }: Pro
   const maybeTxHash = txHash?.[0] || ''
   const urlTxHash = isHash(maybeTxHash) ? maybeTxHash : undefined
 
-  if (shouldBlockAddLiquidity(pool) || isFx(pool.type)) {
+  if (shouldBlockAddLiquidity(pool)) {
     return redirectToPoolPage()
   }
 
   if (isNotSupported(pool)) {
     return (
-      <DefaultPageContainer>
-        <Alert status="info" w="fit-content" minW="50%">
-          This pool type is not currently supported in the Balancer V3 UI
-        </Alert>
-      </DefaultPageContainer>
+      <Alert status="info" w="fit-content" minW="50%">
+        This pool type is not currently supported in the Balancer V3 UI
+      </Alert>
     )
   }
 
