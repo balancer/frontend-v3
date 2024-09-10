@@ -17,6 +17,7 @@ import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/us
 import { ClaimableBalancesResult } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
 import { allClaimableGaugeAddressesFor } from '../../pool.helpers'
 import { ClaimablePool } from './ClaimProvider'
+import { Address } from 'viem'
 
 const claimAllRewardsStepId = 'claim-all-rewards'
 
@@ -47,13 +48,12 @@ export function useClaimAllRewardsStep({
   const gaugeAddresses = pools.flatMap(pool => allClaimableGaugeAddressesFor(pool))
   const shouldClaimMany = gaugeAddresses.length > 1
   const stakingService = selectStakingService(chain, stakingType)
-  const { data: claimData, isLoading } = useClaimCallDataQuery(
-    gaugeAddresses,
-    stakingService,
-    nonBalRewards.length > 0,
-    balRewards.length > 0,
-    isClaimQueryEnabled
-  )
+  const { data: claimData, isLoading } = useClaimCallDataQuery({
+    claimRewardGauges: nonBalRewards.map(r => r.gaugeAddress),
+    mintBalRewardGauges: balRewards.map(r => r.gaugeAddress as Address),
+    gaugeService: stakingService,
+    enabled: isClaimQueryEnabled,
+  })
 
   const labels: TransactionLabels = {
     init: `Claim${shouldClaimMany ? ' all' : ''}`,
