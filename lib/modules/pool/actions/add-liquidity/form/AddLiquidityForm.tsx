@@ -172,33 +172,35 @@ function AddLiquidityMainForm() {
             <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
           )}
           <VStack spacing="sm" align="start" w="full">
-            <PriceImpactAccordion
-              isDisabled={!priceImpactQuery.data}
-              cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
-              setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-              accordionButtonComponent={
-                <HStack>
-                  <Text variant="secondary" fontSize="sm" color="font.secondary">
-                    Price impact:{' '}
-                  </Text>
-                  {isFetching ? (
-                    <Skeleton w="40px" h="16px" />
-                  ) : (
-                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                      {priceImpactLabel}
+            {!simulationQuery.isError && (
+              <PriceImpactAccordion
+                isDisabled={!priceImpactQuery.data}
+                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+                accordionButtonComponent={
+                  <HStack>
+                    <Text variant="secondary" fontSize="sm" color="font.secondary">
+                      Price impact:{' '}
                     </Text>
-                  )}
-                </HStack>
-              }
-              accordionPanelComponent={
-                <PoolActionsPriceImpactDetails
-                  totalUSDValue={totalUSDValue}
-                  bptAmount={simulationQuery.data?.bptOut.amount}
-                  isAddLiquidity
-                  isLoading={isFetching}
-                />
-              }
-            />
+                    {isFetching ? (
+                      <Skeleton w="40px" h="16px" />
+                    ) : (
+                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        {priceImpactLabel}
+                      </Text>
+                    )}
+                  </HStack>
+                }
+                accordionPanelComponent={
+                  <PoolActionsPriceImpactDetails
+                    totalUSDValue={totalUSDValue}
+                    bptAmount={simulationQuery.data?.bptOut.amount}
+                    isAddLiquidity
+                    isLoading={isFetching}
+                  />
+                }
+              />
+            )}
           </VStack>
           <Grid w="full" templateColumns="1fr 1fr" gap="sm">
             <GridItem>
@@ -225,7 +227,9 @@ function AddLiquidityMainForm() {
             </GridItem>
           </Grid>
           {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-          {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
+          {!simulationQuery.isError && priceImpactQuery.isError && (
+            <PriceImpactError priceImpactQuery={priceImpactQuery} />
+          )}
           {simulationQuery.isError && (
             <GenericError
               customErrorName={'Error in query simulation'}
