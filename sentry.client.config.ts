@@ -5,7 +5,7 @@
 import * as Sentry from '@sentry/nextjs'
 import { sentryDSN } from './sentry.config'
 import { isProd } from './lib/config/app.config'
-import { shouldIgnoreError } from './lib/shared/utils/query-errors'
+import { shouldIgnoreException } from './lib/shared/utils/query-errors'
 
 Sentry.init({
   // Change this value only if you need to debug in development (we have a custom developmentSentryDSN for that)
@@ -84,7 +84,8 @@ Sentry.init({
 
 function handleNonFatalError(event: Sentry.ErrorEvent): Sentry.ErrorEvent | null {
   const firstValue = getFirstExceptionValue(event)
-  if (firstValue && shouldIgnoreError(new Error(firstValue.value))) return null
+  if (firstValue && shouldIgnoreException(firstValue)) return null
+  event.level = 'error'
   return event
 }
 
@@ -97,7 +98,7 @@ function handleFatalError(
   if (event?.exception?.values?.length) {
     const firstValue = event.exception.values[0]
 
-    if (shouldIgnoreError(new Error(firstValue.value))) return null
+    if (shouldIgnoreException(firstValue)) return null
 
     const flowType = uppercaseSegment(criticalFlowPath)
     firstValue.value = `Unexpected error in ${flowType} flow.
