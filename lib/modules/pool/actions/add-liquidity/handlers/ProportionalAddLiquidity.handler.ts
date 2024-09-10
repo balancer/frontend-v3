@@ -12,7 +12,7 @@ import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
@@ -79,7 +79,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   private constructSdkInput(referenceAmount: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       referenceAmount,
       kind: AddLiquidityKind.Proportional,
     }

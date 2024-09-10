@@ -17,7 +17,7 @@ import {
   QueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export interface NestedSingleTokenQueryRemoveLiquidityOutput extends QueryRemoveLiquidityOutput {
   sdkQueryOutput: RemoveLiquidityNestedQueryOutput
@@ -104,7 +104,7 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       chainId: this.helpers.chainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
     }
 
     return result

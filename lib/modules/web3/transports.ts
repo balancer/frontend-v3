@@ -18,7 +18,7 @@ export const transports = Object.fromEntries(
   chains.map(chain => [chain.id, getTransports(chain)])
 ) as Record<number, ReturnType<typeof getTransports>>
 
-export function getHandlerRpcUrl(chainId: number): string {
+export function getRpcUrl(chainId: number): string {
   const gqlChain = getGqlChain(chainId)
   return rpcOverrides[gqlChain] || rpcFallbacks[gqlChain] || getDefaultRpcUrl(chainId)
 }

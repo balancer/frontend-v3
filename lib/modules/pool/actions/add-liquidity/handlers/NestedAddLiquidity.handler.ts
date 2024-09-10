@@ -11,7 +11,7 @@ import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHe
 import { NestedBuildAddLiquidityInput, NestedQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * NestedAddLiquidityHandler is a handler that implements the
@@ -87,7 +87,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId as ChainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn: nonEmptyAmountsIn,
     }
   }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 import {
   AddLiquidity,
   AddLiquidityKind,
@@ -91,7 +91,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
     }

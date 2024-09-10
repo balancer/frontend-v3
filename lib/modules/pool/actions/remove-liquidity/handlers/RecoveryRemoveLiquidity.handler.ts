@@ -17,7 +17,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /*
  A recovery exit is just a Proportional one but with Recovery kind
@@ -85,7 +85,7 @@ export class RecoveryRemoveLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       bptIn,
       kind: RemoveLiquidityKind.Recovery,
     }

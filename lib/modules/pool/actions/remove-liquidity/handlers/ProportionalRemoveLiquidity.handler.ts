@@ -17,7 +17,7 @@ import {
   SdkQueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { getHandlerRpcUrl } from '@/lib/modules/web3/transports'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -79,7 +79,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getHandlerRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       bptIn,
       kind: RemoveLiquidityKind.Proportional,
     }
