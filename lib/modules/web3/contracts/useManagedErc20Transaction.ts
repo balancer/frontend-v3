@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { getGqlChain, isDev } from '@/lib/config/app.config'
+import { allowSkipTransaction, getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
@@ -64,7 +64,6 @@ export function useManagedErc20Transaction({
     },
   })
 
-  // dev only
   const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
 
   const writeQuery = useWriteContract()
@@ -115,7 +114,7 @@ export function useManagedErc20Transaction({
     }
     if (!simulateQuery.data) return
 
-    if (isDev) {
+    if (allowSkipTransaction) {
       const txHash = setMockedTxHash()
       if (txHash) return
     }

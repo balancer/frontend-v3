@@ -7,7 +7,7 @@ import { useEstimateGas, useSendTransaction, useWaitForTransactionReceipt } from
 import { TransactionConfig, TransactionExecution, TransactionSimulation } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { getGqlChain, isDev } from '@/lib/config/app.config'
+import { allowSkipTransaction, getGqlChain } from '@/lib/config/app.config'
 import { useChainSwitch } from '../useChainSwitch'
 import {
   captureWagmiExecutionError,
@@ -46,7 +46,6 @@ export function useManagedSendTransaction({
     },
   })
 
-  // dev only
   const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
 
   const writeQuery = useSendTransaction({
@@ -132,7 +131,7 @@ export function useManagedSendTransaction({
     if (!estimateGasQuery.data) return
     if (!txConfig?.to) return
 
-    if (isDev) {
+    if (allowSkipTransaction) {
       const txHash = setMockedTxHash()
       if (txHash) return
     }

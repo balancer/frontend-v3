@@ -20,6 +20,8 @@ export const isDev = process.env.NEXT_PUBLIC_APP_ENV === 'dev'
 export const isProd = process.env.NEXT_PUBLIC_APP_ENV === 'prod'
 export const isStaging = process.env.NEXT_PUBLIC_APP_ENV === 'staging'
 
+export const allowSkipTransaction = process.env.NEXT_PUBLIC_ALLOW_SKIP_TRANSACTION === 'true'
+
 const networksByChainId = keyBy(config.networks, 'chainId')
 
 /**

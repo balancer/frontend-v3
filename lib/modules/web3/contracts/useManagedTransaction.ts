@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { getGqlChain, isDev } from '@/lib/config/app.config'
+import { getGqlChain, allowSkipTransaction } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
@@ -65,7 +65,6 @@ export function useManagedTransaction({
     },
   })
 
-  // dev only
   const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
 
   const writeQuery = useWriteContract()
@@ -107,7 +106,7 @@ export function useManagedTransaction({
   const managedWriteAsync = async () => {
     if (!simulateQuery.data) return
 
-    if (isDev) {
+    if (allowSkipTransaction) {
       const txHash = setMockedTxHash()
       if (txHash) return
     }
