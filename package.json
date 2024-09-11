@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "^0.23.0",
+    "@balancer/sdk": "^0.25.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.1",
@@ -69,6 +69,7 @@
     "pluralize": "^8.0.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-error-boundary": "^4.0.13",
     "react-feather": "^2.0.10",
     "react-hook-form": "^7.47.0",
     "react-hotkeys-hook": "^4.4.1",

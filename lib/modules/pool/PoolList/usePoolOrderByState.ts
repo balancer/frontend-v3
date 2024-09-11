@@ -17,7 +17,7 @@ export function usePoolOrderByState() {
       setSorting([{ id: GqlPoolOrderBy.UserbalanceUsd, desc: true }])
     } else {
       setOrderBy(orderBy.filter(item => item !== GqlPoolOrderBy.UserbalanceUsd))
-      if (sorting[0].id === GqlPoolOrderBy.UserbalanceUsd) {
+      if (sorting[0]?.id === GqlPoolOrderBy.UserbalanceUsd) {
         setSorting([{ id: GqlPoolOrderBy.TotalLiquidity, desc: true }])
       }
     }

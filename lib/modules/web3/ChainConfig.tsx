@@ -35,32 +35,25 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Zkevm]: 'https://polygon-zkevm.drpc.org',
   [GqlChain.Sepolia]: 'https://sepolia.gateway.tenderly.co',
   [GqlChain.Mode]: 'https://mode.drpc.org',
-  [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
+  [GqlChain.Fraxtal]: 'https://fraxtal.drpc.org',
 }
 
 const baseUrl = getBaseUrl()
-const shouldUsePrivateRpc = !!process.env.PRIVATE_ALCHEMY_KEY
 const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
-const getRpcOverride = (chain: GqlChain) => {
-  if (shouldUsePrivateRpc) {
-    return getPrivateRpcUrl(chain)
-  }
-  return undefined
-}
 
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: getRpcOverride(GqlChain.Mainnet),
-  [GqlChain.Arbitrum]: getRpcOverride(GqlChain.Arbitrum),
-  [GqlChain.Base]: getRpcOverride(GqlChain.Base),
-  [GqlChain.Avalanche]: getRpcOverride(GqlChain.Avalanche),
-  [GqlChain.Fantom]: getRpcOverride(GqlChain.Fantom),
-  [GqlChain.Gnosis]: getRpcOverride(GqlChain.Gnosis),
-  [GqlChain.Optimism]: getRpcOverride(GqlChain.Optimism),
-  [GqlChain.Polygon]: getRpcOverride(GqlChain.Polygon),
-  [GqlChain.Zkevm]: getRpcOverride(GqlChain.Zkevm),
-  [GqlChain.Sepolia]: getRpcOverride(GqlChain.Sepolia),
+  [GqlChain.Mainnet]: getPrivateRpcUrl(GqlChain.Mainnet),
+  [GqlChain.Arbitrum]: getPrivateRpcUrl(GqlChain.Arbitrum),
+  [GqlChain.Base]: getPrivateRpcUrl(GqlChain.Base),
+  [GqlChain.Avalanche]: getPrivateRpcUrl(GqlChain.Avalanche),
+  [GqlChain.Fantom]: getPrivateRpcUrl(GqlChain.Fantom),
+  [GqlChain.Gnosis]: getPrivateRpcUrl(GqlChain.Gnosis),
+  [GqlChain.Optimism]: getPrivateRpcUrl(GqlChain.Optimism),
+  [GqlChain.Polygon]: getPrivateRpcUrl(GqlChain.Polygon),
+  [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
+  [GqlChain.Sepolia]: getPrivateRpcUrl(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: getRpcOverride(GqlChain.Fraxtal),
+  [GqlChain.Fraxtal]: undefined,
 }
 
 const gqlChainToWagmiChainMap = {

@@ -28,7 +28,7 @@ import { usePool } from '../../../PoolProvider'
 import {
   hasNoLiquidity,
   requiresProportionalInput,
-  supportsProportionalAdds,
+  supportsNestedActions,
 } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
@@ -97,6 +97,7 @@ function AddLiquidityMainForm() {
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
 
+  const nestedAddLiquidityEnabled = supportsNestedActions(pool) // TODO && !userToggledEscapeHatch
   const isLoading = simulationQuery.isLoading || priceImpactQuery.isLoading
   const isFetching = simulationQuery.isFetching || priceImpactQuery.isFetching
 
@@ -161,7 +162,7 @@ function AddLiquidityMainForm() {
             <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
           )}
           <SafeAppAlert />
-          {supportsProportionalAdds(pool) ? (
+          {!nestedAddLiquidityEnabled ? (
             <TokenInputsWithAddable
               tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
               requiresProportionalInput={requiresProportionalInput(pool.type)}

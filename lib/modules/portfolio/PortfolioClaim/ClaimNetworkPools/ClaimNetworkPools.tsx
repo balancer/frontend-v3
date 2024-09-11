@@ -62,23 +62,26 @@ export function ClaimNetworkPools() {
               </Center>
             )}
             <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
-              {poolsWithChain.map(([chain, pools], index) => (
-                <motion.div
-                  key={chain}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
-                  style={{ transformOrigin: 'top' }}
-                >
-                  <ClaimNetworkBlock
-                    chain={pools[0].chain}
-                    networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
-                      pools[0].chain
-                    ].toNumber()}
-                    onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
-                  />
-                </motion.div>
-              ))}
+              {poolsWithChain.map(
+                ([chain, pools], index) =>
+                  pools[0] && (
+                    <motion.div
+                      key={chain}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
+                      style={{ transformOrigin: 'top' }}
+                    >
+                      <ClaimNetworkBlock
+                        chain={pools[0].chain}
+                        networkTotalClaimableFiatBalance={totalFiatClaimableBalanceByChain[
+                          pools[0].chain
+                        ].toNumber()}
+                        onClick={() => router.push(`/portfolio/${chainToSlugMap[pools[0].chain]}`)}
+                      />
+                    </motion.div>
+                  )
+              )}
 
               {hasProtocolRewards && (
                 <motion.div

@@ -5,7 +5,7 @@
 import * as Sentry from '@sentry/nextjs'
 import { sentryDSN } from './sentry.config'
 import { isProd } from './lib/config/app.config'
-import { shouldIgnoreError } from './lib/shared/utils/query-errors'
+import { shouldIgnoreException } from './lib/shared/utils/query-errors'
 
 Sentry.init({
   // Change this value only if you need to debug in development (we have a custom developmentSentryDSN for that)
@@ -50,6 +50,13 @@ Sentry.init({
 
   beforeSend(event) {
     /*
+      The transaction values in the nextjs-sentry integration are misleading
+      so we replace them with the url of the request that caused the error
+    */
+    if (event.transaction) {
+      event.transaction = event.request?.url || ''
+    }
+    /*
       Ensure that we capture all possible errors, including the ones that NextJS/React Error boundaries can't properly catch.
       If the error comes from a flow url, we tag it as fatal and add custom exception type for better traceability/grouping.
       More info:
@@ -68,10 +75,19 @@ Sentry.init({
       'swap',
     ]
     const criticalFlowPath = criticalFlowPaths.find(path => event.request?.url?.includes(path))
-    if (!criticalFlowPath) return event
+    if (!criticalFlowPath || isNonFatalError(event)) {
+      return handleNonFatalError(event)
+    }
     return handleFatalError(event, criticalFlowPath)
   },
 })
+
+function handleNonFatalError(event: Sentry.ErrorEvent): Sentry.ErrorEvent | null {
+  const firstValue = getFirstExceptionValue(event)
+  if (firstValue && shouldIgnoreException(firstValue)) return null
+  event.level = 'error'
+  return event
+}
 
 function handleFatalError(
   event: Sentry.ErrorEvent,
@@ -82,7 +98,7 @@ function handleFatalError(
   if (event?.exception?.values?.length) {
     const firstValue = event.exception.values[0]
 
-    if (shouldIgnoreError(new Error(firstValue.value))) return null
+    if (shouldIgnoreException(firstValue)) return null
 
     const flowType = uppercaseSegment(criticalFlowPath)
     firstValue.value = `Unexpected error in ${flowType} flow.
@@ -100,4 +116,18 @@ function uppercaseSegment(path: string): string {
     .split('-')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join('')
+}
+
+// Detect errors that are not considered fatal even if they happen in a critical path
+function isNonFatalError(event: Sentry.ErrorEvent) {
+  const firstValue = getFirstExceptionValue(event)
+  if (firstValue?.value === 'Invalid swap: must contain at least 1 path.') return true
+
+  return false
+}
+
+function getFirstExceptionValue(event: Sentry.ErrorEvent) {
+  if (event?.exception?.values?.length) {
+    return event.exception.values[0]
+  }
 }

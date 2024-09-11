@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidityNested,
@@ -13,6 +11,7 @@ import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHe
 import { NestedBuildAddLiquidityInput, NestedQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * NestedAddLiquidityHandler is a handler that implements the
@@ -55,6 +54,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
     slippagePercent,
     queryOutput,
     relayerApprovalSignature,
+    humanAmountsIn,
   }: NestedBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidityNested()
 
@@ -63,7 +63,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
       relayerApprovalSignature,
-      wethIsEth: false, // assuming we don't want to use the native asset over the wrapped native asset for now.
+      wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
     })
 
     return {
@@ -87,7 +87,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId as ChainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn: nonEmptyAmountsIn,
     }
   }

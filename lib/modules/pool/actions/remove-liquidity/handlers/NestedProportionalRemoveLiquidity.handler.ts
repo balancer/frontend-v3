@@ -1,4 +1,3 @@
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   HumanAmount,
@@ -16,6 +15,7 @@ import {
   QueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export interface NestedProportionalQueryRemoveLiquidityOutput extends QueryRemoveLiquidityOutput {
   sdkQueryOutput: RemoveLiquidityNestedQueryOutput
@@ -56,6 +56,7 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
     account,
     slippagePercent,
     queryOutput,
+    wethIsEth,
     relayerApprovalSignature,
   }: NestedProportionalQueryRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidityNested()
@@ -65,7 +66,7 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       accountAddress: account,
       relayerApprovalSignature,
-      wethIsEth: false, // assuming we don't want to use the native asset over the wrapped native asset for now.
+      wethIsEth,
     })
 
     return {
@@ -87,7 +88,7 @@ export class NestedProportionalRemoveLiquidityHandler implements RemoveLiquidity
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
     }
 
     return result

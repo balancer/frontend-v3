@@ -5,7 +5,7 @@ import PoolMetaBadges from './PoolMetaBadges'
 import { usePool } from '../../PoolProvider'
 import { shouldBlockAddLiquidity } from '../../pool.helpers'
 import { AnalyticsEvent, trackEvent } from '@/lib/shared/services/fathom/Fathom'
-import { PoolCategories } from '../../categories/PoolCategores'
+import { PoolCategories } from '../../categories/PoolCategories'
 import { PoolBreadcrumbs } from './PoolBreadcrumbs'
 
 export function PoolHeader() {

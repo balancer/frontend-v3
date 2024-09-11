@@ -38,7 +38,7 @@ export default function NetworkClaim() {
 
   const [modalPools, setModalPools] = useState<Pool[]>([])
 
-  const hasMultipleClaims = pools?.length > 1
+  const hasMultipleClaims = pools ? pools.length > 1 : false
 
   return (
     <TransactionStateProvider>

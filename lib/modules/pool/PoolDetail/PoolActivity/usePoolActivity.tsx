@@ -53,18 +53,18 @@ function _usePoolActivity() {
     })
   }, [pool?.type, variant])
 
-  const [activeTab, setActiveTab] = useState<ButtonGroupOption>(tabsList[0])
+  const [activeTab, setActiveTab] = useState<ButtonGroupOption | undefined>(tabsList[0])
 
-  const isAllOrSwaps = activeTab.value === 'all' || activeTab.value === 'swaps'
-  const isAllOrAdds = activeTab.value === 'all' || activeTab.value === 'adds'
-  const isAllOrRemoves = activeTab.value === 'all' || activeTab.value === 'removes'
+  const isAllOrSwaps = activeTab?.value === 'all' || activeTab?.value === 'swaps'
+  const isAllOrAdds = activeTab?.value === 'all' || activeTab?.value === 'adds'
+  const isAllOrRemoves = activeTab?.value === 'all' || activeTab?.value === 'removes'
 
   function getTitle() {
-    if (activeTab.value === 'all') {
+    if (activeTab?.value === 'all') {
       return 'transactions'
     }
 
-    return activeTab.value
+    return activeTab?.value ?? ''
   }
 
   const { loading, data: response } = usePoolEvents({

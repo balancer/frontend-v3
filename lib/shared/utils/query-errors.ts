@@ -1,5 +1,10 @@
 import { captureException } from '@sentry/nextjs'
-import { Extras, ScopeContext } from '@sentry/types'
+import {
+  Extras,
+  ScopeContext,
+  Stacktrace as SentryStack,
+  Exception as SentryException,
+} from '@sentry/types'
 import { SentryError, ensureError } from './errors'
 import { isUserRejectedError } from './error-filters'
 import {
@@ -226,41 +231,99 @@ export function captureSentryError(
 /*
   Detects common errors that we don't want to capture in Sentry
 */
-export function shouldIgnoreError(e: Error) {
+export function shouldIgnoreException(sentryException: SentryException) {
+  const errorMessage = sentryException.value || ''
+  const ignored = shouldIgnore(errorMessage, sentryStackFramesToString(sentryException.stacktrace))
+  if (ignored && !isProd) console.log('Ignoring error with message: ', errorMessage)
+  return ignored
+}
+
+export function shouldIgnore(message: string, stackTrace = ''): boolean {
+  if (isUserRejectedError(new Error(message))) return true
+
   /*
     Thrown from useWalletClient() when loading a pool page from scratch.
     It looks like is is caused by the useWalletClient call in AddTokenToWalletButton but it does not affect it's behavior.
   */
-  const ignored = shouldIgnore(e)
-  if (ignored && !isProd) console.log('Ignoring error with message: ', e.message)
-  return ignored
-}
-
-function shouldIgnore(e: Error): boolean {
-  if (!e?.message) return false
-
-  if (isUserRejectedError(e)) return true
-
-  if (e.message.includes('.getAccounts is not a function')) return true
+  if (message.includes('.getAccounts is not a function')) return true
 
   /*
     Error thrown by Library detector chrome extension:
     https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
   */
-  if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+  if (message.includes(`Cannot set properties of null (setting 'content')`)) return true
 
   /*
     Frequent errors in rainbowkit + wagmi that do not mean a real crash
   */
-  if (e.message.includes('Connector not connected')) return true
-  if (e.message.includes('Provider not found')) return true
+  if (message.includes('Connector not connected')) return true
+  if (message.includes('Provider not found')) return true
 
   /*
     More info: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
   */
-  if (e.message.includes('ResizeObserver loop limit exceeded')) return true
+  if (message.includes('ResizeObserver loop limit exceeded')) return true
 
-  if (isUserRejectedError(e)) return true
+  /*
+    Wallet Connect bug when switching certain networks.
+    It does not crash the app.
+    More info: https://github.com/MetaMask/metamask-mobile/issues/9157
+  */
+  if (message.includes('Missing or invalid. emit() chainId')) return true
+
+  /*
+    Some extensions cause this error
+    Examples: https://balancer-labs.sentry.io/issues/5623611453/
+  */
+  if (
+    message.startsWith('Maximum call stack size exceeded') &&
+    stackTrace.includes('injectWalletGuard.js')
+  ) {
+    return true
+  }
+
+  /*
+    com.okex.wallet injects code that causes this error
+    Examples: https://balancer-labs.sentry.io/issues/5687846148/
+  */
+  if (message.startsWith('Cannot redefine property:') && stackTrace.includes('inject.bundle.js')) {
+    return true
+  }
+
+  /*
+    Wagmi error which does not crash.
+    Can be reproduced by:
+      1. Connect with Rabby
+      2. Disconnect Rabby from the app
+      3. Click "Connect wallet" and chose WalletConnect
+  */
+  if (
+    message === "Cannot read properties of undefined (reading 'address')" &&
+    stackTrace.includes('getWalletClient.js')
+  ) {
+    return true
+  }
+
+  /*
+    Waller Connect bug
+    More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
+  */
+  if (
+    message.startsWith('Error: WebSocket connection failed for host: wss://relay.walletconnect.com')
+  ) {
+    return true
+  }
 
   return false
+}
+
+function sentryStackFramesToString(sentryStack?: SentryStack): string {
+  if (!sentryStack?.frames?.length) return ''
+  return (
+    sentryStack.frames
+      // We only check the last 4 frames (root of the error)
+      .slice(-4)
+      .map(frame => frame.filename || '')
+      .join()
+  )
 }

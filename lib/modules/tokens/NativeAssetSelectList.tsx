@@ -24,7 +24,10 @@ export function NativeAssetSelectList({ tokens, onTokenSelect, ...rest }: Props 
   const hotkeyOpts = { enableOnFormTags: true }
 
   const selectActiveToken = () => {
-    onTokenSelect(tokens[activeIndex])
+    const token = tokens[activeIndex]
+    if (token) {
+      onTokenSelect(token)
+    }
   }
 
   useHotkeys('up', decrementActiveIndex, hotkeyOpts)
