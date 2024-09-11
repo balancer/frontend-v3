@@ -15,7 +15,6 @@ import { useUserAccount } from '../../../web3/UserAccountProvider'
 import { useClaimCallDataQuery } from './useClaimCallDataQuery'
 import { BalTokenRewardsResult } from '@/lib/modules/portfolio/PortfolioClaim/useBalRewards'
 import { ClaimableBalancesResult } from '@/lib/modules/portfolio/PortfolioClaim/useClaimableBalances'
-import { allClaimableGaugeAddressesFor } from '../../pool.helpers'
 import { ClaimablePool } from './ClaimProvider'
 import { Address } from 'viem'
 
@@ -45,12 +44,16 @@ export function useClaimAllRewardsStep({
 
   const chain = pool.chain as GqlChain
   const stakingType = pool.staking?.type || GqlPoolStakingType.Gauge
-  const gaugeAddresses = pools.flatMap(pool => allClaimableGaugeAddressesFor(pool))
-  const shouldClaimMany = gaugeAddresses.length > 1
+
+  const claimRewardGauges = nonBalRewards.map(r => r.gaugeAddress)
+  const mintBalRewardGauges = balRewards.map(r => r.gaugeAddress as Address)
+  const allRewardGauges = [...claimRewardGauges, ...mintBalRewardGauges]
+  const shouldClaimMany = allRewardGauges.length > 1
+
   const stakingService = selectStakingService(chain, stakingType)
   const { data: claimData, isLoading } = useClaimCallDataQuery({
-    claimRewardGauges: nonBalRewards.map(r => r.gaugeAddress),
-    mintBalRewardGauges: balRewards.map(r => r.gaugeAddress as Address),
+    claimRewardGauges,
+    mintBalRewardGauges,
     gaugeService: stakingService,
     enabled: isClaimQueryEnabled,
   })
@@ -72,7 +75,7 @@ export function useClaimAllRewardsStep({
       chain,
       claimData,
       stakingType,
-      gaugeAddresses,
+      allRewardGauges,
     }
   )
 
@@ -83,7 +86,7 @@ export function useClaimAllRewardsStep({
     contractAddress: networkConfigs[chain].contracts.balancer.relayerV6,
     functionName: 'multicall',
     args: [claimData],
-    enabled: gaugeAddresses.length > 0 && claimData && claimData.length > 0,
+    enabled: allRewardGauges.length > 0 && claimData && claimData.length > 0,
     txSimulationMeta,
   }
 
