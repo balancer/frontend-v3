@@ -3,9 +3,8 @@ import { balancerMinterAbi } from '@/lib/modules/web3/contracts/abi/generated'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useReadContract } from 'wagmi'
 
-export function useHasMinterApproval() {
+export function useHasMinterApproval(hasBalTokenRewards: boolean) {
   const { isConnected, userAddress } = useUserAccount()
-
   const networkConfig = useNetworkConfig()
   const { chainId, contracts } = networkConfig
 
@@ -16,7 +15,7 @@ export function useHasMinterApproval() {
     account: userAddress,
     functionName: 'getMinterApproval',
     args: [contracts.balancer.relayerV6, userAddress],
-    query: { enabled: isConnected },
+    query: { enabled: isConnected && hasBalTokenRewards },
   })
   return {
     ...query,

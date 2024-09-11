@@ -13,11 +13,15 @@ export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
 
   const { chain } = pool
   const chainId = getChainId(pool.chain)
+  const hasBalTokenRewards = params.balTokenRewardsQuery.balRewardsData.length > 0
 
   const { step: relayerApprovalStep, isLoading: isLoadingRelayerApprovalStep } =
     useApproveRelayerStep(chainId)
-  const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } =
-    useApproveMinterStep(chain)
+
+  const { step: minterApprovalStep, isLoading: isLoadingMinterApprovalStep } = useApproveMinterStep(
+    chain,
+    hasBalTokenRewards
+  )
 
   const { step: claimAllRewardsStep, isLoading: isLoadingClaimAllRewards } =
     useClaimAllRewardsStep(params)
@@ -25,12 +29,12 @@ export function useClaimAllRewardsSteps(params: ClaimAllRewardsStepParams) {
   const steps = useMemo((): TransactionStep[] => {
     const steps = [relayerApprovalStep, claimAllRewardsStep]
 
-    if (params.balTokenRewardsQuery.balRewardsData.length > 0) {
+    if (hasBalTokenRewards) {
       steps.unshift(minterApprovalStep)
     }
 
     return steps
-  }, [relayerApprovalStep, claimAllRewardsStep, minterApprovalStep, params])
+  }, [relayerApprovalStep, claimAllRewardsStep, minterApprovalStep, hasBalTokenRewards])
 
   return {
     isLoading:
