@@ -22,60 +22,42 @@ import { useNav } from './useNav'
 import { useRouter } from 'next/navigation'
 import { VeBalLink } from '@/lib/modules/vebal/VebalRedirectModal'
 import { getGqlChain } from '@/lib/config/app.config'
-import { Features } from '@/lib/config/config.types'
+import { Feature } from '@/lib/config/config.types'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { hasFeature } from '@/lib/config/hasFeature'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
 function NavLinks({ onClick }: { onClick?: () => void }) {
-  const { appLinks, beetsLinks, AppLink } = useNav()
+  const { projectExtraAppLinks, ProjectAppLinks } = useNav()
   const { chain: _chain } = useUserAccount()
+  const { defaultNetwork, features } = getProjectConfig()
 
-  const chain = _chain?.id ? getGqlChain(_chain?.id) : getProjectConfig().defaultNetwork
+  const chain = _chain?.id ? getGqlChain(_chain?.id) : defaultNetwork
+  const projectLinks = projectExtraAppLinks(onClick)
+  const projectFeature = features ? features[chain] : []
 
   return (
     <VStack align="start" w="full">
-      {appLinks.map(link => (
-        <AppLink
-          key={link.href}
-          href={link.href}
-          label={link.label}
-          onClick={onClick}
-          fontSize="xl"
-        />
-      ))}
-      {hasFeature(chain, Features.vebal) && <VeBalLink fontSize="xl" />}
-      {hasFeature(chain, Features.mabeets) && (
-        <AppLink
-          key={beetsLinks.mabeets.href}
-          href={beetsLinks.mabeets.href}
-          label={beetsLinks.mabeets.label}
-          onClick={onClick}
-          fontSize="xl"
-        />
-      )}
-      {hasFeature(chain, Features.sftmx) && (
-        <AppLink
-          key={beetsLinks.sftmx.href}
-          href={beetsLinks.sftmx.href}
-          label={beetsLinks.sftmx.label}
-          onClick={onClick}
-          fontSize="xl"
-        />
-      )}
+      <ProjectAppLinks onClick={onClick} />
+      {hasFeature(chain, Feature.vebal) && <VeBalLink fontSize="xl" />}
+      {projectFeature &&
+        projectFeature.map(
+          feature =>
+            projectLinks.find(link => (link.label.toLowerCase() as Feature) === feature)?.component
+        )}
     </VStack>
   )
 }
 
 function EcosystemLinks() {
-  const { ecosystemLinks } = useNav()
+  const { ecoSystemLinks } = useNav()
 
   return (
     <VStack align="start" w="full">
       <Text color="grayText" size="xs" mb="sm">
         Ecosystem
       </Text>
-      {ecosystemLinks.map(link => (
+      {ecoSystemLinks.map(link => (
         <Link
           key={link.href}
           href={link.href}

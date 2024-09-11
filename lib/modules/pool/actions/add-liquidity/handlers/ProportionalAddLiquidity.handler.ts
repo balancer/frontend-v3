@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidity,
@@ -8,13 +6,13 @@ import {
   HumanAmount,
   InputAmount,
   Slippage,
-  calculateProportionalAmounts,
 } from '@balancer/sdk'
 import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
@@ -36,17 +34,11 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   public async simulate(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): Promise<SdkQueryAddLiquidityOutput> {
-    // This is an edge-case scenario where the user only enters one humanAmount (that we always move to the first position of the humanAmountsIn array)
-    const humanAmountIn = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
-
-    const { bptAmount } = calculateProportionalAmounts(
-      this.helpers.poolStateWithBalances,
-      humanAmountIn
-    )
+    const referenceAmount = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
 
     const addLiquidity = new AddLiquidity()
 
-    const addLiquidityInput = this.constructSdkInput(bptAmount)
+    const addLiquidityInput = this.constructSdkInput(referenceAmount)
     const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
 
     return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
@@ -84,11 +76,11 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(bptOut: InputAmount): AddLiquidityProportionalInput {
+  private constructSdkInput(referenceAmount: InputAmount): AddLiquidityProportionalInput {
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
-      bptOut,
+      rpcUrl: getRpcUrl(this.helpers.chainId),
+      referenceAmount,
       kind: AddLiquidityKind.Proportional,
     }
   }

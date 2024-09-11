@@ -8,10 +8,12 @@ import { useParams } from 'next/navigation'
 import NextLink from 'next/link'
 import { Link, LinkProps } from '@chakra-ui/react'
 import { isDev, isStaging } from '@/lib/config/app.config'
+import { getProjectConfig } from '@/lib/config/getProjectConfig'
 
 export function useNav() {
   const pathname = usePathname()
   const { chain } = useParams()
+  const { ecoSystemLinks, extraAppLinks, socialLinks } = getProjectConfig()
 
   const swapHref = chain ? '/swap/' + chain : '/swap'
 
@@ -38,46 +40,28 @@ export function useNav() {
     })
   }
 
-  const beetsLinks = {
-    mabeets: { href: '/mabeets', label: 'maBEETS' },
-    sftmx: { href: '/sftmx', label: 'sFTMx' },
+  const getSocialIcon = (label: string, size: number) => {
+    switch (label.toLowerCase()) {
+      case 'x':
+        return <XIcon size={size} />
+      case 'discord':
+        return <DiscordIcon size={size} />
+      case 'medium':
+        return <MediumIcon size={size} />
+      case 'youtube':
+        return <YoutubeIcon size={size} />
+      case 'github':
+        return <GithubIcon size={size} />
+      default:
+        return null
+    }
   }
 
-  const ecosystemLinks = [
-    { label: 'Build', href: 'https://balancer.fi/build' },
-    { label: 'Blog', href: 'https://medium.com/balancer-protocol' },
-    { label: 'Docs', href: 'https://docs.balancer.fi/' },
-    { label: 'Governance', href: 'https://vote.balancer.fi/#/' },
-    { label: 'Analytics', href: 'https://dune.com/balancer' },
-    { label: 'Forum', href: 'https://forum.balancer.fi/' },
-    {
-      label: 'Grants',
-      href: 'https://grants.balancer.community',
-    },
-  ]
-
-  const getSocialLinks = (size = 24) => [
-    {
-      icon: <XIcon size={size} />,
-      href: 'https://x.com/Balancer',
-    },
-    {
-      icon: <DiscordIcon size={size} />,
-      href: 'https://discord.balancer.fi/',
-    },
-    {
-      icon: <MediumIcon size={size} />,
-      href: 'https://medium.com/balancer-protocol',
-    },
-    {
-      icon: <YoutubeIcon size={size} />,
-      href: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
-    },
-    {
-      icon: <GithubIcon size={size} />,
-      href: 'https://github.com/balancer/',
-    },
-  ]
+  const getSocialLinks = (size = 24) =>
+    socialLinks.map(({ label, href }) => ({
+      href,
+      icon: getSocialIcon(label, size),
+    }))
 
   function linkColorFor(path: string) {
     return pathname === path ? 'font.highlight' : 'font.primary'
@@ -107,5 +91,25 @@ export function useNav() {
     </Link>
   )
 
-  return { appLinks, beetsLinks, ecosystemLinks, getSocialLinks, linkColorFor, AppLink }
+  function ProjectAppLinks({ onClick }: { onClick?: () => void }) {
+    return appLinks.map(link => (
+      <AppLink key={link.href} href={link.href} label={link.label} onClick={onClick} />
+    ))
+  }
+
+  const projectExtraAppLinks = (onClick?: () => void) =>
+    extraAppLinks.map(link => ({
+      label: link.label,
+      component: <AppLink key={link.href} href={link.href} label={link.label} onClick={onClick} />,
+    }))
+
+  return {
+    appLinks,
+    ecoSystemLinks,
+    projectExtraAppLinks,
+    ProjectAppLinks,
+    getSocialLinks,
+    linkColorFor,
+    AppLink,
+  }
 }

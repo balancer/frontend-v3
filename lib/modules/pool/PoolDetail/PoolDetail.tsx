@@ -29,13 +29,19 @@ export function PoolDetail() {
   const { userAddress, isConnected } = useUserAccount()
   const {
     data: userPoolEventsData,
+    loading: isLoadingUserPoolEvents,
     startPolling,
     stopPolling,
-  } = usePoolEvents({
-    chainIn: [chain],
-    poolIdIn: [pool.id],
-    userAddress,
-  })
+  } = usePoolEvents(
+    {
+      chainIn: [chain],
+      poolIdIn: [pool.id],
+      userAddress,
+    },
+    {
+      skip: !isConnected,
+    }
+  )
 
   useEffect(() => {
     startPolling(120000)
@@ -43,11 +49,13 @@ export function PoolDetail() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const userPoolEvents = userPoolEventsData?.poolEvents
+
   const userhasPoolEvents = useMemo(() => {
-    if (userPoolEventsData) {
-      return userPoolEventsData.poolEvents?.length > 0
+    if (userPoolEvents) {
+      return userPoolEvents?.length > 0
     }
-  }, [userPoolEventsData])
+  }, [userPoolEvents])
 
   const userHasLiquidity = hasTotalBalance(pool)
 
@@ -82,7 +90,10 @@ export function PoolDetail() {
                 justifyContent="stretch"
               >
                 <PoolMyLiquidity />
-                <PoolUserEvents />
+                <PoolUserEvents
+                  userPoolEvents={userPoolEvents}
+                  isLoading={isLoadingUserPoolEvents}
+                />
               </Stack>
             )}
             <PoolActivity />

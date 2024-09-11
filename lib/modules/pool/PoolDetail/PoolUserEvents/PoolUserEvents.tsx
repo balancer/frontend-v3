@@ -14,20 +14,19 @@ import {
 import { usePool } from '../../PoolProvider'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolEventsQuery, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
-import { PoolEventItem, usePoolEvents } from '../../usePoolEvents'
+import { PoolEventItem } from '../../usePoolEvents'
 import { calcTotalStakedBalance, getUserTotalBalance } from '../../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { isEmpty } from 'lodash'
-import { useUserAccount } from '../../../web3/UserAccountProvider'
-import { isVebalPool } from '../../pool.helpers'
 import { hasFeature } from '@/lib/config/hasFeature'
-import { Features } from '@/lib/config/config.types'
+import { Feature } from '@/lib/config/config.types'
 import dynamic from 'next/dynamic'
+import { isVebalPool } from '../../pool.helpers'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -108,22 +107,21 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 }
 
-export default function PoolUserEvents() {
+export default function PoolUserEvents({
+  userPoolEvents,
+  isLoading,
+}: {
+  userPoolEvents: GetPoolEventsQuery['poolEvents'] | undefined
+  isLoading: boolean
+}) {
   const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
   const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
-  const { userAddress } = useUserAccount()
-
-  const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
-    chainIn: [chain],
-    poolIdIn: [pool.id],
-    userAddress,
-  })
 
   const isVeBal = isVebalPool(pool.id)
-  const showBoostValue = hasFeature(chain, Features.vebal) && !isVeBal
+  const showBoostValue = hasFeature(chain, Feature.vebal) && !isVeBal
   const BoostText = dynamic(() => import(`./BoostText`).then(mod => mod.BoostText))
 
   // keep this card the same height as the 'My liquidity' section
@@ -135,10 +133,10 @@ export default function PoolUserEvents() {
   }, [])
 
   useEffect(() => {
-    if (!isLoading && userPoolEventsData?.poolEvents.length) {
-      setPoolEvents(userPoolEventsData.poolEvents)
+    if (!isLoading && userPoolEvents?.length) {
+      setPoolEvents(userPoolEvents)
     }
-  }, [userPoolEventsData, isLoading])
+  }, [userPoolEvents, isLoading])
 
   function getShareTitle() {
     if (isVeBal) {

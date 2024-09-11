@@ -75,7 +75,7 @@ export function ActionModalFooter({ isSuccess, currentStep, returnLabel, returnA
             transition={{ duration: 0.3 }}
             style={{ width: '100%' }}
           >
-            <VStack w="full">{currentStep?.renderAction()}</VStack>
+            <VStack w="full">{currentStep.renderAction()}</VStack>
           </motion.div>
         )}
       </AnimatePresence>

@@ -123,6 +123,9 @@ const networkConfig = {
         '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003cD',
       ],
     },
+    allowNestedActions: [
+      '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0', // B-80BAL-20WETH
+    ],
   }),
 } as const satisfies NetworkConfig
 

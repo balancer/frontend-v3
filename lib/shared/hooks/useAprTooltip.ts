@@ -38,6 +38,7 @@ const TOTAL_BASE_APR_TYPES = [
   GqlPoolAprItemType.Staking,
   GqlPoolAprItemType.Merkl,
   GqlPoolAprItemType.Surplus,
+  GqlPoolAprItemType.VebalEmissions,
 ]
 
 // Types that must be added to the total APR
@@ -82,7 +83,7 @@ export function useAprTooltip({
   })
 
   const yieldBearingTokensDisplayed = yieldBearingTokens.map(item => ({
-    title: item.title.replace(' APR', ''),
+    title: item.rewardTokenSymbol || '',
     apr: numberFormatter(item.apr.toString()),
   }))
 
@@ -93,11 +94,11 @@ export function useAprTooltip({
 
   // Staking incentives
   const stakingIncentives = aprItems.filter(item => {
-    return item.type === GqlPoolAprItemType.Staking && item.title.indexOf('BAL reward') === -1
+    return item.type === GqlPoolAprItemType.Staking
   })
 
   const stakingIncentivesDisplayed = stakingIncentives.map(item => ({
-    title: item.title.replace(' reward APR', ''),
+    title: item.rewardTokenSymbol || '',
     apr: numberFormatter(item.apr.toString()),
     tooltipText: stakingTokenTooltipText,
   }))
@@ -119,10 +120,7 @@ export function useAprTooltip({
   const surplusIncentivesAprDisplayed = calculateSingleIncentivesAprDisplayed(surplusIncentives)
 
   // Bal Reward
-  const balReward = aprItems.find(
-    // TO-DO refactor this so not to rely on the title
-    item => item.type === GqlPoolAprItemType.Staking && item.title === 'BAL reward APR'
-  )
+  const balReward = aprItems.find(item => item.type === GqlPoolAprItemType.VebalEmissions)
 
   const maxVeBal = hasVeBalBoost ? absMaxApr(aprItems, vebalBoost) : bn(0)
   const maxVeBalDisplayed = numberFormatter(maxVeBal.toString())
@@ -139,7 +137,7 @@ export function useAprTooltip({
 
   if (balReward) {
     stakingIncentivesDisplayed.push({
-      title: 'BAL',
+      title: balReward.rewardTokenSymbol || '',
       apr: numberFormatter(balReward.apr.toString()),
       tooltipText: stakingBalTooltipText,
     })

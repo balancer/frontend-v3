@@ -10,6 +10,7 @@ import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 export interface SwapHandler {
   apolloClient?: ApolloClient<object>
   tokens?: GqlToken[]
+  name: string
 
   simulate(inputs: SimulateSwapInputs): Promise<SimulateSwapResponse>
   build(inputs: BuildSwapInputs): TransactionConfig

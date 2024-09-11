@@ -62,7 +62,7 @@ function processLockSnapshots(lockSnapshots: LockSnapshot[]) {
 
 function filterAndFlattenValues(valuesByDates: Record<string, number[]>) {
   return Object.keys(valuesByDates).reduce((acc: ChartValueAcc, item) => {
-    const values = valuesByDates[item]
+    const values = valuesByDates[item] ?? []
     const filteredValues = values.length > 2 ? [Math.min(...values), Math.max(...values)] : values
 
     filteredValues.forEach((val: number) => {

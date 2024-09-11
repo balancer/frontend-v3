@@ -75,16 +75,14 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
                 {getPoolTypeLabel(pool.type)}
               </Text>
             </GridItem>
-            <GridItem display="flex" justifyContent="right">
+            <GridItem display="flex" justifyContent="left" px="sm">
               <HStack>
-                <Text textAlign="right" fontWeight="medium">
-                  {stakingText}{' '}
-                </Text>
+                <Text fontWeight="medium">{stakingText} </Text>
                 <StakingIcons pool={pool} />
               </HStack>
             </GridItem>
             {/* TO-DO vebal boost */}
-            <GridItem textAlign="right">
+            <GridItem px="sm">
               <Text
                 title={toCurrency(pool.dynamicData.volume24h, { abbreviated: false })}
                 textAlign="right"
@@ -93,12 +91,12 @@ export function PortfolioTableRow({ pool, keyValue, veBalBoostMap, ...rest }: Pr
                 {vebalBoostValue ? `${Number(vebalBoostValue).toFixed(2)}x` : '-'}
               </Text>
             </GridItem>
-            <GridItem>
+            <GridItem px="sm">
               <Text textAlign="right" fontWeight="medium">
                 {toCurrency(pool.poolPositionUsd, { abbreviated: false })}
               </Text>
             </GridItem>
-            <GridItem justifySelf="end">
+            <GridItem justifySelf="end" px="sm">
               {pool.poolType === ExpandedPoolType.StakedAura ? (
                 pool.staking?.aura?.apr ? (
                   <AuraAprTooltip auraApr={pool.staking?.aura?.apr} />

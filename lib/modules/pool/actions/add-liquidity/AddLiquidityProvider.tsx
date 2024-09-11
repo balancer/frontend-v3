@@ -17,19 +17,20 @@ import {
   injectNativeAsset,
   replaceWrappedWithNativeAsset,
   requiresProportionalInput,
+  supportsNestedActions,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro, isNonComposableStable } from '../../pool.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
+import { getLeafTokens } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -59,7 +60,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const wNativeAsset = getWrappedNativeAssetToken(chain)
 
   function setInitialHumanAmountsIn() {
-    const amountsIn = pool.allTokens.map(
+    const amountsIn = getPoolTokens().map(
       token =>
         ({
           tokenAddress: token.address,
@@ -81,9 +82,11 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   }
 
   function getPoolTokens() {
-    if (isNonComposableStable(pool.type)) return pool.poolTokens
-    if (isGyro(pool.type)) return pool.allTokens
-    return pool.allTokens.filter(token => token.isMainToken)
+    if (supportsNestedActions(pool)) {
+      return getLeafTokens(pool.poolTokens)
+    }
+
+    return pool.poolTokens
   }
 
   const tokens = getPoolTokens()

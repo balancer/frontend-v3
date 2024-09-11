@@ -43,7 +43,11 @@ export function _useTokenBalances(initTokens?: GqlToken[], extTokens?: GqlToken[
     address: userAddress,
     query: {
       enabled: !!userAddress && includesNativeAsset,
-      gcTime: BALANCE_CACHE_TIME_MS,
+      /*
+        Cache without requests in the background
+        More info: https://tkdodo.eu/blog/practical-react-query#the-defaults-explained
+      */
+      staleTime: BALANCE_CACHE_TIME_MS,
     },
   })
 

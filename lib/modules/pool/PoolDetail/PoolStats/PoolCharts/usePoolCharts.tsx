@@ -31,7 +31,7 @@ export type PoolChartPeriod = {
   label: string
 }
 
-export const poolChartPeriods = [
+export const poolChartPeriods: PoolChartPeriod[] = [
   {
     value: GqlPoolSnapshotDataRange.ThirtyDays,
     label: '30d',

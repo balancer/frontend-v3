@@ -18,9 +18,7 @@ import {
   Token,
 } from '@balancer/sdk'
 import { Hex, formatUnits, parseUnits, Address } from 'viem'
-
 import {
-  hasNestedPools,
   isAffectedByCspIssue,
   isComposableStableV1,
   isCowAmmPool,
@@ -173,17 +171,10 @@ It looks that you tried to call useBuildCallData before the last query finished 
   return queryResponse
 }
 
-export function supportsNestedLiquidity(pool: Pool) {
-  return pool.type === GqlPoolType.ComposableStable || pool.type === GqlPoolType.Weighted
-}
-
-export function shouldUseNestedLiquidity(pool: Pool) {
-  return supportsNestedLiquidity(pool) && hasNestedPools(pool)
-}
-
-export function supportsProportionalAdds(pool: Pool) {
-  // Nested pools do not support proportional adds (addable tokens feature)
-  return !shouldUseNestedLiquidity(pool)
+export function supportsNestedActions(pool: Pool): boolean {
+  const allowNestedActions = getNetworkConfig(pool.chain).pools?.allowNestedActions ?? []
+  if (allowNestedActions.includes(pool.id)) return true
+  return false
 }
 
 export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {

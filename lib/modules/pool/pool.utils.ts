@@ -122,7 +122,7 @@ export function getTotalApr(
         return
       }
 
-      if (item.type === GqlPoolAprItemType.Staking) {
+      if (item.type === GqlPoolAprItemType.VebalEmissions) {
         minTotal = bn(item.apr).plus(minTotal)
         maxTotal = bn(item.apr).plus(maxTotal)
         return

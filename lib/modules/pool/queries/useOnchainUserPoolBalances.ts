@@ -144,7 +144,7 @@ function overwriteOnchainPoolBalanceData(
     const userBalance: GqlPoolUserBalance = {
       __typename: 'GqlPoolUserBalance',
       ...(pool.userBalance || {}),
-      stakedBalances: overrideStakedBalances(pool, stakedBalancesByPoolId[pool.id]),
+      stakedBalances: overrideStakedBalances(pool, stakedBalancesByPoolId[pool.id] ?? []),
       walletBalance: onchainUnstakedBalance,
       walletBalanceUsd: onchainUnstakedBalanceUsd,
       totalBalance: totalBalance.toString(),

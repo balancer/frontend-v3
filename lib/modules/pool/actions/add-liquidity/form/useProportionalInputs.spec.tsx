@@ -23,7 +23,7 @@ describe('calculates and sorts proportional human amounts in', () => {
       },
       {
         tokenAddress: daiAddress,
-        humanAmount: '4.678591808922701187',
+        humanAmount: '4.678591808922683444',
       },
     ])
   })

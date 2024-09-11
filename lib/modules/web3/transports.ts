@@ -5,7 +5,7 @@ import { fallback, http } from 'wagmi'
 import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 
-import { chains, rpcFallbacks, rpcOverrides } from './ChainConfig'
+import { chains, getDefaultRpcUrl, rpcFallbacks, rpcOverrides } from './ChainConfig'
 export function getTransports(chain: Chain) {
   const gqlChain = getGqlChain(chain.id as SupportedChainId)
   const overrideRpcUrl = rpcOverrides[gqlChain]
@@ -17,3 +17,8 @@ export function getTransports(chain: Chain) {
 export const transports = Object.fromEntries(
   chains.map(chain => [chain.id, getTransports(chain)])
 ) as Record<number, ReturnType<typeof getTransports>>
+
+export function getRpcUrl(chainId: number): string {
+  const gqlChain = getGqlChain(chainId)
+  return rpcOverrides[gqlChain] || rpcFallbacks[gqlChain] || getDefaultRpcUrl(chainId)
+}
