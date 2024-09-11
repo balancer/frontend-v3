@@ -8,6 +8,8 @@ import { Address, Hex } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client'
 import { keyBy } from 'lodash'
+import { useLocalStorage } from 'usehooks-ts'
+import { LS_KEYS } from '@/lib/modules/local-storage/local-storage.constants'
 
 const veBalSyncSupportedNetworks: GqlChain[] = Object.keys(networkConfigs)
   .filter(key => networkConfigs[key as keyof typeof networkConfigs].supportsVeBalSync)
@@ -28,6 +30,9 @@ export interface SyncTxHashes {
   [key: string]: Hex
 }
 
+const initialTempSyncingNetworks: Record<string, TempSyncingNetworks> = {}
+const initialSyncTxHashes: Record<string, SyncTxHashes> = {}
+
 export const _useCrossChainSync = () => {
   const { userAddress } = useUserAccount()
 
@@ -38,11 +43,13 @@ export const _useCrossChainSync = () => {
     isError: isOmniEscrowError,
   } = useOmniEscrowLocksQuery(userAddress)
 
-  const [tempSyncingNetworks, setTempSyncingNetworks] = useState<
-    Record<string, TempSyncingNetworks>
-  >(() => JSON.parse(localStorage.getItem('balancer.tempSyncingNetworks') || '{}'))
-  const [syncTxHashes, _setSyncTxHashes] = useState<Record<string, SyncTxHashes>>(() =>
-    JSON.parse(localStorage.getItem('balancer.syncTxHashes') || '{}')
+  const [tempSyncingNetworks, setTempSyncingNetworks] = useLocalStorage(
+    LS_KEYS.CrossChainSync.TempSyncingNetworks,
+    initialTempSyncingNetworks
+  )
+  const [syncTxHashes, _setSyncTxHashes] = useLocalStorage(
+    LS_KEYS.CrossChainSync.SyncTxHashes,
+    initialSyncTxHashes
   )
   const [syncLayerZeroTxLinks, setSyncLayerZeroTxLinks] = useState<Record<string, string>>({})
 
@@ -185,10 +192,8 @@ export const _useCrossChainSync = () => {
           [network]: txHash,
         },
       }))
-
-      localStorage.setItem('balancer.syncTxHashes', JSON.stringify(syncTxHashes))
     },
-    [userAddress]
+    [userAddress, _setSyncTxHashes]
   )
 
   const clearTempSyncingNetworksFromSynced = useCallback(() => {
@@ -200,8 +205,6 @@ export const _useCrossChainSync = () => {
       )
       return { ...prev, [userAddress]: { ...prev[userAddress], networks: updatedNetworks } }
     })
-
-    localStorage.setItem('balancer.tempSyncingNetworks', JSON.stringify(tempSyncingNetworks))
   }, [userAddress, networksBySyncState, tempSyncingNetworks])
 
   const getLayerZeroTxLink = useCallback(async (txHash: Address) => {
