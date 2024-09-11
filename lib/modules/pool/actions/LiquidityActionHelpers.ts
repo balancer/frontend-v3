@@ -203,7 +203,8 @@ export function toPoolState(pool: Pool): PoolState {
   return {
     id: pool.id as Hex,
     address: pool.address as Address,
-    tokens: pool.poolTokens as MinimalToken[],
+    // Destruct to avoid errors when the SDK tries to mutate the poolTokens (read-only from GraphQL)
+    tokens: [...pool.poolTokens] as MinimalToken[],
     type: mapPoolType(pool.type),
     protocolVersion: pool.protocolVersion as ProtocolVersion,
   }
