@@ -4,7 +4,7 @@ import { OmniEscrowLock, useOmniEscrowLocksQuery } from './useOmniEscrowLocksQue
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { NetworkSyncState, useCrossChainNetworks } from './useCrossChainNetworks'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { Address, Hex } from 'viem'
+import { Address, Hash } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client'
 import { keyBy } from 'lodash'
@@ -26,12 +26,10 @@ export interface TempSyncingNetworks {
   syncTimestamp?: number
 }
 
-export interface SyncTxHashes {
-  [key: string]: Hex
-}
+export type SyncTxHashes = Record<GqlChain, Hash>
 
-const initialTempSyncingNetworks: Record<string, TempSyncingNetworks> = {}
-const initialSyncTxHashes: Record<string, SyncTxHashes> = {}
+const initialTempSyncingNetworks: Record<Address, TempSyncingNetworks> = {}
+const initialSyncTxHashes: Record<Address, SyncTxHashes> = {}
 
 export const _useCrossChainSync = () => {
   const { userAddress } = useUserAccount()
@@ -51,7 +49,7 @@ export const _useCrossChainSync = () => {
     LS_KEYS.CrossChainSync.SyncTxHashes,
     initialSyncTxHashes
   )
-  const [syncLayerZeroTxLinks, setSyncLayerZeroTxLinks] = useState<Record<string, string>>({})
+  const [syncLayerZeroTxLinks, setSyncLayerZeroTxLinks] = useState({} as Record<GqlChain, string>)
 
   const allNetworksUnsynced = useMemo(
     () => omniEscrowResponse?.omniVotingEscrowLocks.length === 0,
@@ -184,7 +182,7 @@ export const _useCrossChainSync = () => {
   }, [networksBySyncState, refetch])
 
   const setSyncTxHashes = useCallback(
-    (network: GqlChain, txHash: Hex) => {
+    (network: GqlChain, txHash: Hash) => {
       _setSyncTxHashes(prev => ({
         ...prev,
         [userAddress]: {
@@ -218,7 +216,7 @@ export const _useCrossChainSync = () => {
   }, [])
 
   const getLayerZeroTxLinkOnInterval = useCallback(
-    (networks: string[]) => {
+    (networks: GqlChain[]) => {
       let retryCount = 0
       const intervalId = setInterval(async () => {
         for (const network of networks) {
@@ -240,7 +238,7 @@ export const _useCrossChainSync = () => {
   )
 
   useEffect(() => {
-    const networks = Object.keys(syncTxHashes[userAddress] || {})
+    const networks = Object.keys(syncTxHashes[userAddress] || {}) as GqlChain[]
     let intervalId: NodeJS.Timer
     if (networks.length > 0) {
       intervalId = getLayerZeroTxLinkOnInterval(networks)
