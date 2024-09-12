@@ -83,9 +83,9 @@
     "tinycolor2": "^1.6.0",
     "use-debounce": "^10.0.0",
     "use-sound": "^4.0.1",
-    "usehooks-ts": "^2.9.2",
-    "viem": "^2.19.3",
-    "wagmi": "^2.12.5"
+    "usehooks-ts": "^3.1.0",
+    "viem": "^2.21.6",
+    "wagmi": "^2.12.11"
   },
   "devDependencies": {
     "@apollo/experimental-nextjs-app-support": "^0.8.0",
