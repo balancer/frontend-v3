@@ -11,6 +11,7 @@ import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { GqlChain, GqlPoolStakingGaugeReward } from '@/lib/shared/services/api/generated/graphql'
 import { groupBy, uniqBy } from 'lodash'
+import { getClaimableQueryStaleTime } from '../../web3/contracts/wagmi-helpers'
 
 interface ClaimableRewardRef {
   tokenAddress: Address
@@ -76,7 +77,10 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
 
   const { data, refetch, isLoading, status }: UseReadContractsReturnType = useReadContracts({
     contracts: claimableRewardContractCalls,
-    query: { enabled: isConnected },
+    query: {
+      enabled: isConnected,
+      staleTime: getClaimableQueryStaleTime(),
+    },
   })
 
   // Format claimable rewards data

@@ -53,3 +53,12 @@ export function getWaitForReceiptTimeout(chainId: number) {
 export function getTxSimulationStaleTime() {
   return Infinity
 }
+
+/*
+  See comments of getTxSimulationStaleTime above
+  This prevents issues in polygon when the user navigates away from the page while waiting for a tx confirmation.
+  If the unstake + claim has less than minConfirmations, claimed and rewards queries would be refetched and return zero claimable data, breaking the flow.
+*/
+export function getClaimableQueryStaleTime() {
+  return Infinity
+}
