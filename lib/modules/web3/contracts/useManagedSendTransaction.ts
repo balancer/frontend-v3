@@ -45,16 +45,17 @@ export function useManagedSendTransaction({
     },
   })
 
-  const writeQuery = useSendTransaction({
+  const writeMutation = useSendTransaction({
     mutation: {
       meta: sentryMetaForWagmiExecution('Error sending transaction', {
         txConfig,
         estimatedGas: estimateGasQuery.data,
+        tenderlyUrl: gasEstimationMeta?.tenderlyUrl,
       }),
     },
   })
 
-  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeMutation.data })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
@@ -66,7 +67,7 @@ export function useManagedSendTransaction({
   const bundle = {
     chainId,
     simulation: estimateGasQuery as TransactionSimulation,
-    execution: writeQuery as TransactionExecution,
+    execution: writeMutation as TransactionExecution,
     result: transactionStatusQuery,
     isSafeTxLoading,
   }
@@ -125,7 +126,7 @@ export function useManagedSendTransaction({
     if (!estimateGasQuery.data) return
     if (!txConfig?.to) return
     try {
-      return writeQuery.sendTransactionAsync({
+      return writeMutation.sendTransactionAsync({
         chainId,
         to: txConfig.to,
         data: txConfig.data,

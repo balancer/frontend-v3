@@ -2,7 +2,7 @@
 
 import { captureError } from '@/lib/shared/utils/errors'
 import { SentryMetadata, captureSentryError, shouldIgnore } from '@/lib/shared/utils/query-errors'
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ReactNode } from 'react'
 
 export const queryClient = new QueryClient({
@@ -10,7 +10,7 @@ export const queryClient = new QueryClient({
     // Global handler for every react-query error
     onError: (error, query) => {
       if (shouldIgnore(error.message, error.stack)) return
-      console.log('Sentry capturing error: ', {
+      console.log('Sentry capturing query error: ', {
         meta: query?.meta,
         error,
         queryKey: query.queryKey,
@@ -20,6 +20,22 @@ export const queryClient = new QueryClient({
 
       // Unexpected error in query (as expected errors should have query.meta)
       captureError(error, { extra: { queryKey: query.queryKey } })
+    },
+  }),
+  mutationCache: new MutationCache({
+    // Global handler for every react-query mutation error (i.e. useSendTransaction)
+    onError: (error, variables, _context, mutation) => {
+      if (shouldIgnore(error.message, error.stack)) return
+      console.log('Sentry capturing mutation error: ', {
+        meta: mutation?.meta,
+        error,
+        variables,
+      })
+
+      if (mutation?.meta) return captureSentryError(error, mutation?.meta as SentryMetadata)
+
+      // Unexpected error in mutation (as expected errors should have query.meta)
+      captureError(error, { extra: { variables: variables } })
     },
   }),
 })

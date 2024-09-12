@@ -12,15 +12,17 @@ import {
   useAddLiquidityBuildCallDataQuery,
 } from './queries/useAddLiquidityBuildCallDataQuery'
 import { usePool } from '../../PoolProvider'
+import { useTenderly } from '@/lib/modules/web3/useTenderly'
 
 export const addLiquidityStepId = 'add-liquidity'
 
 export type AddLiquidityStepParams = AddLiquidityBuildQueryParams
 
 export function useAddLiquidityStep(params: AddLiquidityStepParams): TransactionStep {
-  const { pool, refetch: refetchPoolBalances } = usePool()
+  const { pool, refetch: refetchPoolBalances, chainId } = usePool()
   const [isStepActivated, setIsStepActivated] = useState(false)
   const { getTransaction } = useTransactionState()
+  const { buildTenderlyUrl } = useTenderly({ chainId })
 
   const { simulationQuery } = params
 
@@ -42,6 +44,7 @@ export function useAddLiquidityStep(params: AddLiquidityStepParams): Transaction
   const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in AddLiquidity gas estimation', {
     simulationQueryData: simulationQuery.data,
     buildCallQueryData: buildCallDataQuery.data,
+    tenderlyUrl: buildTenderlyUrl(buildCallDataQuery.data),
   })
 
   const transaction = getTransaction(addLiquidityStepId)
