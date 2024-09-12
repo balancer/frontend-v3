@@ -56,9 +56,25 @@ export function useManagedTransaction({
     },
   })
 
-  const writeQuery = useWriteContract()
+  const writeMutation = useWriteContract()
 
-  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+  const wagmiTxHash = simulateQuery.isSuccess ? writeMutation.data : undefined
+
+  if (labels.title === 'Claim all') {
+    console.log('claimAll useManagedTransaction data after useWriteContract', {
+      writeMutationHash: writeMutation.data,
+      wagmiTxHash,
+      writeMutationStatus: writeMutation.status,
+      writeMutationVariables: writeMutation.variables,
+      simulateQueryKey: simulateQuery.queryKey,
+      isSimulationSuccess: simulateQuery.isSuccess,
+      functionName,
+      labelTitle: labels.title,
+      enabled,
+    })
+  }
+
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeMutation.data })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
@@ -70,7 +86,7 @@ export function useManagedTransaction({
   const bundle = {
     chainId,
     simulation: simulateQuery as TransactionSimulation,
-    execution: writeQuery as TransactionExecution,
+    execution: writeMutation as TransactionExecution,
     result: transactionStatusQuery,
     isSafeTxLoading,
   }
@@ -92,7 +108,7 @@ export function useManagedTransaction({
   const managedWriteAsync = async () => {
     if (!simulateQuery.data) return
     try {
-      await writeQuery.writeContractAsync({
+      await writeMutation.writeContractAsync({
         ...simulateQuery.data.request,
         chainId: chainId,
       })
