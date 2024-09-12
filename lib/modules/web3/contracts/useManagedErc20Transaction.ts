@@ -16,7 +16,7 @@ import { usdtAbi } from './abi/UsdtAbi'
 import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { getTxSimulationStaleTime, getWaitForReceiptTimeout } from './wagmi-helpers'
 
 type Erc20Abi = typeof erc20Abi
 
@@ -60,6 +60,7 @@ export function useManagedErc20Transaction({
     query: {
       enabled: enabled && !shouldChangeNetwork,
       meta: simulationMeta,
+      staleTime: getTxSimulationStaleTime(),
     },
   })
 

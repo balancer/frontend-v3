@@ -17,7 +17,7 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
-import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { getTxSimulationStaleTime, getWaitForReceiptTimeout } from './wagmi-helpers'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -42,6 +42,7 @@ export function useManagedSendTransaction({
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
       refetchOnWindowFocus: false,
+      staleTime: getTxSimulationStaleTime(),
     },
   })
 
