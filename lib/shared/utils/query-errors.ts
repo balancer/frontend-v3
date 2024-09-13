@@ -314,6 +314,22 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
     return true
   }
 
+  /*
+    Ignores issues with this kind of message:
+
+    The source https://balancer.fi/[URI] has not been authorized yet
+
+    We cannot reproduce but it looks like it does not crash the app.
+
+    First time seen in sentry: September 4th, 2024
+    https://vercel.com/balancer/frontend-v3/deployments?range={%22start%22:%222024-09-02T22:00:00.000Z%22,%22end%22:%222024-09-03T21:59:59.999Z%22}
+
+    Examples: https://balancer-labs.sentry.io/issues/5796181794
+  */
+  if (message.startsWith('Error: The source') && message.includes('has not been authorized yet')) {
+    return true
+  }
+
   return false
 }
 
