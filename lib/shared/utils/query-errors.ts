@@ -25,7 +25,7 @@ import { SwapHandler } from '@/lib/modules/swap/handlers/Swap.handler'
 export type SentryMetadata = {
   errorMessage: string
   errorName?: string
-  context: Partial<ScopeContext>
+  context?: Partial<ScopeContext>
 }
 
 export function sentryMetaForAddLiquidityHandler(errorMessage: string, params: AddLiquidityParams) {

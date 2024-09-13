@@ -10,6 +10,7 @@ export type BalAlertProps = {
   isSoftWarning?: boolean
   isNavAlert?: boolean
   onClose?: MouseEventHandler
+  ssr?: boolean
 }
 
 export function BalAlert({
@@ -18,13 +19,21 @@ export function BalAlert({
   learnMoreLink,
   isSoftWarning = false,
   isNavAlert = false,
+  ssr = false, // Use true whe rendering alerts on the server side
   onClose,
 }: BalAlertProps) {
   return (
     <Alert status={status} rounded={isNavAlert ? 'none' : 'default'}>
-      <AlertIcon as={getAlertIcon(status)} />
+      {ssr ? <AlertIcon /> : <AlertIcon as={getAlertIcon(status)} />}
 
-      <AlertTitle gap={1} display="flex" w="full" color="black">
+      <AlertTitle
+        gap={1}
+        display="flex"
+        w="full"
+        color="black"
+        wordBreak="break-word"
+        flexDirection="column"
+      >
         {content}
       </AlertTitle>
       {learnMoreLink && <BalAlertButtonLink href={learnMoreLink}>More</BalAlertButtonLink>}
