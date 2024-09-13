@@ -17,6 +17,7 @@ import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from 
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 type Erc20Abi = typeof erc20Abi
 
@@ -60,6 +61,8 @@ export function useManagedErc20Transaction({
     query: {
       enabled: enabled && !shouldChangeNetwork,
       meta: simulationMeta,
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
     },
   })
 

@@ -11,6 +11,7 @@ import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { GqlChain, GqlPoolStakingGaugeReward } from '@/lib/shared/services/api/generated/graphql'
 import { groupBy, uniqBy } from 'lodash'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 interface ClaimableRewardRef {
   tokenAddress: Address
@@ -76,7 +77,11 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
 
   const { data, refetch, isLoading, status }: UseReadContractsReturnType = useReadContracts({
     contracts: claimableRewardContractCalls,
-    query: { enabled: isConnected },
+    query: {
+      enabled: isConnected,
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
+    },
   })
 
   // Format claimable rewards data
