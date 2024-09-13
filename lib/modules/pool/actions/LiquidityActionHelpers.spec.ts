@@ -2,9 +2,9 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import {
   LiquidityActionHelpers,
   areEmptyAmounts,
-  shouldUseNestedLiquidity,
   shouldUseRecoveryRemoveLiquidity,
   roundDecimals,
+  supportsNestedActions,
 } from './LiquidityActionHelpers'
 import { nestedPoolMock } from '../__mocks__/nestedPoolMock'
 import {
@@ -39,8 +39,8 @@ describe('areEmptyAmounts', () => {
 })
 
 test('detects pools requiring nested liquidity', () => {
-  expect(shouldUseNestedLiquidity(aWjAuraWethPoolElementMock())).toBeFalsy()
-  expect(shouldUseNestedLiquidity(nestedPoolMock)).toBeTruthy()
+  expect(supportsNestedActions(aWjAuraWethPoolElementMock())).toBeFalsy()
+  expect(supportsNestedActions(nestedPoolMock)).toBeTruthy()
 })
 
 describe('detects pools requiring recovery removal', () => {

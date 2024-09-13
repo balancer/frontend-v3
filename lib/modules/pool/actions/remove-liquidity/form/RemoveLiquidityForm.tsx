@@ -152,31 +152,33 @@ export function RemoveLiquidityForm() {
               )}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
-              <PriceImpactAccordion
-                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-                accordionButtonComponent={
-                  <HStack>
-                    <Text variant="secondary" fontSize="sm" color="font.secondary">
-                      Price impact:{' '}
-                    </Text>
-                    {isFetching ? (
-                      <Skeleton w="40px" h="16px" />
-                    ) : (
-                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                        {priceImpactLabel}
+              {!simulationQuery.isError && (
+                <PriceImpactAccordion
+                  setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+                  accordionButtonComponent={
+                    <HStack>
+                      <Text variant="secondary" fontSize="sm" color="font.secondary">
+                        Price impact:{' '}
                       </Text>
-                    )}
-                  </HStack>
-                }
-                accordionPanelComponent={
-                  <PoolActionsPriceImpactDetails
-                    totalUSDValue={totalUSDValue}
-                    bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
-                    isLoading={isFetching}
-                  />
-                }
-                isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
-              />
+                      {isFetching ? (
+                        <Skeleton w="40px" h="16px" />
+                      ) : (
+                        <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                          {priceImpactLabel}
+                        </Text>
+                      )}
+                    </HStack>
+                  }
+                  accordionPanelComponent={
+                    <PoolActionsPriceImpactDetails
+                      totalUSDValue={totalUSDValue}
+                      bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                      isLoading={isFetching}
+                    />
+                  }
+                  isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
+                />
+              )}
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
             <Tooltip label={isDisabled ? disabledReason : ''}>

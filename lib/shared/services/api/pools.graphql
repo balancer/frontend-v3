@@ -49,6 +49,8 @@ query GetPools(
         title
         apr
         type
+        rewardTokenSymbol
+        rewardTokenAddress
       }
     }
     staking {
@@ -136,6 +138,8 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
           title
           apr
           type
+          rewardTokenSymbol
+          rewardTokenAddress
         }
       }
       displayTokens {

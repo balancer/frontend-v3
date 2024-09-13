@@ -5,6 +5,7 @@ import {
   GqlPoolEventsDataRange,
   GetPoolEventsQuery,
 } from '@/lib/shared/services/api/generated/graphql'
+import { FetchPolicy } from '@apollo/client'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 
 type PoolEventList = GetPoolEventsQuery['poolEvents']
@@ -20,15 +21,10 @@ type PoolEventsProps = {
   userAddress?: string
 }
 
-export function usePoolEvents({
-  poolIdIn,
-  chainIn,
-  first,
-  skip,
-  range,
-  typeIn,
-  userAddress,
-}: PoolEventsProps) {
+export function usePoolEvents(
+  { poolIdIn, chainIn, first, skip, range, typeIn, userAddress }: PoolEventsProps,
+  opts: { skip?: boolean; fetchPolicy?: FetchPolicy } = {}
+) {
   const poolIds = (poolIdIn || []).map(id => id.toLowerCase())
 
   return useQuery(GetPoolEventsDocument, {
@@ -41,5 +37,6 @@ export function usePoolEvents({
       typeIn,
       userAddress,
     },
+    ...opts,
   })
 }

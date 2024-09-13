@@ -85,16 +85,23 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  if (network.networkName === 'Ethereum' && process.env['NEXT_PRIVATE_INFURA_KEY']) {
-    return `https://mainnet.infura.io/v3/${process.env['NEXT_PRIVATE_INFURA_KEY']}`
-  } else {
-    if (!network.fallBackRpc) {
-      throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  const privateInfuraKey = process.env['NEXT_PRIVATE_INFURA_KEY']
+  if (privateInfuraKey) {
+    if (network.networkName === 'Ethereum') {
+      return `https://mainnet.infura.io/v3/${privateInfuraKey}`
     }
-
-    if (verbose) {
-      console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+    if (network.networkName === 'Polygon') {
+      return `https://polygon-mainnet.infura.io/v3/${privateInfuraKey}`
     }
-    return network.fallBackRpc
+    if (network.networkName === 'Sepolia') return `https://sepolia.infura.io/v3/${privateInfuraKey}`
   }
+
+  if (!network.fallBackRpc) {
+    throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  }
+
+  if (verbose) {
+    console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+  }
+  return network.fallBackRpc
 }

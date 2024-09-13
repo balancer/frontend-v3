@@ -34,7 +34,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.8.0-rc.1",
-    "@balancer/sdk": "^0.23.0",
+    "@balancer/sdk": "^0.25.0",
     "@chakra-ui/anatomy": "^2.2.2",
     "@chakra-ui/hooks": "^2.2.1",
     "@chakra-ui/icons": "^2.1.1",
@@ -50,6 +50,7 @@
     "@sentry/nextjs": "^8.13.0",
     "@studio-freight/react-lenis": "^0.0.47",
     "@tanstack/react-query": "^5.29.2",
+    "@tanstack/react-query-devtools": "^5.56.0",
     "@tanstack/react-table": "^8.9.3",
     "@vercel/speed-insights": "^1.0.1",
     "bignumber.js": "^9.1.2",
@@ -83,9 +84,9 @@
     "tinycolor2": "^1.6.0",
     "use-debounce": "^10.0.0",
     "use-sound": "^4.0.1",
-    "usehooks-ts": "^2.9.2",
-    "viem": "^2.19.3",
-    "wagmi": "^2.12.5"
+    "usehooks-ts": "^3.1.0",
+    "viem": "^2.21.6",
+    "wagmi": "^2.12.11"
   },
   "devDependencies": {
     "@apollo/experimental-nextjs-app-support": "^0.8.0",

@@ -1,4 +1,3 @@
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   HumanAmount,
@@ -18,6 +17,7 @@ import {
   QueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export interface NestedSingleTokenQueryRemoveLiquidityOutput extends QueryRemoveLiquidityOutput {
   sdkQueryOutput: RemoveLiquidityNestedQueryOutput
@@ -104,7 +104,7 @@ export class NestedSingleTokenRemoveLiquidityHandler implements RemoveLiquidityH
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
     }
 
     return result
