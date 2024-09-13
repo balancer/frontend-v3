@@ -308,9 +308,7 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
     Waller Connect bug
     More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
   */
-  if (
-    message.startsWith('Error: WebSocket connection failed for host: wss://relay.walletconnect.com')
-  ) {
+  if (message.startsWith('WebSocket connection failed for host: wss://relay.walletconnect.com')) {
     return true
   }
 
@@ -326,7 +324,7 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
 
     Examples: https://balancer-labs.sentry.io/issues/5796181794
   */
-  if (message.startsWith('Error: The source') && message.includes('has not been authorized yet')) {
+  if (message.startsWith('The source') && message.includes('has not been authorized yet')) {
     return true
   }
 
