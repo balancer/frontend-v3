@@ -11,7 +11,7 @@ export function DefaultPageContainer({
   ...rest
 }: PropsWithChildren & ContainerProps & Props) {
   return (
-    <Box pt={noVerticalPadding ? '0px' : '72px'} minH="50vh">
+    <Box pt={noVerticalPadding ? '0px' : '72px'}>
       <Container
         maxW="maxContent"
         py={noVerticalPadding ? 0 : ['xl', '2xl']}
