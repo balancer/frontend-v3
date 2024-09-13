@@ -1,8 +1,10 @@
 'use client'
 
+import { isDev } from '@/lib/config/app.config'
 import { captureError } from '@/lib/shared/utils/errors'
 import { SentryMetadata, captureSentryError, shouldIgnore } from '@/lib/shared/utils/query-errors'
 import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ReactNode } from 'react'
 
 export const queryClient = new QueryClient({
@@ -25,5 +27,11 @@ export const queryClient = new QueryClient({
 })
 
 export function ReactQueryClientProvider({ children }: { children: ReactNode | ReactNode[] }) {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  const shouldShowReactQueryDevtools = false
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      {isDev && shouldShowReactQueryDevtools && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
+  )
 }
