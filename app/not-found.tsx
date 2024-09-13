@@ -3,11 +3,13 @@ import { Button, Heading, VStack, Text } from '@chakra-ui/react'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
-export default function NotFound() {
+export default async function NotFound() {
   const headersList = headers()
 
+  const referer = await headersList.get('referer')
+
   const poolIdSegment = 6
-  const maybePoolId = headersList.get('referer')?.split('/')[poolIdSegment]
+  const maybePoolId = referer?.split('/')[poolIdSegment]
   const isPoolPageNotFound = maybePoolId?.startsWith('0x')
 
   const title = isPoolPageNotFound ? 'Pool Not Found' : 'Page Not Found'
