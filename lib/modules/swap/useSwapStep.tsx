@@ -15,6 +15,8 @@ import { swapActionPastTense } from './swap.helpers'
 import { SwapAction } from './swap.types'
 import { useTokenBalances } from '../tokens/TokenBalancesProvider'
 import { useUserAccount } from '../web3/UserAccountProvider'
+import { useTenderly } from '../web3/useTenderly'
+import { getChainId } from '@/lib/config/app.config'
 
 export const swapStepId = 'swap'
 
@@ -37,6 +39,9 @@ export function useSwapStep({
   const [isBuildQueryEnabled, setIsBuildQueryEnabled] = useState(false)
   const { getTransaction } = useTransactionState()
   const { refetchBalances } = useTokenBalances()
+  const { buildTenderlyUrl } = useTenderly({
+    chainId: getChainId(swapState.selectedChain),
+  })
 
   const buildSwapQuery = useBuildSwapQuery({
     handler,
@@ -65,10 +70,10 @@ export function useSwapStep({
     }
   }, [simulationQuery.data])
 
-  const gasEstimationMeta = sentryMetaForWagmiSimulation(
-    'Error in swap gas estimation',
-    buildSwapQuery.data || {}
-  )
+  const gasEstimationMeta = sentryMetaForWagmiSimulation('Error in swap gas estimation', {
+    buildCallQueryData: buildSwapQuery.data,
+    tenderlyUrl: buildTenderlyUrl(buildSwapQuery.data),
+  })
 
   const transaction = getTransaction(swapStepId)
 
