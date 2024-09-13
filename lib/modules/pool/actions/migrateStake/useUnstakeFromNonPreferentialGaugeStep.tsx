@@ -9,7 +9,7 @@ import {
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ManagedTransactionInput } from '@/lib/modules/web3/contracts/useManagedTransaction'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { parseUnits } from 'viem'
 import { Pool } from '../../PoolProvider'
 import { BPT_DECIMALS } from '../../pool.constants'
@@ -67,13 +67,17 @@ export function useUnstakeFromNonPreferentialGaugeStep(
 
   const isComplete = () => transaction?.result.isSuccess || false
 
+  const onSuccess = useCallback(() => {
+    refetchPoolBalances()
+  }, [])
+
   const step = useMemo(
     (): TransactionStep => ({
       id: unstakeStepId,
       stepType: 'unstake',
       labels,
       isComplete,
-      onSuccess: () => refetchPoolBalances(),
+      onSuccess,
       renderAction: () => <ManagedTransactionButton id={unstakeStepId} {...props} />,
     }),
     [transaction, amount, props]

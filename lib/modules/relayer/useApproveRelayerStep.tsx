@@ -6,7 +6,7 @@ import { useUserAccount } from '../web3/UserAccountProvider'
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { sentryMetaForWagmiSimulation } from '@/lib/shared/utils/query-errors'
-import { useEffect, useMemo } from 'react'
+import { useMemo } from 'react'
 
 const approveRelayerStepId = 'approve-relayer'
 

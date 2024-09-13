@@ -2,23 +2,16 @@
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { WalletIcon } from '@/lib/shared/components/icons/WalletIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import {
-  Alert,
-  AlertIcon,
-  Card,
-  HStack,
-  Spacer,
-  VStack,
-  Text,
-  Box,
-  Tooltip,
-} from '@chakra-ui/react'
+import { Card, HStack, Spacer, VStack, Text, Box, Tooltip } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { XOctagon } from 'react-feather'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { TokenInputs } from './TokenInputs'
 import { useProportionalInputs } from './useProportionalInputs'
 import { useMaximumInputs } from './useMaximumInputs'
+import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
+import { hasNoLiquidity } from '../../LiquidityActionHelpers'
+import { usePool } from '../../../PoolProvider'
 
 type Props = {
   tokenSelectDisclosureOpen: () => void
@@ -45,6 +38,7 @@ export function TokenInputsWithAddable({
     setIsMaximized: setIsMaximizedForProportionalInput,
     clearAmountsIn,
   } = useProportionalInputs()
+  const { pool } = usePool()
 
   const {
     canMaximize: canMaximizeForMaximumInput,
@@ -90,11 +84,8 @@ export function TokenInputsWithAddable({
 
   return (
     <VStack spacing="md" w="full">
-      {requiresProportionalInput && (
-        <Alert status="info">
-          <AlertIcon />
-          This pool requires liquidity to be added proportionally
-        </Alert>
+      {requiresProportionalInput && !hasNoLiquidity(pool) && (
+        <BalAlert status="info" content="This pool requires liquidity to be added proportionally" />
       )}
       {isConnected && (
         <Card variant="subSection" w="full" p={['sm', 'ms']}>

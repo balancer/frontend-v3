@@ -1,26 +1,36 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
-import { createContext, ReactNode, useEffect } from 'react'
-import { GetPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+import { createContext, PropsWithChildren, useEffect } from 'react'
+import { GetPoolsDocument, GqlPoolType } from '@/lib/shared/services/api/generated/graphql'
 import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 import { usePoolListQueryState } from './usePoolListQueryState'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { isAddress } from 'viem'
 
-export function _usePoolList() {
+export function _usePoolList({ fixedPoolTypes }: { fixedPoolTypes?: GqlPoolType[] } = {}) {
   const { queryVariables, toggleUserAddress } = usePoolListQueryState()
   const { userAddress } = useUserAccount()
+
+  const variables = {
+    ...queryVariables,
+    where: {
+      ...queryVariables.where,
+      poolTypeIn: fixedPoolTypes || queryVariables.where.poolTypeIn,
+    },
+  }
 
   const { data, loading, previousData, refetch, networkStatus, error } = useQuery(
     GetPoolsDocument,
     {
-      variables: queryVariables,
+      variables,
     }
   )
 
   const pools = loading && previousData ? previousData.pools : data?.pools || []
+
+  const isFixedPoolType = !!fixedPoolTypes && fixedPoolTypes.length > 0
 
   // If the user has previously selected to filter by their liquidity and then
   // changes their connected wallet, we want to automatically update the filter.
@@ -36,14 +46,18 @@ export function _usePoolList() {
     loading,
     error,
     networkStatus,
+    isFixedPoolType,
     refetch,
   }
 }
 
 export const PoolListContext = createContext<ReturnType<typeof _usePoolList> | null>(null)
 
-export function PoolListProvider({ children }: { children: ReactNode }) {
-  const hook = _usePoolList()
+export function PoolListProvider({
+  fixedPoolTypes,
+  children,
+}: PropsWithChildren<{ fixedPoolTypes?: GqlPoolType[] }>) {
+  const hook = _usePoolList({ fixedPoolTypes })
 
   return <PoolListContext.Provider value={hook}>{children}</PoolListContext.Provider>
 }

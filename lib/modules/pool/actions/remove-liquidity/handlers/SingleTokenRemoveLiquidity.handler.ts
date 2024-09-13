@@ -1,4 +1,3 @@
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   HumanAmount,
@@ -25,6 +24,7 @@ import {
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 import { SentryError } from '@/lib/shared/utils/errors'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -114,7 +114,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       bptIn: bptInInputAmount,
       kind: RemoveLiquidityKind.SingleTokenExactIn,
       tokenOut,

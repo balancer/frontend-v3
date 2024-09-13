@@ -6,6 +6,7 @@ import { useUnstake } from './UnstakeProvider'
 import { UnstakePreview } from './UnstakePreview'
 import { UnstakeModal } from './UnstakeModal'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 export function UnstakeForm() {
   const nextBtn = useRef(null)
@@ -19,6 +20,7 @@ export function UnstakeForm() {
       <Card>
         <CardHeader>Claim & Unstake</CardHeader>
         <CardBody>
+          <SafeAppAlert />
           <UnstakePreview />
         </CardBody>
         <CardFooter>

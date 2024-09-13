@@ -36,9 +36,13 @@ yarn-error.log*
 next-env.d.ts
 
 .vscode
+.idea
 
 # Sentry Config File
 .sentryclirc
 
 # GrapgQL Codegen
 /lib/shared/services/api/generated/
+
+# Sentry Config File
+.env.sentry-build-plugin

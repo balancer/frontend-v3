@@ -57,7 +57,14 @@ export function TokenSelectModal({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal} finalFocusRef={finalFocusRef} isCentered {...rest}>
+    <Modal
+      isOpen={isOpen}
+      onClose={closeModal}
+      finalFocusRef={finalFocusRef}
+      isCentered
+      preserveScrollBarGap
+      {...rest}
+    >
       <ModalOverlay />
       <ModalContent>
         <ModalHeader color="font.primary">Select a token: {getChainShortName(chain)}</ModalHeader>

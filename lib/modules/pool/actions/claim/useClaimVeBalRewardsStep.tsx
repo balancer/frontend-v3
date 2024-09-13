@@ -23,7 +23,11 @@ const labels: TransactionLabels = {
 
 export const claimVeBalRewardsStepId = 'claim-vebal-rewards'
 
-export function useClaimVeBalRewardsStep(): TransactionStep {
+export function useClaimVeBalRewardsStep({
+  onSuccess,
+}: {
+  onSuccess: () => void
+}): TransactionStep {
   const { userAddress } = useUserAccount()
   const { getTransaction } = useTransactionState()
 
@@ -56,6 +60,7 @@ export function useClaimVeBalRewardsStep(): TransactionStep {
       stepType: 'claim',
       labels,
       isComplete,
+      onSuccess,
       renderAction: () => <ManagedTransactionButton id={claimVeBalRewardsStepId} {...props} />,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -1,44 +1,56 @@
-import { getProjectConfig } from '@/lib/config/getProjectConfig'
-import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
 import { PoolList } from '@/lib/modules/pool/PoolList/PoolList'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
-import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
-import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+
 import { Box, Skeleton } from '@chakra-ui/react'
 import { Suspense } from 'react'
 
-export default async function Pools() {
-  const { supportedNetworks } = getProjectConfig()
+// import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
+// import { getProjectConfig } from '@/lib/config/getProjectConfig'
+// import { GetFeaturedPoolsDocument } from '@/lib/shared/services/api/generated/graphql'
+// import { FeaturedPools } from '@/lib/modules/featured-pools/FeaturedPools'
+import { HookathonPromoBanner } from '@/lib/shared/components/promos/HookathonPromoBanner'
 
-  const featuredPoolsQuery = await getApolloServerClient().query({
-    query: GetFeaturedPoolsDocument,
-    variables: { chains: supportedNetworks },
-    context: {
-      fetchOptions: {
-        next: { revalidate: 300 }, // 5 minutes
-      },
-    },
-  })
+export default async function PoolsPage() {
+  // Featured pools set up
+  // const { supportedNetworks } = getProjectConfig()
 
-  const featuredPools = featuredPoolsQuery.data.featuredPools || []
+  // const featuredPoolsQuery = await getApolloServerClient().query({
+  //   query: GetFeaturedPoolsDocument,
+  //   variables: { chains: supportedNetworks },
+  //   context: {
+  //     fetchOptions: {
+  //       next: { revalidate: 300 }, // 5 minutes
+  //     },
+  //   },
+  // })
+
+  // const featuredPools = featuredPoolsQuery.data.featuredPools || []
 
   return (
-    <DefaultPageContainer>
-      <Box>
-        <FadeInOnView animateOnce={false}>
-          <Box mb={{ base: '2xl', sm: '3xl' }}>
-            <FeaturedPools featuredPools={featuredPools} />
-          </Box>
-        </FadeInOnView>
+    <>
+      <Box bg="background.level0" borderBottom="1px solid" borderColor="border.base">
+        <DefaultPageContainer pt={['xl', '40px']} pb={['xl', '2xl']}>
+          <FadeInOnView animateOnce={false}>
+            <Box>
+              <HookathonPromoBanner />
+            </Box>
+          </FadeInOnView>
+          {/* <FadeInOnView animateOnce={false}>
+            <Box pt="20" pb="4">
+              <FeaturedPools featuredPools={featuredPools} />
+            </Box>
+          </FadeInOnView> */}
+        </DefaultPageContainer>
+      </Box>
+
+      <DefaultPageContainer pt={['lg', '54px']} pb={['xl', '2xl']} noVerticalPadding>
         <FadeInOnView animateOnce={false}>
           <Suspense fallback={<Skeleton w="full" h="500px" />}>
-            <Box>
-              <PoolList />
-            </Box>
+            <PoolList />
           </Suspense>
         </FadeInOnView>
-      </Box>
-    </DefaultPageContainer>
+      </DefaultPageContainer>
+    </>
   )
 }

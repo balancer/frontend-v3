@@ -13,15 +13,13 @@ import { encodeFunctionData } from 'viem'
 import { Hex } from 'viem'
 
 export class NativeWrapHandler implements SwapHandler {
+  name = 'NativeWrapHandler'
+
   constructor(public apolloClient: ApolloClient<object>) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
     return {
       swapType: variables.swapType,
-      priceImpact: {
-        __typename: 'GqlPriceImpact',
-        priceImpact: '0',
-      },
       effectivePrice: '1',
       effectivePriceReversed: '1',
       returnAmount: variables.swapAmount,

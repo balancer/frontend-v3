@@ -26,7 +26,9 @@ export function TransactionStepButton({ step }: Props) {
   const isButtonLoading =
     transactionState === TransactionState.Loading ||
     transactionState === TransactionState.Confirming ||
-    transactionState === TransactionState.Preparing
+    transactionState === TransactionState.Preparing ||
+    step.isSafeTxLoading
+
   const isComplete = transactionState === TransactionState.Completed
   const hasSimulationError = simulation.isError
   const isIdle = isConnected && simulation.isStale && !simulation.data

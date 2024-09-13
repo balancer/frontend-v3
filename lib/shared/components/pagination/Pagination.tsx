@@ -26,6 +26,8 @@ interface Props {
   setPageIndex: (page: number) => void
   setPageSize: (page: number) => void
   pageSize: number
+  changeSize?: boolean
+  isSmall?: boolean
 }
 
 export function Pagination({
@@ -40,10 +42,12 @@ export function Pagination({
   setPageIndex,
   setPageSize,
   pageSize,
+  changeSize = true,
+  isSmall = false, // set to true when table is NOT directly used in a card
   ...rest
 }: Props) {
   return (
-    <Center w="full" {...rest}>
+    <Center w={{ base: isSmall ? '90vw' : '95vw', lg: 'full' }} {...rest}>
       <Grid
         w={{ base: 'full', lg: '75%' }}
         mt={{ base: '4', lg: '8' }}
@@ -123,6 +127,7 @@ export function Pagination({
             onChange={e => {
               setPageSize(Number(e.target.value))
             }}
+            disabled={!changeSize}
           >
             {[10, 20, 30, 40, 50].map(pageSize => (
               <option key={pageSize} value={pageSize}>

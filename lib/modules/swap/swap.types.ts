@@ -3,8 +3,13 @@ import {
   GqlChain,
   GqlSorSwapType,
 } from '@/lib/shared/services/api/generated/graphql'
-import { ExactInQueryOutput, ExactOutQueryOutput, Swap } from '@balancer/sdk'
-import { Address } from 'viem'
+import {
+  AuraBalSwapQueryOutput,
+  ExactInQueryOutput,
+  ExactOutQueryOutput,
+  Swap,
+} from '@balancer/sdk'
+import { Address, Hex } from 'viem'
 
 export type SwapTokenInput = {
   address: Address
@@ -31,7 +36,7 @@ type ApiSwapQuery = GetSorSwapsQuery['swaps']
 
 export type SimulateSwapResponse = Pick<
   ApiSwapQuery,
-  'effectivePrice' | 'effectivePriceReversed' | 'returnAmount' | 'priceImpact' | 'swapType'
+  'effectivePrice' | 'effectivePriceReversed' | 'returnAmount' | 'swapType'
 >
 
 export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQuery {
@@ -39,15 +44,24 @@ export interface SdkSimulateSwapResponse extends SimulateSwapResponse, ApiSwapQu
   queryOutput: ExactInQueryOutput | ExactOutQueryOutput
 }
 
+export interface AuraBalSimulateSwapResponse extends SimulateSwapResponse {
+  queryOutput: AuraBalSwapQueryOutput
+}
+
 export interface BuildSwapInputs extends SwapState {
   account: Address
   slippagePercent: string
   simulateResponse: SimulateSwapResponse
   wethIsEth: boolean
+  relayerApprovalSignature?: Hex
 }
 
 export interface SdkBuildSwapInputs extends BuildSwapInputs {
   simulateResponse: SdkSimulateSwapResponse
+}
+
+export interface AuraBalBuildSwapInputs extends BuildSwapInputs {
+  simulateResponse: AuraBalSimulateSwapResponse
 }
 
 export enum SupportedWrapHandler {

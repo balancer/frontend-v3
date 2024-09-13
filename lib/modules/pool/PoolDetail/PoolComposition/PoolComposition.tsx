@@ -1,24 +1,10 @@
 'use client'
 
-import {
-  Box,
-  Card,
-  Divider,
-  HStack,
-  Heading,
-  Skeleton,
-  Stack,
-  Text,
-  VStack,
-} from '@chakra-ui/react'
-import React, { useEffect, useState } from 'react'
+import { Card, Divider, HStack, Heading, Skeleton, Stack, Text, VStack } from '@chakra-ui/react'
+import React from 'react'
 import { usePool } from '../../PoolProvider'
 import { Address } from 'viem'
-import {
-  GqlChain,
-  GqlPoolTokenDetail,
-  GqlPoolTokenDisplay,
-} from '@/lib/shared/services/api/generated/graphql'
+import { GqlChain, GqlPoolTokenDetail } from '@/lib/shared/services/api/generated/graphql'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { NoisyCard } from '@/lib/shared/components/containers/NoisyCard'
@@ -27,6 +13,7 @@ import { PoolWeightChart } from '../PoolWeightCharts/PoolWeightChart'
 import { useBreakpoints } from '@/lib/shared/hooks/useBreakpoints'
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { getPoolDisplayTokens } from '../../pool.utils'
 
 type CardContentProps = {
   totalLiquidity: string
@@ -37,6 +24,7 @@ type CardContentProps = {
 function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps) {
   const { toCurrency } = useCurrency()
   const { calcWeightForBalance } = useTokens()
+  const { pool } = usePool()
 
   return (
     <VStack spacing="md" width="full">
@@ -71,6 +59,7 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
                 totalLiquidity,
                 chain
               )}
+              pool={pool}
               targetWeight={poolToken.weight || undefined}
             />
           )
@@ -82,20 +71,15 @@ function CardContent({ totalLiquidity, displayTokens, chain }: CardContentProps)
 
 export function PoolComposition() {
   const { pool, chain, isLoading } = usePool()
-  const [totalLiquidity, setTotalLiquidity] = useState('')
   const { isMobile } = useBreakpoints()
+  const { calcTotalUsdValue } = useTokens()
 
-  useEffect(() => {
-    if (pool) {
-      setTotalLiquidity(pool.dynamicData.totalLiquidity)
-    }
-  }, [pool])
+  const displayTokens = getPoolDisplayTokens(pool)
+  const totalLiquidity = calcTotalUsdValue(displayTokens, chain)
 
-  const displayTokens = pool.poolTokens.filter(token =>
-    pool.displayTokens.find(
-      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
-    )
-  ) as GqlPoolTokenDetail[]
+  const CardContentBlock = () => (
+    <CardContent totalLiquidity={totalLiquidity} displayTokens={displayTokens} chain={chain} />
+  )
 
   return (
     <Card>
@@ -110,18 +94,10 @@ export function PoolComposition() {
             Pool composition
           </Heading>
           {isMobile ? (
-            <CardContent
-              totalLiquidity={totalLiquidity}
-              displayTokens={displayTokens}
-              chain={chain}
-            />
+            <CardContentBlock />
           ) : (
             <Card variant="subSection" w="full">
-              <CardContent
-                totalLiquidity={totalLiquidity}
-                displayTokens={displayTokens}
-                chain={chain}
-              />
+              <CardContentBlock />
             </Card>
           )}
           {isMobile && <Divider />}
@@ -130,14 +106,18 @@ export function PoolComposition() {
           </Text>
         </VStack>
         <NoisyCard
-          cardProps={{ position: 'relative', overflow: 'hidden' }}
+          cardProps={{ position: 'relative', overflow: 'hidden', height: ['300px', '400px'] }}
           contentProps={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
         >
           <PoolZenGarden sizePx={isMobile ? '300px' : '400px'} poolType={pool.type} />
           {isLoading ? (
             <Skeleton w="full" h="full" />
           ) : (
-            <PoolWeightChart pool={pool} chain={chain} />
+            <PoolWeightChart
+              displayTokens={displayTokens}
+              chain={chain}
+              totalLiquidity={totalLiquidity}
+            />
           )}
         </NoisyCard>
       </Stack>

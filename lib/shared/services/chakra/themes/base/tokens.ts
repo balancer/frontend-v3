@@ -22,6 +22,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
         },
         border: {
           base: '#FFFFFF',
+          divider: colors.brown['100'],
           highlight: colors.green['600'],
           subduedZen: 'rgba(176, 126, 67, 0.08)',
         },
@@ -52,6 +53,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
           linkHover: colors.purple['700'],
           maxContrast: '#000',
           highlight: colors.green['600'],
+          warning: colors.orange['500'],
         },
         // Input colors
         input: {
@@ -65,14 +67,14 @@ export function getTokens(colors: any, primaryTextColor: string) {
           fontHintError: colors.red['600'],
           caret: 'blue.400',
           bgDefault: colors.base.light,
-          bgHover: tinycolor(colors.base.light).lighten(4),
-          bgHoverDisabled: tinycolor(colors.red[500]).setAlpha(0.2),
-          bgFocus: tinycolor(colors.base.light).lighten(8),
-          bgError: tinycolor(colors.red['50']).setAlpha(0.5),
-          bgErrorFocus: tinycolor(colors.base.light).lighten(8),
-          borderDefault: tinycolor(colors.base.light).darken(10),
+          bgHover: '#F5F3EF',
+          bgHoverDisabled: 'rgba(234, 98, 73, 0.2)',
+          bgFocus: '#ffffff',
+          bgError: 'rgba(254, 244, 242, 0.5)',
+          bgErrorFocus: 'tinycolor(colors.base.light).lighten(8)',
+          borderDefault: '#DAD3C3',
           borderHover: colors.purple['500'],
-          borderFocus: colors.purple['500'],
+          borderFocus: '#7F6AE8',
           borderError: colors.red['500'],
           borderErrorFocus: colors.red['600'],
           borderDisabled: 'blue',
@@ -104,6 +106,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
         // Border colors
         border: {
           base: '#4C5561',
+          divider: colors.gray['800'],
           highlight: colors.green['500'],
           zen: 'rgba(76, 85, 97, 0.50)',
           subduedZen: 'rgba(229, 211, 190, 0.05)',
@@ -139,6 +142,7 @@ export function getTokens(colors: any, primaryTextColor: string) {
           linkHover: colors.purple['100'],
           maxContrast: '#fff',
           highlight: colors.green['500'],
+          warning: colors.orange['300'],
         },
         input: {
           labelFocus: colors.purple['400'],

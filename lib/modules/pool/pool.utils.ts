@@ -4,11 +4,19 @@ import {
   GqlPoolComposableStableNested,
   GqlPoolTokenDetail,
   GqlPoolType,
-  GqlPoolFilterCategory,
   GqlPoolAprItem,
+  GqlPoolTokenDisplay,
+  GqlPoolAprItemType,
 } from '@/lib/shared/services/api/generated/graphql'
 import { invert } from 'lodash'
-import { BaseVariant, FetchPoolProps, PoolAction, PoolListItem, PoolVariant } from './pool.types'
+import {
+  BaseVariant,
+  FetchPoolProps,
+  PartnerVariant,
+  PoolAction,
+  PoolListItem,
+  PoolVariant,
+} from './pool.types'
 import { Numberish, bn, fNum } from '@/lib/shared/utils/numbers'
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime'
 import { TokenAmountHumanReadable } from '../tokens/token.types'
@@ -16,6 +24,7 @@ import { formatUnits, parseUnits } from 'viem'
 import { ClaimablePool } from './actions/claim/ClaimProvider'
 import { Pool } from './PoolProvider'
 import BigNumber from 'bignumber.js'
+import { TOTAL_APR_TYPES } from '@/lib/shared/hooks/useAprTooltip'
 
 // URL slug for each chain
 export enum ChainSlug {
@@ -52,6 +61,7 @@ export const slugToChainMap = invert(chainToSlugMap) as Record<ChainSlug, GqlCha
 
 function getVariant(pool: Pool | PoolListItem): PoolVariant {
   // if a pool has certain properties return a custom variant
+  if (pool.type === GqlPoolType.CowAmm) return PartnerVariant.cow
   if (pool.protocolVersion === 3) return BaseVariant.v3
 
   // default variant
@@ -102,22 +112,25 @@ export function getTotalApr(
   let minTotal = bn(0)
   let maxTotal = bn(0)
   const boost = vebalBoost || 1
-  let usedBalReward = false
 
-  aprItems.forEach(item => {
-    if (item.title === 'BAL reward APR') {
-      if (!usedBalReward) {
-        minTotal = bn(item.apr).times(boost).plus(minTotal)
-        maxTotal = bn(item.apr).times(2.5).plus(maxTotal)
-        usedBalReward = true
+  aprItems
+    // Filter known APR types to avoid including new unknown API types that are not yet displayed in the APR tooltip
+    .filter(item => TOTAL_APR_TYPES.includes(item.type))
+    .forEach(item => {
+      if (item.type === GqlPoolAprItemType.StakingBoost) {
+        maxTotal = bn(item.apr).times(boost).plus(maxTotal)
+        return
       }
 
-      return
-    }
+      if (item.type === GqlPoolAprItemType.VebalEmissions) {
+        minTotal = bn(item.apr).plus(minTotal)
+        maxTotal = bn(item.apr).plus(maxTotal)
+        return
+      }
 
-    minTotal = bn(item.apr).plus(minTotal)
-    maxTotal = bn(item.apr).plus(maxTotal)
-  })
+      minTotal = bn(item.apr).plus(minTotal)
+      maxTotal = bn(item.apr).plus(maxTotal)
+    })
 
   return [minTotal, maxTotal]
 }
@@ -159,21 +172,11 @@ const poolTypeLabelMap: { [key in GqlPoolType]: string } = {
   [GqlPoolType.Unknown]: 'Unknown',
   [GqlPoolType.Fx]: 'FX',
   [GqlPoolType.ComposableStable]: 'Stable',
-  [GqlPoolType.CowAmm]: 'CowAmm',
+  [GqlPoolType.CowAmm]: 'CoW AMM',
 }
 
 export function getPoolTypeLabel(type: GqlPoolType): string {
   return poolTypeLabelMap[type] ?? type.replace(/_/g, ' ').toLowerCase()
-}
-
-// Maps GraphQL pool category enum to human readable label for UI.
-const poolCategoryLabelMap: { [key in GqlPoolFilterCategory]: string } = {
-  [GqlPoolFilterCategory.BlackListed]: 'Blacklisted',
-  [GqlPoolFilterCategory.Incentivized]: 'Incentivized',
-}
-
-export function getPoolCategoryLabel(category: GqlPoolFilterCategory): string {
-  return poolCategoryLabelMap[category] ?? category.replace(/_/g, ' ').toLowerCase()
 }
 
 export const poolClickHandler = (
@@ -219,7 +222,7 @@ export function getProportionalExitAmountsForBptIn(
 
 export function getProportionalExitAmountsFromScaledBptIn(
   bptIn: bigint,
-  poolTokens: Omit<GqlPoolTokenDetail, 'nestedPool'>[],
+  poolTokens: { balance: string; decimals: number; address: string }[],
   poolTotalShares: string
 ): TokenAmountHumanReadable[] {
   const bptTotalSupply = parseUnits(poolTotalShares, 18)
@@ -261,4 +264,20 @@ export function calcPotentialYieldFor(pool: Pool, amountUsd: Numberish): string 
   const [, maxTotalApr] = getTotalApr(pool.dynamicData.aprItems)
 
   return bn(amountUsd).times(maxTotalApr).div(52).toString()
+}
+
+export function getAuraPoolLink(chainId: number, pid: string) {
+  return `https://app.aura.finance/#/${chainId}/pool/${pid}`
+}
+
+export function shouldHideSwapFee(poolType: GqlPoolType) {
+  return poolType === GqlPoolType.CowAmm
+}
+
+export function getPoolDisplayTokens(pool: Pool) {
+  return pool.poolTokens.filter(token =>
+    pool.displayTokens.find(
+      (displayToken: GqlPoolTokenDisplay) => token.address === displayToken.address
+    )
+  ) as GqlPoolTokenDetail[]
 }

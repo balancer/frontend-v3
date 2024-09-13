@@ -3,12 +3,14 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
-import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/SignRelayerButton'
 import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
 import { getVaultConfig } from '../../pool.helpers'
+import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
+import { Address } from 'viem'
+import { isCowAmmPool } from '../../pool.helpers'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -19,13 +21,14 @@ export function useAddLiquiditySteps({
   humanAmountsIn,
   simulationQuery,
 }: AddLiquidityStepsParams) {
-  const { pool, chainId } = usePool()
+  const { pool, chainId, chain } = usePool()
   const { vaultAddress } = getVaultConfig(pool)
-  const relayerMode = useRelayerMode()
-  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId)
+  const relayerMode = useRelayerMode(pool)
+  const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
+
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
-  const signRelayerStep = useSignRelayerStep()
+  const signRelayerStep = useSignRelayerStep(chain)
 
   const inputAmounts = useMemo(
     () => helpers.toInputAmounts(humanAmountsIn),
@@ -34,7 +37,7 @@ export function useAddLiquiditySteps({
 
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: vaultAddress,
+      spenderAddress: isCowAmmPool(pool.type) ? (pool.address as Address) : vaultAddress,
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',

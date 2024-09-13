@@ -3,6 +3,7 @@
 import {
   Card,
   CardProps,
+  Divider,
   Heading,
   Link,
   ListItem,
@@ -46,6 +47,7 @@ export function PoolRisks({ ...props }: CardProps) {
         <Heading variant="h4" fontSize="1.25rem">
           Pool risks
         </Heading>
+        <Divider />
         <RisksList />
       </VStack>
     </Card>

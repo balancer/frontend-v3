@@ -19,6 +19,7 @@ query GetPools(
     createTime
     decimals
     protocolVersion
+    tags
     displayTokens {
       id
       address
@@ -48,6 +49,8 @@ query GetPools(
         title
         apr
         type
+        rewardTokenSymbol
+        rewardTokenAddress
       }
     }
     staking {
@@ -82,6 +85,8 @@ query GetPools(
         id
         apr
         auraPoolAddress
+        auraPoolId
+        isShutdown
       }
     }
     factory
@@ -133,6 +138,8 @@ query GetFeaturedPools($chains: [GqlChain!]!) {
           title
           apr
           type
+          rewardTokenSymbol
+          rewardTokenAddress
         }
       }
       displayTokens {

@@ -14,21 +14,23 @@ import {
   LiquidityActionHelpers,
   areEmptyAmounts,
   filterHumanAmountsIn,
+  injectNativeAsset,
+  replaceWrappedWithNativeAsset,
   requiresProportionalInput,
+  supportsNestedActions,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { selectAddLiquidityHandler } from './handlers/selectAddLiquidityHandler'
 import { useTokenInputsValidation } from '@/lib/modules/tokens/TokenInputsValidationProvider'
-import { isGyro } from '../../pool.helpers'
-import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useAddLiquiditySteps } from './useAddLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
+import { getLeafTokens } from '@/lib/modules/tokens/token.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -40,13 +42,13 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const [wethIsEth, setWethIsEth] = useState(false)
   const [totalUSDValue, setTotalUSDValue] = useState('0')
 
-  const { pool, refetch: refetchPool } = usePool()
+  const { pool, refetch: refetchPool, isLoading } = usePool()
   const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
     useTokens()
   const { isConnected } = useUserAccount()
   const { hasValidationErrors } = useTokenInputsValidation()
 
-  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id])
+  const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id, isLoading])
 
   /**
    * Helper functions & variables
@@ -58,7 +60,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const wNativeAsset = getWrappedNativeAssetToken(chain)
 
   function setInitialHumanAmountsIn() {
-    const amountsIn = pool.allTokens.map(
+    const amountsIn = getPoolTokens().map(
       token =>
         ({
           tokenAddress: token.address,
@@ -79,26 +81,21 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     ])
   }
 
-  const tokens = pool.allTokens
-    .filter(token => {
-      if (isGyro(pool.type)) return true
-      return token.isMainToken
-    })
-    .map(token => getToken(token.address, chain))
-
-  let isWrappedNativeAssetInPool = false
-  const tokensWithNativeAsset = tokens.map(token => {
-    if (token && isWrappedNativeAsset(token.address as Address, chain)) {
-      isWrappedNativeAssetInPool = true
-      return nativeAsset
-    } else {
-      return token
+  function getPoolTokens() {
+    if (supportsNestedActions(pool)) {
+      return getLeafTokens(pool.poolTokens)
     }
-  })
 
-  let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens =
-    isWrappedNativeAssetInPool && nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+    return pool.poolTokens
+  }
+
+  const tokens = getPoolTokens()
+    .map(token => getToken(token.address, chain))
+    .filter((token): token is GqlToken => !!token)
+
+  const tokensWithNativeAsset = replaceWrappedWithNativeAsset(tokens, nativeAsset)
+
+  const validTokens = injectNativeAsset(tokens, nativeAsset, pool)
 
   const { usdValueFor } = useTotalUsdValue(validTokens)
 
@@ -135,6 +132,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
 
   const addLiquidityTxHash =
     urlTxHash || transactionSteps.lastTransaction?.result?.data?.transactionHash
+
+  const addLiquidityTxSuccess = transactionSteps.lastTransactionConfirmed
 
   const hasQuoteContext = !!simulationQuery.data
 
@@ -198,6 +197,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     urlTxHash,
     addLiquidityTxHash,
     hasQuoteContext,
+    addLiquidityTxSuccess,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,

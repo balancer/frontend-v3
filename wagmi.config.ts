@@ -42,6 +42,11 @@ export default defineConfig(() => {
             name: 'BalancerV2WeightedPoolV4',
             address: '0x3ff3a210e57cfe679d9ad1e9ba6453a716c56a2e',
           },
+          // Uncomment and replace manual abi when a Cow AMM pool is deployed in mainnet
+          // {
+          //   name: 'BalancerV1Pool',
+          //   address: '0x232a18645c4e33dd64e6925e03da0f0dd77ad003', //CowAmm pool
+          // },
           {
             name: 'BalancerV2GaugeV5',
             address: '0xbc02ef87f4e15ef78a571f3b2adcc726fee70d8b',

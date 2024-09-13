@@ -44,3 +44,22 @@ test('enriches V2 pool with on-chain data', async () => {
   expect(Number(result.current.pool.dynamicData.totalLiquidity)).toBeGreaterThan(0) // Sum(api token balances  * mocked token prices (see defaultTokenPriceListMock))
   expect(Number(result.current.pool.dynamicData.totalShares)).toBeGreaterThan(0)
 })
+
+// TODO: un-skip when pool 0x232a18645c4e33dd64e6925e03da0f0dd77ad003 is available in production api
+test.skip('enriches V1 Cow AMM pool with on-chain data', async () => {
+  // const poolId = '0x232a18645c4e33dd64e6925e03da0f0dd77ad003' // V1 test Cow AMM pool
+  const sepoliaPoolId = '0xd1bdc51decb61ee0c98e47fe17217c58be525180' // V1 test Cow AMM pool
+
+  const pool = await getPoolMock(sepoliaPoolId, GqlChain.Sepolia)
+
+  // delete values to ensure that onchain data is used
+  pool.dynamicData.totalLiquidity = '0'
+  pool.dynamicData.totalShares = '0'
+
+  const result = testPoolEnrichWithOnChainData(pool)
+
+  await waitFor(() => expect(result.current.isLoading).toBeFalsy())
+
+  expect(Number(result.current.pool.dynamicData.totalLiquidity)).toBeGreaterThan(0) // Sum(api token balances  * mocked token prices (see defaultTokenPriceListMock))
+  expect(Number(result.current.pool.dynamicData.totalShares)).toBeGreaterThan(0)
+})

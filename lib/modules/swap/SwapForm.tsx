@@ -13,7 +13,6 @@ import {
   IconButton,
   Button,
   Box,
-  Text,
   CardHeader,
   CardFooter,
   CardBody,
@@ -29,16 +28,17 @@ import { ChainSelect } from '../chains/ChainSelect'
 import { CheckCircle, Link, Repeat } from 'react-feather'
 import { SwapRate } from './SwapRate'
 import { SwapDetails } from './SwapDetails'
-import { capitalize, now } from 'lodash'
+import { capitalize } from 'lodash'
 import { motion, easeOut } from 'framer-motion'
 import FadeInOnView from '@/lib/shared/components/containers/FadeInOnView'
 import { ErrorAlert } from '@/lib/shared/components/errors/ErrorAlert'
 import { useIsMounted } from '@/lib/shared/hooks/useIsMounted'
-import { useRouter } from 'next/navigation'
 import { parseSwapError } from './swap.helpers'
+import { useUserAccount } from '../web3/UserAccountProvider'
+import { ConnectWallet } from '../web3/ConnectWallet'
+import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 
 export function SwapForm() {
-  const router = useRouter()
   const {
     tokenIn,
     tokenOut,
@@ -51,6 +51,7 @@ export function SwapForm() {
     simulationQuery,
     swapAction,
     swapTxHash,
+    transactionSteps,
     setSelectedChain,
     setTokenInAmount,
     setTokenOutAmount,
@@ -60,6 +61,7 @@ export function SwapForm() {
     switchTokens,
     setNeedsToAcceptHighPI,
     resetSwapAmounts,
+    replaceUrlPath,
   } = useSwap()
   const [copiedDeepLink, setCopiedDeepLink] = useState(false)
   const tokenSelectDisclosure = useDisclosure()
@@ -67,8 +69,11 @@ export function SwapForm() {
   const finalRefTokenIn = useRef(null)
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
+  const { isConnected } = useUserAccount()
 
   const isLoadingSwaps = simulationQuery.isLoading
+  const isLoading = isLoadingSwaps || !isMounted
+  const loadingText = isLoading ? 'Fetching swap...' : undefined
 
   function copyDeepLink() {
     navigator.clipboard.writeText(window.location.href)
@@ -77,6 +82,7 @@ export function SwapForm() {
   }
 
   function handleTokenSelect(token: GqlToken) {
+    if (!token) return
     if (tokenSelectKey === 'tokenIn') {
       setTokenIn(token.address as Address)
     } else if (tokenSelectKey === 'tokenOut') {
@@ -95,8 +101,8 @@ export function SwapForm() {
     previewModalDisclosure.onClose()
     if (swapTxHash) {
       resetSwapAmounts()
-      // Push an invalid dynamic route to force a re-render of the swap layout
-      router.push(`/swap/${now()}`)
+      replaceUrlPath()
+      transactionSteps.resetTransactionSteps()
     }
   }
 
@@ -125,6 +131,7 @@ export function SwapForm() {
           </CardHeader>
           <CardBody as={VStack} align="start">
             <VStack spacing="md" w="full">
+              <SafeAppAlert />
               <ChainSelect
                 value={selectedChain}
                 onChange={newValue => {
@@ -189,28 +196,36 @@ export function SwapForm() {
 
               {simulationQuery.isError && (
                 <ErrorAlert title="Error fetching swap">
-                  <Text color="font.maxContrast" variant="secondary">
-                    {parseSwapError(simulationQuery.error?.message)}
-                  </Text>
+                  {parseSwapError(simulationQuery.error?.message)}
                 </ErrorAlert>
               )}
             </VStack>
           </CardBody>
           <CardFooter>
-            <Tooltip label={isDisabled ? disabledReason : ''}>
-              <Button
-                ref={nextBtn}
-                variant="secondary"
+            {isConnected ? (
+              <Tooltip label={isDisabled ? disabledReason : ''}>
+                <Button
+                  ref={nextBtn}
+                  variant="secondary"
+                  w="full"
+                  size="lg"
+                  isDisabled={isDisabled || !isMounted}
+                  isLoading={isLoading}
+                  loadingText={loadingText}
+                  onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                >
+                  Next
+                </Button>
+              </Tooltip>
+            ) : (
+              <ConnectWallet
+                variant="primary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled || !isMounted}
-                isLoading={isLoadingSwaps || !isMounted}
-                loadingText={isLoadingSwaps || !isMounted ? 'Fetching swap...' : undefined}
-                onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
-              >
-                Next
-              </Button>
-            </Tooltip>
+                isLoading={isLoading}
+                loadingText={loadingText}
+              />
+            )}
           </CardFooter>
         </Card>
       </Center>

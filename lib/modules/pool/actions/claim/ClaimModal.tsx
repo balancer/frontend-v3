@@ -6,7 +6,6 @@ import {
   ModalContent,
   ModalProps,
   Text,
-  VStack,
 } from '@chakra-ui/react'
 import { useClaim } from './ClaimProvider'
 import { Address } from 'viem'
@@ -23,10 +22,13 @@ import { SuccessOverlay } from '@/lib/shared/components/modals/SuccessOverlay'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { useEffect, useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
+import { useRouter } from 'next/navigation'
+import { AnimateHeightChange } from '@/lib/shared/components/modals/AnimatedModalBody'
 
 type Props = {
   isOpen: boolean
-  onClose(): void
+  onClose(isSuccess: boolean): void
   chain: GqlChain
 }
 
@@ -35,12 +37,17 @@ export function ClaimModal({
   onClose,
   chain,
   ...rest
-}: Props & Omit<ModalProps, 'children'>) {
+}: Props & Omit<ModalProps, 'children' | 'onClose'>) {
+  const router = useRouter()
+
   const [quoteRewards, setQuoteRewards] = useState<HumanTokenAmountWithAddress[]>([])
   const [quoteTotalUsd, setQuoteTotalUsd] = useState<string>('0')
 
   const { isDesktop, isMobile } = useBreakpoints()
-  const { transactionSteps, claimTxHash, allClaimableRewards, totalClaimableUsd } = useClaim()
+  const { transactionSteps, claimTxHash, allClaimableRewards, totalClaimableUsd, isLoading } =
+    useClaim()
+
+  useResetStepIndexOnOpen(isOpen, transactionSteps)
 
   const rewards = useMemo(
     () =>
@@ -54,7 +61,7 @@ export function ClaimModal({
   )
 
   useEffect(() => {
-    if (rewards.length > 0) {
+    if (quoteRewards.length === 0 && rewards.length > 0) {
       setQuoteRewards(rewards)
       setQuoteTotalUsd(totalClaimableUsd)
     }
@@ -64,36 +71,49 @@ export function ClaimModal({
   const noQuoteRewards = quoteRewards.length === 0
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose(!!claimTxHash)
+      }}
+      isCentered
+      preserveScrollBarGap
+      {...rest}
+    >
       <SuccessOverlay startAnimation={!!claimTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
         {isDesktop && <DesktopStepTracker transactionSteps={transactionSteps} chain={chain} />}
-        <TransactionModalHeader label="Claim rewards" txHash={claimTxHash} chain={chain} />
+        <TransactionModalHeader label="Claim incentives" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
-          <VStack spacing="sm">
+          <AnimateHeightChange spacing="sm">
             {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
-            {noQuoteRewards ? (
+            {isLoading ? (
+              <Text>Loading data...</Text>
+            ) : noQuoteRewards ? (
               <Text>Nothing to claim</Text>
             ) : (
               <Card variant="modalSubSection">
                 <TokenRowGroup
                   amounts={quoteRewards}
                   chain={chain}
-                  label="You'll get"
+                  label={claimTxHash ? 'You got' : "You'll get"}
                   totalUSDValue={quoteTotalUsd}
                 />
               </Card>
             )}
-          </VStack>
+          </AnimateHeightChange>
         </ModalBody>
 
         <ActionModalFooter
           isSuccess={!!claimTxHash}
           currentStep={transactionSteps.currentStep}
-          returnLabel="Return to pool"
-          returnAction={onClose}
+          returnLabel="Return to portfolio"
+          returnAction={() => {
+            onClose(!!claimTxHash)
+            router.push('/portfolio')
+          }}
         />
       </ModalContent>
     </Modal>

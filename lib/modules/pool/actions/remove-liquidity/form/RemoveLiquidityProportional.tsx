@@ -2,14 +2,16 @@
 'use client'
 
 import TokenRow from '@/lib/modules/tokens/TokenRow/TokenRow'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
+import { GqlPoolType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { Card, Text, VStack, useDisclosure } from '@chakra-ui/react'
 import { Address } from 'viem'
 import { useRemoveLiquidity } from '../RemoveLiquidityProvider'
 import { isNativeAsset, isNativeOrWrappedNative } from '@/lib/modules/tokens/token.helpers'
 import { NativeAssetSelectModal } from '@/lib/modules/tokens/NativeAssetSelectModal'
+import { shouldShowNativeWrappedSelector } from '../../LiquidityActionHelpers'
 
-export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | undefined)[] }) {
+type Props = { tokens: (GqlToken | undefined)[]; poolType: GqlPoolType }
+export function RemoveLiquidityProportional({ tokens, poolType }: Props) {
   const { amountOutForToken, validTokens, setWethIsEth, simulationQuery, priceImpactQuery } =
     useRemoveLiquidity()
   const tokenSelectDisclosure = useDisclosure()
@@ -43,7 +45,7 @@ export function RemoveLiquidityProportional({ tokens }: { tokens: (GqlToken | un
                   address={token.address as Address}
                   value={amountOutForToken(token.address as Address)}
                   toggleTokenSelect={
-                    isNativeOrWrappedNative(token.address as Address, token.chain)
+                    shouldShowNativeWrappedSelector(token, poolType)
                       ? () => tokenSelectDisclosure.onOpen()
                       : undefined
                   }

@@ -1,7 +1,5 @@
-import { Card, HStack, Icon, PopoverArrow, PopoverContent, Text, VStack } from '@chakra-ui/react'
+import { Card, HStack, PopoverArrow, PopoverContent, Text, VStack } from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
-import { Info } from 'react-feather'
-import StarsIcon from '../../icons/StarsIcon'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { useCallback } from 'react'
 import { bn } from '@/lib/shared/utils/numbers'
@@ -23,8 +21,7 @@ function AddLiquidityAprTooltip({ weeklyYield, totalUsdValue, pool, ...props }: 
   const { toCurrency } = useCurrency()
 
   const numberFormatter = useCallback(
-    (value: string) =>
-      bn(bn(value).times(totalUsdValue).dividedBy(52).toFixed(2, BigNumber.ROUND_HALF_UP)),
+    (value: string) => bn(value).times(totalUsdValue).dividedBy(52),
     [totalUsdValue]
   )
 

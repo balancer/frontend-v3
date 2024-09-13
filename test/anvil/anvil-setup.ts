@@ -51,14 +51,15 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
     // forkBlockNumber: 19769489n,
-    forkBlockNumber: 20061849n,
+    // forkBlockNumber: 20061849n,
+    forkBlockNumber: 20474895n,
   },
   Polygon: {
     networkName: 'Polygon',
     fallBackRpc: 'https://polygon-rpc.com',
     port: ANVIL_PORTS.Polygon,
     // Note - this has to be >= highest blockNo used in tests
-    forkBlockNumber: 57569322n,
+    forkBlockNumber: 60496806n,
   },
   Sepolia: {
     networkName: 'Sepolia',
@@ -84,16 +85,23 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  if (network.networkName === 'Ethereum' && process.env['NEXT_PRIVATE_INFURA_KEY']) {
-    return `https://mainnet.infura.io/v3/${process.env['NEXT_PRIVATE_INFURA_KEY']}`
-  } else {
-    if (!network.fallBackRpc) {
-      throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  const privateInfuraKey = process.env['NEXT_PRIVATE_INFURA_KEY']
+  if (privateInfuraKey) {
+    if (network.networkName === 'Ethereum') {
+      return `https://mainnet.infura.io/v3/${privateInfuraKey}`
     }
-
-    if (verbose) {
-      console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+    if (network.networkName === 'Polygon') {
+      return `https://polygon-mainnet.infura.io/v3/${privateInfuraKey}`
     }
-    return network.fallBackRpc
+    if (network.networkName === 'Sepolia') return `https://sepolia.infura.io/v3/${privateInfuraKey}`
   }
+
+  if (!network.fallBackRpc) {
+    throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  }
+
+  if (verbose) {
+    console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+  }
+  return network.fallBackRpc
 }

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 import {
   AddLiquidity,
   AddLiquidityKind,
@@ -14,11 +15,9 @@ import {
   LiquidityActionHelpers,
   adaptBuildCallParams,
   areEmptyAmounts,
-  roundDecimals,
 } from '../../LiquidityActionHelpers'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -51,8 +50,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       return 0
     }
 
-    // trims amounts in to 10 decimals to workaround an SDK error in price impact calculation when proportional amounts have more than 10 decimals
-    const addLiquidityInput = this.constructSdkInput(roundDecimals(humanAmountsIn))
+    const addLiquidityInput = this.constructSdkInput(humanAmountsIn)
 
     const priceImpactABA: PriceImpactAmount = await PriceImpact.addLiquidityUnbalanced(
       addLiquidityInput,
@@ -103,7 +101,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
     }

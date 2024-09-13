@@ -1,5 +1,5 @@
 import React from 'react'
-import { Box, BoxProps, Card, Center, Text, Spinner, VStack } from '@chakra-ui/react'
+import { Box, BoxProps, Center, Text, Spinner, VStack, Skeleton } from '@chakra-ui/react'
 import { Pagination } from '@/lib/shared/components/pagination/Pagination'
 
 interface Props<T> extends BoxProps {
@@ -9,6 +9,7 @@ interface Props<T> extends BoxProps {
   renderTableRow: (item: T, index: number) => React.ReactNode
   showPagination: boolean
   paginationProps: any // TODO: type this
+  noItemsFoundLabel: string
 }
 
 export function PaginatedTable({
@@ -18,15 +19,15 @@ export function PaginatedTable({
   renderTableHeader,
   showPagination,
   paginationProps,
-  ...rest
+  noItemsFoundLabel,
 }: Props<any>) {
   return (
-    <Card {...rest} p={{ base: '0', sm: '0' }}>
-      <VStack spacing={['sm', 'md']} w="full" overflowX="scroll" className="hide-scrollbar">
+    <>
+      <VStack w="full" overflowX="scroll" className="hide-scrollbar">
         {renderTableHeader()}
         <Box w="full" position="relative">
           {items.length > 0 && (
-            <VStack spacing={['xs', 'ms']}>
+            <VStack gap="0">
               {items.map((item, index) => (
                 <Box key={`${item.id}-${index}`} w="full">
                   {renderTableRow(item, index)}
@@ -34,39 +35,20 @@ export function PaginatedTable({
               ))}
             </VStack>
           )}
-
           {!loading && items.length === 0 && (
             <Center py="2xl">
-              <Text color="font.secondary">No pools found</Text>
+              <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
-
-          {loading && items.length === 0 && (
-            <Center py="2xl">
-              <Box
-                style={{
-                  position: 'absolute',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  width: '100%',
-                  height: '100%',
-                  top: 0,
-                  left: 0,
-                  borderRadius: 10,
-                  zIndex: 10,
-                  backdropFilter: 'blur(3px)',
-                }}
-              >
-                <Center>
-                  <Spinner size="xl" />
-                </Center>
+          {loading &&
+            items.length === 0 &&
+            Array.from({ length: 20 }).map((_, index) => (
+              <Box key={index} w="full" py="xs">
+                <Skeleton height="68px" w="full" />
               </Box>
-            </Center>
-          )}
-
-          {loading && (
-            <Box py="2xl">
+            ))}
+          {loading && items.length > 0 && (
+            <Box>
               <Box
                 style={{
                   position: 'absolute',
@@ -91,6 +73,6 @@ export function PaginatedTable({
         </Box>
       </VStack>
       {showPagination && <Pagination p="md" {...paginationProps} />}
-    </Card>
+    </>
   )
 }

@@ -17,8 +17,10 @@ const networkConfig = {
   },
   tokens: {
     addresses: {
+      veBalBpt: '0x5c6ee304399dbdb9c8ef030ab642b10820db8f56',
       bal: '0xba100000625a3754423978a60c9317c58a424e3d',
       wNativeAsset: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
+      auraBal: '0x616e8bfa43f920657b3497dbf40d6b1a02d4608d',
     },
     nativeAsset: {
       name: 'Ether',
@@ -121,6 +123,9 @@ const networkConfig = {
         '0xad0e5e0778cac28f1ff459602b31351871b5754a0002000000000000000003cD',
       ],
     },
+    allowNestedActions: [
+      '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0', // B-80BAL-20WETH
+    ],
   }),
 } as const satisfies NetworkConfig
 

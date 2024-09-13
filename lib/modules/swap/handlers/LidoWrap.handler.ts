@@ -20,6 +20,8 @@ const lidoRateProviderMap: Partial<Record<GqlChain, Address>> = {
 }
 
 export class LidoWrapHandler implements SwapHandler {
+  name = 'LidoWrapHandler'
+
   async simulate({ ...variables }: SimulateSwapInputs): Promise<SimulateSwapResponse> {
     const wrapType = getWrapType(variables.tokenIn, variables.tokenOut, variables.chain)
     if (!wrapType) throw new Error('LidoWrapHandler called with non valid wrap tokens')
@@ -28,10 +30,6 @@ export class LidoWrapHandler implements SwapHandler {
 
     return {
       swapType: variables.swapType,
-      priceImpact: {
-        __typename: 'GqlPriceImpact',
-        priceImpact: '0',
-      },
       effectivePrice: '1',
       effectivePriceReversed: '1',
       returnAmount,

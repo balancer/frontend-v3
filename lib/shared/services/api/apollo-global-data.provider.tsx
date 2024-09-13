@@ -16,6 +16,9 @@ import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { TokensProvider } from '@/lib/modules/tokens/TokensProvider'
 import { FiatFxRatesProvider } from '../../hooks/FxRatesProvider'
 import { getFxRates } from '../../utils/currencies'
+import { getPoolCategories } from '@/lib/modules/pool/categories/getPoolCategories'
+import { PoolCategoriesProvider } from '@/lib/modules/pool/categories/PoolCategoriesProvider'
+import { mins } from '../../utils/time'
 
 export const revalidate = 60
 
@@ -31,7 +34,7 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     variables: tokensQueryVariables,
     context: {
       fetchOptions: {
-        next: { revalidate: 600 }, // 10 minutes, but this could potentially be longer
+        next: { revalidate: mins(20).toSecs() },
       },
     },
   })
@@ -43,12 +46,13 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
     },
     context: {
       fetchOptions: {
-        next: { revalidate: 60 },
+        next: { revalidate: mins(10).toSecs() },
       },
     },
   })
 
   const exchangeRates = await getFxRates()
+  const poolCategories = await getPoolCategories()
 
   return (
     <TokensProvider
@@ -56,7 +60,9 @@ export async function ApolloGlobalDataProvider({ children }: React.PropsWithChil
       tokenPricesData={tokenPricesQueryData}
       variables={tokensQueryVariables}
     >
-      <FiatFxRatesProvider data={exchangeRates}>{children}</FiatFxRatesProvider>
+      <FiatFxRatesProvider data={exchangeRates}>
+        <PoolCategoriesProvider data={poolCategories}>{children}</PoolCategoriesProvider>
+      </FiatFxRatesProvider>
     </TokensProvider>
   )
 }

@@ -1,4 +1,14 @@
-import { Box, Button, Center, HStack, Icon, Text, TextProps, useTheme } from '@chakra-ui/react'
+import {
+  Box,
+  Button,
+  Center,
+  HStack,
+  Icon,
+  PopoverContent,
+  Text,
+  TextProps,
+  useTheme,
+} from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
 import { Info } from 'react-feather'
 import { getTotalAprLabel } from '@/lib/modules/pool/pool.utils'
@@ -7,6 +17,7 @@ import { PoolListItem } from '@/lib/modules/pool/pool.types'
 import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
+import { GqlPoolAprItemType } from '@/lib/shared/services/api/generated/graphql'
 
 interface Props
   extends Omit<
@@ -22,8 +33,6 @@ interface Props
   id?: string
 }
 
-const hoverColor = 'font.highlight'
-
 export const SparklesIcon = ({
   isOpen,
   pool,
@@ -35,8 +44,10 @@ export const SparklesIcon = ({
 }) => {
   const theme = useTheme()
   const { corePoolId } = getProjectConfig()
+  const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
-  const hasRewardApr = pool.dynamicData.aprItems.some(item => item.title === 'BAL reward APR')
+  const hasRewardApr =
+    pool.dynamicData.aprItems.filter(item => item.type !== GqlPoolAprItemType.SwapFee).length > 0
 
   let gradFromColor = theme.colors.sparkles.default.from
   let gradToColor = theme.colors.sparkles.default.to
@@ -81,23 +92,42 @@ function MainAprTooltip({
   ...props
 }: Props) {
   const aprToShow = apr || getTotalAprLabel(pool.dynamicData.aprItems, vebalBoost)
+  const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
+
+  const customPopoverContent = isLBP(pool.type) ? (
+    <PopoverContent p="md">
+      <Text color="font.secondary" fontSize="sm">
+        LBP APRs cannot be realized by LPs.
+      </Text>
+    </PopoverContent>
+  ) : undefined
 
   return (
     <BaseAprTooltip
       {...props}
       maxVeBalText="Max veBAL APR"
-      totalBaseText={balReward => `Total ${balReward ? 'base' : ''} APR`}
+      totalBaseText={hasVeBalBoost => `Total ${hasVeBalBoost ? 'base' : ''} APR`}
       totalBaseVeBalText="Total base APR"
+      customPopoverContent={customPopoverContent}
+      vebalBoost={vebalBoost}
     >
       {({ isOpen }) => (
         <HStack align="center" alignItems="center">
           <Button variant="unstyled" _focus={{ outline: 'none' }} px="0" h={height}>
             <HStack
-              _hover={{ color: 'font.link' }}
-              color={isOpen ? 'font.highlight' : 'font.primary'}
+              _hover={{ color: hoverColor }}
+              color={isOpen ? hoverColor : 'font.primary'}
+              opacity={isLBP(pool.type) ? 0.5 : 1}
             >
               {!onlySparkles && (
-                <Text {...textProps} textAlign="right" color={isOpen ? hoverColor : 'font.primary'}>
+                <Text
+                  textAlign="left"
+                  color={isOpen ? hoverColor : 'font.primary'}
+                  textDecoration={isLBP(pool.type) ? 'line-through' : 'none'}
+                  whiteSpace="pre-wrap"
+                  noOfLines={2}
+                  {...textProps}
+                >
                   {apr || aprToShow}
                   {aprLabel ? ' APR' : ''}
                 </Text>

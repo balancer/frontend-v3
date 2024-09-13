@@ -5,6 +5,7 @@ import { MediumIcon } from '../icons/social/MediumIcon'
 import { YoutubeIcon } from '../icons/social/YoutubeIcon'
 import { GithubIcon } from '../icons/social/GithubIcon'
 import { useParams } from 'next/navigation'
+import { isDev, isStaging } from '@/lib/config/app.config'
 
 export function useNav() {
   const pathname = usePathname()
@@ -27,6 +28,14 @@ export function useNav() {
     },
   ]
 
+  // To-do: Remove this when veBAL is live
+  if (isDev || isStaging) {
+    appLinks.push({
+      href: '/vebal',
+      label: 'veBAL (wip)',
+    })
+  }
+
   const ecosystemLinks = [
     { label: 'Build', href: 'https://balancer.fi/build' },
     { label: 'Blog', href: 'https://medium.com/balancer-protocol' },
@@ -40,25 +49,25 @@ export function useNav() {
     },
   ]
 
-  const socialLinks = [
+  const getSocialLinks = (size = 24) => [
     {
-      icon: <XIcon />,
+      icon: <XIcon size={size} />,
       href: 'https://x.com/Balancer',
     },
     {
-      icon: <DiscordIcon />,
+      icon: <DiscordIcon size={size} />,
       href: 'https://discord.balancer.fi/',
     },
     {
-      icon: <MediumIcon />,
+      icon: <MediumIcon size={size} />,
       href: 'https://medium.com/balancer-protocol',
     },
     {
-      icon: <YoutubeIcon />,
+      icon: <YoutubeIcon size={size} />,
       href: 'https://www.youtube.com/channel/UCBRHug6Hu3nmbxwVMt8x_Ow',
     },
     {
-      icon: <GithubIcon />,
+      icon: <GithubIcon size={size} />,
       href: 'https://github.com/balancer/',
     },
   ]
@@ -67,5 +76,5 @@ export function useNav() {
     return pathname === path ? 'font.highlight' : 'font.primary'
   }
 
-  return { appLinks, ecosystemLinks, socialLinks, linkColorFor }
+  return { appLinks, ecosystemLinks, getSocialLinks, linkColorFor }
 }

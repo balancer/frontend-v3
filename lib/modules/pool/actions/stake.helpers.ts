@@ -7,7 +7,7 @@ import {
   GqlPoolStakingType,
   GqlUserStakedBalance,
 } from '@/lib/shared/services/api/generated/graphql'
-import { getGaugeStakedBalance } from '../user-balance.helpers'
+import { getStakedBalance } from '../user-balance.helpers'
 
 // eslint-disable-next-line max-len
 export const migrateStakeTooltipLabel = `veBAL gauges are the mechanism to distribute BAL liquidity incentives following community voting.
@@ -33,10 +33,9 @@ export function getUnstakeQuote(pool: Pool): UnstakeQuote {
     }
   }
 
-  const preferentialGaugeAddress = pool.staking?.gauge?.id as Address
   return {
-    gaugeAddress: preferentialGaugeAddress,
-    amountOut: getGaugeStakedBalance(pool, preferentialGaugeAddress) as HumanAmount,
+    gaugeAddress: pool.staking?.gauge?.id as Address,
+    amountOut: getStakedBalance(pool, GqlPoolStakingType.Gauge).balance,
   }
 }
 
@@ -46,6 +45,10 @@ export function hasPreferentialGauge(pool: Pool): boolean {
 
 export function hasNonPreferentialStakedBalance(pool: Pool): boolean {
   return filterNonPreferentialStakingWithBalance(pool).length > 0
+}
+
+export function getCanStake(pool: Pool): boolean {
+  return !!pool.staking && !hasNonPreferentialStakedBalance(pool)
 }
 
 export function findFirstNonPreferentialStakedWithBalance(

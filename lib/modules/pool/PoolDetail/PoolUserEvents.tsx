@@ -14,17 +14,17 @@ import {
 import { usePool } from '../PoolProvider'
 import { useEffect, useLayoutEffect, useMemo, useState } from 'react'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
-import { GqlChain, GqlPoolMinimal } from '@/lib/shared/services/api/generated/graphql'
+import { GetPoolEventsQuery, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { TokenIcon } from '@/lib/modules/tokens/TokenIcon'
 import { formatDistanceToNow, secondsToMilliseconds } from 'date-fns'
 import { useBlockExplorer } from '@/lib/shared/hooks/useBlockExplorer'
 import { ArrowUpRight } from 'react-feather'
-import { PoolEventItem, usePoolEvents } from '../usePoolEvents'
+import { PoolEventItem } from '../usePoolEvents'
 import { calcTotalStakedBalance, getUserTotalBalance } from '../user-balance.helpers'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { useVebalBoost } from '@/lib/modules/vebal/useVebalBoost'
 import { isEmpty } from 'lodash'
-import { useUserAccount } from '../../web3/UserAccountProvider'
+import { isVebalPool } from '../pool.helpers'
 
 type PoolEventRowProps = {
   poolEvent: PoolEventItem
@@ -105,32 +105,44 @@ function PoolEventRow({ poolEvent, usdValue, chain, txUrl }: PoolEventRowProps) 
   )
 }
 
-export default function PoolUserEvents() {
+export default function PoolUserEvents({
+  userPoolEvents,
+  isLoading,
+}: {
+  userPoolEvents: GetPoolEventsQuery['poolEvents'] | undefined
+  isLoading: boolean
+}) {
   const { myLiquiditySectionRef, chain, pool } = usePool()
   const [height, setHeight] = useState(0)
   const [poolEvents, setPoolEvents] = useState<PoolEventItem[]>([])
   const { toCurrency } = useCurrency()
   const { getBlockExplorerTxUrl } = useBlockExplorer(chain)
   const { veBalBoostMap } = useVebalBoost([pool])
-  const { userAddress } = useUserAccount()
-  const { data: userPoolEventsData, loading: isLoading } = usePoolEvents({
-    chain,
-    poolId: pool.id,
-    userAddress,
-  })
+
+  const isVeBal = isVebalPool(pool.id)
+  const showBoostValue = !isVeBal
 
   // keep this card the same height as the 'My liquidity' section
   useLayoutEffect(() => {
     if (myLiquiditySectionRef && myLiquiditySectionRef.current) {
       setHeight(myLiquiditySectionRef.current.offsetHeight)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
-    if (!isLoading && userPoolEventsData?.poolEvents.length) {
-      setPoolEvents(userPoolEventsData.poolEvents)
+    if (!isLoading && userPoolEvents?.length) {
+      setPoolEvents(userPoolEvents)
     }
-  }, [userPoolEventsData, isLoading])
+  }, [userPoolEvents, isLoading])
+
+  function getShareTitle() {
+    if (isVeBal) {
+      return 'locked'
+    }
+
+    return 'staked'
+  }
 
   const stakedPercentage = useMemo(() => {
     const totalBalance = getUserTotalBalance(pool)
@@ -159,8 +171,8 @@ export default function PoolUserEvents() {
 
   return (
     <Card h={height}>
-      {isLoading && !poolEvents.length && <Skeleton w="full" h="full" />}
-      {!isLoading && poolEvents.length && (
+      {isLoading && <Skeleton w="full" h="full" />}
+      {!isLoading && (
         <VStack spacing="md" w="full" h="full" alignItems="flex-start">
           <Heading
             bg="font.special"
@@ -209,16 +221,20 @@ export default function PoolUserEvents() {
             )}
           </Box>
           <Divider />
-          <HStack spacing="4">
+          <HStack spacing="4" mt="auto">
             <Text variant="secondary" fontSize="0.85rem">
-              {`${stakedPercentage} staked`}
+              {`${stakedPercentage} ${getShareTitle()}`}
             </Text>
-            <Text variant="secondary" fontSize="0.85rem">
-              &middot;
-            </Text>
-            <Text variant="secondary" fontSize="0.85rem">
-              {`${boost}x boost`}
-            </Text>
+            {showBoostValue && (
+              <>
+                <Text variant="secondary" fontSize="0.85rem">
+                  &middot;
+                </Text>
+                <Text variant="secondary" fontSize="0.85rem">
+                  {`${boost}x boost`}
+                </Text>
+              </>
+            )}
           </HStack>
         </VStack>
       )}

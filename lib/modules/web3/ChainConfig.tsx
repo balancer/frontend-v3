@@ -19,11 +19,11 @@ import {
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { keyBy } from 'lodash'
+import { getBaseUrl } from '@/lib/shared/utils/urls'
 
 /* If a request with the default rpc fails, it will fall back to the next one in the list.
   https://viem.sh/docs/clients/transports/fallback#fallback-transport
 */
-fraxtal.rpcUrls
 export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: 'https://eth.llamarpc.com',
   [GqlChain.Arbitrum]: 'https://arbitrum.llamarpc.com',
@@ -36,21 +36,23 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Zkevm]: 'https://polygon-zkevm.drpc.org',
   [GqlChain.Sepolia]: 'https://sepolia.gateway.tenderly.co',
   [GqlChain.Mode]: 'https://mode.drpc.org',
-  [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
+  [GqlChain.Fraxtal]: 'https://fraxtal.drpc.org',
 }
 
-// Helpful for injecting fork RPCs for specific chains.
+const baseUrl = getBaseUrl()
+const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
+
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
-  [GqlChain.Mainnet]: undefined,
-  [GqlChain.Arbitrum]: undefined,
-  [GqlChain.Base]: undefined,
-  [GqlChain.Avalanche]: undefined,
-  [GqlChain.Fantom]: undefined,
-  [GqlChain.Gnosis]: undefined,
-  [GqlChain.Optimism]: undefined,
-  [GqlChain.Polygon]: undefined,
-  [GqlChain.Zkevm]: undefined,
-  [GqlChain.Sepolia]: undefined,
+  [GqlChain.Mainnet]: getPrivateRpcUrl(GqlChain.Mainnet),
+  [GqlChain.Arbitrum]: getPrivateRpcUrl(GqlChain.Arbitrum),
+  [GqlChain.Base]: getPrivateRpcUrl(GqlChain.Base),
+  [GqlChain.Avalanche]: getPrivateRpcUrl(GqlChain.Avalanche),
+  [GqlChain.Fantom]: getPrivateRpcUrl(GqlChain.Fantom),
+  [GqlChain.Gnosis]: getPrivateRpcUrl(GqlChain.Gnosis),
+  [GqlChain.Optimism]: getPrivateRpcUrl(GqlChain.Optimism),
+  [GqlChain.Polygon]: getPrivateRpcUrl(GqlChain.Polygon),
+  [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
+  [GqlChain.Sepolia]: getPrivateRpcUrl(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
   [GqlChain.Fraxtal]: undefined,
 }

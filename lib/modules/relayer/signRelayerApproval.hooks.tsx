@@ -4,20 +4,17 @@ import { useEffect, useState } from 'react'
 import { useWalletClient } from 'wagmi'
 import { signRelayerApproval } from './signRelayerApproval'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
-import { useRelayerMode } from './useRelayerMode'
+import { RelayerMode } from './useRelayerMode'
 import { SignRelayerState, useRelayerSignature } from './RelayerSignatureProvider'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 
-export function useShouldSignRelayerApproval(chainId: SupportedChainId) {
-  const relayerMode = useRelayerMode()
+export function useShouldSignRelayerApproval(chainId: SupportedChainId, relayerMode: RelayerMode) {
   const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
-  const { relayerApprovalSignature } = useRelayerSignature()
-
-  return relayerMode === 'signRelayer' && !relayerApprovalSignature && !hasApprovedRelayer
+  return relayerMode === 'signRelayer' && !hasApprovedRelayer
 }
 
-export function useSignRelayerApproval() {
+export function useSignRelayerApproval(chainId: SupportedChainId) {
   const toast = useToast()
   const { userAddress } = useUserAccount()
 
@@ -41,12 +38,12 @@ export function useSignRelayerApproval() {
     setError(undefined)
 
     try {
-      const signature = await signRelayerApproval(userAddress, walletClient)
+      const signature = await signRelayerApproval(userAddress, chainId, walletClient)
 
       if (signature) {
         setSignRelayerState(SignRelayerState.Completed)
         toast({
-          title: '🎉 Relayer approval signed',
+          title: 'Relayer approval signed!',
           description: '',
           status: 'success',
           duration: 5000,
@@ -91,9 +88,9 @@ function isLoading(signRelayerState: SignRelayerState) {
 }
 
 function getButtonLabel(signRelayerState: SignRelayerState) {
-  if (signRelayerState === SignRelayerState.Ready) return '✏️ Sign relayer'
+  if (signRelayerState === SignRelayerState.Ready) return 'Sign relayer'
   if (signRelayerState === SignRelayerState.Confirming) return 'Confirm relayer signature in wallet'
   if (signRelayerState === SignRelayerState.Preparing) return 'Preparing'
-  if (signRelayerState === SignRelayerState.Completed) return '🎉 Relayer Signed'
+  if (signRelayerState === SignRelayerState.Completed) return 'Relayer Signed'
   return ''
 }

@@ -7,6 +7,8 @@ import { SwapHandler } from '../handlers/Swap.handler'
 import { SimulateSwapResponse, SwapState } from '../swap.types'
 import { swapQueryKeys } from './swapQueryKeys'
 import { SwapSimulationQueryResult } from './useSimulateSwapQuery'
+import { useRelayerSignature } from '../../relayer/RelayerSignatureProvider'
+import { SwapBuildCallExtras, sentryMetaForSwapHandler } from '@/lib/shared/utils/query-errors'
 
 export type BuildSwapQueryResponse = ReturnType<typeof useBuildSwapQuery>
 
@@ -29,6 +31,7 @@ export function useBuildSwapQuery({
 }) {
   const { userAddress, isConnected } = useUserAccount()
   const { slippage } = useUserSettings()
+  const { relayerApprovalSignature } = useRelayerSignature()
 
   const { selectedChain, tokenIn, tokenOut, swapType } = swapState
 
@@ -51,6 +54,7 @@ export function useBuildSwapQuery({
       selectedChain,
       simulateResponse,
       wethIsEth,
+      relayerApprovalSignature,
     })
     console.log('Swap callData built:', response)
 
@@ -62,6 +66,12 @@ export function useBuildSwapQuery({
     queryFn,
     enabled: enabled && isConnected && !!simulationQuery.data,
     gcTime: 0,
+    meta: sentryMetaForSwapHandler('Error in swap buildCallData query', {
+      handler,
+      swapState,
+      slippage,
+      wethIsEth,
+    } as SwapBuildCallExtras),
     ...onlyExplicitRefetch,
   })
 }

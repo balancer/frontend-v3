@@ -63,6 +63,7 @@ export function useTokenSelectList(
     }
 
     return _tokens
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chain, pinNativeAsset, searchTerm, tokens])
 
   return {

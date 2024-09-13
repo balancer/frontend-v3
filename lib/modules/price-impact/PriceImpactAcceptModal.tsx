@@ -50,7 +50,7 @@ export function PriceImpactAcceptModal({
   const debouncedChangeHandler = useDebounce(changeHandler, defaultDebounceMs)
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered {...rest}>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered preserveScrollBarGap {...rest}>
       <ModalOverlay bg="blackAlpha.900" />
       <ModalContent>
         <ModalHeader color="font.primary">Are you sure?</ModalHeader>

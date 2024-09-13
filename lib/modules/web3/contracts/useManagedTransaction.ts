@@ -5,7 +5,6 @@ import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
-import { useEffect, useState } from 'react'
 import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
 import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
@@ -14,6 +13,8 @@ import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from 
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
+import { useTxHash } from '../safe.hooks'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
 
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
@@ -39,7 +40,6 @@ export function useManagedTransaction({
   txSimulationMeta,
   enabled = true,
 }: ManagedTransactionInput) {
-  const [writeArgs, setWriteArgs] = useState(args)
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
 
@@ -48,7 +48,7 @@ export function useManagedTransaction({
     address: contractAddress as Address,
     functionName: functionName as ContractFunctionName<any, WriteAbiMutability>,
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
-    args: writeArgs as any,
+    args: args as any,
     chainId,
     query: {
       enabled: enabled && !shouldChangeNetwork,
@@ -58,10 +58,13 @@ export function useManagedTransaction({
 
   const writeQuery = useWriteContract()
 
+  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeQuery.data })
+
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,
-    hash: writeQuery.data,
+    hash: txHash,
     confirmations: minConfirmations,
+    timeout: getWaitForReceiptTimeout(chainId),
   })
 
   const bundle = {
@@ -69,12 +72,13 @@ export function useManagedTransaction({
     simulation: simulateQuery as TransactionSimulation,
     execution: writeQuery as TransactionExecution,
     result: transactionStatusQuery,
+    isSafeTxLoading,
   }
 
   // on successful submission to chain, add tx to cache
   useOnTransactionSubmission({
     labels,
-    hash: writeQuery.data,
+    hash: txHash,
     chain: getGqlChain(chainId as SupportedChainId),
   })
 
@@ -85,18 +89,7 @@ export function useManagedTransaction({
     hash: bundle.result.data?.transactionHash,
   })
 
-  // if parent changes args, update here
-  useEffect(() => {
-    setWriteArgs(args)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [JSON.stringify(args)])
-
-  const managedWriteAsync = async (
-    args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability>
-  ) => {
-    if (args) {
-      setWriteArgs(args)
-    }
+  const managedWriteAsync = async () => {
     if (!simulateQuery.data) return
     try {
       await writeQuery.writeContractAsync({
