@@ -6,7 +6,15 @@ import { ensureError } from '../../utils/errors'
 import { DefaultPageContainer } from '../containers/DefaultPageContainer'
 import { captureSentryError } from '../../utils/query-errors'
 
-export function BoundaryError({ error, resetErrorBoundary }: FallbackProps) {
+type ErrorWithDigest = Error & {
+  digest?: string
+}
+
+interface BoundaryErrorProps extends FallbackProps {
+  error: ErrorWithDigest
+}
+
+export function BoundaryError({ error, resetErrorBoundary }: BoundaryErrorProps) {
   captureSentryError(error, { errorMessage: error.message })
 
   const _error = ensureError(error)
@@ -22,6 +30,9 @@ export function BoundaryError({ error, resetErrorBoundary }: FallbackProps) {
               : _error?.shortMessage || ''}
           </Text>
           <Text>{_error?.message}</Text>
+          <Text>
+            Error Digest: {_error?.digest} (this can be passed on to support to help with debugging)
+          </Text>
         </VStack>
 
         <Button size="sm" onClick={resetErrorBoundary}>
@@ -32,9 +43,9 @@ export function BoundaryError({ error, resetErrorBoundary }: FallbackProps) {
   )
 }
 
-export function PageErrorBoundary(props: FallbackProps) {
+export function PageErrorBoundary(props: BoundaryErrorProps) {
   return (
-    <DefaultPageContainer>
+    <DefaultPageContainer minH="80vh">
       <BoundaryError {...props} />
     </DefaultPageContainer>
   )

@@ -55,7 +55,7 @@ export class SentryError extends Error {
 }
 
 // Ensures returned value is an Error type.
-export function ensureError(value: unknown): Error & { shortMessage?: string } {
+export function ensureError(value: unknown): Error & { shortMessage?: string; digest?: string } {
   if (value instanceof Error) return value
 
   let stringified = '[Unable to stringify thrown value]'

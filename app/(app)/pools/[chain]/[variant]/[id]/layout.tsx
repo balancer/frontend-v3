@@ -10,6 +10,7 @@ import { PoolProvider } from '@/lib/modules/pool/PoolProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { arrayToSentence } from '@/lib/shared/utils/strings'
 import { ensureError } from '@/lib/shared/utils/errors'
+import { notFound } from 'next/navigation'
 
 type Props = PropsWithChildren<{
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
@@ -62,13 +63,13 @@ export default async function PoolLayout({ params: { id, chain, variant }, child
 
   if (error) {
     if (error?.message === 'Pool with id does not exist') {
-      throw new Error(`Pool not found on ${chain}, ID: ${id}`)
+      notFound()
     }
 
     throw new Error('Failed to fetch pool')
+  } else if (!data) {
+    throw new Error('Failed to fetch pool')
   }
-
-  if (!data) return null
 
   return (
     <Suspense fallback={<PoolDetailSkeleton />}>
