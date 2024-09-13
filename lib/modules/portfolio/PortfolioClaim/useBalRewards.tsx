@@ -14,7 +14,7 @@ import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { balancerV2GaugeV5Abi } from '../../web3/contracts/abi/generated'
 import { WriteContractParameters } from 'wagmi/actions'
 import { compact } from 'lodash'
-import { getClaimableQueryStaleTime } from '../../web3/contracts/wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 export interface BalTokenReward {
   balance: bigint
@@ -65,7 +65,11 @@ export function useBalTokenRewards(pools: ClaimablePool[]) {
   } = useReadContracts({
     allowFailure: true,
     contracts: contractCalls,
-    query: { enabled: isConnected && !!pools.length, staleTime: getClaimableQueryStaleTime() },
+    query: {
+      enabled: isConnected && !!pools.length,
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
+    },
   })
 
   const balRewardsData = useMemo(() => {

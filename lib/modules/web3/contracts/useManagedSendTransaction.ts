@@ -17,7 +17,8 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useRecentTransactions } from '../../transactions/RecentTransactionsProvider'
 import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
-import { getTxSimulationStaleTime, getWaitForReceiptTimeout } from './wagmi-helpers'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -41,8 +42,8 @@ export function useManagedSendTransaction({
     query: {
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
-      refetchOnWindowFocus: false,
-      staleTime: getTxSimulationStaleTime(),
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
     },
   })
 

@@ -11,7 +11,7 @@ import { BPT_DECIMALS } from '../../pool/pool.constants'
 import { ClaimablePool } from '../../pool/actions/claim/ClaimProvider'
 import { GqlChain, GqlPoolStakingGaugeReward } from '@/lib/shared/services/api/generated/graphql'
 import { groupBy, uniqBy } from 'lodash'
-import { getClaimableQueryStaleTime } from '../../web3/contracts/wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 interface ClaimableRewardRef {
   tokenAddress: Address
@@ -79,7 +79,8 @@ export function useClaimableBalances(pools: ClaimablePool[]) {
     contracts: claimableRewardContractCalls,
     query: {
       enabled: isConnected,
-      staleTime: getClaimableQueryStaleTime(),
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
     },
   })
 

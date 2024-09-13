@@ -14,7 +14,8 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
 import { useTxHash } from '../safe.hooks'
-import { getTxSimulationStaleTime, getWaitForReceiptTimeout } from './wagmi-helpers'
+import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 type IAbiMap = typeof AbiMap
 type AbiMapKey = keyof typeof AbiMap
@@ -53,7 +54,8 @@ export function useManagedTransaction({
     query: {
       enabled: enabled && !shouldChangeNetwork,
       meta: txSimulationMeta,
-      staleTime: getTxSimulationStaleTime(),
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
     },
   })
 
