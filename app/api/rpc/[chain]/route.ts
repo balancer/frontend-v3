@@ -34,6 +34,12 @@ function getRpcUrl(chain: string) {
 }
 
 export async function POST(request: Request, { params: { chain } }: Params) {
+  if (!ALCHEMY_KEY) {
+    return new Response(JSON.stringify({ error: 'PRIVATE_ALCHEMY_KEY is missing' }), {
+      status: 500,
+    })
+  }
+
   const rpcUrl = getRpcUrl(chain)
   const rpcBody = await request.json()
 
