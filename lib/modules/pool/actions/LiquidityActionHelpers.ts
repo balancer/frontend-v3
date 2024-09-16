@@ -310,7 +310,7 @@ export function hasNoLiquidity(pool: Pool): boolean {
   return isZero(pool.dynamicData.totalShares)
 }
 
-// When the pool has version v2, it adds extra buildCall params (sender and recipient) that must be present only in V2
+// When the pool has version < v3, it adds extra buildCall params (sender and recipient) that must be present only in V1/V2
 export function adaptBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, account: Address) {
   // sender must be undefined for v3 pools
   if (isV3Pool) return buildCallParams
