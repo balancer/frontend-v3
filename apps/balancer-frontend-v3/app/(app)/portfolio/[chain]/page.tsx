@@ -42,8 +42,8 @@ export default function NetworkClaim() {
 
   return (
     <TransactionStateProvider>
-      <ClaimNetworkPoolsLayout backLink={'/portfolio'} title="Portfolio">
-        <HStack pb="1" justifyContent="space-between">
+      <ClaimNetworkPoolsLayout backLink="/portfolio" title="Portfolio">
+        <HStack justifyContent="space-between" pb="1">
           <HStack spacing="xs">
             <NetworkIcon chain={gqlChain} size={12} />
             <Stack spacing="none">
@@ -51,10 +51,10 @@ export default function NetworkClaim() {
             </Stack>
           </HStack>
           <Heading size="md" variant="special">
-            {claimableFiatBalance && toCurrency(claimableFiatBalance)}
+            {claimableFiatBalance ? toCurrency(claimableFiatBalance) : null}
           </Heading>
         </HStack>
-        <Stack py="4" gap="md">
+        <Stack gap="md" py="4">
           {isLoadingRewards ? (
             <Skeleton height="126px" />
           ) : pools && pools.length > 0 ? (
@@ -64,55 +64,56 @@ export default function NetworkClaim() {
                   <Card key={pool.id} variant="subSection">
                     <VStack align="start">
                       <HStack w="full">
-                        <PoolName pool={pool} fontWeight="bold" fontSize="lg" />
-                        <Text fontWeight="bold" variant="special" ml="auto">
+                        <PoolName fontSize="lg" fontWeight="bold" pool={pool} />
+                        <Text fontWeight="bold" ml="auto" variant="special">
                           {toCurrency(
                             poolRewardsMap[pool.id]?.totalFiatClaimBalance?.toNumber() || 0
                           )}
                         </Text>
                       </HStack>
                       <HStack w="full">
-                        <TokenIconStack tokens={pool.displayTokens} chain={pool.chain} size={36} />
-                        {hasMultipleClaims && (
+                        <TokenIconStack chain={pool.chain} size={36} tokens={pool.displayTokens} />
+                        {hasMultipleClaims ? (
                           <Button
+                            minW="60px"
+                            ml="auto"
                             onClick={() => {
                               setModalPools([pool])
                             }}
-                            variant="secondary"
                             size="sm"
-                            ml="auto"
-                            minW="60px"
+                            variant="secondary"
                           >
                             Claim
                           </Button>
-                        )}
+                        ) : null}
                       </HStack>
                     </VStack>
                   </Card>
                 )
             )
           ) : (
-            <Text p="10" variant="secondary" textAlign="center">
+            <Text p="10" textAlign="center" variant="secondary">
               You have no liquidity incentives to claim
             </Text>
           )}
         </Stack>
-        {pools && pools.length > 0 && (
+        {pools && pools.length > 0 ? (
           <Button
+            isDisabled={isClaimAllDisabled}
             onClick={() => {
               setModalPools(pools)
             }}
-            width="100%"
-            variant="secondary"
             size="lg"
-            isDisabled={isClaimAllDisabled}
+            variant="secondary"
+            width="100%"
           >
             {`Claim${hasMultipleClaims ? ' all' : ''}`}
           </Button>
-        )}
+        ) : null}
         {modalPools.length > 0 && (
           <ClaimProvider pools={modalPools}>
             <ClaimModal
+              chain={gqlChain}
               isOpen={modalPools.length > 0}
               onClose={(isSuccess: boolean) => {
                 if (isSuccess) {
@@ -121,7 +122,6 @@ export default function NetworkClaim() {
 
                 setModalPools([])
               }}
-              chain={gqlChain}
             />
           </ClaimProvider>
         )}

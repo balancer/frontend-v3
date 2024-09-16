@@ -47,7 +47,7 @@ export function ReactQueryClientProvider({ children }: { children: ReactNode | R
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {isDev && shouldShowReactQueryDevtools && <ReactQueryDevtools initialIsOpen={false} />}
+      {isDev && shouldShowReactQueryDevtools ? <ReactQueryDevtools initialIsOpen={false} /> : null}
     </QueryClientProvider>
   )
 }

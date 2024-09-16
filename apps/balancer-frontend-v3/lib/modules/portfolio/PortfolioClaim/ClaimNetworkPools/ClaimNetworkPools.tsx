@@ -55,22 +55,22 @@ export function ClaimNetworkPools() {
           </SimpleGrid>
         ) : (
           <>
-            {hasMerklRewards && <MerklAlert />}
-            {noRewards && (
-              <Center h="85px" border="1px dashed" borderColor="border.base" rounded="lg">
+            {hasMerklRewards ? <MerklAlert /> : null}
+            {noRewards ? (
+              <Center border="1px dashed" borderColor="border.base" h="85px" rounded="lg">
                 <Text>No rewards to claim</Text>
               </Center>
-            )}
+            ) : null}
             <SimpleGrid columns={{ base: 1, md: 1, lg: 2, xl: 3 }} spacing="md">
               {poolsWithChain.map(
                 ([chain, pools], index) =>
                   pools[0] && (
                     <motion.div
-                      key={chain}
-                      initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      key={chain}
                       style={{ transformOrigin: 'top' }}
+                      transition={{ duration: 0.3, delay: index * 0.12, ease: easeOut }}
                     >
                       <ClaimNetworkBlock
                         chain={pools[0].chain}
@@ -83,21 +83,21 @@ export function ClaimNetworkPools() {
                   )
               )}
 
-              {hasProtocolRewards && (
+              {hasProtocolRewards ? (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.3, delay: poolsWithChain.length * 0.12, ease: easeOut }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   style={{ transformOrigin: 'top' }}
+                  transition={{ duration: 0.3, delay: poolsWithChain.length * 0.12, ease: easeOut }}
                 >
                   <ClaimNetworkBlock
                     chain={GqlChain.Mainnet}
                     networkTotalClaimableFiatBalance={protocolRewardsBalance.toNumber()}
-                    title="Balancer protocol revenue"
                     onClick={() => setIsOpenedProtocolRevenueModal(true)}
+                    title="Balancer protocol revenue"
                   />
                 </motion.div>
-              )}
+              ) : null}
             </SimpleGrid>
             <ClaimProtocolRevenueModal
               isOpen={isOpenedProtocolRevenueModal}

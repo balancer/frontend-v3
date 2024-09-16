@@ -19,7 +19,7 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
   if (isViemHttpFetchError(_error)) {
     return (
       <ErrorAlert title={customErrorName} {...rest}>
-        <Text variant="secondary" color="black">
+        <Text color="black" variant="secondary">
           It looks like there was a network issue. Check your connection and try again. You can
           report the problem in{' '}
           <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> if the issue
@@ -31,7 +31,7 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
   const errorMessage = error?.shortMessage || error.message
   return (
     <ErrorAlert title={errorName} {...rest}>
-      <Text variant="secondary" color="black">
+      <Text color="black" variant="secondary">
         Error details: {errorMessage}
       </Text>
     </ErrorAlert>

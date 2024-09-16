@@ -109,7 +109,7 @@ export function RemoveLiquidityForm() {
 
   return (
     <TokenBalancesProvider extTokens={validTokens}>
-      <Box h="full" w="full" maxW="lg" mx="auto" pb="2xl">
+      <Box h="full" maxW="lg" mx="auto" pb="2xl" w="full">
         <Card>
           <CardHeader>
             <HStack justify="space-between" w="full">
@@ -117,27 +117,27 @@ export function RemoveLiquidityForm() {
               <TransactionSettings size="sm" />
             </HStack>
           </CardHeader>
-          <VStack spacing="md" align="start">
+          <VStack align="start" spacing="md">
             <SafeAppAlert />
             {!requiresProportionalInput(pool.type) && (
               <HStack>
                 <ButtonGroup
                   currentOption={activeTab}
-                  options={TABS}
-                  onChange={toggleTab}
-                  size="xxs"
                   groupId="remove"
+                  onChange={toggleTab}
+                  options={TABS}
+                  size="xxs"
                 />
-                <Tooltip label="Remove liquidity type" fontSize="sm">
+                <Tooltip fontSize="sm" label="Remove liquidity type">
                   <InfoIcon />
                 </Tooltip>
               </HStack>
             )}
-            <VStack w="full" spacing="md">
+            <VStack spacing="md" w="full">
               <InputWithSlider
-                value={totalUSDValue}
-                onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
+                onPercentChanged={setHumanBptInPercent}
+                value={totalUSDValue}
               >
                 <Text fontSize="sm">Amount</Text>
                 <Text fontSize="sm" variant="secondary">
@@ -145,25 +145,24 @@ export function RemoveLiquidityForm() {
                 </Text>
               </InputWithSlider>
               {activeTab === TABS[0] && (
-                <RemoveLiquidityProportional tokens={tokens} poolType={pool.type} />
+                <RemoveLiquidityProportional poolType={pool.type} tokens={tokens} />
               )}
               {activeTab === TABS[1] && (
-                <RemoveLiquiditySingleToken tokens={tokens} chain={pool.chain} />
+                <RemoveLiquiditySingleToken chain={pool.chain} tokens={tokens} />
               )}
             </VStack>
-            <VStack spacing="sm" align="start" w="full">
+            <VStack align="start" spacing="sm" w="full">
               {!simulationQuery.isError && (
                 <PriceImpactAccordion
-                  setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                   accordionButtonComponent={
                     <HStack>
-                      <Text variant="secondary" fontSize="sm" color="font.secondary">
+                      <Text color="font.secondary" fontSize="sm" variant="secondary">
                         Price impact:{' '}
                       </Text>
                       {isFetching ? (
-                        <Skeleton w="40px" h="16px" />
+                        <Skeleton h="16px" w="40px" />
                       ) : (
-                        <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        <Text color={priceImpactColor} fontSize="sm" variant="secondary">
                           {priceImpactLabel}
                         </Text>
                       )}
@@ -171,25 +170,26 @@ export function RemoveLiquidityForm() {
                   }
                   accordionPanelComponent={
                     <PoolActionsPriceImpactDetails
-                      totalUSDValue={totalUSDValue}
                       bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
                       isLoading={isFetching}
+                      totalUSDValue={totalUSDValue}
                     />
                   }
-                  isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
+                  isDisabled={priceImpactQuery.isLoading ? !priceImpactQuery.isSuccess : null}
+                  setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 />
               )}
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
             <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
-                ref={nextBtn}
-                variant="secondary"
-                w="full"
-                size="lg"
                 isDisabled={isDisabled}
                 isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
+                ref={nextBtn}
+                size="lg"
+                variant="secondary"
+                w="full"
               >
                 Next
               </Button>
@@ -199,8 +199,8 @@ export function RemoveLiquidityForm() {
         <RemoveLiquidityModal
           finalFocusRef={nextBtn}
           isOpen={previewModalDisclosure.isOpen}
-          onOpen={previewModalDisclosure.onOpen}
           onClose={onModalClose}
+          onOpen={previewModalDisclosure.onOpen}
         />
       </Box>
     </TokenBalancesProvider>

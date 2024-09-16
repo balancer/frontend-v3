@@ -29,11 +29,11 @@ export function ConnectWallet({ ...rest }: ButtonProps) {
         if (!isConnected) {
           return (
             <Button
-              variant="tertiary"
-              onClick={openConnectModal}
-              type="button"
               isDisabled={isLoading || !mounted}
               loadingText="Connect wallet"
+              onClick={openConnectModal}
+              type="button"
+              variant="tertiary"
               {...rest}
             >
               Connect wallet
@@ -52,41 +52,41 @@ export function ConnectWallet({ ...rest }: ButtonProps) {
         return (
           <HStack spacing="sm">
             <Button
-              onClick={openChainModal}
-              display="flex"
               alignItems="center"
+              display="flex"
+              onClick={openChainModal}
               type="button"
               variant="tertiary"
               {...rest}
             >
-              {chain.hasIcon && (
+              {chain.hasIcon ? (
                 <Box
-                  width={6}
-                  height={6}
                   borderRadius="full"
-                  overflow="hidden"
+                  height={6}
                   mr={{ base: '0', sm: 'sm' }}
+                  overflow="hidden"
+                  width={6}
                 >
-                  {chain.iconUrl && (
+                  {chain.iconUrl ? (
                     <Img
                       alt={chain.name ?? 'Chain icon'}
+                      height={6}
                       src={chain.iconUrl}
                       width={6}
-                      height={6}
                     />
-                  )}
+                  ) : null}
                 </Box>
-              )}
+              ) : null}
               <Show above="sm">{chain.name}</Show>
             </Button>
             <Button onClick={openAccountModal} variant="tertiary" {...rest}>
               <CustomAvatar
-                ensImage={account.ensAvatar}
                 address={account.address}
                 alt="Avatar"
-                size={6}
-                rounded="full"
+                ensImage={account.ensAvatar}
                 mr={{ base: '0', sm: 'sm' }}
+                rounded="full"
+                size={6}
               />
               <Show above="sm">{account.displayName}</Show>
             </Button>

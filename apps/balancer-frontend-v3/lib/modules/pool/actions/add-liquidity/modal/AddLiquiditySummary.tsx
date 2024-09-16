@@ -54,34 +54,34 @@ export function AddLiquiditySummary({
   }, [hasQuoteContext, isLoadingReceipt, shouldShowReceipt])
 
   if (!isUserAddressLoading && !userAddress) {
-    return <BalAlert status="warning" content="User is not connected" />
+    return <BalAlert content="User is not connected" status="warning" />
   }
   if (shouldShowErrors && error) {
-    return <BalAlert status="warning" content="We were unable to find this transaction hash" />
+    return <BalAlert content="We were unable to find this transaction hash" status="warning" />
   }
   if (shouldShowErrors && !isLoadingReceipt && !sentTokens.length) {
     return (
       <BalAlert
-        status="warning"
         content="We were unable to find logs for this transaction hash and the connected account"
+        status="warning"
       />
     )
   }
 
   return (
     <AnimateHeightChange spacing="sm">
-      {isMobile && hasQuoteContext && (
+      {isMobile && hasQuoteContext ? (
         <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
-      )}
+      ) : null}
 
       <Card variant="modalSubSection">
         <TokenRowGroup
-          label={shouldShowReceipt || !hasQuoteContext ? 'You added' : "You're adding"}
           amounts={shouldShowReceipt ? sentTokens : amountsIn}
-          totalUSDValue={hasQuoteContext ? totalUSDValue : undefined}
           chain={pool.chain}
-          tokens={tokens}
           isLoading={isLoadingTokens}
+          label={shouldShowReceipt || !hasQuoteContext ? 'You added' : "You're adding"}
+          tokens={tokens}
+          totalUSDValue={hasQuoteContext ? totalUSDValue : undefined}
         />
       </Card>
 
@@ -95,16 +95,16 @@ export function AddLiquiditySummary({
 
       {shouldShowReceipt ? (
         <CardPopAnim key="staking-options">
-          {pool.staking && (
+          {pool.staking ? (
             <Card variant="modalSubSection" w="full">
               <StakingOptions />
             </Card>
-          )}
+          ) : null}
           {isVebalPool(pool.id) && (
             <Card variant="modalSubSection">
-              <VStack align="start" w="full" spacing="md">
+              <VStack align="start" spacing="md" w="full">
                 <Text>Get extra incentives with veBAL</Text>
-                <Button variant="primary" size="lg" onClick={vebalRedirectModal.onOpen} w="full">
+                <Button onClick={vebalRedirectModal.onOpen} size="lg" variant="primary" w="full">
                   Lock to get veBAL
                 </Button>
               </VStack>
@@ -121,9 +121,9 @@ export function AddLiquiditySummary({
           <Card variant="modalSubSection">
             <VStack align="start" spacing="sm">
               <PoolActionsPriceImpactDetails
-                totalUSDValue={totalUSDValue}
                 bptAmount={simulationQuery.data?.bptOut.amount}
                 isAddLiquidity
+                totalUSDValue={totalUSDValue}
               />
             </VStack>
           </Card>

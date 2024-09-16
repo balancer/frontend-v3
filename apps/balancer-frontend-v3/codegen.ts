@@ -22,9 +22,6 @@ const config: CodegenConfig = {
       },
     },
   },
-  hooks: {
-    afterAllFileWrite: ['pnpm run lint:fix'],
-  },
 }
 
 export default config

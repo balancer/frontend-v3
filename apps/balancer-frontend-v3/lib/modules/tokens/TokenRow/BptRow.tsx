@@ -20,16 +20,16 @@ export function BptRow({
     <VStack align="start" spacing="md">
       <HStack justify="space-between" w="full">
         {!isLoading && <Text color="grayText">{label}</Text>}
-        {rightLabel && <Text color="grayText">{rightLabel}</Text>}
+        {rightLabel ? <Text color="grayText">{rightLabel}</Text> : null}
       </HStack>
       <TokenRow
-        value={bptAmount}
+        abbreviated={false}
         address={pool.address as Address}
         chain={pool.chain}
-        abbreviated={false}
-        isBpt={true}
-        pool={pool}
+        isBpt
         isLoading={isLoading}
+        pool={pool}
+        value={bptAmount}
       />
     </VStack>
   )

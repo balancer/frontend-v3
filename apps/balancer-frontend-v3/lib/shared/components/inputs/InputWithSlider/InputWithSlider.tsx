@@ -57,47 +57,47 @@ export const InputWithSlider = forwardRef(
     }
 
     return (
-      <VStack w="full" spacing="xs">
-        {children && (
-          <HStack w="full" justifyContent="space-between">
+      <VStack spacing="xs" w="full">
+        {children ? (
+          <HStack justifyContent="space-between" w="full">
             {children}
           </HStack>
-        )}
+        ) : null}
         <Box
-          borderRadius="md"
-          py="sm"
-          px="md"
-          shadow="innerBase"
           bg="background.level1"
           border="white"
-          w="full"
+          borderRadius="md"
+          px="md"
+          py="sm"
           ref={ref}
+          shadow="innerBase"
+          w="full"
           {...boxProps}
         >
           <HStack align="start" spacing="md">
             <NumberInput
-              placeholder="0.00"
               autoComplete="off"
               autoCorrect="off"
-              min={0}
-              border="transparent"
               bg="transparent"
-              shadow="none"
-              p="0"
+              border="transparent"
               fontSize="xl"
               fontWeight="medium"
-              value={toCurrency(value || 0)}
-              onKeyDown={blockInvalidNumberInput}
-              onChange={handleInputChange}
-              w="50%"
               isDisabled={isNumberInputDisabled}
+              min={0}
+              onChange={handleInputChange}
+              onKeyDown={blockInvalidNumberInput}
+              p="0"
+              placeholder="0.00"
+              shadow="none"
+              value={toCurrency(value || 0)}
+              w="50%"
               {...numberInputProps}
             >
               <NumberInputField
-                aria-valuenow={sliderPercent}
-                pl="0"
-                fontSize="2xl"
-                fontWeight="medium"
+                _disabled={{
+                  opacity: 1,
+                  textColor: 'input.fontDefault',
+                }}
                 _focusVisible={{
                   borderColor: 'transparent',
                   boxShadow: 'none',
@@ -106,19 +106,19 @@ export const InputWithSlider = forwardRef(
                   borderColor: 'transparent',
                   boxShadow: 'none',
                 }}
-                _disabled={{
-                  opacity: 1,
-                  textColor: 'input.fontDefault',
-                }}
+                aria-valuenow={sliderPercent}
+                fontSize="2xl"
+                fontWeight="medium"
+                pl="0"
               />
             </NumberInput>
-            <Box w="50%" pr="sm" alignSelf="center">
+            <Box alignSelf="center" pr="sm" w="50%">
               <Slider
                 aria-label="slider"
                 defaultValue={100}
+                focusThumbOnChange={false} // this is so the NumberInput won't lose focus after input
                 onChange={handleSliderChange}
                 value={sliderPercent}
-                focusThumbOnChange={false} // this is so the NumberInput won't lose focus after input
               >
                 <SliderTrack>
                   <SliderFilledTrack />

@@ -11,9 +11,9 @@ export function Step(props: StepProps) {
 
   return (
     <HStack alignItems="center">
-      <StepIndicator transaction={transaction} {...props}></StepIndicator>
-      <VStack spacing="0" alignItems="start">
-        <Text mt={isActive ? -0.3 : 0} color={color}>
+      <StepIndicator transaction={transaction} {...props} />
+      <VStack alignItems="start" spacing="0">
+        <Text color={color} mt={isActive ? -0.3 : 0}>
           {title}
         </Text>
       </VStack>
@@ -30,13 +30,13 @@ export function StepIndicator({
   if (status === 'complete') {
     return (
       <CircularProgress
-        value={100}
-        trackColor="border.base"
-        thickness="8"
-        size="7"
         color="font.highlight"
+        size="7"
+        thickness="8"
+        trackColor="border.base"
+        value={100}
       >
-        <CircularProgressLabel fontSize="md" color="font.highlight" pl={1.5}>
+        <CircularProgressLabel color="font.highlight" fontSize="md" pl={1.5}>
           <Check size={15} strokeWidth={4} />
         </CircularProgressLabel>
       </CircularProgress>
@@ -45,14 +45,14 @@ export function StepIndicator({
 
   return (
     <CircularProgress
-      value={100}
-      isIndeterminate={isActiveLoading}
-      trackColor="border.base"
-      thickness="8"
-      size="7"
       color={color}
+      isIndeterminate={isActiveLoading}
+      size="7"
+      thickness="8"
+      trackColor="border.base"
+      value={100}
     >
-      <CircularProgressLabel fontSize="sm" fontWeight="bold" color={color}>
+      <CircularProgressLabel color={color} fontSize="sm" fontWeight="bold">
         {stepNumber}
       </CircularProgressLabel>
     </CircularProgress>

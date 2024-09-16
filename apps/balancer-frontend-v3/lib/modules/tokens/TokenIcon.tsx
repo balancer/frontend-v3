@@ -65,14 +65,14 @@ export function TokenIcon({
 
   return (
     <Image
-      src={hasError || !iconSrc ? fallbackSVG.toDataUriSync() : iconSrc}
       alt={alt}
-      width={`${size}px`}
-      height={`${size}px`}
-      borderRadius="100%"
-      border={border}
       backgroundColor="background.level4"
+      border={border}
+      borderRadius="100%"
+      height={`${size}px`}
       onError={() => !hasError && setHasError(true)}
+      src={hasError || !iconSrc ? fallbackSVG.toDataUriSync() : iconSrc}
+      width={`${size}px`}
       {...rest}
     />
   )

@@ -25,7 +25,7 @@ export function TransactionSettings(props: ButtonProps) {
   const { slippage } = useUserSettings()
 
   return (
-    <Popover placement="bottom-end" isLazy>
+    <Popover isLazy placement="bottom-end">
       <PopoverTrigger>
         <Button variant="tertiary" {...props}>
           <HStack textColor="grayText">
@@ -43,7 +43,7 @@ export function TransactionSettings(props: ButtonProps) {
           <Heading size="md">Transaction settings</Heading>
         </PopoverHeader>
         <PopoverBody p="md">
-          <VStack align="start" w="full" spacing="sm">
+          <VStack align="start" spacing="sm" w="full">
             <VStack align="start" w="full">
               <Heading size="sm">Slippage</Heading>
               <SlippageInput />

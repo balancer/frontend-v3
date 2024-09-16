@@ -21,31 +21,31 @@ export function BalAlertContent({
   children,
 }: PropsWithChildren<AlertContentProps>) {
   return (
-    <HStack w="full" flexWrap="wrap" justifyContent="space-between">
-      <HStack maxWidth={{ base: '100%', md: '80%' }} flexWrap="wrap">
+    <HStack flexWrap="wrap" justifyContent="space-between" w="full">
+      <HStack flexWrap="wrap" maxWidth={{ base: '100%', md: '80%' }}>
         <Flex
           direction={forceColumnMode ? 'column' : { base: 'column', md: 'row' }}
           gap={forceColumnMode ? '0' : { base: '0', md: 'sm' }}
         >
           <HStack gap="xs">
-            {title && (
-              <Text fontWeight="bold" color="black" minWidth="max-content">
+            {title ? (
+              <Text color="black" fontWeight="bold" minWidth="max-content">
                 {title}
               </Text>
-            )}
-            {tooltipLabel && (
-              <Box position="relative" top="-1.5px" pr="xs">
+            ) : null}
+            {tooltipLabel ? (
+              <Box position="relative" pr="xs" top="-1.5px">
                 <Tooltip label={tooltipLabel}>
-                  <InfoOutlineIcon fontSize="sm" color="font.dark" />
+                  <InfoOutlineIcon color="font.dark" fontSize="sm" />
                 </Tooltip>
               </Box>
-            )}
+            ) : null}
           </HStack>
-          {description && (
+          {description ? (
             <Text color="black" lineHeight="1.45">
               {description}
             </Text>
-          )}
+          ) : null}
         </Flex>
       </HStack>
       <Box>{children}</Box>

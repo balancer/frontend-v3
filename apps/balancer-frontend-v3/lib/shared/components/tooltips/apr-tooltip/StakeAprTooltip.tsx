@@ -31,24 +31,24 @@ function StakeAprTooltip({ pool, totalUsdValue }: Props) {
   return (
     <BaseAprTooltip
       aprItems={pool.dynamicData.aprItems}
+      displayValueFormatter={displayValueFormatter}
+      maxVeBalText="Total with max veBAL"
+      numberFormatter={numberFormatter}
+      placement="top-start"
       poolId={pool.id}
+      shouldDisplayBaseTooltip
+      shouldDisplayMaxVeBalTooltip
       totalBaseText="Total weekly base"
       totalBaseVeBalText="Total weekly base"
       totalVeBalTitle="Total weekly"
-      maxVeBalText="Total with max veBAL"
-      placement="top-start"
-      vebalBoost="1"
-      numberFormatter={numberFormatter}
-      displayValueFormatter={displayValueFormatter}
-      shouldDisplayBaseTooltip
-      shouldDisplayMaxVeBalTooltip
       usePortal={false}
+      vebalBoost="1"
     >
       <Card cursor="pointer" variant="subSection" w="full">
-        <VStack align="start" w="full" spacing="sm">
+        <VStack align="start" spacing="sm" w="full">
           <Text>Potential yield (1w)</Text>
           <HStack>
-            <Text variant="special" fontSize="lg" fontWeight="bold">
+            <Text fontSize="lg" fontWeight="bold" variant="special">
               {weeklyYield ? toCurrency(weeklyYield, { abbreviated: false }) : '-'}
             </Text>
             <SparklesIcon isOpen={false} pool={pool} />

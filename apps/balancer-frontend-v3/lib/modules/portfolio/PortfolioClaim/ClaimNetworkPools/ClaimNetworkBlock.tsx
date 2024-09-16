@@ -25,47 +25,47 @@ export function ClaimNetworkBlock({
   const iconSize = isDesktop ? 12 : 8
   return (
     <Card
-      variant="level1"
+      flex="1"
+      onClick={isMobile ? onClick : undefined}
       p={['sm', 'md']}
       shadow="xl"
-      flex="1"
+      variant="level1"
       w="full"
-      onClick={isMobile ? onClick : undefined}
     >
-      <Flex justifyContent="space-between" alignItems="center">
+      <Flex alignItems="center" justifyContent="space-between">
         <HStack gap="ms">
           <NetworkIcon chain={chain} size={iconSize} />
 
           <Stack gap={1}>
-            <Heading size="sm" textTransform={'capitalize'}>
+            <Heading size="sm" textTransform="capitalize">
               {title || chainToSlugMap[chain]}
             </Heading>
-            {isDesktop && (
+            {isDesktop ? (
               <Heading size="md" variant="special">
                 {toCurrency(networkTotalClaimableFiatBalance)}
               </Heading>
-            )}
+            ) : null}
           </Stack>
         </HStack>
 
-        {isMobile && (
+        {isMobile ? (
           <HStack alignItems="center" gap={0} onClick={onClick}>
             <Heading size="sm" variant="sand">
               {toCurrency(networkTotalClaimableFiatBalance)}
             </Heading>
             <IconButton
-              variant="ghost"
+              aria-label=""
               color="font.highlight"
               icon={<ChevronRight />}
-              aria-label=""
+              variant="ghost"
             />
           </HStack>
-        )}
-        {isDesktop && (
+        ) : null}
+        {isDesktop ? (
           <Button onClick={onClick} variant="secondary">
             View
           </Button>
-        )}
+        ) : null}
       </Flex>
     </Card>
   )

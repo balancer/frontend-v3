@@ -23,9 +23,9 @@ export function PaginatedTable({
 }: Props<any>) {
   return (
     <>
-      <VStack w="full" overflowX="scroll" className="hide-scrollbar">
+      <VStack className="hide-scrollbar" overflowX="scroll" w="full">
         {renderTableHeader()}
-        <Box w="full" position="relative">
+        <Box position="relative" w="full">
           {items.length > 0 && (
             <VStack gap="0">
               {items.map((item, index) => (
@@ -40,14 +40,14 @@ export function PaginatedTable({
               <Text color="font.secondary">{noItemsFoundLabel}</Text>
             </Center>
           )}
-          {loading &&
-            items.length === 0 &&
-            Array.from({ length: 20 }).map((_, index) => (
-              <Box key={index} w="full" py="xs">
-                <Skeleton height="68px" w="full" />
-              </Box>
-            ))}
-          {loading && items.length > 0 && (
+          {loading && items.length === 0
+            ? Array.from({ length: 20 }).map((_, index) => (
+                <Box key={index} py="xs" w="full">
+                  <Skeleton height="68px" w="full" />
+                </Box>
+              ))
+            : null}
+          {loading && items.length > 0 ? (
             <Box>
               <Box
                 style={{
@@ -69,10 +69,10 @@ export function PaginatedTable({
                 </Center>
               </Box>
             </Box>
-          )}
+          ) : null}
         </Box>
       </VStack>
-      {showPagination && <Pagination p="md" {...paginationProps} />}
+      {showPagination ? <Pagination p="md" {...paginationProps} /> : null}
     </>
   )
 }

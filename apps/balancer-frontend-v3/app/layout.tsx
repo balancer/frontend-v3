@@ -41,11 +41,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body
         className={satoshiFont.className}
-        suppressHydrationWarning
         style={{ marginRight: '0px !important' }} // Required to prevent layout shift introduced by Rainbowkit
+        suppressHydrationWarning
       >
         <Fathom />
-        <NextTopLoader showSpinner={false} color="#7f6ae8" />
+        <NextTopLoader color="#7f6ae8" showSpinner={false} />
         <Providers>
           <GlobalAlerts />
           <Navbar />

@@ -41,37 +41,39 @@ export function UnstakeModal({
 
   return (
     <Modal
+      finalFocusRef={finalFocusRef}
+      initialFocusRef={initialFocusRef}
+      isCentered
       isOpen={isOpen}
       onClose={onClose}
-      initialFocusRef={initialFocusRef}
-      finalFocusRef={finalFocusRef}
-      isCentered
       preserveScrollBarGap
       {...rest}
     >
       <SuccessOverlay startAnimation={!!unstakeTxHash} />
 
       <ModalContent {...getStylesForModalContentWithStepTracker(isDesktop)}>
-        {isDesktop && <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />}
+        {isDesktop ? (
+          <DesktopStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
+        ) : null}
         <TransactionModalHeader
+          chain={pool.chain}
           label="Unstake LP tokens"
           txHash={unstakeTxHash}
-          chain={pool.chain}
         />
         <ModalCloseButton />
         <ModalBody>
           <AnimateHeightChange spacing="sm" w="full">
-            {isMobile && (
+            {isMobile ? (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
-            )}
+            ) : null}
             <UnstakePreview />
           </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
-          isSuccess={!!unstakeTxHash}
           currentStep={transactionSteps.currentStep}
-          returnLabel="Return to pool"
+          isSuccess={!!unstakeTxHash}
           returnAction={redirectToPoolPage}
+          returnLabel="Return to pool"
         />
       </ModalContent>
     </Modal>
