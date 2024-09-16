@@ -315,6 +315,6 @@ export function adaptBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, a
   // sender must be undefined for v3 pools
   if (isV3Pool) return buildCallParams
 
-  // sender and recipient must be defined only for v2 pools
+  // sender and recipient must be defined only for v1 and v2 pools
   return { ...buildCallParams, sender: account, recipient: account }
 }
