@@ -19,7 +19,7 @@
     "stylelint:fix": "pnpm run stylelint -- --fix",
     "prettier": "prettier --check '**/*.*(md|json|yaml|ts|js|tsx)' --loglevel warn",
     "prettier:fix": "pnpm run prettier --write",
-    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "typecheck": "tsc --noEmit",
     "prepare": "husky",
     "gen:graphql:dev": "DOTENV_CONFIG_PATH=./.env.local graphql-codegen -r dotenv/config",
     "gen:graphql:prod": "DOTENV_CONFIG_PATH=./.env graphql-codegen -r dotenv/config",

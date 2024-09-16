@@ -8,12 +8,13 @@
       "outputs": [".next/**", "!.next/cache/**"]
     },
     "lint": {
-      "dependsOn": ["^lint"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+      "dependsOn": ["^lint"]
     },
     "lint:fix": {
-      "dependsOn": ["^lint:fix"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
+      "dependsOn": ["^lint:fix"]
+    },
+    "typecheck": {
+      "dependsOn": ["^typecheck"]
     },
     "dev": {
       "cache": false,
