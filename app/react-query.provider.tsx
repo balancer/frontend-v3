@@ -18,7 +18,6 @@ export const queryClient = new QueryClient({
     // Global handler for every react-query error
     onError: (error, query) => {
       const queryMeta = query?.meta
-      const sentryContext = query?.meta?.context as ScopeContext
       if (shouldIgnore(error.message, error.stack)) return
       console.log('Sentry capturing query error', {
         meta: queryMeta,
@@ -26,6 +25,7 @@ export const queryClient = new QueryClient({
         queryKey: query.queryKey,
       })
 
+      const sentryContext = query?.meta?.context as ScopeContext
       if (sentryContext?.extra && !getTenderlyUrl(sentryContext.extra)) {
         sentryContext.extra.tenderlyUrl = getTenderlyUrlFromErrorMessage(error, queryMeta)
       }
