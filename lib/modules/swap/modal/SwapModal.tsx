@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
@@ -18,6 +19,7 @@ import { useOnUserAccountChanged } from '../../web3/useOnUserAccountChanged'
 import { SwapSummary } from './SwapSummary'
 import { useSwapReceipt } from '../../transactions/transaction-steps/receipts/receipt.hooks'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { useTokens } from '../../tokens/TokensProvider'
 
 type Props = {
   isOpen: boolean
@@ -35,6 +37,7 @@ export function SwapPreviewModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { userAddress } = useUserAccount()
+  const { startPolling, stopPolling, pollInterval } = useTokens()
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
@@ -47,19 +50,29 @@ export function SwapPreviewModal({
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
 
+  const handleOnClose = () => {
+    startPolling(pollInterval)
+    onClose()
+  }
+
   useEffect(() => {
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
       window.history.pushState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swapTxHash])
 
-  useOnUserAccountChanged(onClose)
+  useEffect(() => {
+    if (isOpen) {
+      stopPolling()
+    }
+  }, [isOpen])
+
+  useOnUserAccountChanged(handleOnClose)
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={onClose}
+      onClose={handleOnClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered

@@ -31,24 +31,27 @@ export function _useTokens(
   variables: GetTokensQueryVariables
 ) {
   const skipQuery = useSkipInitialQuery(variables)
+  const pollInterval = mins(3).toMs()
 
   // skip initial fetch on mount so that initialData is used
   const { data: tokensData } = useQuery(GetTokensDocument, {
     variables,
     skip: skipQuery,
   })
-  const { data: tokenPricesData, loading: isLoadingTokenPrices } = useQuery(
-    GetTokenPricesDocument,
-    {
-      variables,
-      // The server provides us with an initial data set, but we immediately reload the potentially
-      // stale data to ensure the prices we show are up to date. Every 3 mins, we requery token prices
-      initialFetchPolicy: 'no-cache',
-      nextFetchPolicy: 'cache-and-network',
-      pollInterval: mins(3).toMs(),
-      notifyOnNetworkStatusChange: true,
-    }
-  )
+  const {
+    data: tokenPricesData,
+    loading: isLoadingTokenPrices,
+    startPolling,
+    stopPolling,
+  } = useQuery(GetTokenPricesDocument, {
+    variables,
+    // The server provides us with an initial data set, but we immediately reload the potentially
+    // stale data to ensure the prices we show are up to date. Every 3 mins, we requery token prices
+    initialFetchPolicy: 'no-cache',
+    nextFetchPolicy: 'cache-and-network',
+    pollInterval,
+    notifyOnNetworkStatusChange: true,
+  })
 
   const tokens = tokensData?.tokens || initTokenData.tokens
   const prices = tokenPricesData?.tokenPrices || initTokenPricesData.tokenPrices
@@ -143,6 +146,7 @@ export function _useTokens(
     tokens,
     prices,
     isLoadingTokenPrices,
+    pollInterval,
     getToken,
     getNativeAssetToken,
     getWrappedNativeAssetToken,
@@ -153,6 +157,8 @@ export function _useTokens(
     usdValueForToken,
     calcWeightForBalance,
     calcTotalUsdValue,
+    startPolling,
+    stopPolling,
   }
 }
 
