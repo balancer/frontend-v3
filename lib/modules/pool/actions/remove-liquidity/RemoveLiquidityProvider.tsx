@@ -215,11 +215,12 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   )
 
   const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
+  const totalAmountsOut: string = safeSum(quoteAmountsOut.map(a => a.amount))
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
-    [isZero(totalUSDValue), 'Amount to remove cannot be zero'],
+    [isZero(totalAmountsOut), 'Amount to remove cannot be zero'],
     [needsToAcceptHighPI, 'Accept high price impact first'],
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
