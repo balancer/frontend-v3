@@ -37,7 +37,7 @@ export function SwapPreviewModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { userAddress } = useUserAccount()
-  const { stopPolling } = useTokens()
+  const { stopTokenPricePolling } = useTokens()
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
@@ -58,7 +58,7 @@ export function SwapPreviewModal({
 
   useEffect(() => {
     if (isOpen) {
-      stopPolling()
+      stopTokenPricePolling()
     }
   }, [isOpen])
 

@@ -71,7 +71,7 @@ export function SwapForm() {
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
   const { isConnected } = useUserAccount()
-  const { startPolling, pollInterval } = useTokens()
+  const { startTokenPricePolling, pollInterval } = useTokens()
 
   const isLoadingSwaps = simulationQuery.isLoading
   const isLoading = isLoadingSwaps || !isMounted
@@ -100,7 +100,7 @@ export function SwapForm() {
   }
 
   function onModalClose() {
-    startPolling(pollInterval)
+    startTokenPricePolling(pollInterval)
     previewModalDisclosure.onClose()
     if (swapTxHash) {
       resetSwapAmounts()

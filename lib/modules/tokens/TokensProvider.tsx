@@ -41,8 +41,8 @@ export function _useTokens(
   const {
     data: tokenPricesData,
     loading: isLoadingTokenPrices,
-    startPolling,
-    stopPolling,
+    startPolling: startTokenPricePolling,
+    stopPolling: stopTokenPricePolling,
   } = useQuery(GetTokenPricesDocument, {
     variables,
     // The server provides us with an initial data set, but we immediately reload the potentially
@@ -157,8 +157,8 @@ export function _useTokens(
     usdValueForToken,
     calcWeightForBalance,
     calcTotalUsdValue,
-    startPolling,
-    stopPolling,
+    startTokenPricePolling,
+    stopTokenPricePolling,
   }
 }
 
