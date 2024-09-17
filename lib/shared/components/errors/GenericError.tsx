@@ -29,6 +29,19 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
     )
   }
   const errorMessage = error?.shortMessage || error.message
+
+  if (errorMessage === 'RPC Request failed.') {
+    return (
+      <ErrorAlert title={errorMessage} {...rest}>
+        <Text variant="secondary" color="black">
+          It looks like there was an RPC Request issue. You can report the problem in{' '}
+          <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> if the issue
+          persists.
+        </Text>
+      </ErrorAlert>
+    )
+  }
+
   return (
     <ErrorAlert title={errorName} {...rest}>
       <Text variant="secondary" color="black">
