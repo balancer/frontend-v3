@@ -37,6 +37,7 @@ import { parseSwapError } from './swap.helpers'
 import { useUserAccount } from '../web3/UserAccountProvider'
 import { ConnectWallet } from '../web3/ConnectWallet'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import { useTokens } from '../tokens/TokensProvider'
 
 export function SwapForm() {
   const {
@@ -70,6 +71,7 @@ export function SwapForm() {
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
   const { isConnected } = useUserAccount()
+  const { startPolling, pollInterval } = useTokens()
 
   const isLoadingSwaps = simulationQuery.isLoading
   const isLoading = isLoadingSwaps || !isMounted
@@ -98,6 +100,7 @@ export function SwapForm() {
   }
 
   function onModalClose() {
+    startPolling(pollInterval)
     previewModalDisclosure.onClose()
     if (swapTxHash) {
       resetSwapAmounts()

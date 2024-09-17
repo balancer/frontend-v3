@@ -37,7 +37,7 @@ export function SwapPreviewModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { userAddress } = useUserAccount()
-  const { startPolling, stopPolling, pollInterval } = useTokens()
+  const { stopPolling } = useTokens()
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
@@ -49,11 +49,6 @@ export function SwapPreviewModal({
   })
 
   useResetStepIndexOnOpen(isOpen, transactionSteps)
-
-  const handleOnClose = () => {
-    startPolling(pollInterval)
-    onClose()
-  }
 
   useEffect(() => {
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
@@ -67,12 +62,12 @@ export function SwapPreviewModal({
     }
   }, [isOpen])
 
-  useOnUserAccountChanged(handleOnClose)
+  useOnUserAccountChanged(onClose)
 
   return (
     <Modal
       isOpen={isOpen}
-      onClose={handleOnClose}
+      onClose={onClose}
       initialFocusRef={initialFocusRef}
       finalFocusRef={finalFocusRef}
       isCentered
