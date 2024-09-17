@@ -10,7 +10,7 @@ import {
 import { Address, parseEther } from 'viem'
 import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../PoolProvider'
-import { LiquidityActionHelpers, adaptBuildCallParams } from '../../LiquidityActionHelpers'
+import { LiquidityActionHelpers, formatBuildCallParams } from '../../LiquidityActionHelpers'
 import {
   QueryRemoveLiquidityInput,
   SdkBuildRemoveLiquidityInput,
@@ -56,7 +56,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       wethIsEth,
     }
 
-    const buildCallParams = adaptBuildCallParams(
+    const buildCallParams = formatBuildCallParams(
       baseBuildCallParams,
       this.helpers.isV3Pool(),
       account

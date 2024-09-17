@@ -232,7 +232,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
  * - is native and the wrapped native token is already in the array and
  * - is wrapped native and the native token is already in the array
  *
- * @param {HumanAmoHumanTokenAmountWithAddress[]} humanAmountsIn - The array of human amounts to filter.
+ * @param {HumanTokenAmountWithAddress[]} humanAmountsIn - The array of human amounts to filter.
  * @param {Address} tokenAddress - The token address to compare against.
  * @param {GqlChain} chain - The chain type for comparison.
  * @return {HumanTokenAmountWithAddress[]} The filtered array of human amounts.
@@ -311,7 +311,7 @@ export function hasNoLiquidity(pool: Pool): boolean {
 }
 
 // When the pool has version < v3, it adds extra buildCall params (sender and recipient) that must be present only in V1/V2
-export function adaptBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, account: Address) {
+export function formatBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, account: Address) {
   // sender must be undefined for v3 pools
   if (isV3Pool) return buildCallParams
 

@@ -14,7 +14,7 @@ import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../PoolProvider'
 import {
   LiquidityActionHelpers,
-  adaptBuildCallParams,
+  formatBuildCallParams,
   isEmptyHumanAmount,
 } from '../../LiquidityActionHelpers'
 import {
@@ -82,7 +82,7 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       wethIsEth,
     }
 
-    const buildCallParams = adaptBuildCallParams(
+    const buildCallParams = formatBuildCallParams(
       baseBuildCallParams,
       this.helpers.isV3Pool(),
       account

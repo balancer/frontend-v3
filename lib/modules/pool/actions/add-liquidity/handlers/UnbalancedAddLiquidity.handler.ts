@@ -13,7 +13,7 @@ import {
 import { Pool } from '../../../PoolProvider'
 import {
   LiquidityActionHelpers,
-  adaptBuildCallParams,
+  formatBuildCallParams,
   areEmptyAmounts,
 } from '../../LiquidityActionHelpers'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
@@ -74,7 +74,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
     }
 
-    const buildCallParams = adaptBuildCallParams(
+    const buildCallParams = formatBuildCallParams(
       baseBuildCallParams,
       this.helpers.isV3Pool(),
       account
