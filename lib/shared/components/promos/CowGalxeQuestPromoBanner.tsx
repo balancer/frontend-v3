@@ -61,7 +61,7 @@ export function CowGalxeQuestPromoBanner() {
           <Button
             size="lg"
             as={NextLink}
-            href="https://app.galxe.com/quest/Balancer"
+            href="https://app.galxe.com/quest/Balancer/GC863txfST"
             flex="1"
             rounded="full"
             py="sm"
