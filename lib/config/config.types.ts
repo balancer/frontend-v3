@@ -43,6 +43,7 @@ export interface ContractsConfig {
   feeDistributor?: Address
   veDelegationProxy?: Address
   veBAL?: Address
+  permit2?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>

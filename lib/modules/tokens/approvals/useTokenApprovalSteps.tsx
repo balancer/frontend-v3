@@ -20,11 +20,12 @@ export type Params = {
   chain: GqlChain
   approvalAmounts: RawAmount[]
   actionType: ApprovalAction
+  isPermit2?: boolean
   bptSymbol?: string //Edge-case for approving
 }
 
 /*
-  Generic hook to creates a Token Approval Step Config for different flows defined by the actionType property
+  Generic hook to create a Token Approval Step Config for different flows defined by the actionType property
 */
 export function useTokenApprovalSteps({
   spenderAddress,
@@ -32,6 +33,7 @@ export function useTokenApprovalSteps({
   approvalAmounts,
   actionType,
   bptSymbol,
+  isPermit2 = false,
 }: Params): { isLoading: boolean; steps: TransactionStep[] } {
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
@@ -58,6 +60,7 @@ export function useTokenApprovalSteps({
     chainId: chain,
     rawAmounts: _approvalAmounts,
     allowanceFor: tokenAllowances.allowanceFor,
+    isPermit2,
   })
 
   const steps = useMemo(() => {

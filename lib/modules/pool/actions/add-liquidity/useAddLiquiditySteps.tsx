@@ -7,10 +7,9 @@ import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
-import { getVaultConfig } from '../../pool.helpers'
+import { isV3Pool } from '../../pool.helpers'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
-import { Address } from 'viem'
-import { isCowAmmPool } from '../../pool.helpers'
+import { getTokenSpenderAddress } from '@/lib/modules/tokens/token.helpers'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -22,7 +21,6 @@ export function useAddLiquiditySteps({
   simulationQuery,
 }: AddLiquidityStepsParams) {
   const { pool, chainId, chain } = usePool()
-  const { vaultAddress } = getVaultConfig(pool)
   const relayerMode = useRelayerMode(pool)
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
 
@@ -37,10 +35,11 @@ export function useAddLiquiditySteps({
 
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: isCowAmmPool(pool.type) ? (pool.address as Address) : vaultAddress,
+      spenderAddress: getTokenSpenderAddress(pool),
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',
+      isPermit2: isV3Pool(pool),
     })
 
   const addLiquidityStep = useAddLiquidityStep({
