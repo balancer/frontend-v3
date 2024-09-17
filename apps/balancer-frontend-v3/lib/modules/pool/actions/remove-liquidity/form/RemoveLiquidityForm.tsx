@@ -175,7 +175,7 @@ export function RemoveLiquidityForm() {
                       totalUSDValue={totalUSDValue}
                     />
                   }
-                  isDisabled={priceImpactQuery.isLoading ? !priceImpactQuery.isSuccess : null}
+                  isDisabled={priceImpactQuery.isLoading ? !priceImpactQuery.isSuccess : undefined}
                   setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
                 />
               )}

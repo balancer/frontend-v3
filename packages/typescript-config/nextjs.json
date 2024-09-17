@@ -4,7 +4,7 @@
   "extends": "./base.json",
   "compilerOptions": {
     "plugins": [{ "name": "next" }],
-    "module": "ES2022",
+    "module": "es2022",
     "moduleResolution": "node",
     "allowJs": true,
     "jsx": "preserve",

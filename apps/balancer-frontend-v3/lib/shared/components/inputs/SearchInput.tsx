@@ -69,7 +69,7 @@ export function SearchInput({
           aria-label={ariaLabel}
           color="font.secondary"
           icon={search ? <X size="20" /> : <Search size="20" />}
-          isLoading={isLoading ? getFieldState(SEARCH).isTouched : null}
+          isLoading={isLoading ? getFieldState(SEARCH).isTouched : undefined}
           onClick={() => {
             setSearch('')
             setValue(SEARCH, '')
