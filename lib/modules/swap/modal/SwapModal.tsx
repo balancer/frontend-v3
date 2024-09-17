@@ -58,6 +58,7 @@ export function SwapPreviewModal({
 
   useEffect(() => {
     if (isOpen) {
+      // stop polling for token prices when modal is opened to prevent unwanted re-renders
       stopTokenPricePolling()
     }
   }, [isOpen])

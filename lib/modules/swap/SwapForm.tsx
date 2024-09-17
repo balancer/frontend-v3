@@ -100,8 +100,11 @@ export function SwapForm() {
   }
 
   function onModalClose() {
+    // restart polling for token prices when modal is closed again
     startTokenPricePolling(pollInterval)
+
     previewModalDisclosure.onClose()
+
     if (swapTxHash) {
       resetSwapAmounts()
       replaceUrlPath()
