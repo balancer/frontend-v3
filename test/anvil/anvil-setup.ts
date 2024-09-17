@@ -85,7 +85,7 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  const privateAlchemyKey = process.env['PRIVATE_ALCHEMY_KEY']
+  const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
   if (privateAlchemyKey) {
     if (network.networkName === 'Ethereum') {
       return `https://eth-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
