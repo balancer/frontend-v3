@@ -23,7 +23,11 @@ import { Address } from 'viem'
 import { usePathname, useRouter } from 'next/navigation'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { keyBy } from 'lodash'
-import { getAuraPoolLink, getProportionalExitAmountsFromScaledBptIn } from '../pool.utils'
+import {
+  getAuraPoolLink,
+  getProportionalExitAmountsFromScaledBptIn,
+  getXavePoolLink,
+} from '../pool.utils'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
 import {
@@ -37,7 +41,7 @@ import {
   shouldMigrateStake,
   calcGaugeStakedBalance,
 } from '../user-balance.helpers'
-import { isVebalPool, shouldBlockAddLiquidity, calcUserShareOfPool } from '../pool.helpers'
+import { isVebalPool, shouldBlockAddLiquidity, calcUserShareOfPool, isFx } from '../pool.helpers'
 
 import { getCanStake, migrateStakeTooltipLabel } from '../actions/stake.helpers'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
@@ -72,7 +76,9 @@ export default function PoolMyLiquidity() {
   const { toCurrency } = useCurrency()
   const { isConnected, isConnecting } = useUserAccount()
   const router = useRouter()
-  const auraDisclosure = useDisclosure()
+  const partnerRedirectDisclosure = useDisclosure()
+  const [redirectPartner, setRedirectPartner] = useState<RedirectPartner>(RedirectPartner.Aura)
+  const [redirectPartnerUrl, setRedirectPartnerUrl] = useState<string>()
 
   const isVeBal = isVebalPool(pool.id)
   const tabs = useMemo(() => {
@@ -222,6 +228,34 @@ export default function PoolMyLiquidity() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tabs, pool])
 
+  function openRedirectModal(partner: RedirectPartner) {
+    setRedirectPartner(partner)
+    let url
+    if (partner === RedirectPartner.Aura && pool?.staking?.aura?.auraPoolId) {
+      url = getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)
+    } else if (partner === RedirectPartner.Xave && pool?.address && pool.chain) {
+      url = getXavePoolLink(pool.chain, pool.address)
+    }
+    setRedirectPartnerUrl(url)
+    partnerRedirectDisclosure.onOpen()
+  }
+
+  function handleAddLiquidity() {
+    if (isFx(pool.type)) {
+      openRedirectModal(RedirectPartner.Xave)
+    } else {
+      router.push(`${pathname}/add-liquidity`)
+    }
+  }
+
+  function handleRemoveLiquidity() {
+    if (isFx(pool.type)) {
+      openRedirectModal(RedirectPartner.Xave)
+    } else {
+      router.push(`${pathname}/remove-liquidity`)
+    }
+  }
+
   return (
     <Card ref={myLiquiditySectionRef} h="fit-content">
       <VStack spacing="md" width="full">
@@ -273,19 +307,16 @@ export default function PoolMyLiquidity() {
             {activeTab.value === 'aura' && !totalBalanceUsd && pool.staking?.aura ? (
               <HStack w="full" bg="aura.purple" p="2" rounded="md" mb="3xl" justify="space-between">
                 <Text color="white">Aura APR: {fNum('apr', pool.staking.aura.apr)}</Text>
-
-                <Button color="white" variant="outline" onClick={auraDisclosure.onOpen}>
+                <Button
+                  color="white"
+                  variant="outline"
+                  onClick={() => openRedirectModal(RedirectPartner.Aura)}
+                >
                   <HStack>
                     <Text>Learn more</Text>
                     <ArrowUpRight size={16} />
                   </HStack>
                 </Button>
-                <PartnerRedirectModal
-                  partner={RedirectPartner.Aura}
-                  redirectUrl={getAuraPoolLink(chainId, pool.staking.aura.auraPoolId)}
-                  isOpen={auraDisclosure.isOpen}
-                  onClose={auraDisclosure.onClose}
-                />
               </HStack>
             ) : (
               pool.displayTokens.map(token => {
@@ -301,11 +332,17 @@ export default function PoolMyLiquidity() {
                 )
               })
             )}
+            <PartnerRedirectModal
+              partner={redirectPartner}
+              redirectUrl={redirectPartnerUrl}
+              isOpen={partnerRedirectDisclosure.isOpen}
+              onClose={partnerRedirectDisclosure.onClose}
+            />
           </VStack>
           <Divider />
           <HStack mt="md" width="full" justifyContent="flex-start">
             <Button
-              onClick={() => router.push(`${pathname}/add-liquidity`)}
+              onClick={() => handleAddLiquidity()}
               variant="primary"
               flex="1"
               isDisabled={isAddLiquidityBlocked}
@@ -314,7 +351,7 @@ export default function PoolMyLiquidity() {
               Add
             </Button>
             <Button
-              onClick={() => router.push(`${pathname}/remove-liquidity`)}
+              onClick={() => handleRemoveLiquidity()}
               variant={hasUnstakedBalance ? 'tertiary' : 'disabled'}
               isDisabled={!hasUnstakedBalance}
               flex="1"
