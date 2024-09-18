@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef, useState, FC } from 'react'
+import { useEffect, useMemo, useRef, useState, FC, memo } from 'react'
 import { format } from 'date-fns'
 import { GqlChain, GqlPoolEventType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -121,7 +121,8 @@ function getDefaultChainMeta() {
 const CustomTooltip: FC<{
   params: any
   currencyFormatter: (value: string) => string
-}> = ({ params, currencyFormatter }) => {
+  theme: any
+}> = ({ params, currencyFormatter, theme }) => {
   const data = Array.isArray(params) ? params[0] : params
   const timestamp = data.value[0]
   const metaData = data.data[2] as ChartInfoMetaData
@@ -133,57 +134,63 @@ const CustomTooltip: FC<{
     type === GqlPoolEventType.Add ? 'Add' : type === GqlPoolEventType.Remove ? 'Remove' : 'Swap'
 
   return (
-    <Card maxW="200px">
-      <VStack align="start" spacing="2">
-        <VStack align="start" spacing="0">
-          <Text fontWeight="bold" fontSize="sm">{`${typeStr} ${currencyFormatter(usdValue)}`}</Text>
-          <Text fontWeight="bold" fontSize="sm">
-            on {getChainShortName(chain)}
-          </Text>
-        </VStack>
-        <VStack align="start" spacing="1">
-          {tokens
-            .filter(token => token.token && Number(token.amount) !== 0)
-            .map((token, index) => (
-              <HStack key={index} spacing="1">
-                <Image
-                  src={token.token?.logoURI || ''}
-                  boxSize="16px"
-                  borderRadius="full"
-                  alt={token.token?.symbol}
-                />
-                <Text fontSize="sm">
-                  {Number(Number(token.amount).toFixed(2)).toLocaleString()} {token.token?.symbol}
+    <ChakraProvider theme={theme}>
+      <Card maxW="200px">
+        <VStack align="start" spacing="2">
+          <VStack align="start" spacing="0">
+            <Text fontWeight="bold" fontSize="sm">{`${typeStr} ${currencyFormatter(
+              usdValue
+            )}`}</Text>
+            <Text fontWeight="bold" fontSize="sm">
+              on {getChainShortName(chain)}
+            </Text>
+          </VStack>
+          <VStack align="start" spacing="1">
+            {tokens
+              .filter(token => token.token && Number(token.amount) !== 0)
+              .map((token, index) => (
+                <HStack key={index} spacing="1">
+                  <Image
+                    src={token.token?.logoURI || ''}
+                    boxSize="16px"
+                    borderRadius="full"
+                    alt={token.token?.symbol}
+                  />
+                  <Text fontSize="sm">
+                    {Number(Number(token.amount).toFixed(2)).toLocaleString()} {token.token?.symbol}
+                  </Text>
+                </HStack>
+              ))}
+          </VStack>
+          <VStack align="start" spacing="1">
+            <Link href={txLink} isExternal>
+              <HStack align="start" spacing="0">
+                <Text mr="1" fontSize="xs">
+                  Tx: {format(new Date(timestamp * 1000), 'MMM d, h:mma').toLowerCase()}
                 </Text>
+                <Box color="grayText">
+                  <ArrowUpRight size={12} />
+                </Box>
               </HStack>
-            ))}
+            </Link>
+            <Link href={addressLink} isExternal>
+              <HStack align="start" spacing="0">
+                <Text mr="1" fontSize="xs">
+                  By: {abbreviateAddress(userAddress)}
+                </Text>
+                <Box color="grayText">
+                  <ArrowUpRight size={12} />
+                </Box>
+              </HStack>
+            </Link>
+          </VStack>
         </VStack>
-        <VStack align="start" spacing="1">
-          <Link href={txLink} isExternal>
-            <HStack align="start" spacing="0">
-              <Text mr="1" fontSize="xs">
-                Tx: {format(new Date(timestamp * 1000), 'MMM d, h:mma').toLowerCase()}
-              </Text>
-              <Box color="grayText">
-                <ArrowUpRight size={12} />
-              </Box>
-            </HStack>
-          </Link>
-          <Link href={addressLink} isExternal>
-            <HStack align="start" spacing="0">
-              <Text mr="1" fontSize="xs">
-                By: {abbreviateAddress(userAddress)}
-              </Text>
-              <Box color="grayText">
-                <ArrowUpRight size={12} />
-              </Box>
-            </HStack>
-          </Link>
-        </VStack>
-      </VStack>
-    </Card>
+      </Card>
+    </ChakraProvider>
   )
 }
+
+const MemoizedCustomTooltip = memo(CustomTooltip)
 
 const getDefaultPoolActivityChartOptions = (
   theme: any, // TODO: type this
@@ -192,6 +199,15 @@ const getDefaultPoolActivityChartOptions = (
   is2xl = false
   // chain: GqlChain
 ): echarts.EChartsCoreOption => {
+  const tooltipFormatter = (params: any) => {
+    const div = document.createElement('div')
+    const root = createRoot(div)
+    root.render(
+      <MemoizedCustomTooltip params={params} currencyFormatter={currencyFormatter} theme={theme} />
+    )
+    return div
+  }
+
   return {
     grid: {
       left: isMobile ? '15%' : '5.5%',
@@ -246,16 +262,7 @@ const getDefaultPoolActivityChartOptions = (
         return [point[0] + 5, point[1] - 5]
       },
       extraCssText: `padding-right: 2rem;border: none;background: transparent;pointer-events: auto!important;box-shadow: none;`,
-      formatter: (params: any) => {
-        const div = document.createElement('div')
-        const root = createRoot(div)
-        root.render(
-          <ChakraProvider theme={theme}>
-            <CustomTooltip params={params} currencyFormatter={currencyFormatter} />
-          </ChakraProvider>
-        )
-        return div
-      },
+      formatter: tooltipFormatter,
     },
   }
 }
