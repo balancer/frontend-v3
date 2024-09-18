@@ -50,9 +50,8 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     port: ANVIL_PORTS.Ethereum,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
-    // forkBlockNumber: 19769489n,
-    // forkBlockNumber: 20061849n,
-    forkBlockNumber: 20474895n,
+    // forkBlockNumber: 20474895n,
+    forkBlockNumber: 20777062n,
   },
   Polygon: {
     networkName: 'Polygon',
@@ -66,7 +65,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     fallBackRpc: 'https://gateway.tenderly.co/public/sepolia',
     port: ANVIL_PORTS.Sepolia,
     // For now we will use the last block until v3 deployments are final
-    // forkBlockNumber: ,
+    // forkBlockNumber: 6679621n,
   },
 }
 

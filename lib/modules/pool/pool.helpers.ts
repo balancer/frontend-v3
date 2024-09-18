@@ -22,7 +22,7 @@ import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
 import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 import { balancerV2VaultAbi } from '../web3/contracts/abi/generated'
-import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3Abi'
+import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3VaultAbi'
 
 /**
  * METHODS
