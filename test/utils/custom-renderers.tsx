@@ -30,9 +30,7 @@ import { testQueryClient } from './react-query'
 
 export type Wrapper = ({ children }: PropsWithChildren) => ReactNode
 
-export function EmptyWrapper({ children }: PropsWithChildren) {
-  return <>{children}</>
-}
+export const EmptyWrapper = ({ children }: PropsWithChildren) => <>{children}</>
 
 export function testHook<TResult, TProps>(
   hook: (props: TProps) => TResult,
@@ -69,16 +67,16 @@ function GlobalProviders({ children }: PropsWithChildren) {
           <ApolloProvider client={apolloTestClient}>
             <UserAccountProvider>
               <TokensProvider
-                tokenPricesData={defaultGetTokenPricesQueryMock}
                 tokensData={defaultGetTokensQueryMock}
+                tokenPricesData={defaultGetTokenPricesQueryMock}
                 variables={defaultGetTokensQueryVariablesMock}
               >
                 <UserSettingsProvider
-                  initAcceptedPolicies={undefined}
-                  initCurrency="USD"
+                  initCurrency={'USD'}
+                  initSlippage={'0.2'}
+                  initPoolListView={'list'}
                   initEnableSignatures="yes"
-                  initPoolListView="list"
-                  initSlippage="0.2"
+                  initAcceptedPolicies={undefined}
                 >
                   <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
                 </UserSettingsProvider>
@@ -106,39 +104,36 @@ export async function waitForLoadedUseQuery(hookResult: { current: { loading: bo
   await waitFor(() => expect(hookResult.current.loading).toBeFalsy())
 }
 
-export function DefaultAddLiquidityTestProvider({ children }: PropsWithChildren) {
-  return (
-    <RelayerSignatureProvider>
-      <TokenInputsValidationProvider>
-        <AddLiquidityProvider>{children}</AddLiquidityProvider>
-      </TokenInputsValidationProvider>
-    </RelayerSignatureProvider>
-  )
-}
+export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
+  <RelayerSignatureProvider>
+    <TokenInputsValidationProvider>
+      <AddLiquidityProvider>{children}</AddLiquidityProvider>
+    </TokenInputsValidationProvider>
+  </RelayerSignatureProvider>
+)
 
-export function DefaultRemoveLiquidityTestProvider({ children }: PropsWithChildren) {
-  return (
-    <RelayerSignatureProvider>
-      <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
-    </RelayerSignatureProvider>
-  )
-}
+export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
+  <RelayerSignatureProvider>
+    <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+  </RelayerSignatureProvider>
+)
 
 /* Builds a PoolProvider that injects the provided pool data*/
-export const buildDefaultPoolTestProvider = (pool: GqlPoolElement = aGqlPoolElementMock()) =>
+export const buildDefaultPoolTestProvider =
+  (pool: GqlPoolElement = aGqlPoolElementMock()) =>
   // eslint-disable-next-line react/display-name
-  function ({ children }: PropsWithChildren) {
+  ({ children }: PropsWithChildren) => {
     return (
       <TransactionStateProvider>
         <RelayerSignatureProvider>
           <PoolProvider
+            id={pool.id}
             chain={pool.chain}
+            variant={BaseVariant.v2}
             data={{
               __typename: 'Query',
               pool,
             }}
-            id={pool.id}
-            variant={BaseVariant.v2}
           >
             {children}
           </PoolProvider>
