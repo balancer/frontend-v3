@@ -1,5 +1,15 @@
 import { useThemeColorMode } from '@/lib/shared/services/chakra/useThemeColorMode'
-import { BoxProps, TextProps, Box, HStack, Text, Tooltip } from '@chakra-ui/react'
+import {
+  BoxProps,
+  TextProps,
+  Box,
+  HStack,
+  Text,
+  Portal,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@chakra-ui/react'
 import BigNumber from 'bignumber.js'
 
 const tooltipTextDecorationStyles: TextProps = {
@@ -58,19 +68,40 @@ export function TooltipAprItem({
         >
           {title}
         </Text>
-        <Tooltip label={tooltipText} fontSize="sm">
+        {tooltipText ? (
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              <Text
+                fontWeight={fontWeight}
+                fontSize="sm"
+                opacity={aprOpacity}
+                color={fontColor}
+                variant={textVariant}
+                {...tooltipTextDecorationStyles}
+                textDecorationColor={tootltipTextDecorationColor}
+              >
+                {displayValueFormatter(apr)}
+              </Text>
+            </PopoverTrigger>
+            <Portal>
+              <PopoverContent p="sm" w="auto" maxW="300px">
+                <Text fontSize="sm" variant="secondary">
+                  {tooltipText}
+                </Text>
+              </PopoverContent>
+            </Portal>
+          </Popover>
+        ) : (
           <Text
             fontWeight={fontWeight}
             fontSize="sm"
             opacity={aprOpacity}
             color={fontColor}
             variant={textVariant}
-            {...(tooltipText ? tooltipTextDecorationStyles : {})}
-            textDecorationColor={tootltipTextDecorationColor}
           >
             {displayValueFormatter(apr)}
           </Text>
-        </Tooltip>
+        )}
       </HStack>
       {children}
     </Box>
