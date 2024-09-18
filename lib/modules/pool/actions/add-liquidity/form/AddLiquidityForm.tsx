@@ -88,7 +88,7 @@ function AddLiquidityMainForm() {
   const { setValidationError } = useTokenInputsValidation()
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
-  const { startTokenPricePolling, pollInterval } = useTokens()
+  const { startTokenPricePolling } = useTokens()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -152,7 +152,7 @@ function AddLiquidityMainForm() {
 
   function onModalClose() {
     // restart polling for token prices when modal is closed again
-    startTokenPricePolling(pollInterval)
+    startTokenPricePolling()
 
     previewModalDisclosure.onClose()
   }

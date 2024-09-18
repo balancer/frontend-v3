@@ -14,7 +14,7 @@ import {
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { bn, Numberish } from '@/lib/shared/utils/numbers'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/client'
 import { Dictionary, zipObject } from 'lodash'
 import { createContext, PropsWithChildren, useCallback } from 'react'
 import { Address } from 'viem'
@@ -41,8 +41,8 @@ export function _useTokens(
   const {
     data: tokenPricesData,
     loading: isLoadingTokenPrices,
-    startPolling: startTokenPricePolling,
-    stopPolling: stopTokenPricePolling,
+    startPolling,
+    stopPolling,
   } = useQuery(GetTokenPricesDocument, {
     variables,
     // The server provides us with an initial data set, but we immediately reload the potentially
@@ -146,7 +146,6 @@ export function _useTokens(
     tokens,
     prices,
     isLoadingTokenPrices,
-    pollInterval,
     getToken,
     getNativeAssetToken,
     getWrappedNativeAssetToken,
@@ -157,8 +156,8 @@ export function _useTokens(
     usdValueForToken,
     calcWeightForBalance,
     calcTotalUsdValue,
-    startTokenPricePolling,
-    stopTokenPricePolling,
+    startTokenPricePolling: () => startPolling(pollInterval),
+    stopTokenPricePolling: stopPolling,
   }
 }
 

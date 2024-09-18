@@ -70,7 +70,7 @@ export function RemoveLiquidityForm() {
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
-  const { startTokenPricePolling, pollInterval } = useTokens()
+  const { startTokenPricePolling } = useTokens()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -93,7 +93,7 @@ export function RemoveLiquidityForm() {
 
   const onModalClose = () => {
     // restart polling for token prices when modal is closed again
-    startTokenPricePolling(pollInterval)
+    startTokenPricePolling()
 
     if (transactionSteps.lastTransactionConfirmingOrConfirmed) {
       // If the transaction is confirming or confirmed, it's very likely that

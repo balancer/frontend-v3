@@ -71,7 +71,7 @@ export function SwapForm() {
   const finalRefTokenOut = useRef(null)
   const isMounted = useIsMounted()
   const { isConnected } = useUserAccount()
-  const { startTokenPricePolling, pollInterval } = useTokens()
+  const { startTokenPricePolling } = useTokens()
 
   const isLoadingSwaps = simulationQuery.isLoading
   const isLoading = isLoadingSwaps || !isMounted
@@ -101,7 +101,7 @@ export function SwapForm() {
 
   function onModalClose() {
     // restart polling for token prices when modal is closed again
-    startTokenPricePolling(pollInterval)
+    startTokenPricePolling()
 
     previewModalDisclosure.onClose()
 
