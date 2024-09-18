@@ -322,6 +322,10 @@ export function useEcosystemPoolActivityChart() {
     chainIn: supportedNetworks,
   })
 
+  const memoizedChartOptions = useMemo(() => {
+    return getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl)
+  }, [theme, toCurrency, isMobile, is2xl])
+
   const chartData = useMemo(() => {
     if (!response) return getDefaultChainMeta()
     const { poolEvents: events } = response
@@ -429,7 +433,7 @@ export function useEcosystemPoolActivityChart() {
 
   return {
     isLoading: loading,
-    chartOption: getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl),
+    chartOption: memoizedChartOptions,
     eChartsRef,
     chartData,
     tabsList,
