@@ -6,8 +6,7 @@ import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.b
 import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { getPoolMock } from '../../../__mocks__/getPoolMock'
+import { Pool } from '../../../PoolProvider'
 
 function selectUnbalancedHandler() {
   return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
@@ -79,8 +78,9 @@ describe('When adding unbalanced liquidity for a weighted V2 pool', () => {
 describe.skip('When adding unbalanced liquidity for a V3 pool', async () => {
   // Sepolia
   const balAddress = '0xb19382073c7a0addbb56ac6af1808fa49e377b75'
-  const poolId = '0xec1b5ca86c83c7a85392063399e7d2170d502e00' // Sepolia B-50BAL-50WETH
-  const v3Pool = await getPoolMock(poolId, GqlChain.Sepolia)
+  // const poolId = '0xec1b5ca86c83c7a85392063399e7d2170d502e00' // Sepolia B-50BAL-50WETH
+  // const v3Pool = await getPoolMock(poolId, GqlChain.Sepolia)
+  const v3Pool = {} as unknown as Pool
 
   const handler = selectAddLiquidityHandler(v3Pool) as UnbalancedAddLiquidityHandler
 
