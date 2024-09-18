@@ -137,12 +137,12 @@ export function HomeHero() {
                   </Text>
                   <button
                     className="btn-popover"
-                    data-popovertarget="disclose"
-                    data-popovertargetaction="toggle"
+                    popovertarget="disclose"
+                    popovertargetaction="toggle"
                   >
                     Start building
                   </button>
-                  <div data-popover="auto" id="disclose" className="disclosure">
+                  <div popover="auto" id="disclose" className="disclosure">
                     <FadeInOnView>
                       <Box>
                         <header>
