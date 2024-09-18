@@ -2,7 +2,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef, useState, FC, memo } from 'react'
+import { useEffect, useMemo, useRef, useState, FC, memo, useCallback, ReactNode } from 'react'
 import { format } from 'date-fns'
 import { GqlChain, GqlPoolEventType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
@@ -29,8 +29,8 @@ import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { usePoolEvents } from '../pool/usePoolEvents'
 import { supportedNetworks } from '../web3/ChainConfig'
 import { getChainShortName } from '@/lib/config/app.config'
-import { createRoot } from 'react-dom/client'
 import { ArrowUpRight } from 'react-feather'
+import { createPortal } from 'react-dom'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -196,18 +196,10 @@ const getDefaultPoolActivityChartOptions = (
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
-  is2xl = false
+  is2xl = false,
+  tooltipFormatter: (params: any) => string
   // chain: GqlChain
 ): echarts.EChartsCoreOption => {
-  const tooltipFormatter = (params: any) => {
-    const div = document.createElement('div')
-    const root = createRoot(div)
-    root.render(
-      <MemoizedCustomTooltip params={params} currencyFormatter={currencyFormatter} theme={theme} />
-    )
-    return div
-  }
-
   return {
     grid: {
       left: isMobile ? '15%' : '5.5%',
@@ -258,9 +250,7 @@ const getDefaultPoolActivityChartOptions = (
       confine: is2xl ? false : true,
       enterable: true,
       hideDelay: 300,
-      position: function (point: number[]) {
-        return [point[0] + 5, point[1] - 5]
-      },
+      position: [0, 0], // This will be overridden by our custom positioning
       extraCssText: `padding-right: 2rem;border: none;background: transparent;pointer-events: auto!important;box-shadow: none;`,
       formatter: tooltipFormatter,
     },
@@ -315,6 +305,9 @@ export function useEcosystemPoolActivityChart() {
   const { toCurrency } = useCurrency()
   const [activeTab, setActiveTab] = useState<PoolActivityChartTypeTab>(tabsList[0])
   const [activeNetwork, setActiveNetwork] = useState<GqlChain | 'all'>('all')
+  const [tooltipContent, setTooltipContent] = useState<ReactNode | null>(null)
+  const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 })
+
   const theme = useTheme()
 
   const { loading, data: response } = usePoolEvents({
@@ -322,9 +315,43 @@ export function useEcosystemPoolActivityChart() {
     chainIn: supportedNetworks,
   })
 
+  const tooltipFormatter = useCallback(
+    (params: any) => {
+      setTooltipContent(
+        <ChakraProvider theme={theme}>
+          <MemoizedCustomTooltip params={params} currencyFormatter={toCurrency} theme={theme} />
+        </ChakraProvider>
+      )
+      return ' '
+    },
+    [theme, toCurrency]
+  )
+
+  const onEvents = useMemo(
+    () => ({
+      mousemove: (params: any) => {
+        console.log({ params })
+        if (params.componentType === 'series') {
+          setTooltipPosition({ x: params.event.offsetX, y: params.event.offsetY })
+        }
+      },
+      mouseout: () => {
+        setTooltipContent(null)
+      },
+    }),
+    []
+  )
+
   const memoizedChartOptions = useMemo(() => {
-    return getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl)
-  }, [theme, toCurrency, isMobile, is2xl])
+    return getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl, tooltipFormatter)
+  }, [theme, toCurrency, isMobile, is2xl, tooltipFormatter])
+
+  useEffect(() => {
+    const tooltipContainer = document.getElementById('echarts-tooltip-container')
+    if (tooltipContainer && tooltipContent) {
+      createPortal(tooltipContent, tooltipContainer)
+    }
+  }, [tooltipContent])
 
   const chartData = useMemo(() => {
     if (!response) return getDefaultChainMeta()
@@ -442,5 +469,8 @@ export function useEcosystemPoolActivityChart() {
     activeNetwork,
     setActiveNetwork,
     headerInfo,
+    tooltipContent,
+    tooltipPosition,
+    onEvents,
   }
 }

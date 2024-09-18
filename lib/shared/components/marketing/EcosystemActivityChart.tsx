@@ -25,6 +25,7 @@ import {
   gradientMap,
   useEcosystemPoolActivityChart,
 } from '@/lib/modules/marketing/useEcosystemPoolActivity'
+import { createPortal } from 'react-dom'
 
 const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -45,6 +46,9 @@ export function EcosystemActivityChart() {
     tabsList,
     headerInfo,
     eChartsRef,
+    tooltipContent,
+    tooltipPosition,
+    onEvents,
   } = useEcosystemPoolActivityChart()
 
   const legendTabs = supportedNetworks.map(key => {
@@ -53,6 +57,8 @@ export function EcosystemActivityChart() {
       color: `linear-gradient(to bottom, ${gradientMap[key].from}, ${gradientMap[key].to})`,
     }
   })
+
+  console.log({ tooltipContent, tooltipPosition })
 
   return (
     <Card>
@@ -98,11 +104,29 @@ export function EcosystemActivityChart() {
             </Flex>
           </Stack>
           <Box>
-            <ReactECharts
-              style={{ height: `${chartHeight}px` }}
-              option={chartOption}
-              ref={eChartsRef}
-            />
+            <div style={{ position: 'relative' }}>
+              <ReactECharts
+                style={{ height: `${chartHeight}px` }}
+                option={chartOption}
+                ref={eChartsRef}
+                onEvents={onEvents}
+              />
+              {createPortal(
+                <div
+                  id="echarts-tooltip-container"
+                  style={{
+                    position: 'fixed',
+                    left: `${tooltipPosition.x + 325}px`,
+                    top: `${tooltipPosition.y + 325}px`,
+                    pointerEvents: 'none',
+                    zIndex: 9999,
+                  }}
+                >
+                  {tooltipContent}
+                </div>,
+                document.body
+              )}
+            </div>
           </Box>
 
           <AnimateOpacity>
