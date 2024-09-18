@@ -2,15 +2,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 import * as echarts from 'echarts/core'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState, FC } from 'react'
 import { format } from 'date-fns'
 import { GqlChain, GqlPoolEventType, GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import EChartsReactCore from 'echarts-for-react/lib/core'
-import { ColorMode, useTheme as useChakraTheme } from '@chakra-ui/react'
-import { useTheme as useNextTheme } from 'next-themes'
+import {
+  Box,
+  Card,
+  ChakraProvider,
+  useTheme,
+  Text,
+  Link,
+  Image,
+  VStack,
+  HStack,
+} from '@chakra-ui/react'
 import { abbreviateAddress } from '@/lib/shared/utils/addresses'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-
 import {
   getBlockExplorerAddressUrl,
   getBlockExplorerTxUrl,
@@ -21,6 +29,8 @@ import { NumberFormatter } from '@/lib/shared/utils/numbers'
 import { usePoolEvents } from '../pool/usePoolEvents'
 import { supportedNetworks } from '../web3/ChainConfig'
 import { getChainShortName } from '@/lib/config/app.config'
+import { createRoot } from 'react-dom/client'
+import { ArrowUpRight } from 'react-feather'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -108,27 +118,80 @@ function getDefaultChainMeta() {
   }
 }
 
+const CustomTooltip: FC<{
+  params: any
+  currencyFormatter: (value: string) => string
+}> = ({ params, currencyFormatter }) => {
+  const data = Array.isArray(params) ? params[0] : params
+  const timestamp = data.value[0]
+  const metaData = data.data[2] as ChartInfoMetaData
+  const { userAddress, tokens, usdValue, tx, chain, type } = metaData
+  const txLink = getBlockExplorerTxUrl(tx, chain)
+  const addressLink = getBlockExplorerAddressUrl(userAddress, chain)
+
+  const typeStr =
+    type === GqlPoolEventType.Add ? 'Add' : type === GqlPoolEventType.Remove ? 'Remove' : 'Swap'
+
+  return (
+    <Card maxW="200px">
+      <VStack align="start" spacing="2">
+        <VStack align="start" spacing="0">
+          <Text fontWeight="bold" fontSize="sm">{`${typeStr} ${currencyFormatter(usdValue)}`}</Text>
+          <Text fontWeight="bold" fontSize="sm">
+            on {getChainShortName(chain)}
+          </Text>
+        </VStack>
+        <VStack align="start" spacing="1">
+          {tokens
+            .filter(token => token.token && Number(token.amount) !== 0)
+            .map((token, index) => (
+              <HStack key={index} spacing="1">
+                <Image
+                  src={token.token?.logoURI || ''}
+                  boxSize="16px"
+                  borderRadius="full"
+                  alt={token.token?.symbol}
+                />
+                <Text fontSize="sm">
+                  {Number(Number(token.amount).toFixed(2)).toLocaleString()} {token.token?.symbol}
+                </Text>
+              </HStack>
+            ))}
+        </VStack>
+        <VStack align="start" spacing="1">
+          <Link href={txLink} isExternal>
+            <HStack align="start" spacing="0">
+              <Text mr="1" fontSize="xs">
+                Tx: {format(new Date(timestamp * 1000), 'MMM d, h:mma').toLowerCase()}
+              </Text>
+              <Box color="grayText">
+                <ArrowUpRight size={12} />
+              </Box>
+            </HStack>
+          </Link>
+          <Link href={addressLink} isExternal>
+            <HStack align="start" spacing="0">
+              <Text mr="1" fontSize="xs">
+                By: {abbreviateAddress(userAddress)}
+              </Text>
+              <Box color="grayText">
+                <ArrowUpRight size={12} />
+              </Box>
+            </HStack>
+          </Link>
+        </VStack>
+      </VStack>
+    </Card>
+  )
+}
+
 const getDefaultPoolActivityChartOptions = (
-  nextTheme: ColorMode = 'dark',
   theme: any, // TODO: type this
   currencyFormatter: NumberFormatter,
   isMobile = false,
   is2xl = false
   // chain: GqlChain
 ): echarts.EChartsCoreOption => {
-  const toolTipTheme = {
-    heading: 'font-weight: bold; color: #E5D3BE',
-    container: `background: ${
-      nextTheme === 'dark'
-        ? theme.semanticTokens.colors.background.level3._dark
-        : theme.semanticTokens.colors.background.default
-    };`,
-    text:
-      nextTheme === 'dark'
-        ? theme.semanticTokens.colors.font.primary._dark
-        : theme.semanticTokens.colors.font.primary.default,
-  }
-
   return {
     grid: {
       left: isMobile ? '15%' : '5.5%',
@@ -175,91 +238,23 @@ const getDefaultPoolActivityChartOptions = (
       splitNumber: 3,
     },
     tooltip: {
-      triggerOn: 'mousemove|click',
+      trigger: 'item',
       confine: is2xl ? false : true,
       enterable: true,
       hideDelay: 300,
       position: function (point: number[]) {
         return [point[0] + 5, point[1] - 5]
       },
-      extraCssText: `padding-right:2rem;border: none;${toolTipTheme.container};pointer-events: auto!important`,
+      extraCssText: `padding-right: 2rem;border: none;background: transparent;pointer-events: auto!important;box-shadow: none;`,
       formatter: (params: any) => {
-        const data = Array.isArray(params) ? params[0] : params
-        const timestamp = data.value[0]
-        const metaData = data.data[2] as ChartInfoMetaData
-        const userAddress = metaData.userAddress
-        const tokens = metaData.tokens.filter(token => {
-          if (!token.token) return false
-          if (Number(token.amount) === 0) return false
-          return true
-        }) as ChartInfoTokens[]
-
-        const tx = metaData.tx
-        const txLink = getBlockExplorerTxUrl(tx, metaData.chain)
-        const addressLink = getBlockExplorerAddressUrl(userAddress, metaData.chain)
-        const typeStr =
-          metaData.type === GqlPoolEventType.Add
-            ? 'Add'
-            : metaData.type === GqlPoolEventType.Remove
-            ? 'Remove'
-            : 'Swap'
-
-        const arrow = `<svg xmlns="http://www.w3.org/2000/svg" width="9" height="9" fill="none"><path stroke="#718096" stroke-linecap="round" stroke-linejoin="round" d="M2 1h6v6M1 8l7-7"/></svg>`
-
-        return `
-          <div style="max-width: 152px; padding: none; display: flex; flex-direction: column;${
-            toolTipTheme.container
-          };margin-right:-15px">
-            <div style="font-size: 14px; font-weight: 700;
-            display:flex;flex-wrap:wrap;justify-content:start;gap:0px;letter-spacing:-0.25px; padding-bottom:2px;${
-              toolTipTheme.heading
-            }; color: ${toolTipTheme.text}; ">
-              <span>${typeStr} </span>
-              <span>&nbsp;${currencyFormatter(metaData.usdValue)}&nbsp;</span>
-              <span>on ${getChainShortName(metaData.chain)}</span>
-            </div>
-            <div style="display:flex;flex-direction:column;justify-content:flex-start;gap:0;margin-top:4px";>
-              ${tokens?.map((token, index) => {
-                return `
-                  <div style="color: ${
-                    toolTipTheme.text
-                  }; display:flex;justify-content:start;align-items:center;gap:6px; margin-bottom:${
-                  index === tokens.length - 1 ? `4px` : `-20px`
-                }">
-                    <img src="${
-                      token.token?.logoURI
-                    }" style="width: 16px; height: 16px; border-radius: 50%; margin-right;letter-spacing:-0.1px" />
-                    <div style="text-align:left">
-                      <span>${Number(Number(token.amount).toFixed(2)).toLocaleString()}</span>
-                      <span>${token.token?.symbol}</span>
-                    </div>
-                  </div>
-                `
-              })}
-            </div>
-            <a style="width:100%;display:flex;align-items:center;font-size: 0.75rem; padding-top:4px;font-weight: 500; color: ${
-              toolTipTheme.text
-            };" href=${txLink} target="_blank">
-            <span style="margin-right:4px;">
-                    Tx: ${format(new Date(timestamp * 1000), 'MMM d, h:mma')
-                      .replace('AM', 'am')
-                      .replace('PM', 'pm')}
-                  </span>
-
-              ${arrow}
-            </a>
-            <div style="width:100%;display:flex;align-items:center;font-size: 0.75rem; line-height:1;font-weight: 500; margin-top:4px; color: ${
-              toolTipTheme.text
-            };">
-                <a style="display:flex;align-items:center;" href=${addressLink} target="_blank">
-                  <span style="font-size: 0.75rem; margin-right:4px;">By: ${abbreviateAddress(
-                    userAddress
-                  )}</span>
-                  ${arrow}
-                </a>
-            </div>
-          </div>
-      `
+        const div = document.createElement('div')
+        const root = createRoot(div)
+        root.render(
+          <ChakraProvider theme={theme}>
+            <CustomTooltip params={params} currencyFormatter={currencyFormatter} />
+          </ChakraProvider>
+        )
+        return div
       },
     },
   }
@@ -309,13 +304,11 @@ const tabsList: PoolActivityChartTypeTab[] = [
 export function useEcosystemPoolActivityChart() {
   const eChartsRef = useRef<EChartsReactCore | null>(null)
   const { isMobile, is2xl } = useBreakpoints()
-  const { theme: nextTheme } = useNextTheme()
   const { getToken } = useTokens()
   const { toCurrency } = useCurrency()
   const [activeTab, setActiveTab] = useState<PoolActivityChartTypeTab>(tabsList[0])
   const [activeNetwork, setActiveNetwork] = useState<GqlChain | 'all'>('all')
-
-  const theme = useChakraTheme()
+  const theme = useTheme()
 
   const { loading, data: response } = usePoolEvents({
     first: 500,
@@ -429,13 +422,7 @@ export function useEcosystemPoolActivityChart() {
 
   return {
     isLoading: loading,
-    chartOption: getDefaultPoolActivityChartOptions(
-      nextTheme as ColorMode,
-      theme,
-      toCurrency,
-      isMobile,
-      is2xl
-    ),
+    chartOption: getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl),
     eChartsRef,
     chartData,
     tabsList,
