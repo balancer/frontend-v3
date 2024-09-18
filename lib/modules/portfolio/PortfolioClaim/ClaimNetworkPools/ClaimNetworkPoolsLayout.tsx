@@ -1,21 +1,20 @@
 import { Card, CardProps, HStack, Heading, IconButton, Stack } from '@chakra-ui/react'
 import Link from 'next/link'
-import { PropsWithChildren } from 'react'
 import { ArrowLeft } from 'react-feather'
 
-interface Props extends CardProps, PropsWithChildren {
+interface Props extends CardProps {
   backLink: string
   title: string
 }
 
 export function ClaimNetworkPoolsLayout({ backLink, children, title, ...rest }: Props) {
   return (
-    <Stack alignItems="center" w="full" maxW="lg" mx="auto">
-      <Stack w="full" gap={8}>
+    <Stack alignItems="center" maxW="lg" mx="auto" w="full">
+      <Stack gap={8} w="full">
         <Link href={backLink}>
           <HStack>
-            <IconButton variant="ghost" icon={<ArrowLeft />} aria-label="" />
-            <Heading variant="special" size="lg">
+            <IconButton aria-label="" icon={<ArrowLeft />} variant="ghost" />
+            <Heading size="lg" variant="special">
               {title}
             </Heading>
           </HStack>

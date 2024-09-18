@@ -28,16 +28,17 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { testQueryClient } from './react-query'
 
-export type WrapperProps = { children: ReactNode }
-export type Wrapper = ({ children }: WrapperProps) => ReactNode
+export type Wrapper = ({ children }: PropsWithChildren) => ReactNode
 
-export const EmptyWrapper = ({ children }: WrapperProps) => <>{children}</>
+export function EmptyWrapper({ children }: PropsWithChildren) {
+  return <>{children}</>
+}
 
 export function testHook<TResult, TProps>(
   hook: (props: TProps) => TResult,
   options?: RenderHookOptions<TProps> | undefined
 ) {
-  function MixedProviders({ children }: WrapperProps) {
+  function MixedProviders({ children }: PropsWithChildren) {
     const LocalProviders = options?.wrapper || EmptyWrapper
 
     return (
@@ -49,7 +50,7 @@ export function testHook<TResult, TProps>(
 
   const result = renderHook<TResult, TProps>(hook, {
     ...options,
-    wrapper: MixedProviders,
+    wrapper: MixedProviders as React.ComponentType<{ children: React.ReactNode }>,
   })
 
   return {
@@ -58,7 +59,7 @@ export function testHook<TResult, TProps>(
   }
 }
 
-function GlobalProviders({ children }: WrapperProps) {
+function GlobalProviders({ children }: PropsWithChildren) {
   const defaultRouterOptions = {}
 
   return (
@@ -68,16 +69,16 @@ function GlobalProviders({ children }: WrapperProps) {
           <ApolloProvider client={apolloTestClient}>
             <UserAccountProvider>
               <TokensProvider
-                tokensData={defaultGetTokensQueryMock}
                 tokenPricesData={defaultGetTokenPricesQueryMock}
+                tokensData={defaultGetTokensQueryMock}
                 variables={defaultGetTokensQueryVariablesMock}
               >
                 <UserSettingsProvider
-                  initCurrency={'USD'}
-                  initSlippage={'0.2'}
-                  initPoolListView={'list'}
-                  initEnableSignatures="yes"
                   initAcceptedPolicies={undefined}
+                  initCurrency="USD"
+                  initEnableSignatures="yes"
+                  initPoolListView="list"
+                  initSlippage="0.2"
                 >
                   <RecentTransactionsProvider>{children}</RecentTransactionsProvider>
                 </UserSettingsProvider>
@@ -105,36 +106,39 @@ export async function waitForLoadedUseQuery(hookResult: { current: { loading: bo
   await waitFor(() => expect(hookResult.current.loading).toBeFalsy())
 }
 
-export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <RelayerSignatureProvider>
-    <TokenInputsValidationProvider>
-      <AddLiquidityProvider>{children}</AddLiquidityProvider>
-    </TokenInputsValidationProvider>
-  </RelayerSignatureProvider>
-)
+export function DefaultAddLiquidityTestProvider({ children }: PropsWithChildren) {
+  return (
+    <RelayerSignatureProvider>
+      <TokenInputsValidationProvider>
+        <AddLiquidityProvider>{children}</AddLiquidityProvider>
+      </TokenInputsValidationProvider>
+    </RelayerSignatureProvider>
+  )
+}
 
-export const DefaultRemoveLiquidityTestProvider = ({ children }: PropsWithChildren) => (
-  <RelayerSignatureProvider>
-    <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
-  </RelayerSignatureProvider>
-)
+export function DefaultRemoveLiquidityTestProvider({ children }: PropsWithChildren) {
+  return (
+    <RelayerSignatureProvider>
+      <RemoveLiquidityProvider>{children}</RemoveLiquidityProvider>
+    </RelayerSignatureProvider>
+  )
+}
 
 /* Builds a PoolProvider that injects the provided pool data*/
-export const buildDefaultPoolTestProvider =
-  (pool: GqlPoolElement = aGqlPoolElementMock()) =>
+export const buildDefaultPoolTestProvider = (pool: GqlPoolElement = aGqlPoolElementMock()) =>
   // eslint-disable-next-line react/display-name
-  ({ children }: PropsWithChildren) => {
+  function ({ children }: PropsWithChildren) {
     return (
       <TransactionStateProvider>
         <RelayerSignatureProvider>
           <PoolProvider
-            id={pool.id}
             chain={pool.chain}
-            variant={BaseVariant.v2}
             data={{
               __typename: 'Query',
               pool,
             }}
+            id={pool.id}
+            variant={BaseVariant.v2}
           >
             {children}
           </PoolProvider>
