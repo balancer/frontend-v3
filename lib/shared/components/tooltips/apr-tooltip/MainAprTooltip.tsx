@@ -118,6 +118,7 @@ function MainAprTooltip({
               _hover={{ color: hoverColor }}
               color={isOpen ? hoverColor : 'font.primary'}
               opacity={isLBP(pool.type) ? 0.5 : 1}
+              gap="xs"
             >
               {!onlySparkles && (
                 <Text

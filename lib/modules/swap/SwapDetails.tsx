@@ -88,8 +88,10 @@ export function SwapDetails() {
     ? bn(tokenOut.amount).minus(bn(tokenOut.amount).times(_slippageDecimal)).toString()
     : bn(tokenIn.amount).plus(bn(tokenIn.amount).times(_slippageDecimal)).toString()
   const limitTooltip = isExactIn
-    ? 'You will get at least this amount of token out.'
-    : 'You will pay at most this amount of token in.'
+    ? 'You will get at least this amount, even if you suffer maximum slippage ' +
+      'from unfavorable market price movements before your transaction executes on-chain.'
+    : 'At most, you will spend this amount, even if you suffer maximum slippage ' +
+      'from unfavortable market price movements before your transaction executes on-chain.'
 
   const slippageLabel = isExactIn
     ? `This is the maximum slippage that the swap will allow. 

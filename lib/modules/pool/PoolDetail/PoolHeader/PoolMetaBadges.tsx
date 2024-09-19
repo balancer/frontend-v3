@@ -64,7 +64,8 @@ export default function PoolMetaBadges() {
           </PopoverTrigger>
           <PopoverContent p="sm" w="auto" maxW="300px">
             <Text fontSize="sm" variant="secondary">
-              Swap fee
+              The swap fee rate earned by Liquidity Providers anytime a swap is routed through this
+              pool. These fees automatically accumulate into each LP&rsquo;s position.
             </Text>
           </PopoverContent>
         </Popover>
