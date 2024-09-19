@@ -58,7 +58,7 @@ describe('When removing unbalanced liquidity for a weighted V2 pool', () => {
 })
 
 // TODO: unskip this test when sepolia V3 pools are available in production api
-describe('When removing unbalanced liquidity for a weighted V3 pool', async () => {
+describe.skip('When removing unbalanced liquidity for a weighted V3 pool', async () => {
   // Sepolia
   const balAddress = '0xb19382073c7a0addbb56ac6af1808fa49e377b75'
   const wethAddress = '0x7b79995e5f793a07bc00c21412e50ecae098e7f9'
