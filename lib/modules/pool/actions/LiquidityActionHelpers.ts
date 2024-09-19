@@ -75,10 +75,12 @@ export class LiquidityActionHelpers {
   }
 
   public getAmountsToApprove(
-    humanAmountsIn: HumanTokenAmountWithAddress[]
+    humanAmountsIn: HumanTokenAmountWithAddress[],
+    isPermit2 = false
   ): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
+        isPermit2,
         tokenAddress: address,
         requiredRawAmount: rawAmount,
         requestedRawAmount: rawAmount, //This amount will be probably replaced by MAX_BIGINT depending on the approval rules
