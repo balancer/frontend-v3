@@ -12,9 +12,7 @@ import {
   HStack,
   Skeleton,
   Text,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
+  Tooltip,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react'
@@ -239,36 +237,19 @@ function AddLiquidityMainForm() {
             ></GenericError>
           )}
           {isConnected ? (
-            isDisabled ? (
-              <Popover trigger="hover">
-                <PopoverTrigger>
-                  <Button
-                    ref={nextBtn}
-                    variant="secondary"
-                    w="full"
-                    size="lg"
-                    isDisabled={true}
-                    isLoading={isLoading}
-                  >
-                    Next
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent p="sm" w="auto" maxW="300px">
-                  <Text fontSize="sm">{disabledReason}</Text>
-                </PopoverContent>
-              </Popover>
-            ) : (
+            <Tooltip label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
+                isDisabled={isDisabled}
                 isLoading={isLoading}
-                onClick={onModalOpen}
+                onClick={() => !isDisabled && onModalOpen()}
               >
                 Next
               </Button>
-            )
+            </Tooltip>
           ) : (
             <ConnectWallet variant="primary" w="full" size="lg" />
           )}
