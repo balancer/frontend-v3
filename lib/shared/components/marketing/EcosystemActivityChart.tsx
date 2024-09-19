@@ -16,7 +16,6 @@ import {
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
 import { FC, PropsWithChildren } from 'react'
 import { motion } from 'framer-motion'
-
 import { EcosystemChainSelect } from './EcosystemChainSelect'
 import { getChainShortName } from '@/lib/config/app.config'
 import { supportedNetworks } from '@/lib/modules/web3/ChainConfig'
@@ -26,6 +25,7 @@ import {
   useEcosystemPoolActivityChart,
 } from '@/lib/modules/marketing/useEcosystemPoolActivity'
 import { createPortal } from 'react-dom'
+import useMeasure from 'react-use-measure'
 
 const AnimateOpacity: FC<PropsWithChildren<object>> = ({ children }) => (
   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
@@ -51,6 +51,10 @@ export function EcosystemActivityChart() {
     onEvents,
   } = useEcosystemPoolActivityChart()
 
+  const [ref, bounds] = useMeasure({
+    scroll: true,
+  })
+
   const legendTabs = supportedNetworks.map(key => {
     return {
       label: getChainShortName(key),
@@ -58,13 +62,10 @@ export function EcosystemActivityChart() {
     }
   })
 
-  console.log({ tooltipContent, tooltipPosition })
-
   return (
     <Card>
       <Box position="relative">
         {isLoading && <Skeleton w="100%" h="100%" position="absolute" />}
-
         <Box opacity={isLoading ? 0 : 1}>
           <Stack
             w="full"
@@ -83,7 +84,6 @@ export function EcosystemActivityChart() {
                 In the last {headerInfo.elapsedMinutes} mins
               </Text>
             </VStack>
-
             <Flex flexWrap="wrap" gap="2">
               <ButtonGroup
                 currentOption={activeTab}
@@ -94,7 +94,6 @@ export function EcosystemActivityChart() {
                 size="xxs"
                 groupId="pool-activity"
               />
-
               <EcosystemChainSelect
                 value={activeNetwork}
                 onChange={network => {
@@ -104,7 +103,7 @@ export function EcosystemActivityChart() {
             </Flex>
           </Stack>
           <Box>
-            <div style={{ position: 'relative' }}>
+            <div style={{ position: 'relative' }} ref={ref}>
               <ReactECharts
                 style={{ height: `${chartHeight}px` }}
                 option={chartOption}
@@ -116,8 +115,8 @@ export function EcosystemActivityChart() {
                   id="echarts-tooltip-container"
                   style={{
                     position: 'fixed',
-                    left: `${tooltipPosition.x + 325}px`,
-                    top: `${tooltipPosition.y + 325}px`,
+                    left: `${tooltipPosition.x + bounds.left}px`,
+                    top: `${tooltipPosition.y + bounds.top}px`,
                     pointerEvents: 'none',
                     zIndex: 9999,
                   }}
@@ -128,10 +127,8 @@ export function EcosystemActivityChart() {
               )}
             </div>
           </Box>
-
           <AnimateOpacity>
             <Divider pt="2" mb="4" />
-
             <Flex flexWrap="wrap" gap={['1', '1', '4']} px={['1', '2']}>
               {legendTabs.map((tab, index) => (
                 <HStack alignItems="center" key={index} gap="2">
