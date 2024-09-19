@@ -48,6 +48,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -87,6 +88,7 @@ function AddLiquidityMainForm() {
   const { setValidationError } = useTokenInputsValidation()
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
+  const { startTokenPricePolling } = useTokens()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -147,6 +149,13 @@ function AddLiquidityMainForm() {
       previewModalDisclosure.onOpen()
     }
   }, [addLiquidityTxHash])
+
+  function onModalClose() {
+    // restart polling for token prices when modal is closed again
+    startTokenPricePolling()
+
+    previewModalDisclosure.onClose()
+  }
 
   return (
     <Box w="full" maxW="lg" mx="auto" pb="2xl">
@@ -259,7 +268,7 @@ function AddLiquidityMainForm() {
         finalFocusRef={nextBtn}
         isOpen={previewModalDisclosure.isOpen}
         onOpen={previewModalDisclosure.onOpen}
-        onClose={previewModalDisclosure.onClose}
+        onClose={onModalClose}
       />
       {!!validTokens.length && (
         <NativeAssetSelectModal
