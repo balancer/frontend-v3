@@ -103,7 +103,7 @@ export function EcosystemActivityChart() {
             </Flex>
           </Stack>
           <Box>
-            <div style={{ position: 'relative' }} ref={ref}>
+            <Box ref={ref}>
               <ReactECharts
                 style={{ height: `${chartHeight}px` }}
                 option={chartOption}
@@ -125,7 +125,7 @@ export function EcosystemActivityChart() {
                 </div>,
                 document.body
               )}
-            </div>
+            </Box>
           </Box>
           <AnimateOpacity>
             <Divider pt="2" mb="4" />
