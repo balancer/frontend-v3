@@ -35,7 +35,7 @@ describe('Performs multicall in multiple chains', () => {
     expect(result.current.results[mainnet.id].data).toMatchInlineSnapshot(`
       {
         "ethBalance": {
-          "result": 0n,
+          "result": 1n,
           "status": "success",
         },
       }
