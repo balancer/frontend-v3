@@ -329,7 +329,6 @@ export function useEcosystemPoolActivityChart() {
   const onEvents = useMemo(
     () => ({
       mousemove: (params: any) => {
-        console.log({ params })
         if (params.componentType === 'series') {
           setTooltipPosition({ x: params.event.offsetX, y: params.event.offsetY })
         }
