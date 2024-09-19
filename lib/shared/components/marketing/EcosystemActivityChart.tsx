@@ -110,9 +110,9 @@ export function EcosystemActivityChart() {
                 ref={eChartsRef}
                 onEvents={onEvents}
               />
+              {/* No idea how to get this to work with <Portal> */}
               {createPortal(
                 <div
-                  id="echarts-tooltip-container"
                   style={{
                     position: 'fixed',
                     left: `${tooltipPosition.x + bounds.left}px`,
