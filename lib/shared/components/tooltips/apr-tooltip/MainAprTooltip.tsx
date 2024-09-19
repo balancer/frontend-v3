@@ -7,7 +7,7 @@ import {
   PopoverContent,
   Text,
   TextProps,
-  useTheme,
+  useColorModeValue,
 } from '@chakra-ui/react'
 import BaseAprTooltip, { BaseAprTooltipProps } from './BaseAprTooltip'
 import { Info } from 'react-feather'
@@ -42,24 +42,50 @@ export const SparklesIcon = ({
   pool: Pool | PoolListItem | FeaturedPool
   id?: string
 }) => {
-  const theme = useTheme()
   const { corePoolId } = getProjectConfig()
   const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
   const hasRewardApr =
     pool.dynamicData.aprItems.filter(item => item.type !== GqlPoolAprItemType.SwapFee).length > 0
 
-  let gradFromColor = theme.colors.sparkles.default.from
-  let gradToColor = theme.colors.sparkles.default.to
+  const defaultGradFrom = useColorModeValue(
+    '#91A1B6', // light from
+    '#A0AEC0' // dark from
+  )
+  const defaultGradTo = useColorModeValue(
+    '#BCCCE1', // light to
+    '#E9EEF5' // dark to
+  )
+
+  const corePoolGradFrom = useColorModeValue(
+    '#BFA672', // light from
+    '#AE8C56' // dark from
+  )
+  const corePoolGradTo = useColorModeValue(
+    '#D9C47F', // light to
+    '#F4EAD2' // dark to
+  )
+
+  const rewardsGradFrom = useColorModeValue(
+    '#F49A55', // light from
+    '#F48975' // dark from
+  )
+  const rewardsGradTo = useColorModeValue(
+    '#FCD45B', // light to
+    '#EFB473' // dark to
+  )
+
+  let gradFromColor = defaultGradFrom
+  let gradToColor = defaultGradTo
 
   if (pool.id === corePoolId) {
-    gradFromColor = theme.colors.sparkles.corePool.from
-    gradToColor = theme.colors.sparkles.corePool.to
+    gradFromColor = corePoolGradFrom
+    gradToColor = corePoolGradTo
   }
 
   if (hasRewardApr) {
-    gradFromColor = theme.colors.sparkles.rewards.from
-    gradToColor = theme.colors.sparkles.rewards.to
+    gradFromColor = rewardsGradFrom
+    gradToColor = rewardsGradTo
   }
 
   return (
