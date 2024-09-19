@@ -7,9 +7,9 @@ import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
-import { isV3Pool } from '../../pool.helpers'
+import { requiresPermit2Approval } from '../../pool.helpers'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
-import { getTokenSpenderAddress } from '@/lib/modules/tokens/token.helpers'
+import { getSpenderForAddLiquidity } from '@/lib/modules/tokens/token.helpers'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -35,11 +35,11 @@ export function useAddLiquiditySteps({
 
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: getTokenSpenderAddress(pool),
+      spenderAddress: getSpenderForAddLiquidity(pool),
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',
-      isPermit2: isV3Pool(pool),
+      isPermit2: requiresPermit2Approval(pool),
     })
 
   const addLiquidityStep = useAddLiquidityStep({

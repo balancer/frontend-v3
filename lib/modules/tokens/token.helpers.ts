@@ -132,7 +132,7 @@ export function getLeafTokens(poolTokens: PoolToken[]) {
   return leafTokens
 }
 
-export function getTokenSpenderAddress(pool: Pool): Address {
+export function getSpenderForAddLiquidity(pool: Pool): Address {
   if (isCowAmmPool(pool.type)) return pool.address as Address
   if (isV3Pool(pool)) {
     const permit2Address = getNetworkConfig(pool.chain).contracts.permit2

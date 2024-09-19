@@ -316,6 +316,10 @@ export function isV3Pool(pool: Pool): boolean {
   return pool.protocolVersion === 3
 }
 
+export function requiresPermit2Approval(pool: Pool): boolean {
+  return isV3Pool(pool)
+}
+
 export function getRateProviderWarnings(warnings: string[]) {
   return warnings.filter(warning => !isEmpty(warning))
 }
