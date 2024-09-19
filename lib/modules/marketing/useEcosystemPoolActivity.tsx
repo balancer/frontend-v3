@@ -30,7 +30,6 @@ import { usePoolEvents } from '../pool/usePoolEvents'
 import { supportedNetworks } from '../web3/ChainConfig'
 import { getChainShortName } from '@/lib/config/app.config'
 import { ArrowUpRight } from 'react-feather'
-import { createPortal } from 'react-dom'
 
 type ChartInfoTokens = {
   token?: GqlToken
@@ -345,13 +344,6 @@ export function useEcosystemPoolActivityChart() {
   const memoizedChartOptions = useMemo(() => {
     return getDefaultPoolActivityChartOptions(theme, toCurrency, isMobile, is2xl, tooltipFormatter)
   }, [theme, toCurrency, isMobile, is2xl, tooltipFormatter])
-
-  useEffect(() => {
-    const tooltipContainer = document.getElementById('echarts-tooltip-container')
-    if (tooltipContainer && tooltipContent) {
-      createPortal(tooltipContent, tooltipContainer)
-    }
-  }, [tooltipContent])
 
   const chartData = useMemo(() => {
     if (!response) return getDefaultChainMeta()
