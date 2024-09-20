@@ -8,6 +8,7 @@ import { RelayerMode } from './useRelayerMode'
 import { SignRelayerState, useRelayerSignature } from './RelayerSignatureProvider'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
+import { useSdkViemClient } from '../web3/useSdkViemClient'
 
 export function useShouldSignRelayerApproval(chainId: SupportedChainId, relayerMode: RelayerMode) {
   const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
@@ -23,22 +24,22 @@ export function useSignRelayerApproval(chainId: SupportedChainId) {
 
   const [error, setError] = useState<string | undefined>()
 
-  const { data: walletClient } = useWalletClient()
+  const sdkClient = useSdkViemClient()
 
   useEffect(() => {
-    if (walletClient === undefined) {
+    if (sdkClient === undefined) {
       setSignRelayerState(SignRelayerState.Preparing)
     } else {
       setSignRelayerState(SignRelayerState.Ready)
     }
-  }, [setSignRelayerState, walletClient])
+  }, [setSignRelayerState, sdkClient])
 
   async function signRelayer() {
     setSignRelayerState(SignRelayerState.Confirming)
     setError(undefined)
 
     try {
-      const signature = await signRelayerApproval(userAddress, chainId, walletClient)
+      const signature = await signRelayerApproval(userAddress, chainId, sdkClient)
 
       if (signature) {
         setSignRelayerState(SignRelayerState.Completed)

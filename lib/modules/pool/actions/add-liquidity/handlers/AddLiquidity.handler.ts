@@ -1,6 +1,15 @@
-import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { SdkClient } from '@/lib/modules/web3/useSdkViemClient'
+import { AddLiquidityQueryOutput, Permit2 } from '@balancer/sdk'
+import { Address } from 'viem'
+import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
+
+export interface Permit2AddLiquidityInput {
+  account: Address
+  slippagePercent: string
+  sdkQueryOutput: AddLiquidityQueryOutput
+}
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.
@@ -27,4 +36,9 @@ export interface AddLiquidityHandler {
     It is responsibility of the UI to avoid calling buildAddLiquidityCallData before the last queryAddLiquidity was finished
   */
   buildCallData(inputs: BuildAddLiquidityInput): Promise<TransactionConfig>
+
+  /* Sign permit2 for adding liquidity (for now only used by v3 pools)
+     TODO: generalize for other handlers using permit2
+  */
+  signPermit2?(input: Permit2AddLiquidityInput, walletClient: SdkClient): Promise<Permit2>
 }
