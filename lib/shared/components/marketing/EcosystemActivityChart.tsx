@@ -14,7 +14,7 @@ import {
   VStack,
 } from '@chakra-ui/react'
 import ButtonGroup from '@/lib/shared/components/btns/button-group/ButtonGroup'
-import { FC, PropsWithChildren } from 'react'
+import { FC, PropsWithChildren, useState, useRef, useCallback, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { EcosystemChainSelect } from './EcosystemChainSelect'
 import { getChainShortName } from '@/lib/config/app.config'
@@ -62,6 +62,39 @@ export function EcosystemActivityChart() {
     }
   })
 
+  const [isTooltipVisible, setIsTooltipVisible] = useState(false)
+  const tooltipRef = useRef<HTMLDivElement>(null)
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
+
+  const showTooltip = useCallback(
+    (params: any) => {
+      onEvents.mousemove(params)
+      setIsTooltipVisible(true)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    },
+    [onEvents]
+  )
+
+  const hideTooltip = useCallback(() => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    timeoutRef.current = setTimeout(() => {
+      onEvents.mouseout()
+      setIsTooltipVisible(false)
+    }, 100)
+  }, [onEvents])
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
+
   return (
     <Card>
       <Box position="relative">
@@ -108,18 +141,27 @@ export function EcosystemActivityChart() {
                 style={{ height: `${chartHeight}px` }}
                 option={chartOption}
                 ref={eChartsRef}
-                onEvents={onEvents}
+                onEvents={{
+                  ...onEvents,
+                  mousemove: showTooltip,
+                  mouseout: hideTooltip,
+                }}
               />
               {/* No idea how to get this to work with <Portal> */}
               {createPortal(
                 <div
+                  ref={tooltipRef}
                   style={{
                     position: 'fixed',
                     left: `${tooltipPosition.x + bounds.left}px`,
                     top: `${tooltipPosition.y + bounds.top}px`,
-                    pointerEvents: 'none',
+                    pointerEvents: isTooltipVisible ? 'auto' : 'none',
                     zIndex: 9999,
+                    opacity: isTooltipVisible ? 1 : 0,
+                    transition: 'opacity 0.2s',
                   }}
+                  onMouseEnter={showTooltip}
+                  onMouseLeave={hideTooltip}
                 >
                   {tooltipContent}
                 </div>,
