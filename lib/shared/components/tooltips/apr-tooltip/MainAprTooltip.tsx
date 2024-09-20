@@ -18,6 +18,7 @@ import { FeaturedPool, Pool } from '@/lib/modules/pool/PoolProvider'
 import { isLBP } from '@/lib/modules/pool/pool.helpers'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { GqlPoolAprItemType } from '@/lib/shared/services/api/generated/graphql'
+import StarIcon from '../../icons/StarIcon'
 
 interface Props
   extends Omit<
@@ -46,7 +47,13 @@ export const SparklesIcon = ({
   const hoverColor = isLBP(pool.type) ? 'inherit' : 'font.highlight'
 
   const hasRewardApr =
-    pool.dynamicData.aprItems.filter(item => item.type !== GqlPoolAprItemType.SwapFee).length > 0
+    pool.dynamicData.aprItems.filter(item =>
+      [GqlPoolAprItemType.Staking, GqlPoolAprItemType.VebalEmissions].includes(item.type)
+    ).length > 0
+
+  const hasOnlySwapApr =
+    pool.dynamicData.aprItems.filter(item => item.type === GqlPoolAprItemType.SwapFee).length ===
+    pool.dynamicData.aprItems.length
 
   const defaultGradFrom = useColorModeValue(
     '#91A1B6', // light from
@@ -93,6 +100,14 @@ export const SparklesIcon = ({
       <Center w="16px">
         {isLBP(pool.type) ? (
           <Icon as={Info} boxSize={4} color={isOpen ? hoverColor : 'gray.400'} />
+        ) : hasOnlySwapApr ? (
+          <Icon
+            as={StarIcon}
+            boxSize={4}
+            gradFrom={isOpen ? 'green' : defaultGradFrom}
+            gradTo={isOpen ? 'green' : defaultGradTo}
+            id={id || ''}
+          />
         ) : (
           <Icon
             as={StarsIcon}
