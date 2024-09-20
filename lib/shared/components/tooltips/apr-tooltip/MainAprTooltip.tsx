@@ -75,11 +75,11 @@ export const SparklesIcon = ({
 
   const rewardsGradFrom = useColorModeValue(
     '#F49A55', // light from
-    '#F48975' // dark from
+    '#F49175' // dark from
   )
   const rewardsGradTo = useColorModeValue(
     '#FCD45B', // light to
-    '#EFB473' // dark to
+    '#FFCC33' // dark to
   )
 
   let gradFromColor = defaultGradFrom
