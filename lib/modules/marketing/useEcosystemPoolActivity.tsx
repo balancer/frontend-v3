@@ -250,7 +250,7 @@ const getDefaultPoolActivityChartOptions = (
       enterable: true,
       hideDelay: 300,
       position: [0, 0], // This will be overridden by our custom positioning
-      extraCssText: `padding-right: 2rem;border: none;background: transparent;pointer-events: auto!important;box-shadow: none;`,
+      extraCssText: `border: none;background: transparent;box-shadow: none;`,
       formatter: tooltipFormatter,
     },
   }
