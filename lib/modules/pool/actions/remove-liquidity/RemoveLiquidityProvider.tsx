@@ -81,7 +81,9 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     return pool.poolTokens
   }
 
-  const tokens = getPoolTokens().map(token => getToken(token.address, pool.chain))
+  const tokens = getPoolTokens()
+    .map(token => getToken(token.address, pool.chain))
+    .filter((token): token is GqlToken => token !== undefined)
 
   function tokensToShow() {
     // Cow AMM pools don't support wethIsEth
