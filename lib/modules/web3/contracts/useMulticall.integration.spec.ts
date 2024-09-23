@@ -1,4 +1,4 @@
-import { daiAddress, maticAddress } from '@/lib/debug-helpers'
+import { daiAddress, polAddress } from '@/lib/debug-helpers'
 import { alternativeTestUserAccount, defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
@@ -17,10 +17,10 @@ describe('Performs multicall in multiple chains', () => {
   }
 
   const polygonRequest: ChainContractConfig = {
-    id: 'maticBalance',
+    id: 'polBalance',
     chainId: polygon.id,
     abi: erc20Abi,
-    address: maticAddress,
+    address: polAddress,
     functionName: 'balanceOf',
     args: [alternativeTestUserAccount],
   }
@@ -44,7 +44,7 @@ describe('Performs multicall in multiple chains', () => {
     await waitFor(() => expect(result.current.results[polygon.id].data).toBeDefined())
     expect(result.current.results[polygon.id].data).toMatchInlineSnapshot(`
     {
-      "maticBalance": {
+      "polBalance": {
         "result": 10000000000000000000000n,
         "status": "success",
       },
