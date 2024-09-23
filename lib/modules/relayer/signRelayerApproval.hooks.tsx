@@ -1,7 +1,6 @@
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
-import { useWalletClient } from 'wagmi'
 import { signRelayerApproval } from './signRelayerApproval'
 import { useHasApprovedRelayer } from './useHasApprovedRelayer'
 import { RelayerMode } from './useRelayerMode'

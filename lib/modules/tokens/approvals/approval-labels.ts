@@ -1,4 +1,3 @@
-import { is } from 'date-fns/locale'
 import { BuildTransactionLabels } from '../../web3/contracts/transactionLabels'
 
 export type ApprovalAction =

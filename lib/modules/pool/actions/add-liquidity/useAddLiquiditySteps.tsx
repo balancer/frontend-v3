@@ -7,12 +7,11 @@ import { getSpenderForAddLiquidity } from '@/lib/modules/tokens/token.helpers'
 import { useSignPermit2Step } from '@/lib/modules/transactions/transaction-steps/useSignPermit2Step'
 import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
 import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
-import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { AddLiquidityBaseQueryOutput } from '@balancer/sdk'
 import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
 import { requiresPermit2Approval } from '../../pool.helpers'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
+import { SdkQueryAddLiquidityOutput } from './add-liquidity.types'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
@@ -51,7 +50,7 @@ export function useAddLiquiditySteps({
     {
       handler,
       slippagePercent: slippage,
-      queryOutput: simulationQuery.data as AddLiquidityBaseQueryOutput,
+      queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
     },
     chainId
   )

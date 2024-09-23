@@ -1,8 +1,8 @@
+import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useSdkViemClient } from '@/lib/modules/web3/useSdkViemClient'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
-import { AddLiquidityBaseQueryOutput } from '@balancer/sdk'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { SignPermit2State, usePermit2Signature } from './Permit2SignatureProvider'
@@ -10,7 +10,7 @@ import { signPermit2TokenApprovals } from './signPermit2TokenApprovals'
 
 export type AddLiquidityPermit2Params = {
   handler: AddLiquidityHandler
-  queryOutput?: AddLiquidityBaseQueryOutput
+  queryOutput?: SdkQueryAddLiquidityOutput
   slippagePercent: string
 }
 export function useSignPermit2Approval({
