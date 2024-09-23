@@ -2,7 +2,7 @@ import { testHook } from '@/test/utils/custom-renderers'
 import { waitFor } from '@testing-library/react'
 
 import { getGqlChain } from '@/lib/config/app.config'
-import { maticAddress } from '@/lib/debug-helpers'
+import { polAddress } from '@/lib/debug-helpers'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address, Hash } from 'viem'
 import { polygon } from 'viem/chains'
@@ -78,7 +78,7 @@ test('queries add liquidity with native token', async () => {
 
   expect(result.current.sentTokens).toEqual([
     {
-      tokenAddress: maticAddress,
+      tokenAddress: polAddress,
       humanAmount: '1',
     },
   ])
@@ -111,11 +111,11 @@ test('queries remove liquidity transaction', async () => {
 })
 
 describe('queries swap transaction', () => {
-  const maticAddress = '0x0000000000000000000000000000000000001010'
-  const wMaticAddress = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
+  const polAddress = '0x0000000000000000000000000000000000001010'
+  const wPolAddress = '0x0d500b1d8e8ef31e21c99d1db9a6444d3adf1270'
   const daiAddress = '0x8f3cf7ad23cd3cadbd9735aff958023239c6a063'
 
-  test('when the native asset is not included (from DAI to WMATIC)', async () => {
+  test('when the native asset is not included (from DAI to WPOL)', async () => {
     const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
     // https://polygonscan.com/tx/0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244
     const txHash = '0x11380dcffb24c512da18f032d9f7354d154cfda6bbab0633df182fcd202c4244'
@@ -131,11 +131,11 @@ describe('queries swap transaction', () => {
 
     expect(result.current.receivedToken).toEqual({
       humanAmount: '1.419839650912753603',
-      tokenAddress: wMaticAddress,
+      tokenAddress: wPolAddress,
     })
   })
 
-  test('when the native asset is the token in (from MATIC to DAI)', async () => {
+  test('when the native asset is the token in (from POL to DAI)', async () => {
     const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
     // https://polygonscan.com/tx/0x78ddd90502509a264a5e8f4f3732668db669e7614f4887f2a233ce39e5eafa7c
     const txHash = '0x78ddd90502509a264a5e8f4f3732668db669e7614f4887f2a233ce39e5eafa7c'
@@ -146,7 +146,7 @@ describe('queries swap transaction', () => {
 
     expect(result.current.sentToken).toEqual({
       humanAmount: '1',
-      tokenAddress: maticAddress,
+      tokenAddress: polAddress,
     })
 
     expect(result.current.receivedToken).toEqual({
@@ -155,7 +155,7 @@ describe('queries swap transaction', () => {
     })
   })
 
-  test('when the native asset is the token out (from DAI to MATIC)', async () => {
+  test('when the native asset is the token out (from DAI to POL)', async () => {
     const userAddress = '0xf76142b79Db34E57852d68F9c52C0E24f7349647'
     // https://polygonscan.com/tx/0xe0b75845d13ae12029c8dfef68488b3bf35347460fafdb3a15a5c7f884226288
     const txHash = '0xe0b75845d13ae12029c8dfef68488b3bf35347460fafdb3a15a5c7f884226288'
@@ -171,7 +171,7 @@ describe('queries swap transaction', () => {
 
     expect(result.current.receivedToken).toEqual({
       humanAmount: '0.241277224191485579',
-      tokenAddress: maticAddress,
+      tokenAddress: polAddress,
     })
   })
 })
