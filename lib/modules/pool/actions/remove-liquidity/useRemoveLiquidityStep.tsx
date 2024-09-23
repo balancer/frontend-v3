@@ -12,6 +12,7 @@ import {
   RemoveLiquidityBuildQueryParams,
   useRemoveLiquidityBuildCallDataQuery,
 } from './queries/useRemoveLiquidityBuildCallDataQuery'
+import { useTenderly } from '@/lib/modules/web3/useTenderly'
 
 export const removeLiquidityStepId = 'remove-liquidity'
 
@@ -19,8 +20,9 @@ export type RemoveLiquidityStepParams = RemoveLiquidityBuildQueryParams
 
 export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): TransactionStep {
   const [isStepActivated, setIsStepActivated] = useState(false)
-  const { pool, refetch: refetchPoolUserBalances } = usePool()
+  const { pool, refetch: refetchPoolUserBalances, chainId } = usePool()
   const { getTransaction } = useTransactionState()
+  const { buildTenderlyUrl } = useTenderly({ chainId })
 
   const { simulationQuery } = params
 
@@ -44,6 +46,7 @@ export function useRemoveLiquidityStep(params: RemoveLiquidityStepParams): Trans
     {
       simulationQueryData: simulationQuery.data,
       buildCallQueryData: buildCallDataQuery.data,
+      tenderlyUrl: buildTenderlyUrl(buildCallDataQuery.data),
     }
   )
 

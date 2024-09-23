@@ -27,7 +27,7 @@ export function V3VideoTutorial() {
                 width: '100%',
                 height: '100%',
               }}
-              src="https://www.youtube.com/embed/kXynS3jAu0M?si=2cs7tOnMSOzb09Xp"
+              src="https://www.youtube.com/embed/oJAXQCMVdfA?si=lbZgEgKtWeNOdWR-"
               title="YouTube video player"
               frameBorder="0"
               // eslint-disable-next-line max-len

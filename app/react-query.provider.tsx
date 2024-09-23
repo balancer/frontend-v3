@@ -1,46 +1,66 @@
 'use client'
 
-import { captureError } from '@/lib/shared/utils/errors'
+import { isDev } from '@/lib/config/app.config'
+import { captureError, getTenderlyUrlFromErrorMessage } from '@/lib/shared/utils/errors'
 import {
   SentryMetadata,
   captureSentryError,
-  shouldIgnoreError,
+  getTenderlyUrl,
+  shouldIgnore,
 } from '@/lib/shared/utils/query-errors'
-import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ScopeContext } from '@sentry/types'
+import { MutationCache, QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
 import { ReactNode } from 'react'
 
 export const queryClient = new QueryClient({
   queryCache: new QueryCache({
     // Global handler for every react-query error
     onError: (error, query) => {
-      if (shouldIgnoreError(error)) return
-      console.log('Sentry capturing error: ', {
-        meta: query?.meta,
+      const sentryMeta = query?.meta as SentryMetadata
+      if (shouldIgnore(error.message, error.stack)) return
+      console.log('Sentry capturing query error', {
+        meta: sentryMeta,
         error,
         queryKey: query.queryKey,
       })
 
-      if (query?.meta) return captureSentryError(error, query?.meta as SentryMetadata)
+      const sentryContext = sentryMeta?.context as ScopeContext
+      if (sentryContext?.extra && !getTenderlyUrl(sentryMeta)) {
+        sentryContext.extra.tenderlyUrl = getTenderlyUrlFromErrorMessage(error, sentryMeta)
+      }
+
+      if (sentryMeta) return captureSentryError(error, sentryMeta as SentryMetadata)
 
       // Unexpected error in query (as expected errors should have query.meta)
       captureError(error, { extra: { queryKey: query.queryKey } })
     },
   }),
-})
+  mutationCache: new MutationCache({
+    // Global handler for every react-query mutation error (i.e. useSendTransaction)
+    onError: (error, variables, _context, mutation) => {
+      const mutationMeta = mutation?.meta as SentryMetadata
+      if (shouldIgnore(error.message, error.stack)) return
+      console.log('Sentry capturing mutation error: ', {
+        meta: mutation?.meta,
+        error,
+        variables,
+      })
 
-queryClient.setDefaultOptions({
-  queries: {
-    /* Avoids problems in simulation and build queries when the user navigates away from the page while waiting for a tx confirmation.
-      Without this option, navigating to another tab and coming back was causing useRemoveLiquidityBuildCallDataQuery to be undefined leading to unexpected thrown errors.
+      if (mutationMeta) return captureSentryError(error, mutationMeta)
 
-      This is equivalent to setting the old keepPreviousData: true option
-      More info:
-        https://github.com/TanStack/query/discussions/6460
-    */
-    placeholderData: (prev: any) => prev,
-  },
+      // Unexpected error in mutation (as expected errors should have query.meta)
+      captureError(error, { extra: { variables: variables } })
+    },
+  }),
 })
 
 export function ReactQueryClientProvider({ children }: { children: ReactNode | ReactNode[] }) {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  const shouldShowReactQueryDevtools = false
+  return (
+    <QueryClientProvider client={queryClient}>
+      {children}
+      {isDev && shouldShowReactQueryDevtools && <ReactQueryDevtools initialIsOpen={false} />}
+    </QueryClientProvider>
+  )
 }

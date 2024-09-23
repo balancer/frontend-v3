@@ -9,16 +9,18 @@ import {
   AuraBalSimulateSwapResponse,
   SimulateSwapInputs,
 } from '../swap.types'
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
+import { getRpcUrl } from '../../web3/transports'
 import { isNativeAsset, isSameAddress } from '@/lib/shared/utils/addresses'
 import { bn } from '@/lib/shared/utils/numbers'
 
 export class AuraBalSwapHandler implements SwapHandler {
+  name = 'AuraBalSwapHandler'
+
   constructor(public tokens: GqlToken[]) {}
 
   async simulate({ ...variables }: SimulateSwapInputs): Promise<AuraBalSimulateSwapResponse> {
     const { chain, swapType } = variables
-    const rpcUrl = getDefaultRpcUrl(getChainId(chain))
+    const rpcUrl = getRpcUrl(getChainId(chain))
 
     const tokenInAddress = isNativeAsset(chain, variables.tokenIn)
       ? getWrappedNativeAssetAddress(chain)
@@ -85,7 +87,7 @@ export class AuraBalSwapHandler implements SwapHandler {
     relayerApprovalSignature,
     wethIsEth,
   }: AuraBalBuildSwapInputs): TransactionConfig {
-    const rpcUrl = getDefaultRpcUrl(getChainId(selectedChain))
+    const rpcUrl = getRpcUrl(getChainId(selectedChain))
 
     const auraBalSwap = new AuraBalSwap(rpcUrl)
 

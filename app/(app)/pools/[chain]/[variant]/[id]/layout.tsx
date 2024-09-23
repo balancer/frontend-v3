@@ -6,10 +6,11 @@ import { PoolDetailSkeleton } from '@/lib/modules/pool/PoolDetail/PoolDetailSkel
 import { getApolloServerClient } from '@/lib/shared/services/api/apollo-server.client'
 import { GetPoolDocument } from '@/lib/shared/services/api/generated/graphql'
 import { Metadata } from 'next'
-import { Box } from '@chakra-ui/react'
 import { PoolProvider } from '@/lib/modules/pool/PoolProvider'
 import { getProjectConfig } from '@/lib/config/getProjectConfig'
 import { arrayToSentence } from '@/lib/shared/utils/strings'
+import { ensureError } from '@/lib/shared/utils/errors'
+import { notFound } from 'next/navigation'
 
 type Props = PropsWithChildren<{
   params: Omit<FetchPoolProps, 'chain'> & { chain: ChainSlug }
@@ -21,24 +22,28 @@ async function getPoolQuery(chain: ChainSlug, id: string) {
   const _chain = slugToChainMap[chain]
   const variables = { id: id.toLowerCase(), chain: _chain }
 
-  return await getApolloServerClient().query({
-    query: GetPoolDocument,
-    variables,
-    context: {
-      fetchOptions: {
-        next: { revalidate: 30 },
+  try {
+    const result = await getApolloServerClient().query({
+      query: GetPoolDocument,
+      variables,
+      context: {
+        fetchOptions: {
+          next: { revalidate: 30 },
+        },
       },
-    },
-  })
+    })
+    return { data: result.data, error: null }
+  } catch (error: unknown) {
+    return { data: null, error: ensureError(error) }
+  }
 }
 
 export async function generateMetadata({
   params: { id, chain, variant },
 }: Props): Promise<Metadata> {
-  const {
-    data: { pool },
-  } = await getPoolQuery(chain, id)
+  const { data } = await getPoolQuery(chain, id)
 
+  const pool = data?.pool
   if (!pool) return {}
 
   const poolTokenString = arrayToSentence(pool.displayTokens.map(token => token.symbol))
@@ -54,10 +59,16 @@ export async function generateMetadata({
 export default async function PoolLayout({ params: { id, chain, variant }, children }: Props) {
   const _chain = slugToChainMap[chain]
 
-  const { data } = await getPoolQuery(chain, id)
+  const { data, error } = await getPoolQuery(chain, id)
 
-  if (!data.pool) {
-    return <Box>Pool with id not found ({id})</Box>
+  if (error) {
+    if (error?.message === 'Pool with id does not exist') {
+      notFound()
+    }
+
+    throw new Error('Failed to fetch pool')
+  } else if (!data) {
+    throw new Error('Failed to fetch pool')
   }
 
   return (

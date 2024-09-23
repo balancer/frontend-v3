@@ -7,7 +7,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, isZero } from '@/lib/shared/utils/numbers'
 import { HumanAmount } from '@balancer/sdk'
 import { createContext, PropsWithChildren, useEffect, useMemo, useState } from 'react'
 import { PoolListItem } from '../../pool.types'
@@ -57,10 +57,12 @@ export function _useUnstake() {
 
   const unstakeTxHash = transactionSteps.lastTransaction?.result?.data?.transactionHash
 
-  const { isDisabled, disabledReason } = isDisabledWithReason([
-    !isConnected,
-    LABELS.walletNotConnected,
-  ])
+  const hasRewardAmounts = rewardAmounts.some(amount => !isZero(amount.humanAmount))
+
+  const { isDisabled, disabledReason } = isDisabledWithReason(
+    [!isConnected, LABELS.walletNotConnected],
+    [isZero(amountOut) && !hasRewardAmounts, "There's no staked amount to be unstaked"]
+  )
 
   /**
    * Side-effects

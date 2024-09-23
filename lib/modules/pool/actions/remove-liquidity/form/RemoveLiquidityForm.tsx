@@ -34,7 +34,7 @@ import { parseUnits } from 'viem'
 import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
-
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 const TABS: ButtonGroupOption[] = [
   {
     value: 'proportional',
@@ -70,6 +70,7 @@ export function RemoveLiquidityForm() {
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
+  const { startTokenPricePolling } = useTokens()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -91,6 +92,9 @@ export function RemoveLiquidityForm() {
   }
 
   const onModalClose = () => {
+    // restart polling for token prices when modal is closed again
+    startTokenPricePolling()
+
     if (transactionSteps.lastTransactionConfirmingOrConfirmed) {
       // If the transaction is confirming or confirmed, it's very likely that
       // they no longer have a pool balance. To be safe, always redirect to the
@@ -152,31 +156,33 @@ export function RemoveLiquidityForm() {
               )}
             </VStack>
             <VStack spacing="sm" align="start" w="full">
-              <PriceImpactAccordion
-                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-                accordionButtonComponent={
-                  <HStack>
-                    <Text variant="secondary" fontSize="sm" color="font.secondary">
-                      Price impact:{' '}
-                    </Text>
-                    {isFetching ? (
-                      <Skeleton w="40px" h="16px" />
-                    ) : (
-                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                        {priceImpactLabel}
+              {!simulationQuery.isError && (
+                <PriceImpactAccordion
+                  setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+                  accordionButtonComponent={
+                    <HStack>
+                      <Text variant="secondary" fontSize="sm" color="font.secondary">
+                        Price impact:{' '}
                       </Text>
-                    )}
-                  </HStack>
-                }
-                accordionPanelComponent={
-                  <PoolActionsPriceImpactDetails
-                    totalUSDValue={totalUSDValue}
-                    bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
-                    isLoading={isFetching}
-                  />
-                }
-                isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
-              />
+                      {isFetching ? (
+                        <Skeleton w="40px" h="16px" />
+                      ) : (
+                        <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                          {priceImpactLabel}
+                        </Text>
+                      )}
+                    </HStack>
+                  }
+                  accordionPanelComponent={
+                    <PoolActionsPriceImpactDetails
+                      totalUSDValue={totalUSDValue}
+                      bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                      isLoading={isFetching}
+                    />
+                  }
+                  isDisabled={priceImpactQuery.isLoading && !priceImpactQuery.isSuccess}
+                />
+              )}
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
             <Tooltip label={isDisabled ? disabledReason : ''}>

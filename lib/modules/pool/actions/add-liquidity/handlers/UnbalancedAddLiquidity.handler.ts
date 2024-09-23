@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
+import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 import {
   AddLiquidity,
   AddLiquidityKind,
@@ -10,10 +11,13 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../PoolProvider'
-import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
+import {
+  LiquidityActionHelpers,
+  formatBuildCallParams,
+  areEmptyAmounts,
+} from '../../LiquidityActionHelpers'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
@@ -64,13 +68,19 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    const { callData, to, value } = addLiquidity.buildCall({
+    const baseBuildCallParams = {
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
-    })
+    }
+
+    const buildCallParams = formatBuildCallParams(
+      baseBuildCallParams,
+      this.helpers.isV3Pool(),
+      account
+    )
+
+    const { callData, to, value } = addLiquidity.buildCall(buildCallParams)
 
     return {
       account,
@@ -91,7 +101,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn,
       kind: AddLiquidityKind.Unbalanced,
     }

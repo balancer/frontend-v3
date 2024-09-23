@@ -36,7 +36,7 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
   [GqlChain.Zkevm]: 'https://polygon-zkevm.drpc.org',
   [GqlChain.Sepolia]: 'https://sepolia.gateway.tenderly.co',
   [GqlChain.Mode]: 'https://mode.drpc.org',
-  [GqlChain.Fraxtal]: 'https://fraxtal.gateway.tenderly.co/',
+  [GqlChain.Fraxtal]: 'https://fraxtal.drpc.org',
 }
 
 const baseUrl = getBaseUrl()
@@ -54,7 +54,7 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
   [GqlChain.Sepolia]: getPrivateRpcUrl(GqlChain.Sepolia),
   [GqlChain.Mode]: undefined,
-  [GqlChain.Fraxtal]: getPrivateRpcUrl(GqlChain.Fraxtal),
+  [GqlChain.Fraxtal]: undefined,
 }
 
 const customMainnet = { iconUrl: '/images/chains/MAINNET.svg', ...mainnet }

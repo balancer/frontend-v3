@@ -22,7 +22,7 @@ import { PoolIssue } from './alerts/pool-issues/PoolIssue.type'
 import { getUserTotalBalanceInt } from './user-balance.helpers'
 import { dateToUnixTimestamp } from '@/lib/shared/utils/time'
 import { balancerV2VaultAbi } from '../web3/contracts/abi/generated'
-import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3Abi'
+import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3VaultAbi'
 
 /**
  * METHODS
@@ -314,6 +314,10 @@ export function isV2Pool(pool: Pool): boolean {
 
 export function isV3Pool(pool: Pool): boolean {
   return pool.protocolVersion === 3
+}
+
+export function requiresPermit2Approval(pool: Pool): boolean {
+  return isV3Pool(pool)
 }
 
 export function getRateProviderWarnings(warnings: string[]) {

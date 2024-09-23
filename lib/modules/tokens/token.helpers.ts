@@ -9,6 +9,8 @@ import { includesAddress, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
 import { InputAmount } from '@balancer/sdk'
+import { Pool } from '../pool/PoolProvider'
+import { getVaultConfig, isCowAmmPool, isV3Pool } from '../pool/pool.helpers'
 
 export function isNativeAsset(token: TokenBase | string, chain: GqlChain | SupportedChainId) {
   return nativeAssetFilter(chain)(token)
@@ -109,4 +111,36 @@ export function requiresDoubleApproval(
     getNetworkConfig(chainId).tokens.doubleApprovalRequired || [],
     tokenAddress
   )
+}
+
+type PoolToken = Pool['poolTokens'][0]
+export function getLeafTokens(poolTokens: PoolToken[]) {
+  const leafTokens: PoolToken[] = []
+
+  poolTokens.forEach(poolToken => {
+    if (poolToken.nestedPool) {
+      const nestedTokens = poolToken.nestedPool.tokens.filter(
+        // Exclude the pool token itself
+        t => !isSameAddress(t.address, poolToken.address)
+      ) as PoolToken[]
+      leafTokens.push(...nestedTokens)
+    } else {
+      leafTokens.push(poolToken)
+    }
+  })
+
+  return leafTokens
+}
+
+export function getSpenderForAddLiquidity(pool: Pool): Address {
+  if (isCowAmmPool(pool.type)) return pool.address as Address
+  if (isV3Pool(pool)) {
+    const permit2Address = getNetworkConfig(pool.chain).contracts.permit2
+    if (!permit2Address) {
+      throw new Error(`Permit2 feature is not yet available for this chain (${pool.chain}) `)
+    }
+    return permit2Address
+  }
+  const { vaultAddress } = getVaultConfig(pool)
+  return vaultAddress
 }

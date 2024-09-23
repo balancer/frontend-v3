@@ -50,9 +50,8 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     port: ANVIL_PORTS.Ethereum,
     // From time to time this block gets outdated having this kind of error in integration tests:
     // ContractFunctionExecutionError: The contract function "queryJoin" returned no data ("0x").
-    // forkBlockNumber: 19769489n,
-    // forkBlockNumber: 20061849n,
-    forkBlockNumber: 20474895n,
+    // forkBlockNumber: 20474895n,
+    forkBlockNumber: 20777062n,
   },
   Polygon: {
     networkName: 'Polygon',
@@ -66,7 +65,7 @@ export const ANVIL_NETWORKS: Record<NetworksWithFork, NetworkSetup> = {
     fallBackRpc: 'https://gateway.tenderly.co/public/sepolia',
     port: ANVIL_PORTS.Sepolia,
     // For now we will use the last block until v3 deployments are final
-    // forkBlockNumber: ,
+    // forkBlockNumber: 6679621n,
   },
 }
 
@@ -85,16 +84,25 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  if (network.networkName === 'Ethereum' && process.env['NEXT_PRIVATE_INFURA_KEY']) {
-    return `https://mainnet.infura.io/v3/${process.env['NEXT_PRIVATE_INFURA_KEY']}`
-  } else {
-    if (!network.fallBackRpc) {
-      throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
+  if (privateAlchemyKey) {
+    if (network.networkName === 'Ethereum') {
+      return `https://eth-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
     }
-
-    if (verbose) {
-      console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+    if (network.networkName === 'Polygon') {
+      return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
     }
-    return network.fallBackRpc
+    if (network.networkName === 'Sepolia') {
+      return `https://eth-sepolia.g.alchemy.com/v2/${privateAlchemyKey}`
+    }
   }
+
+  if (!network.fallBackRpc) {
+    throw Error(`Please add a fallback RPC for ${network.networkName} network.`)
+  }
+
+  if (verbose) {
+    console.warn(`Falling back to \`${network.fallBackRpc}\`.`)
+  }
+  return network.fallBackRpc
 }

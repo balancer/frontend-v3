@@ -43,11 +43,13 @@ export interface ContractsConfig {
   feeDistributor?: Address
   veDelegationProxy?: Address
   veBAL?: Address
+  permit2?: Address
   omniVotingEscrow?: Address
   gaugeWorkingBalanceHelper?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
+  allowNestedActions?: string[] // pool ids
   BoostsEnabled?: boolean
 }
 

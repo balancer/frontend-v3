@@ -24,7 +24,7 @@ export function PoolListLayout() {
   }
 
   return (
-    <VStack align="start" spacing="md" w="full">
+    <VStack align="start" spacing="md" w="full" minHeight="1000px">
       <Stack
         direction={{ base: 'column', md: 'row' }}
         w="full"

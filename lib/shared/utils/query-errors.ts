@@ -1,5 +1,10 @@
 import { captureException } from '@sentry/nextjs'
-import { Extras, ScopeContext } from '@sentry/types'
+import {
+  Extras,
+  ScopeContext,
+  Stacktrace as SentryStack,
+  Exception as SentryException,
+} from '@sentry/types'
 import { SentryError, ensureError } from './errors'
 import { isUserRejectedError } from './error-filters'
 import {
@@ -20,16 +25,18 @@ import { SwapHandler } from '@/lib/modules/swap/handlers/Swap.handler'
 export type SentryMetadata = {
   errorMessage: string
   errorName?: string
-  context: Partial<ScopeContext>
+  context?: Partial<ScopeContext>
 }
 
-export function sentryMetaForAddLiquidityHandler(errorMessage: string, params: AddLiquidityParams) {
+type AddMetaParams = AddLiquidityParams & { chainId: number; blockNumber?: bigint }
+export function sentryMetaForAddLiquidityHandler(errorMessage: string, params: AddMetaParams) {
   return createAddHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
+type RemoveMetaParams = RemoveLiquidityParams & { chainId: number; blockNumber?: bigint }
 export function sentryMetaForRemoveLiquidityHandler(
   errorMessage: string,
-  params: RemoveLiquidityParams
+  params: RemoveMetaParams
 ) {
   return createRemoveHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
@@ -40,10 +47,12 @@ export type SwapBuildCallExtras = {
   slippage: string
   wethIsEth: boolean
 }
-export function sentryMetaForSwapHandler(
-  errorMessage: string,
-  params: SimulateSwapParams | SwapBuildCallExtras
-) {
+
+export type SwapMetaParams = (SimulateSwapParams | SwapBuildCallExtras) & {
+  chainId: number
+  blockNumber?: bigint
+}
+export function sentryMetaForSwapHandler(errorMessage: string, params: SwapMetaParams) {
   return createSwapHandlerMetadata('HandlerQueryError', errorMessage, params)
 }
 
@@ -126,7 +135,7 @@ function createAddHandlerMetadata(
 function createRemoveHandlerMetadata(
   errorName: string,
   errorMessage: string,
-  params: RemoveLiquidityParams
+  params: RemoveMetaParams
 ) {
   const extra: Extras = {
     handler: params.handler.constructor.name,
@@ -141,7 +150,7 @@ function createRemoveHandlerMetadata(
 function createSwapHandlerMetadata(
   errorName: string,
   errorMessage: string,
-  params: SimulateSwapParams | SwapBuildCallExtras
+  params: SwapMetaParams
 ) {
   const { handler, ...rest } = params
   const extra: Extras = {
@@ -226,54 +235,53 @@ export function captureSentryError(
 /*
   Detects common errors that we don't want to capture in Sentry
 */
-export function shouldIgnoreError(e: Error) {
+export function shouldIgnoreException(sentryException: SentryException) {
+  const errorMessage = sentryException.value || ''
+  const ignored = shouldIgnore(errorMessage, sentryStackFramesToString(sentryException.stacktrace))
+  if (ignored && !isProd) console.log('Ignoring error with message: ', errorMessage)
+  return ignored
+}
+
+export function shouldIgnore(message: string, stackTrace = ''): boolean {
+  if (isUserRejectedError(new Error(message))) return true
+
   /*
     Thrown from useWalletClient() when loading a pool page from scratch.
     It looks like is is caused by the useWalletClient call in AddTokenToWalletButton but it does not affect it's behavior.
   */
-  const ignored = shouldIgnore(e)
-  if (ignored && !isProd) console.log('Ignoring error with message: ', e.message)
-  return ignored
-}
-
-function shouldIgnore(e: Error): boolean {
-  if (!e?.message) return false
-
-  if (isUserRejectedError(e)) return true
-
-  if (e.message.includes('.getAccounts is not a function')) return true
+  if (message.includes('.getAccounts is not a function')) return true
 
   /*
     Error thrown by Library detector chrome extension:
     https://chromewebstore.google.com/detail/library-detector/cgaocdmhkmfnkdkbnckgmpopcbpaaejo?hl=en
   */
-  if (e.message.includes(`Cannot set properties of null (setting 'content')`)) return true
+  if (message.includes(`Cannot set properties of null (setting 'content')`)) return true
 
   /*
     Frequent errors in rainbowkit + wagmi that do not mean a real crash
   */
-  if (e.message.includes('Connector not connected')) return true
-  if (e.message.includes('Provider not found')) return true
+  if (message.includes('Connector not connected')) return true
+  if (message.includes('Provider not found')) return true
 
   /*
     More info: https://stackoverflow.com/questions/49384120/resizeobserver-loop-limit-exceeded
   */
-  if (e.message.includes('ResizeObserver loop limit exceeded')) return true
+  if (message.includes('ResizeObserver loop limit exceeded')) return true
 
   /*
     Wallet Connect bug when switching certain networks.
     It does not crash the app.
     More info: https://github.com/MetaMask/metamask-mobile/issues/9157
   */
-  if (e.message.includes('Missing or invalid. emit() chainId')) return true
+  if (message.includes('Missing or invalid. emit() chainId')) return true
 
   /*
     Some extensions cause this error
     Examples: https://balancer-labs.sentry.io/issues/5623611453/
   */
   if (
-    e.message.startsWith('Maximum call stack size exceeded') &&
-    e.stack?.includes('injectWalletGuard.js')
+    message.startsWith('Maximum call stack size exceeded') &&
+    stackTrace.includes('injectWalletGuard.js')
   ) {
     return true
   }
@@ -282,7 +290,7 @@ function shouldIgnore(e: Error): boolean {
     com.okex.wallet injects code that causes this error
     Examples: https://balancer-labs.sentry.io/issues/5687846148/
   */
-  if (e.message.startsWith('Cannot redefine property:') && e.stack?.includes('inject.bundle.js')) {
+  if (message.startsWith('Cannot redefine property:') && stackTrace.includes('inject.bundle.js')) {
     return true
   }
 
@@ -294,8 +302,8 @@ function shouldIgnore(e: Error): boolean {
       3. Click "Connect wallet" and chose WalletConnect
   */
   if (
-    e.message === "Cannot read properties of undefined (reading 'address')" &&
-    e.stack?.includes('getWalletClient.js')
+    message === "Cannot read properties of undefined (reading 'address')" &&
+    stackTrace.includes('getWalletClient.js')
   ) {
     return true
   }
@@ -304,12 +312,41 @@ function shouldIgnore(e: Error): boolean {
     Waller Connect bug
     More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
   */
-  if (
-    e.message.startsWith(
-      'Error: WebSocket connection failed for host: wss://relay.walletconnect.com'
-    )
-  )
+  if (message.startsWith('WebSocket connection failed for host: wss://relay.walletconnect.com')) {
     return true
+  }
+
+  /*
+    Ignores issues with this kind of message:
+
+    The source https://balancer.fi/[URI] has not been authorized yet
+
+    We cannot reproduce but it looks like it does not crash the app.
+
+    First time seen in sentry: September 4th, 2024
+    https://vercel.com/balancer/frontend-v3/deployments?range={%22start%22:%222024-09-02T22:00:00.000Z%22,%22end%22:%222024-09-03T21:59:59.999Z%22}
+
+    Examples: https://balancer-labs.sentry.io/issues/5796181794
+  */
+  if (message.startsWith('The source') && message.includes('has not been authorized yet')) {
+    return true
+  }
 
   return false
+}
+
+function sentryStackFramesToString(sentryStack?: SentryStack): string {
+  if (!sentryStack?.frames?.length) return ''
+  return (
+    sentryStack.frames
+      // We only check the last 4 frames (root of the error)
+      .slice(-4)
+      .map(frame => frame.filename || '')
+      .join()
+  )
+}
+
+export function getTenderlyUrl(sentryMetadata?: SentryMetadata) {
+  if (!sentryMetadata) return
+  return sentryMetadata?.context?.extra?.tenderlyUrl as string | undefined
 }

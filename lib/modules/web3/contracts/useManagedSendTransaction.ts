@@ -18,6 +18,7 @@ import { useRecentTransactions } from '../../transactions/RecentTransactionsProv
 import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useMockedTxHash } from '@/lib/modules/web3/contracts/useMockedTxHash'
 
 export type ManagedSendTransactionInput = {
@@ -42,24 +43,26 @@ export function useManagedSendTransaction({
     query: {
       enabled: !!txConfig && !shouldChangeNetwork,
       meta: gasEstimationMeta,
-      refetchOnWindowFocus: false,
+      // In chains like polygon, we don't want background refetches while waiting for min block confirmations
+      ...onlyExplicitRefetch,
     },
   })
 
   const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
 
-  const writeQuery = useSendTransaction({
+  const writeMutation = useSendTransaction({
     mutation: {
       meta: sentryMetaForWagmiExecution('Error sending transaction', {
         txConfig,
         estimatedGas: estimateGasQuery.data,
+        tenderlyUrl: gasEstimationMeta?.tenderlyUrl,
       }),
     },
   })
 
   const { txHash, isSafeTxLoading } = useTxHash({
     chainId,
-    wagmiTxHash: mockedTxHash ?? writeQuery.data,
+    wagmiTxHash: mockedTxHash ?? writeMutation.data,
   })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
@@ -72,7 +75,7 @@ export function useManagedSendTransaction({
   const bundle = {
     chainId,
     simulation: estimateGasQuery as TransactionSimulation,
-    execution: writeQuery as TransactionExecution,
+    execution: writeMutation as TransactionExecution,
     result: transactionStatusQuery,
     isSafeTxLoading,
   }
@@ -137,7 +140,7 @@ export function useManagedSendTransaction({
     }
 
     try {
-      return writeQuery.sendTransactionAsync({
+      return writeMutation.sendTransactionAsync({
         chainId,
         to: txConfig.to,
         data: txConfig.data,

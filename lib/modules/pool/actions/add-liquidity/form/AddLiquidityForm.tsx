@@ -28,7 +28,7 @@ import { usePool } from '../../../PoolProvider'
 import {
   hasNoLiquidity,
   requiresProportionalInput,
-  supportsProportionalAdds,
+  supportsNestedActions,
 } from '../../LiquidityActionHelpers'
 import { PriceImpactAccordion } from '@/lib/modules/price-impact/PriceImpactAccordion'
 import { PoolActionsPriceImpactDetails } from '../../PoolActionsPriceImpactDetails'
@@ -48,6 +48,7 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
+import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
@@ -87,6 +88,7 @@ function AddLiquidityMainForm() {
   const { setValidationError } = useTokenInputsValidation()
   const { balanceFor, isBalancesLoading } = useTokenBalances()
   const { isConnected } = useUserAccount()
+  const { startTokenPricePolling } = useTokens()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -97,6 +99,7 @@ function AddLiquidityMainForm() {
 
   const weeklyYield = calcPotentialYieldFor(pool, totalUSDValue)
 
+  const nestedAddLiquidityEnabled = supportsNestedActions(pool) // TODO && !userToggledEscapeHatch
   const isLoading = simulationQuery.isLoading || priceImpactQuery.isLoading
   const isFetching = simulationQuery.isFetching || priceImpactQuery.isFetching
 
@@ -147,6 +150,13 @@ function AddLiquidityMainForm() {
     }
   }, [addLiquidityTxHash])
 
+  function onModalClose() {
+    // restart polling for token prices when modal is closed again
+    startTokenPricePolling()
+
+    previewModalDisclosure.onClose()
+  }
+
   return (
     <Box w="full" maxW="lg" mx="auto" pb="2xl">
       <Card>
@@ -161,7 +171,7 @@ function AddLiquidityMainForm() {
             <BalAlert status="warning" content="You cannot add because the pool has no liquidity" />
           )}
           <SafeAppAlert />
-          {supportsProportionalAdds(pool) ? (
+          {!nestedAddLiquidityEnabled ? (
             <TokenInputsWithAddable
               tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()}
               requiresProportionalInput={requiresProportionalInput(pool.type)}
@@ -171,33 +181,35 @@ function AddLiquidityMainForm() {
             <TokenInputs tokenSelectDisclosureOpen={() => tokenSelectDisclosure.onOpen()} />
           )}
           <VStack spacing="sm" align="start" w="full">
-            <PriceImpactAccordion
-              isDisabled={!priceImpactQuery.data}
-              cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
-              setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
-              accordionButtonComponent={
-                <HStack>
-                  <Text variant="secondary" fontSize="sm" color="font.secondary">
-                    Price impact:{' '}
-                  </Text>
-                  {isFetching ? (
-                    <Skeleton w="40px" h="16px" />
-                  ) : (
-                    <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
-                      {priceImpactLabel}
+            {!simulationQuery.isError && (
+              <PriceImpactAccordion
+                isDisabled={!priceImpactQuery.data}
+                cannotCalculatePriceImpact={cannotCalculatePriceImpactError(priceImpactQuery.error)}
+                setNeedsToAcceptPIRisk={setNeedsToAcceptHighPI}
+                accordionButtonComponent={
+                  <HStack>
+                    <Text variant="secondary" fontSize="sm" color="font.secondary">
+                      Price impact:{' '}
                     </Text>
-                  )}
-                </HStack>
-              }
-              accordionPanelComponent={
-                <PoolActionsPriceImpactDetails
-                  totalUSDValue={totalUSDValue}
-                  bptAmount={simulationQuery.data?.bptOut.amount}
-                  isAddLiquidity
-                  isLoading={isFetching}
-                />
-              }
-            />
+                    {isFetching ? (
+                      <Skeleton w="40px" h="16px" />
+                    ) : (
+                      <Text variant="secondary" fontSize="sm" color={priceImpactColor}>
+                        {priceImpactLabel}
+                      </Text>
+                    )}
+                  </HStack>
+                }
+                accordionPanelComponent={
+                  <PoolActionsPriceImpactDetails
+                    totalUSDValue={totalUSDValue}
+                    bptAmount={simulationQuery.data?.bptOut.amount}
+                    isAddLiquidity
+                    isLoading={isFetching}
+                  />
+                }
+              />
+            )}
           </VStack>
           <Grid w="full" templateColumns="1fr 1fr" gap="sm">
             <GridItem>
@@ -224,7 +236,9 @@ function AddLiquidityMainForm() {
             </GridItem>
           </Grid>
           {showAcceptPoolRisks && <AddLiquidityFormCheckbox />}
-          {priceImpactQuery.isError && <PriceImpactError priceImpactQuery={priceImpactQuery} />}
+          {!simulationQuery.isError && priceImpactQuery.isError && (
+            <PriceImpactError priceImpactQuery={priceImpactQuery} />
+          )}
           {simulationQuery.isError && (
             <GenericError
               customErrorName={'Error in query simulation'}
@@ -254,7 +268,7 @@ function AddLiquidityMainForm() {
         finalFocusRef={nextBtn}
         isOpen={previewModalDisclosure.isOpen}
         onOpen={previewModalDisclosure.onOpen}
-        onClose={previewModalDisclosure.onClose}
+        onClose={onModalClose}
       />
       {!!validTokens.length && (
         <NativeAssetSelectModal

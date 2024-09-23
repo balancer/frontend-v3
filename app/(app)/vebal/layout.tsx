@@ -6,10 +6,7 @@ import { DefaultPageContainer } from '@/lib/shared/components/containers/Default
 import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 import { CrossChainSyncProvider } from '@/lib/modules/vebal/cross-chain/useCrossChainSync'
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
-
-type PropsWithChildren = {
-  children: React.ReactNode
-}
+import { PropsWithChildren } from 'react'
 
 export default function VebalLayout({ children }: PropsWithChildren) {
   const { getTokensByChain } = useTokens()

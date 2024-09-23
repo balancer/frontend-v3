@@ -1,5 +1,5 @@
 import { TransactionBundle } from '@/lib/modules/web3/contracts/contract.types'
-import React from 'react'
+import { ReactNode } from 'react'
 import { LockActionType } from '../../vebal/lock/lock.helpers'
 
 export enum TransactionState {
@@ -73,8 +73,8 @@ export type TransactionStep = {
   stepType: StepType
   labels: TransactionLabels
   isComplete: () => boolean
-  renderAction: () => React.ReactNode
-  renderContent?: () => React.ReactNode
+  renderAction: () => ReactNode
+  renderContent?: () => ReactNode
   // All callbacks should be idempotent
   onSuccess?: () => void
   onActivated?: () => void

@@ -4,8 +4,9 @@ import {
   sentryMetaForRemoveLiquidityHandler,
   captureSentryError,
   sentryMetaForWagmiSimulation,
-  shouldIgnoreError,
+  shouldIgnoreException,
 } from '@/lib/shared/utils/query-errors'
+import { Exception as SentryException } from '@sentry/nextjs'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import * as Sentry from '@sentry/nextjs'
 import { waitFor } from '@testing-library/react'
@@ -57,7 +58,10 @@ describe('Captures sentry error', () => {
     }
 
     const error = new Error('test cause error')
-    const meta = sentryMetaForRemoveLiquidityHandler('Test error message', params)
+    const meta = sentryMetaForRemoveLiquidityHandler('Test error message', {
+      ...params,
+      chainId: 1,
+    })
     captureSentryError(error, meta)
 
     const report = await getSentryReport()
@@ -69,6 +73,7 @@ describe('Captures sentry error', () => {
       {
         "handler": "RecoveryRemoveLiquidityHandler",
         "params": {
+          "chainId": 1,
           "handler": {
             "helpers": "[LiquidityActionHelpers]",
           },
@@ -96,7 +101,7 @@ describe('Captures sentry error', () => {
     }
 
     const error = new Error('test cause error')
-    const meta = sentryMetaForAddLiquidityHandler('Test error message', params)
+    const meta = sentryMetaForAddLiquidityHandler('Test error message', { ...params, chainId: 1 })
     captureSentryError(error, meta)
 
     const report = await getSentryReport()
@@ -108,6 +113,7 @@ describe('Captures sentry error', () => {
       {
         "handler": "UnbalancedAddLiquidityHandler",
         "params": {
+          "chainId": 1,
           "handler": {
             "helpers": "[LiquidityActionHelpers]",
           },
@@ -147,20 +153,17 @@ describe('Captures sentry error', () => {
 
 describe('shouldIgnoreError', () => {
   it('Ignores errors', () => {
-    expect(shouldIgnoreError(new Error('e.getAccounts is not a function'))).toBeTruthy()
-    expect(shouldIgnoreError(new Error('foo bar baz'))).toBeFalsy()
-    expect(shouldIgnoreError(new Error('foo bar baz'))).toBeFalsy()
+    expect(
+      shouldIgnoreException(createSentryException('e.getAccounts is not a function'))
+    ).toBeTruthy()
+    expect(shouldIgnoreException(createSentryException('foo bar baz'))).toBeFalsy()
   })
+
   it('when error does not have message', () => {
-    class TestError extends Error {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      constructor(message: string) {
-        super(undefined)
-        this.name = 'TestError'
-        // @ts-expect-error we want to test when error does not have message
-        this.message = undefined
-      }
-    }
-    expect(shouldIgnoreError(new TestError('e.getAccounts is not a function'))).toBeFalsy()
+    expect(shouldIgnoreException(createSentryException(''))).toBeFalsy()
   })
 })
+
+function createSentryException(errorMessage: string) {
+  return { value: errorMessage } as SentryException
+}

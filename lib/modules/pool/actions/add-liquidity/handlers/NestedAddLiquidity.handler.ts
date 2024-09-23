@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { getDefaultRpcUrl } from '@/lib/modules/web3/ChainConfig'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import {
   AddLiquidityNested,
@@ -13,6 +11,7 @@ import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHe
 import { NestedBuildAddLiquidityInput, NestedQueryAddLiquidityOutput } from '../add-liquidity.types'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * NestedAddLiquidityHandler is a handler that implements the
@@ -88,7 +87,7 @@ export class NestedAddLiquidityHandler implements AddLiquidityHandler {
 
     return {
       chainId: this.helpers.chainId as ChainId,
-      rpcUrl: getDefaultRpcUrl(this.helpers.chainId),
+      rpcUrl: getRpcUrl(this.helpers.chainId),
       amountsIn: nonEmptyAmountsIn,
     }
   }
