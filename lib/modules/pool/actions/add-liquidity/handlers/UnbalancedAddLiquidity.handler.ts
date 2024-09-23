@@ -134,7 +134,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     const baseBuildCallParams = {
       ...(sdkQueryOutput as AddLiquidityBaseQueryOutput),
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      wethIsEth: this.helpers.isNativeAssetIn2(sdkQueryOutput.amountsIn),
+      wethIsEth: this.helpers.includesNativeAsset(sdkQueryOutput.amountsIn),
     }
     return baseBuildCallParams
   }

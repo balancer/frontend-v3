@@ -137,7 +137,7 @@ export class LiquidityActionHelpers {
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 
-  public isNativeAssetIn2(amountsIn: TokenAmount[]): boolean {
+  public includesNativeAsset(amountsIn: TokenAmount[]): boolean {
     const nativeAssetAddress = this.networkConfig.tokens.nativeAsset.address
 
     return amountsIn.some(amountIn => isSameAddress(amountIn.token.address, nativeAssetAddress))
