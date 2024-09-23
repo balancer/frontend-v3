@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
@@ -35,6 +36,15 @@ export function useSignPermit2Approval({
       setSignPermit2State(SignPermit2State.Ready)
     }
   }, [setSignPermit2State, sdkClient])
+
+  //TODO: Generalize for Swaps and other potential signatures
+  const minimumBpt = queryOutput?.sdkQueryOutput.bptOut.amount
+  useEffect(() => {
+    if (minimumBpt) {
+      setPermit2ApprovalSignature(undefined)
+      setSignPermit2State(SignPermit2State.Ready)
+    }
+  }, [minimumBpt])
 
   async function signPermit2() {
     if (!queryOutput) throw new Error('No input provided for permit2 signature')
@@ -91,10 +101,10 @@ function isDisabled(signPermit2State: SignPermit2State) {
   )
 }
 
-function isLoading(signRelayerState: SignPermit2State) {
+function isLoading(signPermit2State: SignPermit2State) {
   return (
-    signRelayerState === SignPermit2State.Confirming ||
-    signRelayerState === SignPermit2State.Preparing
+    signPermit2State === SignPermit2State.Confirming ||
+    signPermit2State === SignPermit2State.Preparing
   )
 }
 

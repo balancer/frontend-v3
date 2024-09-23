@@ -40,7 +40,6 @@ export default function AddLiquidityLayout({ params: { txHash }, children }: Pro
   return (
     <DefaultPageContainer>
       <TransactionStateProvider>
-        {/* // TODO: do we really need a provider */}
         <RelayerSignatureProvider>
           <Permit2SignatureProvider>
             <TokenInputsValidationProvider>

@@ -69,6 +69,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     slippagePercent,
     queryOutput,
     account,
+    permit2,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
@@ -81,7 +82,14 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       account
     )
 
-    const { callData, to, value } = addLiquidity.buildCall(buildCallParams)
+    if (this.helpers.isV3Pool() && !permit2) {
+      throw new Error('Permit2 signature is required for V3 pools')
+    }
+
+    const { callData, to, value } =
+      this.helpers.isV3Pool() && permit2
+        ? addLiquidity.buildCallWithPermit2(buildCallParams, permit2)
+        : addLiquidity.buildCall(buildCallParams)
 
     return {
       account,
@@ -103,6 +111,7 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       }),
       client: sdkClient,
       owner: input.account,
+      // nonces: input.sdkQueryOutput.amountsIn.map(a => (a.amount === 0n ? 0 : 2)),
     })
 
     return signature
