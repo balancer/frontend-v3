@@ -75,7 +75,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   function getPoolTokens(): GqlToken[] {
     type PoolToken = Pool['poolTokens'][0]
-    function getValidTokens(tokens: PoolToken[]): GqlToken[] {
+    function toGqlTokens(tokens: PoolToken[]): GqlToken[] {
       return tokens
         .map(token => getToken(token.address, pool.chain))
         .filter((token): token is GqlToken => token !== undefined)
@@ -84,10 +84,10 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     // TODO add exception for composable pools where we can allow adding
     // liquidity with nested tokens
     if (supportsNestedActions(pool)) {
-      getValidTokens(getLeafTokens(pool.poolTokens))
+      toGqlTokens(getLeafTokens(pool.poolTokens))
     }
 
-    return getValidTokens(pool.poolTokens)
+    return toGqlTokens(pool.poolTokens)
   }
 
   const tokens = getPoolTokens()
