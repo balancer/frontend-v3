@@ -334,6 +334,7 @@ export function getPoolTokens(
   type PoolToken = Pool['poolTokens'][0]
   function toGqlTokens(tokens: PoolToken[]): GqlToken[] {
     return tokens
+      .filter(token => !isSameAddress(token.address, pool.address))
       .map(token => getToken(token.address, pool.chain))
       .filter((token): token is GqlToken => token !== undefined)
   }
