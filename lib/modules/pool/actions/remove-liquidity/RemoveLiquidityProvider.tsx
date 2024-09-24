@@ -4,21 +4,20 @@
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { LABELS } from '@/lib/shared/labels'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { bn, isZero, safeSum } from '@/lib/shared/utils/numbers'
 import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { Pool, usePool } from '../../PoolProvider'
+import { usePool } from '../../PoolProvider'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
-import { emptyTokenAmounts, supportsNestedActions, toHumanAmount } from '../LiquidityActionHelpers'
+import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
 import { useDisclosure } from '@chakra-ui/hooks'
-import { isCowAmmPool } from '../../pool.helpers'
-import { getLeafTokens, isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
+import { getPoolTokens, isCowAmmPool } from '../../pool.helpers'
+import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
 import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
@@ -54,10 +53,12 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     .times(humanBptInPercent / 100)
     .toFixed() as HumanAmount
 
+  const tokens = getPoolTokens(pool, getToken)
+
   const chain = pool.chain
   const nativeAsset = getNativeAssetToken(chain)
   const wNativeAsset = getWrappedNativeAssetToken(chain)
-  const includesWrappedNativeAsset: boolean = getPoolTokens().some(token =>
+  const includesWrappedNativeAsset: boolean = tokens.some(token =>
     isWrappedNativeAsset(token.address as Address, chain)
   )
 
@@ -72,25 +73,6 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const setSingleTokenType = () => setRemovalType(RemoveLiquidityType.SingleToken)
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
-
-  function getPoolTokens(): GqlToken[] {
-    type PoolToken = Pool['poolTokens'][0]
-    function toGqlTokens(tokens: PoolToken[]): GqlToken[] {
-      return tokens
-        .map(token => getToken(token.address, pool.chain))
-        .filter((token): token is GqlToken => token !== undefined)
-    }
-
-    // TODO add exception for composable pools where we can allow adding
-    // liquidity with nested tokens
-    if (supportsNestedActions(pool)) {
-      toGqlTokens(getLeafTokens(pool.poolTokens))
-    }
-
-    return toGqlTokens(pool.poolTokens)
-  }
-
-  const tokens = getPoolTokens()
 
   function tokensToShow() {
     // Cow AMM pools don't support wethIsEth
