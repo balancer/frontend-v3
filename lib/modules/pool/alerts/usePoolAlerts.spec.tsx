@@ -51,10 +51,10 @@ describe('Creates pool alerts for', () => {
           "status": "error",
         },
         {
-          content: 'This pool is in recovery mode',
-          identifier: 'poolIsInRecoveryMode',
-          isSoftWarning: false,
-          status: "warning",
+          "content": "This pool is in recovery mode",
+          "identifier": "poolIsInRecoveryMode",
+          "isSoftWarning": false,
+          "status": "warning",
         },
       ]
     `)
