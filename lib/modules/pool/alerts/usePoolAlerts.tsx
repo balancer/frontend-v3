@@ -54,16 +54,19 @@ export function usePoolAlerts(pool: Pool) {
 
   const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
     const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
-
     const alerts: PoolAlert[] = []
+
+    const defaultAlertProps = {
+      status: 'error' as const,
+      isSoftWarning: false,
+    }
 
     poolTokens?.forEach(token => {
       if (!token.isAllowed) {
         alerts.push({
           identifier: `TokenNotAllowed-${token.symbol}`,
           content: `The token ${token.symbol} is currently not supported.`,
-          status: 'error',
-          isSoftWarning: false,
+          ...defaultAlertProps,
         })
       }
 
@@ -81,8 +84,7 @@ export function usePoolAlerts(pool: Pool) {
           identifier: `PriceProviderNotReviewed-${token.symbol}`,
           // eslint-disable-next-line max-len
           content: `The rate provider for ${token.symbol} has not been reviewed. For your safety, you can’t interact with this pool on this UI.`,
-          status: 'error',
-          isSoftWarning: true,
+          ...defaultAlertProps,
         })
       }
 
@@ -91,8 +93,7 @@ export function usePoolAlerts(pool: Pool) {
           identifier: `UnsafePriceProvider-${token.symbol}`,
           // eslint-disable-next-line max-len
           content: `The rate provider for ${token.symbol} has been reviewed as 'unsafe'. For your safety, you can't interact with this pool on this UI. `,
-          status: 'error',
-          isSoftWarning: true,
+          ...defaultAlertProps,
         })
       }
     })
@@ -128,12 +129,44 @@ export function usePoolAlerts(pool: Pool) {
     return alerts
   }
 
+  const getPoolAlerts = (pool: Pool): PoolAlert[] => {
+    const alerts: PoolAlert[] = []
+
+    const defaultAlertProps = {
+      status: 'warning' as const,
+      isSoftWarning: false,
+    }
+
+    if (pool.dynamicData.isPaused && pool.dynamicData.isInRecoveryMode) {
+      alerts.push({
+        identifier: 'poolIsPausedAndInRecoveryMode',
+        content: 'This pool is paused and in recovery mode',
+        ...defaultAlertProps,
+      })
+    } else if (pool.dynamicData.isPaused) {
+      alerts.push({
+        identifier: 'poolIsPaused',
+        content: 'This pool is paused',
+        ...defaultAlertProps,
+      })
+    } else if (pool.dynamicData.isInRecoveryMode) {
+      alerts.push({
+        identifier: 'poolIsInRecoveryMode',
+        content: 'This pool is in recovery mode',
+        ...defaultAlertProps,
+      })
+    }
+
+    return alerts
+  }
+
   useEffect(() => {
     const networkPoolAlerts = getNetworkPoolAlerts(pool)
     const tokenPoolAlerts = getTokenPoolAlerts(pool)
     const userAlerts = getUserAlerts(pool)
+    const poolAlerts = getPoolAlerts(pool)
 
-    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts, ...userAlerts])
+    setPoolAlerts([...networkPoolAlerts, ...tokenPoolAlerts, ...userAlerts, ...poolAlerts])
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pool])
 
