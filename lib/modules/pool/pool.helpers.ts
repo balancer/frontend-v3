@@ -341,7 +341,7 @@ export function getPoolTokens(
   // TODO add exception for composable pools where we can allow adding
   // liquidity with nested tokens
   if (supportsNestedActions(pool)) {
-    toGqlTokens(getLeafTokens(pool.poolTokens))
+    return toGqlTokens(getLeafTokens(pool.poolTokens))
   }
 
   return toGqlTokens(pool.poolTokens)
