@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client'
 
 import { Modal, ModalBody, ModalCloseButton, ModalContent, ModalProps } from '@chakra-ui/react'
@@ -18,6 +19,7 @@ import { useOnUserAccountChanged } from '../../web3/useOnUserAccountChanged'
 import { SwapSummary } from './SwapSummary'
 import { useSwapReceipt } from '../../transactions/transaction-steps/receipts/receipt.hooks'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { useTokens } from '../../tokens/TokensProvider'
 
 type Props = {
   isOpen: boolean
@@ -35,6 +37,7 @@ export function SwapPreviewModal({
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
   const { userAddress } = useUserAccount()
+  const { stopTokenPricePolling } = useTokens()
 
   const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
     useSwap()
@@ -51,8 +54,14 @@ export function SwapPreviewModal({
     if (!isWrap && swapTxHash && !window.location.pathname.includes(swapTxHash)) {
       window.history.pushState({}, '', `/swap/${chainToSlugMap[selectedChain]}/${swapTxHash}`)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [swapTxHash])
+
+  useEffect(() => {
+    if (isOpen) {
+      // stop polling for token prices when modal is opened to prevent unwanted re-renders
+      stopTokenPricePolling()
+    }
+  }, [isOpen])
 
   useOnUserAccountChanged(onClose)
 
