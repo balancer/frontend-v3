@@ -10,7 +10,7 @@ import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWit
 import { bn, isZero, safeSum } from '@/lib/shared/utils/numbers'
 import { HumanAmount, TokenAmount, isSameAddress } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
-import { usePool } from '../../PoolProvider'
+import { Pool, usePool } from '../../PoolProvider'
 import { selectRemoveLiquidityHandler } from './handlers/selectRemoveLiquidityHandler'
 import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidityPriceImpactQuery'
 import { RemoveLiquidityType } from './remove-liquidity.types'
@@ -73,17 +73,24 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const isSingleToken = removalType === RemoveLiquidityType.SingleToken
   const isProportional = removalType === RemoveLiquidityType.Proportional
 
-  function getPoolTokens() {
+  function getPoolTokens(): GqlToken[] {
+    type PoolToken = Pool['poolTokens'][0]
+    function getValidTokens(tokens: PoolToken[]): GqlToken[] {
+      return tokens
+        .map(token => getToken(token.address, pool.chain))
+        .filter((token): token is GqlToken => token !== undefined)
+    }
+
     // TODO add exception for composable pools where we can allow adding
     // liquidity with nested tokens
-    if (supportsNestedActions(pool)) return getLeafTokens(pool.poolTokens)
+    if (supportsNestedActions(pool)) {
+      getValidTokens(getLeafTokens(pool.poolTokens))
+    }
 
-    return pool.poolTokens
+    return getValidTokens(pool.poolTokens)
   }
 
   const tokens = getPoolTokens()
-    .map(token => getToken(token.address, pool.chain))
-    .filter((token): token is GqlToken => token !== undefined)
 
   function tokensToShow() {
     // Cow AMM pools don't support wethIsEth
@@ -107,8 +114,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     return tokens
   }
 
-  let validTokens = tokens.filter((token): token is GqlToken => !!token)
-  validTokens = nativeAsset ? [nativeAsset, ...validTokens] : validTokens
+  const validTokens = nativeAsset ? [nativeAsset, ...tokens] : tokens
 
   const firstTokenAddress = tokens?.[0]?.address as Address
 
