@@ -2,7 +2,6 @@
 'use client'
 
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
-import { GqlToken } from '@/lib/shared/services/api/generated/graphql'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { HumanAmount } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useEffect, useMemo, useState } from 'react'
@@ -17,7 +16,6 @@ import {
   injectNativeAsset,
   replaceWrappedWithNativeAsset,
   requiresProportionalInput,
-  supportsNestedActions,
 } from '../LiquidityActionHelpers'
 import { isDisabledWithReason } from '@/lib/shared/utils/functions/isDisabledWithReason'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
@@ -30,7 +28,7 @@ import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
-import { getLeafTokens } from '@/lib/modules/tokens/token.helpers'
+import { getPoolTokens } from '../../pool.helpers'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -59,8 +57,10 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const nativeAsset = getNativeAssetToken(chain)
   const wNativeAsset = getWrappedNativeAssetToken(chain)
 
+  const tokens = getPoolTokens(pool, getToken)
+
   function setInitialHumanAmountsIn() {
-    const amountsIn = getPoolTokens().map(
+    const amountsIn = tokens.map(
       token =>
         ({
           tokenAddress: token.address,
@@ -80,18 +80,6 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
       },
     ])
   }
-
-  function getPoolTokens() {
-    if (supportsNestedActions(pool)) {
-      return getLeafTokens(pool.poolTokens)
-    }
-
-    return pool.poolTokens
-  }
-
-  const tokens = getPoolTokens()
-    .map(token => getToken(token.address, chain))
-    .filter((token): token is GqlToken => !!token)
 
   const tokensWithNativeAsset = replaceWrappedWithNativeAsset(tokens, nativeAsset)
 
