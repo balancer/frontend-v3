@@ -23,7 +23,7 @@ export function isValidUserAddress(userAddress?: Address) {
   More info: https://tanstack.com/query/v5/docs/framework/react/guides/query-retries
 */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-export function getWaitForReceiptTimeout(_chainId: number) {
+export function getWaitForReceiptTimeout(chainId: number) {
   /* Using an specific timeout was throwing a timeout error after confirmation
      Wagmi bug: https://github.com/wevm/viem/discussions/1351
      Using undefined seems to be more reliable
