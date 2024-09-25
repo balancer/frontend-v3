@@ -254,6 +254,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     previewModalDisclosure,
     handler,
     wethIsEth,
+    urlTxHash,
     removeLiquidityTxHash,
     hasQuoteContext,
     amountsOut,

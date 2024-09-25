@@ -35,8 +35,13 @@ export function AddLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, addLiquidityTxHash, hasQuoteContext, setInitialHumanAmountsIn } =
-    useAddLiquidity()
+  const {
+    transactionSteps,
+    addLiquidityTxHash,
+    hasQuoteContext,
+    urlTxHash,
+    setInitialHumanAmountsIn,
+  } = useAddLiquidity()
   const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
@@ -101,6 +106,7 @@ export function AddLiquidityModal({
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
+          urlTxHash={urlTxHash}
         />
       </ModalContent>
     </Modal>
