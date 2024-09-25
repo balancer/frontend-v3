@@ -64,6 +64,9 @@ export function useManagedSendTransaction({
     hash: txHash,
     confirmations: minConfirmations,
     timeout: getWaitForReceiptTimeout(chainId),
+    query: {
+      ...onlyExplicitRefetch,
+    },
   })
 
   const bundle = {
