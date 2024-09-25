@@ -25,7 +25,7 @@ export function useSignPermit2Transfer({
   const toast = useToast()
   const { userAddress } = useUserAccount()
 
-  const { setSignPermit2State, setPermit2ApprovalSignature, signPermit2State } =
+  const { setSignPermit2State, setPermit2TransferSignature, signPermit2State } =
     usePermit2Signature()
 
   const [error, setError] = useState<string | undefined>()
@@ -44,7 +44,7 @@ export function useSignPermit2Transfer({
   const minimumBpt = queryOutput?.sdkQueryOutput.bptOut.amount
   useEffect(() => {
     if (minimumBpt) {
-      setPermit2ApprovalSignature(undefined)
+      setPermit2TransferSignature(undefined)
       setSignPermit2State(SignPermit2State.Ready)
     }
   }, [minimumBpt])
@@ -81,7 +81,7 @@ export function useSignPermit2Transfer({
         setSignPermit2State(SignPermit2State.Ready)
       }
 
-      setPermit2ApprovalSignature(signature)
+      setPermit2TransferSignature(signature)
     } catch (error) {
       console.error(error)
       setError('Error in permit2 signature call')

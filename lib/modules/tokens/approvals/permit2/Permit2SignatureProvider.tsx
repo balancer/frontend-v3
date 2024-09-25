@@ -15,15 +15,15 @@ export type UsePermit2SignatureResponse = ReturnType<typeof _usePermit2Signature
 export const Permit2SignatureContext = createContext<UsePermit2SignatureResponse | null>(null)
 
 export function _usePermit2Signature() {
-  const [permit2ApprovalSignature, setPermit2ApprovalSignature] = useState<Permit2 | undefined>()
+  const [permit2TransferSignature, setPermit2TransferSignature] = useState<Permit2 | undefined>()
 
   const [signPermit2State, setSignPermit2State] = useState<SignPermit2State>(
     SignPermit2State.Preparing
   )
 
   return {
-    permit2ApprovalSignature,
-    setPermit2ApprovalSignature,
+    permit2TransferSignature,
+    setPermit2TransferSignature,
     signPermit2State,
     setSignPermit2State,
   }

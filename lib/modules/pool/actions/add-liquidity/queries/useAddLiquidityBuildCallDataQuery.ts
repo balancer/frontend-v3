@@ -37,7 +37,7 @@ export function useAddLiquidityBuildCallDataQuery({
   const { pool, chainId } = usePool()
   const { data: blockNumber } = useBlockNumber({ chainId })
   const { relayerApprovalSignature } = useRelayerSignature()
-  const { permit2ApprovalSignature: permit2 } = usePermit2Signature()
+  const { permit2TransferSignature: permit2 } = usePermit2Signature()
   const debouncedHumanAmountsIn = useDebounce(humanAmountsIn, defaultDebounceMs)[0]
 
   const params: AddLiquidityParams = {
