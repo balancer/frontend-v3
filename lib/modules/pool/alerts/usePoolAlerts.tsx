@@ -54,6 +54,7 @@ export function usePoolAlerts(pool: Pool) {
 
   const getTokenPoolAlerts = (pool: Pool): PoolAlert[] => {
     const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
+
     const alerts: PoolAlert[] = []
 
     poolTokens?.forEach(token => {
@@ -62,7 +63,7 @@ export function usePoolAlerts(pool: Pool) {
           identifier: `TokenNotAllowed-${token.symbol}`,
           content: `The token ${token.symbol} is currently not supported.`,
           status: 'error',
-          isSoftWarning: true,
+          isSoftWarning: false,
         })
       }
 
