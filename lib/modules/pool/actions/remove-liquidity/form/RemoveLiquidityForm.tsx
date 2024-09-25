@@ -35,6 +35,7 @@ import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { TooltipWithTouch } from '@/lib/shared/components/tooltips/TooltipWithTouch'
 const TABS: ButtonGroupOption[] = [
   {
     value: 'proportional',
@@ -185,7 +186,7 @@ export function RemoveLiquidityForm() {
               )}
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
-            <Tooltip label={isDisabled ? disabledReason : ''}>
+            <TooltipWithTouch label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
@@ -197,7 +198,7 @@ export function RemoveLiquidityForm() {
               >
                 Next
               </Button>
-            </Tooltip>
+            </TooltipWithTouch>
           </VStack>
         </Card>
         <RemoveLiquidityModal
