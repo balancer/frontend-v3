@@ -104,8 +104,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   public async signPermit2(
     input: Permit2AddLiquidityInput,
     sdkClient: PublicWalletClient,
-    nonces: NoncesByTokenAddress
+    nonces?: NoncesByTokenAddress
   ): Promise<Permit2> {
+    // console.log('tengo los nonces super ricos')
     const baseInput = this.constructBaseBuildCallInput({
       slippagePercent: input.slippagePercent,
       sdkQueryOutput: input.sdkQueryOutput as AddLiquidityBaseQueryOutput,
@@ -114,8 +115,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       ...baseInput,
       client: sdkClient,
       owner: input.account,
-      nonces: baseInput.amountsIn.map(a => nonces[a.token.address]),
+      nonces: baseInput.amountsIn.map(a => (a.amount === 0n ? 3 : 1)),
     })
+
     return signature
   }
 
@@ -147,9 +149,9 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       wethIsEth: this.helpers.includesNativeAsset(sdkQueryOutput.amountsIn),
     }
-    // baseBuildCallParams.amountsIn = baseBuildCallParams.amountsIn.filter(
-    //   amountIn => amountIn.amount > 0n
-    // )
+    baseBuildCallParams.amountsIn = baseBuildCallParams.amountsIn.filter(
+      amountIn => amountIn.amount > 0n
+    )
     return baseBuildCallParams
   }
 }

@@ -8,22 +8,42 @@ import { useMemo } from 'react'
 import { SignPermit2State } from '../../tokens/approvals/permit2/Permit2SignatureProvider'
 import {
   AddLiquidityPermit2Params,
-  useSignPermit2Approval,
-} from '../../tokens/approvals/permit2/useSignPermit2Approval'
+  useSignPermit2Transfer,
+} from '../../tokens/approvals/permit2/useSignPermit2Transfer'
 import { useChainSwitch } from '../../web3/useChainSwitch'
 import { TransactionStep } from './lib'
+import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
 export function useSignPermit2Step(
   params: AddLiquidityPermit2Params,
-  chainId: number
+  chainId: number,
+  enabled = false
 ): TransactionStep {
-  const { isConnected } = useUserAccount()
-  const { signPermit2, signPermit2State, isLoading, isDisabled, buttonLabel, error } =
-    useSignPermit2Approval(params)
+  const { isConnected, userAddress } = useUserAccount()
+
+  //TODO: Move this hook into useSignPermit2Transfer?
+  //TODO: isLoading state depending on amountsIn (simulation loaded)?
+  const { isLoadingNonces, nonces } = usePermit2Nonces({
+    chainId,
+    tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
+    owner: userAddress,
+    enabled,
+  })
+
+  const {
+    signPermit2,
+    signPermit2State,
+    isLoading: isLoadingTransfer,
+    isDisabled,
+    buttonLabel,
+    error,
+  } = useSignPermit2Transfer({ ...params, nonces })
   const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
     useChainSwitch(chainId)
+
+  const isLoading = isLoadingTransfer || isLoadingNonces
 
   const SignPermitButton = () => (
     <VStack width="full">

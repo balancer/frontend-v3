@@ -52,7 +52,8 @@ export function useAddLiquiditySteps({
       slippagePercent: slippage,
       queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
     },
-    chainId
+    chainId,
+    requiresPermit2Approval(pool)
   )
 
   const addLiquidityStep = useAddLiquidityStep({

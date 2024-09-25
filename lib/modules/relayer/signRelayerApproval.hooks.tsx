@@ -7,7 +7,7 @@ import { RelayerMode } from './useRelayerMode'
 import { SignRelayerState, useRelayerSignature } from './RelayerSignatureProvider'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
-import { useSdkViemClient } from '../web3/useSdkViemClient'
+import { useSdkWalletClient } from '../web3/useSdkViemClient'
 
 export function useShouldSignRelayerApproval(chainId: SupportedChainId, relayerMode: RelayerMode) {
   const { hasApprovedRelayer } = useHasApprovedRelayer(chainId)
@@ -23,7 +23,7 @@ export function useSignRelayerApproval(chainId: SupportedChainId) {
 
   const [error, setError] = useState<string | undefined>()
 
-  const sdkClient = useSdkViemClient()
+  const sdkClient = useSdkWalletClient()
 
   useEffect(() => {
     if (sdkClient === undefined) {

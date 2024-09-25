@@ -1,14 +1,13 @@
 import { getNetworkConfig } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { ensureError } from '@/lib/shared/utils/errors'
-import { Relayer } from '@balancer/sdk'
+import { PublicWalletClient, Relayer } from '@balancer/sdk'
 import { Address } from 'viem'
-import { SdkClient } from '../web3/useSdkViemClient'
 
 export async function signRelayerApproval(
   userAddress: Address,
   chainId: SupportedChainId,
-  client?: SdkClient
+  client?: PublicWalletClient
 ): Promise<Address | undefined> {
   if (!client) return undefined
 

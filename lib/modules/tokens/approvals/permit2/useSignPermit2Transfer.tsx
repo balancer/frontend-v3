@@ -2,22 +2,25 @@
 import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useSdkViemClient } from '@/lib/modules/web3/useSdkViemClient'
+import { useSdkWalletClient } from '@/lib/modules/web3/useSdkViemClient'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { SignPermit2State, usePermit2Signature } from './Permit2SignatureProvider'
-import { signPermit2TokenApprovals } from './signPermit2TokenApprovals'
+import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
+import { NoncesByTokenAddress } from './usePermit2Nonces'
 
 export type AddLiquidityPermit2Params = {
   handler: AddLiquidityHandler
   queryOutput?: SdkQueryAddLiquidityOutput
   slippagePercent: string
+  nonces?: NoncesByTokenAddress
 }
-export function useSignPermit2Approval({
+export function useSignPermit2Transfer({
   queryOutput,
   slippagePercent,
   handler,
+  nonces,
 }: AddLiquidityPermit2Params) {
   const toast = useToast()
   const { userAddress } = useUserAccount()
@@ -27,7 +30,7 @@ export function useSignPermit2Approval({
 
   const [error, setError] = useState<string | undefined>()
 
-  const sdkClient = useSdkViemClient()
+  const sdkClient = useSdkWalletClient()
 
   useEffect(() => {
     if (sdkClient === undefined) {
@@ -48,11 +51,12 @@ export function useSignPermit2Approval({
 
   async function signPermit2() {
     if (!queryOutput) throw new Error('No input provided for permit2 signature')
+    if (!nonces) throw new Error('No nonces provided for permit2 signature')
     setSignPermit2State(SignPermit2State.Confirming)
     setError(undefined)
 
     try {
-      const signature = await signPermit2TokenApprovals({
+      const signature = await signPermit2TokenTransfer({
         handler,
         sdkClient,
         permit2Input: {
@@ -60,6 +64,7 @@ export function useSignPermit2Approval({
           slippagePercent,
           sdkQueryOutput: queryOutput.sdkQueryOutput,
         },
+        nonces,
       })
 
       if (signature) {

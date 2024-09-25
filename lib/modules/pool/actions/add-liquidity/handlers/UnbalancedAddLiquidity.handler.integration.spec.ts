@@ -7,6 +7,8 @@ import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { Pool } from '../../../PoolProvider'
+import { getNetworkConfig } from '@/lib/config/app.config'
+import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function selectUnbalancedHandler() {
   return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
@@ -110,7 +112,8 @@ describe.skip('When adding unbalanced liquidity for a V3 pool', async () => {
       queryOutput,
     })
 
-    const sepoliaRouter = '0xB12FcB422aAe6720f882E22C340964a7723f2387'
+    const sepoliaRouter = getNetworkConfig(GqlChain.Sepolia).contracts.balancer.router
+
     expect(result.to).toBe(sepoliaRouter)
     expect(result.data).toBeDefined()
   })

@@ -1,9 +1,9 @@
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { SdkClient } from '@/lib/modules/web3/useSdkViemClient'
-import { AddLiquidityQueryOutput, Permit2 } from '@balancer/sdk'
+import { AddLiquidityQueryOutput, Permit2, PublicWalletClient } from '@balancer/sdk'
 import { Address } from 'viem'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
+import { NoncesByTokenAddress } from '@/lib/modules/tokens/approvals/permit2/usePermit2Nonces'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -40,5 +40,9 @@ export interface AddLiquidityHandler {
   /* Sign permit2 for adding liquidity (for now only used by v3 pools)
      TODO: generalize for other handlers using permit2
   */
-  signPermit2?(input: Permit2AddLiquidityInput, walletClient: SdkClient): Promise<Permit2>
+  signPermit2?(
+    input: Permit2AddLiquidityInput,
+    walletClient: PublicWalletClient,
+    nonces?: NoncesByTokenAddress
+  ): Promise<Permit2>
 }
