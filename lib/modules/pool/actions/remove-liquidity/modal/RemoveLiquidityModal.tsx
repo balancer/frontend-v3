@@ -35,7 +35,8 @@ export function RemoveLiquidityModal({
 }: Props & Omit<ModalProps, 'children'>) {
   const { isDesktop } = useBreakpoints()
   const initialFocusRef = useRef(null)
-  const { transactionSteps, removeLiquidityTxHash, hasQuoteContext } = useRemoveLiquidity()
+  const { transactionSteps, removeLiquidityTxHash, urlTxHash, hasQuoteContext } =
+    useRemoveLiquidity()
   const { pool, chain } = usePool()
   const { redirectToPoolPage } = usePoolRedirect(pool)
   const { userAddress } = useUserAccount()
@@ -99,6 +100,7 @@ export function RemoveLiquidityModal({
           currentStep={transactionSteps.currentStep}
           returnLabel="Return to pool"
           returnAction={redirectToPoolPage}
+          urlTxHash={urlTxHash}
         />
       </ModalContent>
     </Modal>
