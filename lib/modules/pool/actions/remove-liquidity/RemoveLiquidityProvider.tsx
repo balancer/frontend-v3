@@ -217,6 +217,16 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
   const totalAmountsOut: string = safeSum(quoteAmountsOut.map(a => a.amount))
 
+  const isSingleTokenBalanceMoreThat25Percent = useMemo(() => {
+    if (!pool.userBalance) {
+      return false
+    }
+
+    return bn(pool.userBalance.walletBalance)
+      .times(bn(humanBptInPercent).div(100))
+      .gt(bn(pool.dynamicData.totalShares).times(0.25))
+  }, [singleTokenOutAddress, humanBptInPercent])
+
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
     [Number(humanBptIn) === 0, 'You must specify a valid bpt in'],
@@ -225,7 +235,11 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact']
+    [priceImpactQuery.isError, 'Error fetching price impact'],
+    [
+      isSingleTokenBalanceMoreThat25Percent,
+      'You can only remove up to 25% of a single asset from the pool in one transaction',
+    ]
   )
 
   /**
@@ -268,6 +282,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     hasQuoteContext,
     amountsOut,
     removeLiquidityTxSuccess,
+    isSingleTokenBalanceMoreThat25Percent,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,
