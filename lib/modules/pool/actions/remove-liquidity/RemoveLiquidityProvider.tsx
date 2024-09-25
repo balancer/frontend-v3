@@ -235,11 +235,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     [simulationQuery.isLoading, 'Fetching quote...'],
     [simulationQuery.isError, 'Error fetching quote'],
     [priceImpactQuery.isLoading, 'Fetching price impact...'],
-    [priceImpactQuery.isError, 'Error fetching price impact'],
-    [
-      isSingleTokenBalanceMoreThat25Percent,
-      'You can only remove up to 25% of a single asset from the pool in one transaction',
-    ]
+    [priceImpactQuery.isError, 'Error fetching price impact']
   )
 
   /**
