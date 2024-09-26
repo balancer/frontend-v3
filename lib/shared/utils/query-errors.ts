@@ -6,7 +6,7 @@ import {
   Exception as SentryException,
 } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError } from './error-filters'
+import { isPausedErrorMessage, isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -331,6 +331,8 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
   if (message.startsWith('The source') && message.includes('has not been authorized yet')) {
     return true
   }
+
+  if (isPausedErrorMessage(message)) return true
 
   return false
 }

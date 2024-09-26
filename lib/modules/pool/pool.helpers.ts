@@ -262,8 +262,10 @@ export function hasReviewedRateProvider(token: GqlPoolTokenDetail): boolean {
 export function shouldBlockAddLiquidity(pool: Pool) {
   const poolTokens = pool.poolTokens as GqlPoolTokenDetail[]
 
-  // If pool is an LBP, we should block adding liquidity
-  if (isLBP(pool.type)) return true
+  // If pool is an LBP, paused or in recovery mode, we should block adding liquidity
+  if (isLBP(pool.type) || pool.dynamicData.isPaused || pool.dynamicData.isInRecoveryMode) {
+    return true
+  }
 
   return poolTokens.some(token => {
     // if token is not allowed - we should block adding liquidity
