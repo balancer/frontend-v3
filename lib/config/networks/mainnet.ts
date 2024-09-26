@@ -127,7 +127,7 @@ const networkConfig: NetworkConfig = {
     allowNestedActions: [
       '0x08775ccb6674d6bdceb0797c364c2653ed84f3840002000000000000000004f0', // B-80BAL-20WETH
     ],
-    BoostsEnabled: true,
+    boostsEnabled: true,
   }),
 } as const satisfies NetworkConfig
 

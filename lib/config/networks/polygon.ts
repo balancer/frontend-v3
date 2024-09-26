@@ -91,7 +91,7 @@ const networkConfig: NetworkConfig = {
         '0xfd24afa5416c8de94fdbaf344840f524155a4dd00002000000000000000008db',
       ],
     },
-    BoostsEnabled: true,
+    boostsEnabled: true,
   }),
   layerZeroChainId: 109,
   supportsVeBalSync: true,

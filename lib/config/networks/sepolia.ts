@@ -40,7 +40,7 @@ const networkConfig: NetworkConfig = {
   },
   pools: convertHexToLowerCase({
     issues: {},
-    BoostsEnabled: true,
+    boostsEnabled: true,
   }),
   layerZeroChainId: 10161,
 }

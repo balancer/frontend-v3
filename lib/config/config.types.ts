@@ -50,7 +50,7 @@ export interface ContractsConfig {
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
   allowNestedActions?: string[] // pool ids
-  BoostsEnabled?: boolean
+  boostsEnabled?: boolean
 }
 
 export interface BlockExplorerConfig {

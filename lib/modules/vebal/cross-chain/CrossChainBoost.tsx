@@ -25,8 +25,11 @@ import { NetworkSyncState } from '@/lib/modules/vebal/cross-chain/useCrossChainN
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
-const tooltipLabel =
-  'Sidechains & Layer 2 networks like Polygon and Arbitrum don’t know your veBAL balance on Ethereum Mainnet, unless you sync it. On any network where you stake, you should sync your veBAL balance to get your max possible boost. Resync after acquiring more veBAL to continue boosting to your max.'
+const tooltipLabel = `Sidechains & Layer 2 networks like Polygon and Arbitrum don't know 
+                    your veBAL balance on Ethereum Mainnet, 
+                    unless you sync it. 
+                    On any network where you stake, you should sync your veBAL balance to get your max possible boost. 
+                    Resync after acquiring more veBAL to continue boosting to your max.`
 
 function CrossChainBoost() {
   const { userAddress, isConnected } = useUserAccount() // FIXME check if exists
@@ -48,6 +51,7 @@ function CrossChainBoost() {
       tempSyncingNetworks[userAddress]?.networks.includes(network)
     )
   }
+  checkIfNetworkSyncing
 
   const [syncIsOpen, setSyncIsOpen] = useState(false)
 
