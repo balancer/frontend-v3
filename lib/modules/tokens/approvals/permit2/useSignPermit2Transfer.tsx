@@ -9,14 +9,17 @@ import { useEffect, useState } from 'react'
 import { SignPermit2State, usePermit2Signature } from './Permit2SignatureProvider'
 import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
 import { NoncesByTokenAddress } from './usePermit2Nonces'
+import { useTokens } from '../../TokensProvider'
 
 export type AddLiquidityPermit2Params = {
+  chainId: number
   handler: AddLiquidityHandler
   queryOutput?: SdkQueryAddLiquidityOutput
   slippagePercent: string
   nonces?: NoncesByTokenAddress
 }
 export function useSignPermit2Transfer({
+  chainId,
   queryOutput,
   slippagePercent,
   handler,
@@ -24,6 +27,13 @@ export function useSignPermit2Transfer({
 }: AddLiquidityPermit2Params) {
   const toast = useToast()
   const { userAddress } = useUserAccount()
+  const { getToken } = useTokens()
+
+  //TODO: We will probably need to extract this logic to be reusable by other components (StepTracker)
+  const amountsIn = queryOutput?.sdkQueryOutput.amountsIn
+  const tokenSymbols = amountsIn
+    ?.filter(a => a.amount > 0n)
+    .map(a => getToken(a.token.address, chainId)?.symbol)
 
   const { setSignPermit2State, setPermit2TransferSignature, signPermit2State } =
     usePermit2Signature()
@@ -92,7 +102,7 @@ export function useSignPermit2Transfer({
   return {
     signPermit2,
     signPermit2State,
-    buttonLabel: getButtonLabel(signPermit2State),
+    buttonLabel: getButtonLabel(signPermit2State, tokenSymbols),
     isLoading: isLoading(signPermit2State) || !queryOutput,
     isDisabled: isDisabled(signPermit2State),
     error,
@@ -113,10 +123,16 @@ function isLoading(signPermit2State: SignPermit2State) {
   )
 }
 
-function getButtonLabel(signPermit2State: SignPermit2State) {
-  if (signPermit2State === SignPermit2State.Ready) return 'Permit transfer: token name'
+function getButtonLabel(signPermit2State: SignPermit2State, tokenSymbols?: (string | undefined)[]) {
+  if (signPermit2State === SignPermit2State.Ready) return getReadyLabel(tokenSymbols)
   if (signPermit2State === SignPermit2State.Confirming) return 'Confirm permit2 signature in wallet'
   if (signPermit2State === SignPermit2State.Preparing) return 'Preparing'
   if (signPermit2State === SignPermit2State.Completed) return 'Permit2 Signed'
   return ''
+}
+
+function getReadyLabel(tokenSymbols?: (string | undefined)[]) {
+  if (!tokenSymbols) return 'Permit transfer'
+  if (tokenSymbols.length === 1) return 'Permit transfer: ' + tokenSymbols[0]
+  return 'Permit transfers: ' + tokenSymbols.join(', ')
 }

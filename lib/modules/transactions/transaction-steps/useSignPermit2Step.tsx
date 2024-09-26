@@ -39,7 +39,7 @@ export function useSignPermit2Step(
     isDisabled,
     buttonLabel,
     error,
-  } = useSignPermit2Transfer({ ...params, nonces })
+  } = useSignPermit2Transfer({ ...params, chainId, nonces })
   const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
     useChainSwitch(chainId)
 
