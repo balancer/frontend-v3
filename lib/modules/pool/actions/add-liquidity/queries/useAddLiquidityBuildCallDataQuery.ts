@@ -1,4 +1,3 @@
-import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { defaultDebounceMs, onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 import { useQuery } from '@tanstack/react-query'
@@ -19,6 +18,7 @@ export type AddLiquidityBuildQueryParams = {
   handler: AddLiquidityHandler
   humanAmountsIn: HumanTokenAmountWithAddress[]
   simulationQuery: AddLiquiditySimulationQueryResult
+  slippage: string
 }
 
 // Uses the SDK to build a transaction config to be used by wagmi's useManagedSendTransaction
@@ -26,12 +26,12 @@ export function useAddLiquidityBuildCallDataQuery({
   handler,
   humanAmountsIn,
   simulationQuery,
+  slippage,
   enabled,
 }: AddLiquidityBuildQueryParams & {
   enabled: boolean
 }) {
   const { userAddress, isConnected } = useUserAccount()
-  const { slippage } = useUserSettings()
   const { pool, chainId } = usePool()
   const { data: blockNumber } = useBlockNumber({ chainId })
   const { relayerApprovalSignature } = useRelayerSignature()

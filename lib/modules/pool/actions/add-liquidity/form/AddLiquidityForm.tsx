@@ -21,7 +21,10 @@ import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
+import {
+  ProportionalTransactionSettings,
+  TransactionSettings,
+} from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../PoolProvider'
@@ -78,6 +81,8 @@ function AddLiquidityMainForm() {
     nativeAsset,
     wNativeAsset,
     previewModalDisclosure,
+    proportionalSlippage,
+    setProportionalSlippage,
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
@@ -163,7 +168,15 @@ function AddLiquidityMainForm() {
         <CardHeader>
           <HStack w="full" justify="space-between">
             <span>Add liquidity</span>
-            <TransactionSettings size="sm" />
+            {requiresProportionalInput(pool.type) ? (
+              <ProportionalTransactionSettings
+                slippage={proportionalSlippage}
+                setSlippage={setProportionalSlippage}
+                size="sm"
+              />
+            ) : (
+              <TransactionSettings size="sm" />
+            )}
           </HStack>
         </CardHeader>
         <VStack spacing="md" align="start" w="full">

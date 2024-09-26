@@ -23,8 +23,13 @@ import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 
-export function SlippageInput() {
-  const { slippage, setSlippage } = useUserSettings()
+export function SlippageInput({
+  slippage,
+  setSlippage,
+}: {
+  slippage: string
+  setSlippage: (value: string) => void
+}) {
   const presetOpts = ['0.5', '1', '2']
 
   return (
@@ -81,6 +86,8 @@ function ToggleAllowSounds() {
 }
 
 export function UserSettings() {
+  const { slippage, setSlippage } = useUserSettings()
+
   return (
     <Popover isLazy>
       <PopoverTrigger>
@@ -109,7 +116,7 @@ export function UserSettings() {
               <Heading size="sm" pb="2">
                 Slippage
               </Heading>
-              <SlippageInput />
+              <SlippageInput slippage={slippage} setSlippage={setSlippage} />
             </Box>
             <Box w="full">
               <Heading size="sm" pb="xs">
