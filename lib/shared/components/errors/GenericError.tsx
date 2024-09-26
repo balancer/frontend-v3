@@ -2,7 +2,7 @@
 
 import { AlertProps, Text } from '@chakra-ui/react'
 import { ErrorAlert } from './ErrorAlert'
-import { isUserRejectedError, isViemHttpFetchError } from '../../utils/error-filters'
+import { isPausedError, isUserRejectedError, isViemHttpFetchError } from '../../utils/error-filters'
 import { ensureError } from '../../utils/errors'
 import { BalAlertLink } from '../alerts/BalAlertLink'
 
@@ -24,6 +24,17 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
           report the problem in{' '}
           <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> if the issue
           persists.
+        </Text>
+      </ErrorAlert>
+    )
+  }
+  if (isPausedError(_error)) {
+    return (
+      <ErrorAlert title={customErrorName} {...rest}>
+        <Text variant="secondary" color="black">
+          The pool or one of the pool tokens is paused. Check{' '}
+          <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> for more
+          information.
         </Text>
       </ErrorAlert>
     )
