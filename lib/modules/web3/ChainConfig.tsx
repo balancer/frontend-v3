@@ -40,9 +40,8 @@ export const rpcFallbacks: Record<GqlChain, string | undefined> = {
 }
 
 const baseUrl = getBaseUrl()
-const getPrivateRpcUrl = (chain: GqlChain) => {
-  return `${baseUrl}/api/rpc/${chain}`
-}
+const getPrivateRpcUrl = (chain: GqlChain) => `${baseUrl}/api/rpc/${chain}`
+
 export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Mainnet]: getPrivateRpcUrl(GqlChain.Mainnet),
   [GqlChain.Arbitrum]: getPrivateRpcUrl(GqlChain.Arbitrum),
