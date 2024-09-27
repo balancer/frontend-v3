@@ -48,7 +48,7 @@ export const rpcOverrides: Record<GqlChain, string | undefined> = {
   [GqlChain.Base]: getPrivateRpcUrl(GqlChain.Base),
   [GqlChain.Avalanche]: getPrivateRpcUrl(GqlChain.Avalanche),
   [GqlChain.Fantom]: getPrivateRpcUrl(GqlChain.Fantom),
-  [GqlChain.Gnosis]: 'https://rpc.gnosischain.com', // Temporary fix until we fix an alchemy rpc url issue (Reverted incorrect sender)
+  [GqlChain.Gnosis]: getPrivateRpcUrl(GqlChain.Gnosis),
   [GqlChain.Optimism]: getPrivateRpcUrl(GqlChain.Optimism),
   [GqlChain.Polygon]: getPrivateRpcUrl(GqlChain.Polygon),
   [GqlChain.Zkevm]: getPrivateRpcUrl(GqlChain.Zkevm),
