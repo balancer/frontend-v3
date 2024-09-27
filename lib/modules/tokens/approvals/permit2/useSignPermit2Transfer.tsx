@@ -1,28 +1,30 @@
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
-import { AddLiquidityHandler } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { useSdkWalletClient } from '@/lib/modules/web3/useSdkViemClient'
 import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
+import { useTokens } from '../../TokensProvider'
 import { SignPermit2State, usePermit2Signature } from './Permit2SignatureProvider'
 import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
 import { NoncesByTokenAddress } from './usePermit2Nonces'
-import { useTokens } from '../../TokensProvider'
+import { HumanTokenAmountWithAddress } from '../../token.types'
 
 export type AddLiquidityPermit2Params = {
   chainId: number
-  handler: AddLiquidityHandler
+  humanAmountsIn: HumanTokenAmountWithAddress[]
+  pool: Pool
   queryOutput?: SdkQueryAddLiquidityOutput
   slippagePercent: string
   nonces?: NoncesByTokenAddress
 }
 export function useSignPermit2Transfer({
   chainId,
+  humanAmountsIn,
   queryOutput,
   slippagePercent,
-  handler,
   nonces,
 }: AddLiquidityPermit2Params) {
   const toast = useToast()
@@ -59,7 +61,7 @@ export function useSignPermit2Transfer({
     }
   }, [minimumBpt])
 
-  async function signPermit2() {
+  async function signPermit2(pool: Pool) {
     if (!queryOutput) throw new Error('No input provided for permit2 signature')
     if (!nonces) throw new Error('No nonces provided for permit2 signature')
     setSignPermit2State(SignPermit2State.Confirming)
@@ -67,7 +69,8 @@ export function useSignPermit2Transfer({
 
     try {
       const signature = await signPermit2TokenTransfer({
-        handler,
+        pool,
+        humanAmountsIn,
         sdkClient,
         permit2Input: {
           account: userAddress,

@@ -46,16 +46,13 @@ export function useAddLiquiditySteps({
       isPermit2: requiresPermit2Approval(pool),
     })
 
-  const signPermit2Step = useSignPermit2Step(
-    {
-      chainId,
-      handler,
-      slippagePercent: slippage,
-      queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
-    },
+  const signPermit2Step = useSignPermit2Step({
+    pool,
+    humanAmountsIn,
     chainId,
-    requiresPermit2Approval(pool)
-  )
+    slippagePercent: slippage,
+    queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
+  })
 
   const addLiquidityStep = useAddLiquidityStep({
     handler,

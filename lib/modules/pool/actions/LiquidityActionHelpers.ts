@@ -137,12 +137,6 @@ export class LiquidityActionHelpers {
     return humanAmountsIn.some(amountIn => isSameAddress(amountIn.tokenAddress, nativeAssetAddress))
   }
 
-  public includesNativeAsset(amountsIn: TokenAmount[]): boolean {
-    const nativeAssetAddress = this.networkConfig.tokens.nativeAsset.address
-
-    return amountsIn.some(amountIn => isSameAddress(amountIn.token.address, nativeAssetAddress))
-  }
-
   public isNativeAsset(tokenAddress: Address): boolean {
     const nativeAssetAddress = this.networkConfig.tokens.nativeAsset.address
 
@@ -319,10 +313,7 @@ export function hasNoLiquidity(pool: Pool): boolean {
 }
 
 // When the pool has version < v3, it adds extra buildCall params (sender and recipient) that must be present only in V1/V2
-export function formatBuildCallParams<T>(buildCallParams: T, isV3Pool: boolean, account: Address) {
-  // sender must be undefined for v3 pools
-  if (isV3Pool) return buildCallParams
-
+export function formatBuildCallParams<T>(buildCallParams: T, account: Address) {
   // sender and recipient must be defined only for v1 and v2 pools
   return { ...buildCallParams, sender: account, recipient: account }
 }

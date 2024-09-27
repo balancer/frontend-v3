@@ -13,23 +13,23 @@ import {
 import { useChainSwitch } from '../../web3/useChainSwitch'
 import { TransactionStep } from './lib'
 import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
+import { requiresPermit2Approval } from '../../pool/pool.helpers'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
-export function useSignPermit2Step(
-  params: AddLiquidityPermit2Params,
-  chainId: number,
-  enabled = false
-): TransactionStep {
+export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep {
   const { isConnected, userAddress } = useUserAccount()
 
+  const { chainId } = params
+
   //TODO: Move this hook into useSignPermit2Transfer?
+  //TODO: Move useSignPermit2Transfer up into this hook?
   //TODO: isLoading state depending on amountsIn (simulation loaded)?
   const { isLoadingNonces, nonces } = usePermit2Nonces({
     chainId,
     tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
     owner: userAddress,
-    enabled,
+    enabled: requiresPermit2Approval(params.pool),
   })
 
   const {
@@ -58,7 +58,7 @@ export function useSignPermit2Step(
           variant="primary"
           isDisabled={isDisabled}
           isLoading={isLoading}
-          onClick={signPermit2}
+          onClick={() => signPermit2(params.pool)}
           loadingText={buttonLabel}
         >
           {buttonLabel}

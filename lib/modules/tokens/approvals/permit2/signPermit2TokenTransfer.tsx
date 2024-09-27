@@ -1,19 +1,26 @@
-import {
-  AddLiquidityHandler,
-  Permit2AddLiquidityInput,
-} from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
+import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { Permit2AddLiquidityInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/AddLiquidity.handler'
+import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/v3Helpers'
 import { ensureError } from '@/lib/shared/utils/errors'
-import { Permit2, PublicWalletClient } from '@balancer/sdk'
+import {
+  AddLiquidityBaseQueryOutput,
+  Permit2,
+  Permit2Helper,
+  PublicWalletClient,
+} from '@balancer/sdk'
 import { NoncesByTokenAddress } from './usePermit2Nonces'
+import { HumanTokenAmountWithAddress } from '../../token.types'
 
 type SignPermit2Params = {
-  handler: AddLiquidityHandler //TODO: generalize to other handlers?
+  humanAmountsIn: HumanTokenAmountWithAddress[]
+  pool: Pool
   sdkClient?: PublicWalletClient
   permit2Input: Permit2AddLiquidityInput
   nonces: NoncesByTokenAddress
 }
 export async function signPermit2TokenTransfer({
-  handler,
+  humanAmountsIn,
+  pool,
   sdkClient,
   permit2Input,
   nonces,
@@ -21,8 +28,7 @@ export async function signPermit2TokenTransfer({
   if (!sdkClient) return undefined
 
   try {
-    if (!handler.signPermit2) throw new Error('Handler does not implement signPermit2 method')
-    const signature = await handler.signPermit2(permit2Input, sdkClient, nonces)
+    const signature = await signPermit2(pool, humanAmountsIn, permit2Input, sdkClient, nonces)
     return signature
   } catch (e: unknown) {
     const error = ensureError(e)
@@ -31,4 +37,28 @@ export async function signPermit2TokenTransfer({
     if (error.name === 'UserRejectedRequestError') return
     throw error
   }
+}
+
+// TODO: refactor to object parameters
+async function signPermit2(
+  pool: Pool,
+  humanAmountsIn: HumanTokenAmountWithAddress[],
+  input: Permit2AddLiquidityInput,
+  sdkClient: PublicWalletClient,
+  nonces: NoncesByTokenAddress
+): Promise<Permit2> {
+  const baseInput = constructBaseBuildCallInput({
+    humanAmountsIn,
+    slippagePercent: input.slippagePercent,
+    // TODO: generalize for all v3 pool types
+    sdkQueryOutput: input.sdkQueryOutput as AddLiquidityBaseQueryOutput,
+    pool,
+  })
+  const signature = await Permit2Helper.signAddLiquidityApproval({
+    ...baseInput,
+    client: sdkClient,
+    owner: input.account,
+    nonces: baseInput.amountsIn.map(a => nonces[a.token.address]),
+  })
+  return signature
 }

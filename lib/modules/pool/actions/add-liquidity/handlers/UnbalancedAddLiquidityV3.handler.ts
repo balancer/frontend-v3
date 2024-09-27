@@ -1,40 +1,39 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { AddLiquidity } from '@balancer/sdk'
-import { formatBuildCallParams } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput } from '../add-liquidity.types'
 import { BaseUnbalancedAddLiquidityHandler } from './BaseUnbalancedAddLiquidity.handler'
 import { constructBaseBuildCallInput } from './v3Helpers'
 
 /**
- * UnbalancedAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds in v1(cowAMM) and v2 pools, e.g. where the user
+ * UnbalancedAddLiquidityHandlerV3 is a handler that implements the
+ * AddLiquidityHandler interface for unbalanced V3 adds, e.g. where the user
  * specifies the token amounts in. It uses the Balancer SDK to implement it's
  * methods. It also handles the case where one of the input tokens is the native
  * asset instead of the wrapped native asset.
  */
-export class UnbalancedAddLiquidityHandler extends BaseUnbalancedAddLiquidityHandler {
+export class UnbalancedAddLiquidityHandlerV3 extends BaseUnbalancedAddLiquidityHandler {
   public async buildCallData({
     humanAmountsIn,
     slippagePercent,
     queryOutput,
     account,
+    permit2,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    const buildCallParams = formatBuildCallParams(
-      constructBaseBuildCallInput({
-        humanAmountsIn,
-        sdkQueryOutput: queryOutput.sdkQueryOutput,
-        slippagePercent: slippagePercent,
-        pool: this.helpers.pool,
-      }),
-      account
-    )
+    const buildCallParams = constructBaseBuildCallInput({
+      humanAmountsIn,
+      sdkQueryOutput: queryOutput.sdkQueryOutput,
+      slippagePercent: slippagePercent,
+      pool: this.helpers.pool,
+    })
 
-    console.log({ buildCallParams })
+    if (!permit2) {
+      throw new Error('Permit2 signature is required for V3 pools')
+    }
 
-    const { callData, to, value } = addLiquidity.buildCall(buildCallParams)
+    const { callData, to, value } = addLiquidity.buildCallWithPermit2(buildCallParams, permit2)
 
     return {
       account,
