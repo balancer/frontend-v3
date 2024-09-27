@@ -14,12 +14,15 @@ import {
   VStack,
   Text,
   ButtonProps,
+  useDisclosure,
 } from '@chakra-ui/react'
 import { useUserSettings } from './UserSettingsProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
 import { Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 import { SlippageInput } from './UserSettings'
+import { Counter } from '@/lib/shared/components/counter/Counter'
+import { useEffect, useState } from 'react'
 
 export function TransactionSettings(props: ButtonProps) {
   const { slippage, setSlippage } = useUserSettings()
@@ -59,18 +62,45 @@ export function TransactionSettings(props: ButtonProps) {
   )
 }
 
+interface ProportionalTransactionSettingsProps extends ButtonProps {
+  slippage: string
+  setSlippage: (value: string) => void
+}
+
 export function ProportionalTransactionSettings({
   slippage,
   setSlippage,
   ...props
-}: { slippage: string; setSlippage: (value: string) => void } & ButtonProps) {
+}: ProportionalTransactionSettingsProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const { slippage: userSlippage } = useUserSettings()
+  const [shouldAnimateSlippage, setShouldAnimateSlippage] = useState(true)
+
+  useEffect(() => {
+    onOpen()
+    setTimeout(() => {
+      setShouldAnimateSlippage(false)
+    }, 1500)
+  }, [onOpen])
+
   return (
-    <Popover placement="bottom-end" isLazy>
+    <Popover placement="bottom-end" isLazy isOpen={isOpen} onClose={onClose}>
       <PopoverTrigger>
-        <Button variant="tertiary" {...props}>
+        <Button onClick={onOpen} variant="tertiary" {...props}>
           <HStack textColor="grayText">
             <Text color="grayText" fontSize="xs">
-              {fNum('slippage', slippage)}
+              {shouldAnimateSlippage ? (
+                <Counter
+                  color="grayText"
+                  fontSize="xs"
+                  direction="down"
+                  value={Number(userSlippage)}
+                  formatter={value => fNum('slippage', value, { preventSmallLabelShow: true })}
+                />
+              ) : (
+                fNum('slippage', slippage)
+              )}
             </Text>
             <Settings size={16} />
           </HStack>

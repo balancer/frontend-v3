@@ -23,13 +23,12 @@ import { blockInvalidNumberInput } from '@/lib/shared/utils/numbers'
 import { Percent, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 
-export function SlippageInput({
-  slippage,
-  setSlippage,
-}: {
+interface SlippageInputProps {
   slippage: string
   setSlippage: (value: string) => void
-}) {
+}
+
+export function SlippageInput({ slippage, setSlippage }: SlippageInputProps) {
   const presetOpts = ['0.5', '1', '2']
 
   return (

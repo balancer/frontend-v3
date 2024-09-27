@@ -9,6 +9,7 @@ import { ArrowRight } from 'react-feather'
 import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
 import { isNumber } from 'lodash'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { useAddLiquidity } from './add-liquidity/AddLiquidityProvider'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -23,9 +24,12 @@ export function PoolActionsPriceImpactDetails({
   isAddLiquidity = false,
   isLoading = false,
 }: PoolActionsPriceImpactDetailsProps) {
-  const { slippage } = useUserSettings()
+  const { slippage: userSlippage } = useUserSettings()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
+  const { isForcedProportionalAdd, proportionalSlippage } = useAddLiquidity()
+
+  const slippage = isForcedProportionalAdd ? proportionalSlippage : userSlippage
 
   const { priceImpactLevel, priceImpactColor, PriceImpactIcon, priceImpact } = usePriceImpact()
 

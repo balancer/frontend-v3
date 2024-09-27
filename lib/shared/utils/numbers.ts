@@ -61,7 +61,7 @@ export function bn(val: Numberish): BigNumber {
   return new BigNumber(val.toString())
 }
 
-type FormatOpts = { abbreviated?: boolean }
+type FormatOpts = { abbreviated?: boolean; preventSmallLabelShow?: boolean }
 
 /**
  * Converts a number to a string format within the decimal limit that numeral
@@ -113,8 +113,11 @@ function aprFormat(apr: Numberish): string {
 }
 
 // Formats a slippage value as a percentage.
-function slippageFormat(slippage: Numberish): string {
-  if (isSmallPercentage(slippage, { isPercentage: true })) return SMALL_PERCENTAGE_LABEL
+function slippageFormat(slippage: Numberish, opts?: FormatOpts): string {
+  if (isSmallPercentage(slippage, { isPercentage: true }) && !opts?.preventSmallLabelShow) {
+    return SMALL_PERCENTAGE_LABEL
+  }
+
   return numeral(bn(slippage).div(100)).format(SLIPPAGE_FORMAT)
 }
 
@@ -192,7 +195,7 @@ export function fNum(format: NumberFormat, val: Numberish, opts?: FormatOpts): s
     case 'percentage':
       return integerPercentageFormat(val)
     case 'slippage':
-      return slippageFormat(val)
+      return slippageFormat(val, opts)
     case 'boost':
       return boostFormat(val)
     default:

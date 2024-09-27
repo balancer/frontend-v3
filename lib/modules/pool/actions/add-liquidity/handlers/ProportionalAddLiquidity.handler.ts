@@ -52,8 +52,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
-    console.log('slippage', slippagePercent)
-
     const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
       // Setting slippage to zero ensures the build call can't fail if the user
@@ -61,7 +59,7 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       // state changes significantly in the background. The assumption is that
       // this should be rare. If not, we will have to re-introduce slippage here
       // and limit the user input amounts to their balance - slippage.
-      slippage: Slippage.fromPercentage('0' as HumanAmount),
+      slippage: Slippage.fromPercentage(slippagePercent as HumanAmount),
       sender: account,
       recipient: account,
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),

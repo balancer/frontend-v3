@@ -6,7 +6,13 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { bn } from '@/lib/shared/utils/numbers'
-import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
+import {
+  Address,
+  HumanAmount,
+  InputAmount,
+  Slippage,
+  calculateProportionalAmounts,
+} from '@balancer/sdk'
 import { useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { usePool } from '../../../PoolProvider'
@@ -17,7 +23,7 @@ import {
 } from '../../LiquidityActionHelpers'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
+import { HumanTokenAmountWithAddress, TokenAmount } from '@/lib/modules/tokens/token.types'
 import { swapWrappedWithNative } from '@/lib/modules/tokens/token.helpers'
 
 type OptimalToken = {
@@ -35,21 +41,39 @@ export function useProportionalInputs() {
     wethIsEth,
     nativeAsset,
     wNativeAsset,
+    proportionalSlippage,
+    isForcedProportionalAdd,
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
   const { isLoading: isPoolLoading, pool } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
+  console.log({ proportionalSlippage })
+  const adjustedBalances = (balance: TokenAmount) => {
+    if (isForcedProportionalAdd) {
+      const slippage = Slippage.fromPercentage(proportionalSlippage as HumanAmount)
+      const amount = slippage.applyTo(balance.amount, -1)
+      return {
+        ...balance,
+        amount,
+        formatted: formatUnits(amount, balance.decimals),
+      }
+    }
+
+    return balance
+  }
 
   const filteredBalances = useMemo(() => {
-    return balances.filter(balance =>
-      wethIsEth
-        ? wNativeAsset && balance.address !== wNativeAsset.address
-        : nativeAsset && balance.address !== nativeAsset.address
-    )
+    return balances
+      .filter(balance =>
+        wethIsEth
+          ? wNativeAsset && balance.address !== wNativeAsset.address
+          : nativeAsset && balance.address !== nativeAsset.address
+      )
+      .map(adjustedBalances)
   }, [wethIsEth, isBalancesLoading])
-
+  console.log('filteredBalances', filteredBalances)
   function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(
       humanAmountsIn.map(({ tokenAddress }) => {
