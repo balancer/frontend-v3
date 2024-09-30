@@ -1,15 +1,9 @@
 'use client'
 
+import { SignatureState } from '@/lib/modules/web3/signatures/signature.helpers'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
 import { Permit2 } from '@balancer/sdk'
 import { PropsWithChildren, createContext, useState } from 'react'
-
-export enum SignPermit2State {
-  Ready = 'init',
-  Confirming = 'confirming',
-  Preparing = 'preparing',
-  Completed = 'completed',
-}
 
 export type UsePermit2SignatureResponse = ReturnType<typeof _usePermit2Signature>
 export const Permit2SignatureContext = createContext<UsePermit2SignatureResponse | null>(null)
@@ -17,9 +11,7 @@ export const Permit2SignatureContext = createContext<UsePermit2SignatureResponse
 export function _usePermit2Signature() {
   const [permit2TransferSignature, setPermit2TransferSignature] = useState<Permit2 | undefined>()
 
-  const [signPermit2State, setSignPermit2State] = useState<SignPermit2State>(
-    SignPermit2State.Preparing
-  )
+  const [signPermit2State, setSignPermit2State] = useState<SignatureState>(SignatureState.Preparing)
 
   return {
     permit2TransferSignature,

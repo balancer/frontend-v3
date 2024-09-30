@@ -1,14 +1,6 @@
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import { AddLiquidityQueryOutput } from '@balancer/sdk'
-import { Address } from 'viem'
 import { BuildAddLiquidityInput, QueryAddLiquidityOutput } from '../add-liquidity.types'
-
-export interface Permit2AddLiquidityInput {
-  account: Address
-  slippagePercent: string
-  sdkQueryOutput: AddLiquidityQueryOutput
-}
 
 /**
  * AddLiquidityHandler is an interface that defines the methods that must be implemented by a handler.

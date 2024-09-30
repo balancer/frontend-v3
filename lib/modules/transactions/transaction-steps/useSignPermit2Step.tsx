@@ -5,7 +5,6 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { Button, VStack } from '@chakra-ui/react'
 import { useMemo } from 'react'
-import { SignPermit2State } from '../../tokens/approvals/permit2/Permit2SignatureProvider'
 import {
   AddLiquidityPermit2Params,
   useSignPermit2Transfer,
@@ -14,19 +13,19 @@ import { useChainSwitch } from '../../web3/useChainSwitch'
 import { TransactionStep } from './lib'
 import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
 import { requiresPermit2Approval } from '../../pool/pool.helpers'
+import { getChainId } from '@/lib/config/app.config'
+import { SignatureState } from '../../web3/signatures/signature.helpers'
 
 export const signRelayerStepTitle = 'Sign relayer'
 
 export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep {
   const { isConnected, userAddress } = useUserAccount()
 
-  const { chainId } = params
-
   //TODO: Move this hook into useSignPermit2Transfer?
   //TODO: Move useSignPermit2Transfer up into this hook?
   //TODO: isLoading state depending on amountsIn (simulation loaded)?
   const { isLoadingNonces, nonces } = usePermit2Nonces({
-    chainId,
+    chainId: getChainId(params.pool.chain),
     tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
     owner: userAddress,
     enabled: requiresPermit2Approval(params.pool),
@@ -39,9 +38,10 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     isDisabled,
     buttonLabel,
     error,
-  } = useSignPermit2Transfer({ ...params, chainId, nonces })
-  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } =
-    useChainSwitch(chainId)
+  } = useSignPermit2Transfer({ ...params, nonces })
+  const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
+    getChainId(params.pool.chain)
+  )
 
   const isLoading = isLoadingTransfer || isLoadingNonces
 
@@ -67,7 +67,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     </VStack>
   )
 
-  const isComplete = () => signPermit2State === SignPermit2State.Completed
+  const isComplete = () => signPermit2State === SignatureState.Completed
 
   return useMemo(
     () => ({

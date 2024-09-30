@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useEffect, useState } from 'react'
 import { Hex, parseAbiItem } from 'viem'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
 
 type Props = {
   enabled: boolean
@@ -28,6 +29,7 @@ export function useSafeAppLogs({ enabled, hash, chainId, blockNumber }: Props) {
     select: data => data.find(log => log.args.txHash === hash),
     refetchInterval: safeTxHash ? 0 : 2000, // Refetch every 2 seconds until the safeTxHash is found
     enabled: enabled && !!hash && !!userAddress,
+    ...onlyExplicitRefetch,
   })
 
   useEffect(() => {

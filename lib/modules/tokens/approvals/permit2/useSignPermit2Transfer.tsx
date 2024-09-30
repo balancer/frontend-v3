@@ -7,13 +7,18 @@ import { Toast } from '@/lib/shared/components/toasts/Toast'
 import { useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { useTokens } from '../../TokensProvider'
-import { SignPermit2State, usePermit2Signature } from './Permit2SignatureProvider'
+import { usePermit2Signature } from './Permit2SignatureProvider'
 import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
 import { NoncesByTokenAddress } from './usePermit2Nonces'
 import { HumanTokenAmountWithAddress } from '../../token.types'
+import { getChainId } from '@/lib/config/app.config'
+import {
+  SignatureState,
+  isSignatureDisabled,
+  isSignatureLoading,
+} from '@/lib/modules/web3/signatures/signature.helpers'
 
 export type AddLiquidityPermit2Params = {
-  chainId: number
   humanAmountsIn: HumanTokenAmountWithAddress[]
   pool: Pool
   queryOutput?: SdkQueryAddLiquidityOutput
@@ -21,7 +26,7 @@ export type AddLiquidityPermit2Params = {
   nonces?: NoncesByTokenAddress
 }
 export function useSignPermit2Transfer({
-  chainId,
+  pool,
   humanAmountsIn,
   queryOutput,
   slippagePercent,
@@ -35,7 +40,7 @@ export function useSignPermit2Transfer({
   const amountsIn = queryOutput?.sdkQueryOutput.amountsIn
   const tokenSymbols = amountsIn
     ?.filter(a => a.amount > 0n)
-    .map(a => getToken(a.token.address, chainId)?.symbol)
+    .map(a => getToken(a.token.address, getChainId(pool.chain))?.symbol)
 
   const { setSignPermit2State, setPermit2TransferSignature, signPermit2State } =
     usePermit2Signature()
@@ -46,9 +51,9 @@ export function useSignPermit2Transfer({
 
   useEffect(() => {
     if (sdkClient === undefined) {
-      setSignPermit2State(SignPermit2State.Preparing)
+      setSignPermit2State(SignatureState.Preparing)
     } else {
-      setSignPermit2State(SignPermit2State.Ready)
+      setSignPermit2State(SignatureState.Ready)
     }
   }, [setSignPermit2State, sdkClient])
 
@@ -57,14 +62,14 @@ export function useSignPermit2Transfer({
   useEffect(() => {
     if (minimumBpt) {
       setPermit2TransferSignature(undefined)
-      setSignPermit2State(SignPermit2State.Ready)
+      setSignPermit2State(SignatureState.Ready)
     }
   }, [minimumBpt])
 
   async function signPermit2(pool: Pool) {
     if (!queryOutput) throw new Error('No input provided for permit2 signature')
     if (!nonces) throw new Error('No nonces provided for permit2 signature')
-    setSignPermit2State(SignPermit2State.Confirming)
+    setSignPermit2State(SignatureState.Confirming)
     setError(undefined)
 
     try {
@@ -81,7 +86,7 @@ export function useSignPermit2Transfer({
       })
 
       if (signature) {
-        setSignPermit2State(SignPermit2State.Completed)
+        setSignPermit2State(SignatureState.Completed)
         toast({
           title: 'Permit2 approval signed!',
           description: '',
@@ -91,14 +96,14 @@ export function useSignPermit2Transfer({
           render: ({ ...rest }) => <Toast {...rest} />,
         })
       } else {
-        setSignPermit2State(SignPermit2State.Ready)
+        setSignPermit2State(SignatureState.Ready)
       }
 
       setPermit2TransferSignature(signature)
     } catch (error) {
       console.error(error)
       setError('Error in permit2 signature call')
-      setSignPermit2State(SignPermit2State.Ready)
+      setSignPermit2State(SignatureState.Ready)
     }
   }
 
@@ -106,31 +111,17 @@ export function useSignPermit2Transfer({
     signPermit2,
     signPermit2State,
     buttonLabel: getButtonLabel(signPermit2State, tokenSymbols),
-    isLoading: isLoading(signPermit2State) || !queryOutput,
-    isDisabled: isDisabled(signPermit2State),
+    isLoading: isSignatureLoading(signPermit2State) || !queryOutput,
+    isDisabled: isSignatureDisabled(signPermit2State),
     error,
   }
 }
 
-function isDisabled(signPermit2State: SignPermit2State) {
-  return (
-    signPermit2State === SignPermit2State.Confirming ||
-    signPermit2State === SignPermit2State.Completed
-  )
-}
-
-function isLoading(signPermit2State: SignPermit2State) {
-  return (
-    signPermit2State === SignPermit2State.Confirming ||
-    signPermit2State === SignPermit2State.Preparing
-  )
-}
-
-function getButtonLabel(signPermit2State: SignPermit2State, tokenSymbols?: (string | undefined)[]) {
-  if (signPermit2State === SignPermit2State.Ready) return getReadyLabel(tokenSymbols)
-  if (signPermit2State === SignPermit2State.Confirming) return 'Confirm permit2 signature in wallet'
-  if (signPermit2State === SignPermit2State.Preparing) return 'Preparing'
-  if (signPermit2State === SignPermit2State.Completed) return 'Permit2 Signed'
+function getButtonLabel(signPermit2State: SignatureState, tokenSymbols?: (string | undefined)[]) {
+  if (signPermit2State === SignatureState.Ready) return getReadyLabel(tokenSymbols)
+  if (signPermit2State === SignatureState.Confirming) return 'Confirm permit2 signature in wallet'
+  if (signPermit2State === SignatureState.Preparing) return 'Preparing'
+  if (signPermit2State === SignatureState.Completed) return 'Permit2 Signed'
   return ''
 }
 
