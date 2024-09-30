@@ -15,7 +15,6 @@ import { useRemoveLiquidityPriceImpactQuery } from './queries/useRemoveLiquidity
 import { RemoveLiquidityType } from './remove-liquidity.types'
 import { Address, Hash } from 'viem'
 import { emptyTokenAmounts, toHumanAmount } from '../LiquidityActionHelpers'
-import { useDisclosure } from '@chakra-ui/hooks'
 import { getPoolTokens, isCowAmmPool } from '../../pool.helpers'
 import { isWrappedNativeAsset } from '@/lib/modules/tokens/token.helpers'
 import { useRemoveLiquiditySimulationQuery } from './queries/useRemoveLiquiditySimulationQuery'
@@ -23,6 +22,7 @@ import { useRemoveLiquiditySteps } from './useRemoveLiquiditySteps'
 import { useTransactionSteps } from '@/lib/modules/transactions/transaction-steps/useTransactionSteps'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { getUserWalletBalance } from '../../user-balance.helpers'
+import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 
 export type UseRemoveLiquidityResponse = ReturnType<typeof _useRemoveLiquidity>
 export const RemoveLiquidityContext = createContext<UseRemoveLiquidityResponse | null>(null)
@@ -46,7 +46,6 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const { getToken, usdValueForToken, getNativeAssetToken, getWrappedNativeAssetToken } =
     useTokens()
   const { isConnected } = useUserAccount()
-  const previewModalDisclosure = useDisclosure()
 
   const maxHumanBptIn: HumanAmount = getUserWalletBalance(pool)
   const humanBptIn: HumanAmount = bn(maxHumanBptIn)
@@ -233,6 +232,8 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     priceImpactQuery.data,
     transactionSteps.lastTransactionState,
   ])
+
+  const previewModalDisclosure = useModalWithPoolRedirect(pool, removeLiquidityTxHash)
 
   return {
     transactionSteps,
