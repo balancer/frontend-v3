@@ -12,7 +12,6 @@ import {
 import { useChainSwitch } from '../../web3/useChainSwitch'
 import { TransactionStep } from './lib'
 import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
-import { requiresPermit2Approval } from '../../pool/pool.helpers'
 import { getChainId } from '@/lib/config/app.config'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
 
@@ -28,7 +27,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     chainId: getChainId(params.pool.chain),
     tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
     owner: userAddress,
-    enabled: requiresPermit2Approval(params.pool),
+    enabled: params.isPermit2,
   })
 
   const {

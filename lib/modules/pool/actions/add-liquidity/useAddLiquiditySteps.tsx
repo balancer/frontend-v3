@@ -37,13 +37,15 @@ export function useAddLiquiditySteps({
     [humanAmountsIn, helpers]
   )
 
+  const isPermit2 = requiresPermit2Approval(pool)
+
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
       spenderAddress: getSpenderForAddLiquidity(pool),
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',
-      isPermit2: requiresPermit2Approval(pool),
+      isPermit2,
     })
 
   const signPermit2Step = useSignPermit2Step({
@@ -51,7 +53,10 @@ export function useAddLiquiditySteps({
     humanAmountsIn,
     slippagePercent: slippage,
     queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
+    isPermit2,
   })
+
+  const isSignPermit2Loading = isPermit2 && !signPermit2Step
 
   const addLiquidityStep = useAddLiquidityStep({
     handler,
@@ -59,9 +64,7 @@ export function useAddLiquiditySteps({
     simulationQuery,
   })
 
-  const addSteps = requiresPermit2Approval(pool)
-    ? [signPermit2Step, addLiquidityStep]
-    : [addLiquidityStep]
+  const addSteps = isPermit2 ? [signPermit2Step, addLiquidityStep] : [addLiquidityStep]
 
   const steps = useMemo(() => {
     if (relayerMode === 'approveRelayer') {
@@ -78,11 +81,12 @@ export function useAddLiquiditySteps({
     addLiquidityStep,
     approveRelayerStep,
     signRelayerStep,
+    signPermit2Step,
     humanAmountsIn,
   ])
 
   return {
-    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval,
+    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval || isSignPermit2Loading,
     steps,
   }
 }

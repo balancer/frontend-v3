@@ -24,6 +24,7 @@ export type AddLiquidityPermit2Params = {
   queryOutput?: SdkQueryAddLiquidityOutput
   slippagePercent: string
   nonces?: NoncesByTokenAddress
+  isPermit2: boolean
 }
 export function useSignPermit2Transfer({
   pool,
