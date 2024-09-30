@@ -54,11 +54,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
 
     const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
-      // Setting slippage to zero ensures the build call can't fail if the user
-      // maxes out their balance. It can result in a tx failure if the pool
-      // state changes significantly in the background. The assumption is that
-      // this should be rare. If not, we will have to re-introduce slippage here
-      // and limit the user input amounts to their balance - slippage.
       slippage: Slippage.fromPercentage(slippagePercent as HumanAmount),
       sender: account,
       recipient: account,

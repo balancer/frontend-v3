@@ -42,8 +42,6 @@ export function useMaximumInputs() {
   // from the balance so that if slippage does occur the transaction doesn't revert.
   const adjustedBalances = (balance: TokenAmount) => {
     if (isForcedProportionalAdd) {
-      console.log('isForcedProportionalAdd', isForcedProportionalAdd, proportionalSlippage)
-
       const slippage = Slippage.fromPercentage(proportionalSlippage as HumanAmount)
       const amount = slippage.applyTo(balance.amount, -1)
 

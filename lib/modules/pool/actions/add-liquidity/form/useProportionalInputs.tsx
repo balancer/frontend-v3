@@ -49,7 +49,7 @@ export function useProportionalInputs() {
   const { isLoading: isPoolLoading, pool } = usePool()
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
-  console.log({ proportionalSlippage })
+
   const adjustedBalances = (balance: TokenAmount) => {
     if (isForcedProportionalAdd) {
       const slippage = Slippage.fromPercentage(proportionalSlippage as HumanAmount)
@@ -73,7 +73,7 @@ export function useProportionalInputs() {
       )
       .map(adjustedBalances)
   }, [wethIsEth, isBalancesLoading])
-  console.log('filteredBalances', filteredBalances)
+
   function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(
       humanAmountsIn.map(({ tokenAddress }) => {
