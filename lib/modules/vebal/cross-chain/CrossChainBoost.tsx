@@ -13,15 +13,13 @@ import {
   Tooltip,
 } from '@chakra-ui/react'
 
-import { useCrossChainSync } from './useCrossChainSync'
+import { useCrossChainSync } from './hooks/useCrossChainSync'
 import Image from 'next/image'
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
 import { useVebalLockInfo } from '@/lib/modules/vebal/useVebalLockInfo'
-import { bn } from '@/lib/shared/utils/numbers'
-import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
+
 import CrossChainSyncModal from '@/lib/modules/vebal/cross-chain/CrossChainSyncModal'
 import { useState } from 'react'
-import { NetworkSyncState } from '@/lib/modules/vebal/cross-chain/useCrossChainNetworks'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { InfoOutlineIcon } from '@chakra-ui/icons'
 
@@ -31,27 +29,13 @@ const tooltipLabel = `Sidechains & Layer 2 networks like Polygon and Arbitrum do
                     On any network where you stake, you should sync your veBAL balance to get your max possible boost. 
                     Resync after acquiring more veBAL to continue boosting to your max.`
 
-function CrossChainBoost() {
-  const { userAddress, isConnected } = useUserAccount() // FIXME check if exists
-  const lockInfo = useVebalLockInfo()
-  const lockedAmount = lockInfo.mainnetLockedInfo.lockedAmount
+export function CrossChainBoost() {
+  const { isConnected } = useUserAccount()
+  const { mainnetLockedInfo } = useVebalLockInfo()
 
-  const {
-    networksSyncState,
-    networksBySyncState,
-    l2VeBalBalances,
-    isLoading,
-    tempSyncingNetworks,
-    showingUnsyncedNetworks,
-  } = useCrossChainSync()
-
-  function checkIfNetworkSyncing(network: GqlChain) {
-    return (
-      networksSyncState?.[network] === NetworkSyncState.Syncing ||
-      tempSyncingNetworks[userAddress]?.networks.includes(network)
-    )
-  }
-  checkIfNetworkSyncing
+  const { hasExistingLock, isExpired } = mainnetLockedInfo
+  const { networksBySyncState, l2VeBalBalances, isLoading, showingUnsyncedNetworks } =
+    useCrossChainSync()
 
   const [syncIsOpen, setSyncIsOpen] = useState(false)
 
@@ -61,7 +45,7 @@ function CrossChainBoost() {
 
   return (
     <Stack w="full" h="full" height="300px">
-      <Text fontWeight={700} fontSize="lg">
+      <Text fontWeight="bold" fontSize="lg">
         Cross chain veBAL boosts
         <Tooltip label={tooltipLabel}>
           <InfoOutlineIcon fontSize="sm" color="font.light" />
@@ -70,84 +54,82 @@ function CrossChainBoost() {
 
       {isConnected ? (
         <>
-          <Text>
-            {lockedAmount && bn(lockedAmount).gt(0)
-              ? lockedAmount
-              : 'Once you have some veBAL, sync your balance here to other networks.'}
-          </Text>
-
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing="md">
-            {showingUnsyncedNetworks.length > 0 && (
-              <CrossChainSyncModal
-                isOpen={syncIsOpen}
-                networks={showingUnsyncedNetworks}
-                onClose={() => setSyncIsOpen(false)}
-              />
-            )}
-            <GridItem>
-              {isLoading ? (
-                <Skeleton height="126px" />
-              ) : (
-                <Card h="100%">
-                  <CardHeader>Unsynced networks</CardHeader>
-                  <CardBody>
-                    {showingUnsyncedNetworks.length ? (
-                      <Flex>
-                        {showingUnsyncedNetworks.map(chain => (
-                          <Image
-                            key={chain}
-                            src={`/images/chains/${chain}.svg`}
-                            alt={`Chain icon for ${chain.toLowerCase()}`}
-                            width={20}
-                            height={20}
-                            title={`${chain} (${Number(myVebalBalance).toFixed(4)} - ${
-                              l2VeBalBalances[chain]
-                            })`}
-                          />
-                        ))}
-                      </Flex>
-                    ) : (
-                      <Text>All networks are synced</Text>
-                    )}
-                  </CardBody>
-                  <CardFooter>
-                    <Button size="lg" variant="primary" onClick={() => setSyncIsOpen(true)}>
-                      Sync
-                    </Button>
-                  </CardFooter>
-                </Card>
+          {!hasExistingLock || (hasExistingLock && isExpired) ? (
+            <Text>Once you have some veBAL, sync your balance here to other networks.</Text>
+          ) : (
+            <SimpleGrid columns={{ base: 1, md: 2 }} spacing="md">
+              {showingUnsyncedNetworks.length > 0 && (
+                <CrossChainSyncModal
+                  isOpen={syncIsOpen}
+                  networks={showingUnsyncedNetworks}
+                  onClose={() => setSyncIsOpen(false)}
+                />
               )}
-            </GridItem>
-            <GridItem>
-              {isLoading ? (
-                <Skeleton height="126px" />
-              ) : (
-                <Card h="100%">
-                  <CardHeader>Synced networks</CardHeader>
-                  <CardBody>
-                    {networksBySyncState.synced.length ? (
-                      <Flex>
-                        {networksBySyncState.synced.map(chain => (
-                          <Image
-                            key={chain}
-                            src={`/images/chains/${chain}.svg`}
-                            alt={`Chain icon for ${chain.toLowerCase()}`}
-                            width={20}
-                            height={20}
-                            title={chain}
-                          />
-                        ))}
-                      </Flex>
-                    ) : (
-                      <Text>
-                        Sync veBAL across networks for a boosted APR on your staked positions.
-                      </Text>
-                    )}
-                  </CardBody>
-                </Card>
-              )}
-            </GridItem>
-          </SimpleGrid>
+              <GridItem>
+                {isLoading ? (
+                  <Skeleton height="126px" />
+                ) : (
+                  <Card h="100%">
+                    <CardHeader>Unsynced networks</CardHeader>
+                    <CardBody>
+                      {showingUnsyncedNetworks.length ? (
+                        <Flex>
+                          {showingUnsyncedNetworks.map(chain => (
+                            <Image
+                              key={chain}
+                              src={`/images/chains/${chain}.svg`}
+                              alt={`Chain icon for ${chain.toLowerCase()}`}
+                              width={20}
+                              height={20}
+                              title={`${chain} (${Number(myVebalBalance).toFixed(4)} - ${
+                                l2VeBalBalances[chain]
+                              })`}
+                            />
+                          ))}
+                        </Flex>
+                      ) : (
+                        <Text>All networks are synced</Text>
+                      )}
+                    </CardBody>
+                    <CardFooter>
+                      <Button size="lg" variant="primary" onClick={() => setSyncIsOpen(true)}>
+                        Sync
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                )}
+              </GridItem>
+              <GridItem>
+                {isLoading ? (
+                  <Skeleton height="126px" />
+                ) : (
+                  <Card h="100%">
+                    <CardHeader>Synced networks</CardHeader>
+                    <CardBody>
+                      {networksBySyncState.synced.length ? (
+                        <Flex>
+                          {networksBySyncState.synced.map(chain => (
+                            <Image
+                              key={chain}
+                              src={`/images/chains/${chain}.svg`}
+                              alt={`Chain icon for ${chain.toLowerCase()}`}
+                              width={20}
+                              height={20}
+                              title={chain}
+                            />
+                          ))}
+                        </Flex>
+                      ) : (
+                        <Text>
+                          Sync veBAL across networks for a boosted APR on your staked positions.
+                        </Text>
+                      )}
+                    </CardBody>
+                  </Card>
+                )}
+              </GridItem>
+            </SimpleGrid>
+          )}
         </>
       ) : (
         <Text>Once you have some veBAL, sync your balance here to other networks.</Text>
@@ -155,5 +137,3 @@ function CrossChainBoost() {
     </Stack>
   )
 }
-
-export default CrossChainBoost

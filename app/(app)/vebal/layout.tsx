@@ -4,9 +4,10 @@ import { TokenBalancesProvider } from '@/lib/modules/tokens/TokenBalancesProvide
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { DefaultPageContainer } from '@/lib/shared/components/containers/DefaultPageContainer'
 import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
-import { CrossChainSyncProvider } from '@/lib/modules/vebal/cross-chain/useCrossChainSync'
+
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { PropsWithChildren } from 'react'
+import { CrossChainSyncProvider } from '@/lib/modules/vebal/cross-chain/hooks/useCrossChainSync'
 
 export default function VebalLayout({ children }: PropsWithChildren) {
   const { getTokensByChain } = useTokens()

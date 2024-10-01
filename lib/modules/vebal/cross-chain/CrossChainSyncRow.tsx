@@ -1,9 +1,10 @@
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { useCrossChainSync } from '@/lib/modules/vebal/cross-chain/useCrossChainSync'
+
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
 import { HStack, Text, VStack } from '@chakra-ui/react'
 import Image from 'next/image'
 import { getChainShortName } from '@/lib/config/app.config'
+import { useCrossChainSync } from './hooks/useCrossChainSync'
 
 export function CrossChainSyncRow({ network, current }: { network: GqlChain; current: boolean }) {
   const { l2VeBalBalances } = useCrossChainSync()

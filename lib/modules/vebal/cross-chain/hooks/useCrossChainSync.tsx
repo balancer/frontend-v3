@@ -1,25 +1,43 @@
 import networkConfigs from '@/lib/config/networks'
-import { useState, useEffect, useMemo, useCallback, createContext, PropsWithChildren } from 'react'
-import { OmniEscrowLock, useOmniEscrowLocksQuery } from './useOmniEscrowLocksQuery'
-import { useUserAccount } from '../../web3/UserAccountProvider'
-import { NetworkSyncState, useCrossChainNetworks } from './useCrossChainNetworks'
+import { useEffect, useMemo, useCallback, createContext, PropsWithChildren } from 'react'
+import { OmniEscrowLock, useOmniEscrowLocksQuery } from '../useOmniEscrowLocksQuery'
+import { useUserAccount } from '../../../web3/UserAccountProvider'
+import { NetworkSyncState, useCrossChainNetworks } from '../useCrossChainNetworks'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address, Hash } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
-import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client'
 import { keyBy } from 'lodash'
 import { useLocalStorage } from 'usehooks-ts'
 import { LS_KEYS } from '@/lib/modules/local-storage/local-storage.constants'
+import { useLayerZeroTxLinks } from './useLayerZeroTxLinks'
 
 const veBalSyncSupportedNetworks: GqlChain[] = Object.keys(networkConfigs)
   .filter(key => networkConfigs[key as keyof typeof networkConfigs].supportsVeBalSync)
   .map(key => key) as GqlChain[]
 
 const REFETCH_INTERVAL = 1000 * 30
-const REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL = 1000 * 5
 
 export type CrossChainSyncResult = ReturnType<typeof _useCrossChainSync>
 export const CrossChainSyncContext = createContext<CrossChainSyncResult | null>(null)
+
+interface CheckIfNetworkSyncingArgs {
+  networksSyncState: Record<GqlChain, NetworkSyncState>
+  tempSyncingNetworks: Record<Address, TempSyncingNetworks>
+  userAddress: Address
+  network: GqlChain
+}
+
+export function checkIfNetworkSyncing({
+  networksSyncState,
+  tempSyncingNetworks,
+  userAddress,
+  network,
+}: CheckIfNetworkSyncingArgs) {
+  return (
+    networksSyncState?.[network] === NetworkSyncState.Syncing ||
+    tempSyncingNetworks[userAddress]?.networks.includes(network)
+  )
+}
 
 export interface TempSyncingNetworks {
   networks: GqlChain[]
@@ -49,7 +67,7 @@ export const _useCrossChainSync = () => {
     LS_KEYS.CrossChainSync.SyncTxHashes,
     initialSyncTxHashes
   )
-  const [syncLayerZeroTxLinks, setSyncLayerZeroTxLinks] = useState({} as Record<GqlChain, string>)
+  const { syncLayerZeroTxLinks } = useLayerZeroTxLinks(syncTxHashes)
 
   const allNetworksUnsynced = useMemo(
     () => omniEscrowResponse?.omniVotingEscrowLocks.length === 0,
@@ -88,7 +106,7 @@ export const _useCrossChainSync = () => {
   const networksSyncState = useMemo(() => {
     return veBalSyncSupportedNetworks.reduce<Partial<Record<GqlChain, NetworkSyncState>>>(
       (acc, network) => {
-        acc[network] = crossChainNetworks[network]!.getNetworkSyncState(
+        acc[network] = crossChainNetworks[network].getNetworkSyncState(
           omniEscrowLocksMap?.[networkConfigs[network].layerZeroChainId || ''],
           mainnetEscrowLocks
         )
@@ -137,8 +155,11 @@ export const _useCrossChainSync = () => {
   const warningMessage = useMemo(() => {
     if (networksBySyncState.syncing.length > 0) {
       return {
-        title: 'Syncing in Progress',
-        text: 'Your cross-chain sync is currently in progress. Please wait.',
+        title: 'Wait until sync finalizes before restaking / triggering a gauge update on L2',
+        text: `Your sync has been initiated but it may take up to 30 mins to update across L2s. 
+              Once your veBAL is synced, you will need to interact with each gauge to register your new max boost. 
+              You can either claim, restake, or click the Update button, which will appear 
+              on each individual pool page staking section.`,
       }
     }
     return null
@@ -147,8 +168,10 @@ export const _useCrossChainSync = () => {
   const infoMessage = useMemo(() => {
     if (!warningMessage && networksBySyncState.synced.length > 0) {
       return {
-        title: 'Gauge Update Needed',
-        text: 'You may need to update your gauge.',
+        title: 'Trigger pool gauge updates to get your boosts sooner',
+        text: `Pool gauges don’t automatically recognize changes in veBAL until triggered. 
+            Updates are triggered when any user interacts with a gauge, such as by claiming BAL, staking or unstaking. 
+            Trigger individual gauges yourself for your boosts to apply immediately.`,
       }
     }
     return null
@@ -203,52 +226,7 @@ export const _useCrossChainSync = () => {
       )
       return { ...prev, [userAddress]: { ...prev[userAddress], networks: updatedNetworks } }
     })
-  }, [userAddress, networksBySyncState, tempSyncingNetworks])
-
-  const getLayerZeroTxLink = useCallback(async (txHash: Address) => {
-    const { messages } = await getMessagesBySrcTxHash(101, txHash)
-    const message = messages[0]
-    if (!message) {
-      console.error('No message found in Layer Zero')
-      return ''
-    }
-    return `https://layerzeroscan.com/tx/${message.srcTxHash}`
-  }, [])
-
-  const getLayerZeroTxLinkOnInterval = useCallback(
-    (networks: GqlChain[]) => {
-      let retryCount = 0
-      const intervalId = setInterval(async () => {
-        for (const network of networks) {
-          const hash = syncTxHashes[userAddress]?.[network]
-          if (hash) {
-            const link = await getLayerZeroTxLink(hash)
-            setSyncLayerZeroTxLinks(prev => ({ ...prev, [network]: link }))
-          }
-        }
-        retryCount++
-        if (networks.every(network => syncLayerZeroTxLinks[network]) || retryCount > 10) {
-          clearInterval(intervalId)
-        }
-      }, REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL)
-
-      return intervalId
-    },
-    [userAddress, syncTxHashes, getLayerZeroTxLink, syncLayerZeroTxLinks]
-  )
-
-  useEffect(() => {
-    const networks = Object.keys(syncTxHashes[userAddress] || {}) as GqlChain[]
-    let intervalId: NodeJS.Timer
-    if (networks.length > 0) {
-      intervalId = getLayerZeroTxLinkOnInterval(networks)
-    }
-    return () => {
-      if (intervalId) {
-        clearInterval(intervalId)
-      }
-    }
-  }, [syncTxHashes, userAddress, getLayerZeroTxLinkOnInterval])
+  }, [userAddress, networksBySyncState, tempSyncingNetworks, setTempSyncingNetworks])
 
   useEffect(() => {
     if (networksBySyncState.synced.length > 0) {
@@ -274,7 +252,6 @@ export const _useCrossChainSync = () => {
     setTempSyncingNetworks,
     warningMessage,
     infoMessage,
-    getLayerZeroTxLink,
     syncTxHashes,
     setSyncTxHashes,
     syncLayerZeroTxLinks,

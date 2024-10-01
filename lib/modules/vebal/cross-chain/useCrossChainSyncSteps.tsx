@@ -23,18 +23,18 @@ export interface CrossChainSyncStepsProps {
 }
 
 function ChainSyncButton({
-  tokenAddress,
+  omniVotingEscrow,
   layerZeroChainId,
   stepId,
   network,
 }: {
-  tokenAddress: Address
+  omniVotingEscrow: Address
   layerZeroChainId: number
   stepId: string
   network: GqlChain
 }) {
   const { chainId } = useNetworkConfig()
-  const { data, error, isLoading } = useEstimateSendUserBalance(tokenAddress, layerZeroChainId)
+  const { data, error, isLoading } = useEstimateSendUserBalance(omniVotingEscrow, layerZeroChainId)
   const { userAddress } = useUserAccount()
 
   // FIXME - handle error
@@ -72,7 +72,7 @@ function ChainSyncButton({
     contractId: 'balancer.omniVotingEscrowAbi',
     chainId,
     functionName: 'sendUserBalance',
-    contractAddress: tokenAddress,
+    contractAddress: omniVotingEscrow,
     enabled: Boolean(nativeFee),
     txSimulationMeta,
     args: [userAddress, layerZeroChainId, userAddress],
@@ -114,21 +114,34 @@ export function useCrossChainSyncSteps({ networks }: CrossChainSyncStepsProps): 
             confirmed: 'confirmed - Cross Chain Sync!',
             tooltip: 'tooltip - Cross Chain Sync',
           }
+          const layerZeroChainId = networkConfig.layerZeroChainId
+
+          if (!layerZeroChainId) {
+            throw new Error('layerZeroChainId is not defined')
+          }
+
+          const omniVotingEscrow = contracts.omniVotingEscrow
+
+          if (!omniVotingEscrow) {
+            throw new Error('omniVotingEscrow contract address is not defined')
+          }
+
+          const renderAction = () => (
+            <ChainSyncButton
+              key={stepId}
+              network={network}
+              stepId={stepId}
+              layerZeroChainId={layerZeroChainId}
+              omniVotingEscrow={omniVotingEscrow}
+            />
+          )
 
           return {
             id: stepId,
             stepType: 'crossChainSync',
             labels,
             isComplete,
-            renderAction: () => (
-              <ChainSyncButton
-                key={stepId}
-                network={network}
-                stepId={stepId}
-                layerZeroChainId={networkConfig.layerZeroChainId!}
-                tokenAddress={contracts.omniVotingEscrow!}
-              />
-            ),
+            renderAction,
             renderContent: () => (
               <CrossChainSyncModalContent
                 key={stepId}

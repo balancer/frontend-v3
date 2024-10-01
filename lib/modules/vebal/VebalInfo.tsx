@@ -23,7 +23,14 @@ export function VebalInfo() {
   )
 
   const { balanceFor } = useTokenBalances()
-  const unlockedBalance = balanceFor(mainnetNetworkConfig.tokens.addresses.veBalBpt!)
+
+  const veBALBptAddress = mainnetNetworkConfig.tokens.addresses.veBalBpt
+
+  if (!veBALBptAddress) {
+    throw new Error('veBAL BPT address not found')
+  }
+
+  const unlockedBalance = balanceFor(veBALBptAddress)
 
   const lockData = [
     {

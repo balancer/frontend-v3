@@ -24,13 +24,15 @@ import { useState } from 'react'
 import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 import { useCrossChainSyncSteps } from '@/lib/modules/vebal/cross-chain/useCrossChainSyncSteps'
 import { useTransactionSteps } from '../../transactions/transaction-steps/useTransactionSteps'
+// eslint-disable-next-line max-len
 import { getStylesForModalContentWithStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/step-tracker.utils'
 import { DesktopStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/DesktopStepTracker'
 import { MobileStepTracker } from '@/lib/modules/transactions/transaction-steps/step-tracker/MobileStepTracker'
 import { uniq } from 'lodash'
 import { getChainShortName } from '@/lib/config/app.config'
-import { useCrossChainSync } from '@/lib/modules/vebal/cross-chain/useCrossChainSync'
+
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
+import { useCrossChainSync } from './hooks/useCrossChainSync'
 
 type Props = {
   isOpen: boolean
