@@ -15,11 +15,7 @@ import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-li
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
- * UnbalancedAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
+ * Base abstract class that shares common logic shared by v3 and v2/v1 pool handlers
  */
 export abstract class BaseUnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   protected helpers: LiquidityActionHelpers
