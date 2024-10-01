@@ -37,7 +37,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     getChainId(params.pool.chain)
   )
 
-  const isLoading = !!params.queryOutput || isLoadingTransfer || isLoadingNonces
+  const isLoading = isLoadingTransfer || isLoadingNonces
 
   const SignPermitButton = () => (
     <VStack width="full">
