@@ -84,16 +84,19 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
 }
 
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
-  const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
-  if (privateAlchemyKey) {
+  const privateKey = process.env['NEXT_PRIVATE_DRPC_KEY']
+  const dRpcUrl = (chainName: string) =>
+    `https://lb.drpc.org/ogrpc?network=${chainName}&dkey=${privateKey}`
+
+  if (privateKey) {
     if (network.networkName === 'Ethereum') {
-      return `https://eth-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
+      return dRpcUrl('ethereum')
     }
     if (network.networkName === 'Polygon') {
-      return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
+      return dRpcUrl('polygon')
     }
     if (network.networkName === 'Sepolia') {
-      return `https://eth-sepolia.g.alchemy.com/v2/${privateAlchemyKey}`
+      return dRpcUrl('sepolia')
     }
   }
 
