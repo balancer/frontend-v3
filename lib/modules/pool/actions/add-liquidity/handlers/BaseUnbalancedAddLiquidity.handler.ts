@@ -15,7 +15,7 @@ import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-li
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
- * Base abstract class that shares common logic shared by v3 and v2/v1 pool handlers
+ * Base abstract class that shares common logic shared by v3 and v2/v1 pool unbalanced handlers
  */
 export abstract class BaseUnbalancedAddLiquidityHandler implements AddLiquidityHandler {
   protected helpers: LiquidityActionHelpers

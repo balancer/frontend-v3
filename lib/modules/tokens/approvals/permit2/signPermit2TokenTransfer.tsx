@@ -42,7 +42,6 @@ export async function signPermit2TokenTransfer(
   }
 }
 
-// TODO: refactor to object parameters
 async function signPermit2({
   sdkClient,
   pool,
@@ -50,6 +49,7 @@ async function signPermit2({
   permit2Input,
   nonces,
 }: SignPermit2Params): Promise<Permit2> {
+  if (!sdkClient) throw new Error('Missing sdkClient')
   const baseInput = constructBaseBuildCallInput({
     humanAmountsIn,
     slippagePercent: permit2Input.slippagePercent,
@@ -59,7 +59,7 @@ async function signPermit2({
   })
   const signature = await Permit2Helper.signAddLiquidityApproval({
     ...baseInput,
-    client: sdkClient!,
+    client: sdkClient,
     owner: permit2Input.account,
     nonces: baseInput.amountsIn.map(a => nonces[a.token.address]),
   })

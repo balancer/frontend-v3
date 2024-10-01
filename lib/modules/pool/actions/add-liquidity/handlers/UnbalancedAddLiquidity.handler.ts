@@ -32,8 +32,6 @@ export class UnbalancedAddLiquidityHandler extends BaseUnbalancedAddLiquidityHan
       account
     )
 
-    console.log({ buildCallParams })
-
     const { callData, to, value } = addLiquidity.buildCall(buildCallParams)
 
     return {
