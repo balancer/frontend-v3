@@ -15,14 +15,9 @@ import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonce
 import { getChainId } from '@/lib/config/app.config'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
 
-export const signRelayerStepTitle = 'Sign relayer'
-
 export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep {
   const { isConnected, userAddress } = useUserAccount()
 
-  //TODO: Move this hook into useSignPermit2Transfer?
-  //TODO: Move useSignPermit2Transfer up into this hook?
-  //TODO: isLoading state depending on amountsIn (simulation loaded)?
   const { isLoadingNonces, nonces } = usePermit2Nonces({
     chainId: getChainId(params.pool.chain),
     tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
@@ -42,7 +37,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     getChainId(params.pool.chain)
   )
 
-  const isLoading = isLoadingTransfer || isLoadingNonces
+  const isLoading = !!params.queryOutput || isLoadingTransfer || isLoadingNonces
 
   const SignPermitButton = () => (
     <VStack width="full">
@@ -73,7 +68,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
       id: 'sign-permit2',
       stepType: 'signPermit2',
       labels: {
-        // TODO: display token symbol/s
+        // TODO: display nested permit tokens in Step Tracker
         title: `Permit on balancer`,
         init: `Permit transfer`,
         tooltip: 'Sign permit2 transfer',
