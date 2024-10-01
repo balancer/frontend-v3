@@ -15,7 +15,7 @@ export const usdcAddress = '0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48' as const
 export const usdtAddress = '0xdac17f958d2ee523a2206206994597c13d831ec7' as const
 
 export const ethAddress = '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee' as const
-export const maticAddress = '0x0000000000000000000000000000000000001010' as const
+export const polAddress = '0x0000000000000000000000000000000000001010' as const
 
 export const vEth = '0x4bc3263eb5bb2ef7ad9ab6fb68be80e43b43801f' as const
 

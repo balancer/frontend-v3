@@ -39,8 +39,15 @@ export function SwapPreviewModal({
   const { userAddress } = useUserAccount()
   const { stopTokenPricePolling } = useTokens()
 
-  const { transactionSteps, swapAction, isWrap, selectedChain, swapTxHash, hasQuoteContext } =
-    useSwap()
+  const {
+    transactionSteps,
+    swapAction,
+    isWrap,
+    selectedChain,
+    swapTxHash,
+    urlTxHash,
+    hasQuoteContext,
+  } = useSwap()
 
   const swapReceipt = useSwapReceipt({
     txHash: swapTxHash,
@@ -97,6 +104,7 @@ export function SwapPreviewModal({
           currentStep={transactionSteps.currentStep}
           returnLabel="Swap again"
           returnAction={onClose}
+          urlTxHash={urlTxHash}
         />
       </ModalContent>
     </Modal>

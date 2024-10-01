@@ -8,11 +8,16 @@ export function isUserRejectedError(error: Error): boolean {
 */
 export function isViemHttpFetchError(error?: Error | null): boolean {
   if (!error) return false
-  if (
-    error.message.startsWith('HTTP request failed.') &&
-    error.message.includes('Failed to fetch')
-  ) {
-    return true
-  }
-  return false
+  return (
+    error.message.startsWith('HTTP request failed.') && error.message.includes('Failed to fetch')
+  )
+}
+
+export function isPausedError(error?: Error | null): boolean {
+  if (!error) return false
+  return isPausedErrorMessage(error.message)
+}
+
+export function isPausedErrorMessage(errorMessage: string): boolean {
+  return errorMessage.includes('reverted with the following reason:\nBAL#402\n')
 }
