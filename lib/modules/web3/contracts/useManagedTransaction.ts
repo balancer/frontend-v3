@@ -47,7 +47,6 @@ export function useManagedTransaction({
   args,
   txSimulationMeta,
   enabled = true,
-  txConfig,
 }: ManagedTransactionInput) {
   const { minConfirmations } = useNetworkConfig()
   const { shouldChangeNetwork } = useChainSwitch(chainId)
@@ -59,7 +58,6 @@ export function useManagedTransaction({
     // This any is 'safe'. The type provided to any is the same type for args that is inferred via the functionName
     args: args as any,
     chainId,
-    ...txConfig,
     query: {
       enabled: enabled && !shouldChangeNetwork,
       meta: txSimulationMeta,
