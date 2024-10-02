@@ -45,7 +45,6 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const SignPermitButton = () => (
     <VStack width="full">
-      <div>signPermit2State: {signPermit2State}</div>
       {error && <BalAlert status="error" content={error} />}
       {!isConnected && <ConnectWallet width="full" isLoading={isLoading} />}
       {shouldChangeNetwork && isConnected && <NetworkSwitchButton {...networkSwitchButtonProps} />}
