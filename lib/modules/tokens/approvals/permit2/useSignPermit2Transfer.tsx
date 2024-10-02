@@ -1,22 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Pool } from '@/lib/modules/pool/PoolProvider'
+import { getTokenSymbols } from '@/lib/modules/pool/actions/LiquidityActionHelpers'
 import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
-import { useSdkWalletClient } from '@/lib/modules/web3/useSdkViemClient'
-import { Toast } from '@/lib/shared/components/toasts/Toast'
-import { useToast } from '@chakra-ui/react'
-import { useEffect, useState } from 'react'
-import { useTokens } from '../../TokensProvider'
-import { usePermit2Signature } from './Permit2SignatureProvider'
-import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
-import { NoncesByTokenAddress } from './usePermit2Nonces'
-import { HumanTokenAmountWithAddress } from '../../token.types'
-import { getChainId } from '@/lib/config/app.config'
 import {
   SignatureState,
   isSignatureDisabled,
   isSignatureLoading,
 } from '@/lib/modules/web3/signatures/signature.helpers'
+import { useSdkWalletClient } from '@/lib/modules/web3/useSdkViemClient'
+import { Toast } from '@/lib/shared/components/toasts/Toast'
+import { useToast } from '@chakra-ui/react'
+import { useEffect, useState } from 'react'
+import { useTokens } from '../../TokensProvider'
+import { HumanTokenAmountWithAddress } from '../../token.types'
+import { usePermit2Signature } from './Permit2SignatureProvider'
+import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
+import { NoncesByTokenAddress } from './usePermit2Nonces'
 
 export type AddLiquidityPermit2Params = {
   humanAmountsIn: HumanTokenAmountWithAddress[]
@@ -37,13 +37,8 @@ export function useSignPermit2Transfer({
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
 
-  //TODO: We will probably need to extract this logic to be reusable by other components (StepTracker)
-  const amountsIn = queryOutput?.sdkQueryOutput.amountsIn
-  const tokenSymbols = amountsIn
-    ?.filter(a => a.amount > 0n)
-    .map(a => getToken(a.token.address, getChainId(pool.chain))?.symbol)
-
-  const { setSignPermit2State, setPermit2TransferSignature, signPermit2State } =
+  const tokenSymbols = getTokenSymbols(getToken, pool.chain, queryOutput)
+  const { signPermit2State, setSignPermit2State, setPermit2TransferSignature } =
     usePermit2Signature()
 
   const [error, setError] = useState<string | undefined>()
@@ -51,12 +46,8 @@ export function useSignPermit2Transfer({
   const sdkClient = useSdkWalletClient()
 
   useEffect(() => {
-    if (sdkClient === undefined) {
-      setSignPermit2State(SignatureState.Preparing)
-    } else {
-      setSignPermit2State(SignatureState.Ready)
-    }
-  }, [setSignPermit2State, sdkClient])
+    if (sdkClient === undefined) setSignPermit2State(SignatureState.Preparing)
+  }, [sdkClient])
 
   //TODO: Generalize for Swaps and other potential signatures
   const minimumBpt = queryOutput?.sdkQueryOutput.bptOut.amount
