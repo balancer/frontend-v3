@@ -19,6 +19,7 @@ export function useAddLiquiditySteps({
   handler,
   humanAmountsIn,
   simulationQuery,
+  slippage,
 }: AddLiquidityStepsParams) {
   const { pool, chainId, chain } = usePool()
   const relayerMode = useRelayerMode(pool)
@@ -46,6 +47,7 @@ export function useAddLiquiditySteps({
     handler,
     humanAmountsIn,
     simulationQuery,
+    slippage,
   })
 
   const steps = useMemo(() => {
