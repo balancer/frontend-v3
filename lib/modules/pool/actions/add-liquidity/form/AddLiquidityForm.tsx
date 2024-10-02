@@ -82,6 +82,7 @@ function AddLiquidityMainForm() {
     wNativeAsset,
     previewModalDisclosure,
     proportionalSlippage,
+    slippage,
     setProportionalSlippage,
   } = useAddLiquidity()
 
@@ -217,6 +218,7 @@ function AddLiquidityMainForm() {
                   <PoolActionsPriceImpactDetails
                     totalUSDValue={totalUSDValue}
                     bptAmount={simulationQuery.data?.bptOut.amount}
+                    slippage={slippage}
                     isAddLiquidity
                     isLoading={isFetching}
                   />

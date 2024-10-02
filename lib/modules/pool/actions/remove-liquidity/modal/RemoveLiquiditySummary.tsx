@@ -14,6 +14,7 @@ import { RemoveLiquidityReceiptResult } from '@/lib/modules/transactions/transac
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 
 export function RemoveLiquiditySummary({
   isLoading: isLoadingReceipt,
@@ -34,6 +35,7 @@ export function RemoveLiquiditySummary({
   const { getTokensByChain } = useTokens()
   const { pool } = usePool()
   const { userAddress, isLoading: isUserAddressLoading } = useUserAccount()
+  const { slippage } = useUserSettings()
 
   const _amountsOut = amountsOut.filter(amount => bn(amount.humanAmount).gt(0))
 
@@ -87,6 +89,7 @@ export function RemoveLiquiditySummary({
             <VStack align="start" spacing="sm">
               <PoolActionsPriceImpactDetails
                 totalUSDValue={totalUSDValue}
+                slippage={slippage}
                 bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
               />
             </VStack>
