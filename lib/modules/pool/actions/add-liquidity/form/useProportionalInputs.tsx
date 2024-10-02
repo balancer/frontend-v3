@@ -6,13 +6,7 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { isSameAddress } from '@/lib/shared/utils/addresses'
 import { bn } from '@/lib/shared/utils/numbers'
-import {
-  Address,
-  HumanAmount,
-  InputAmount,
-  Slippage,
-  calculateProportionalAmounts,
-} from '@balancer/sdk'
+import { Address, HumanAmount, InputAmount, calculateProportionalAmounts } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
 import { formatUnits } from 'viem'
 import { usePool } from '../../../PoolProvider'
@@ -24,7 +18,7 @@ import {
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress, TokenAmount } from '@/lib/modules/tokens/token.types'
-import { swapWrappedWithNative } from '@/lib/modules/tokens/token.helpers'
+import { swapWrappedWithNative, tokenAmountMinusSlippage } from '@/lib/modules/tokens/token.helpers'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -50,29 +44,27 @@ export function useProportionalInputs() {
   const [isMaximized, setIsMaximized] = useState(false)
   const { isLoadingTokenPrices } = useTokens()
 
+  // Depending on if the user is using WETH or ETH, we need to filter out the
+  // native asset or wrapped native asset.
+  const nativeAssetFilter = (balance: TokenAmount) =>
+    wethIsEth
+      ? wNativeAsset && balance.address !== wNativeAsset.address
+      : nativeAsset && balance.address !== nativeAsset.address
+
+  // If forced proportional add, we need to adjust the balances to account for
+  // the slippage setting. If slippage is > 0, we need to subtract the slippage
+  // from the balance so that if slippage does occur the transaction doesn't revert.
   const adjustedBalances = (balance: TokenAmount) => {
     if (isForcedProportionalAdd) {
-      const slippage = Slippage.fromPercentage(proportionalSlippage as HumanAmount)
-      const amount = slippage.applyTo(balance.amount, -1)
-      return {
-        ...balance,
-        amount,
-        formatted: formatUnits(amount, balance.decimals),
-      }
+      return tokenAmountMinusSlippage(balance, proportionalSlippage)
     }
 
     return balance
   }
 
   const filteredBalances = useMemo(() => {
-    return balances
-      .filter(balance =>
-        wethIsEth
-          ? wNativeAsset && balance.address !== wNativeAsset.address
-          : nativeAsset && balance.address !== nativeAsset.address
-      )
-      .map(adjustedBalances)
-  }, [wethIsEth, isBalancesLoading])
+    return balances.filter(nativeAssetFilter).map(adjustedBalances)
+  }, [wethIsEth, isBalancesLoading, proportionalSlippage])
 
   function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(
@@ -125,7 +117,11 @@ export function useProportionalInputs() {
     if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts || hasNoLiquidity(pool)) return
 
     const humanBalanceFor = (tokenAddress: string): HumanAmount => {
-      return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
+      let balance = balanceFor(tokenAddress)
+      if (balance && isForcedProportionalAdd) {
+        balance = tokenAmountMinusSlippage(balance, proportionalSlippage)
+      }
+      return (balance?.formatted || '0') as HumanAmount
     }
 
     const optimalToken = filteredBalances.find(({ address }) => {

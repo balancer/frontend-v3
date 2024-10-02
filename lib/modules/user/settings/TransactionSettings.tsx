@@ -17,7 +17,7 @@ import {
 } from '@chakra-ui/react'
 import { useUserSettings } from './UserSettingsProvider'
 import { fNum } from '@/lib/shared/utils/numbers'
-import { Settings } from 'react-feather'
+import { AlertTriangle, Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 import { SlippageInput } from './UserSettings'
 
@@ -76,6 +76,7 @@ export function ProportionalTransactionSettings({
       <PopoverTrigger>
         <Button onClick={onOpen} variant="tertiary" {...props}>
           <HStack textColor="grayText">
+            <AlertTriangle size={16} />
             <Text color="grayText" fontSize="xs">
               {fNum('slippage', slippage)}
             </Text>
@@ -92,13 +93,27 @@ export function ProportionalTransactionSettings({
         <PopoverBody p="md">
           <VStack align="start" w="full" spacing="sm">
             <VStack align="start" w="full">
-              <Heading size="sm">Slippage</Heading>
-              <Text color="font.secondary">
-                Slippage is set to 0 by default for forced proportional actions to reduce dust left
-                over. If you need to set slippage higher than 0 it will effectively lower the amount
-                of tokens you can add in the form below. Then, if slippage occurs, the transaction
-                can take the amount of tokens you specified + slippage from your token balance.
-              </Text>
+              <HStack>
+                <Heading size="sm">Slippage</Heading>
+
+                <Popover>
+                  <PopoverTrigger>
+                    <AlertTriangle size={16} />
+                  </PopoverTrigger>
+                  <PopoverContent>
+                    <PopoverArrow />
+                    <PopoverBody>
+                      <Text variant="secondary" fontSize="sm" lineHeight="18px" fontWeight="500">
+                        Slippage is set to 0 by default for forced proportional actions to reduce
+                        dust left over. If you need to set slippage higher than 0 it will
+                        effectively lower the amount of tokens you can add in the form below. Then,
+                        if slippage occurs, the transaction can take the amount of tokens you
+                        specified + slippage from your token balance.
+                      </Text>
+                    </PopoverBody>
+                  </PopoverContent>
+                </Popover>
+              </HStack>
               <SlippageInput slippage={slippage} setSlippage={setSlippage} />
             </VStack>
             <VStack align="start" w="full">

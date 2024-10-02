@@ -5,13 +5,13 @@ import { useTokenBalances } from '@/lib/modules/tokens/TokenBalancesProvider'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { bn } from '@/lib/shared/utils/numbers'
-import { Address, HumanAmount, Slippage } from '@balancer/sdk'
+import { Address, HumanAmount } from '@balancer/sdk'
 import { useMemo, useState } from 'react'
 import { usePool } from '../../../PoolProvider'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { TokenAmount } from '@/lib/modules/tokens/token.types'
-import { formatUnits } from 'viem'
+import { tokenAmountMinusSlippage } from '@/lib/modules/tokens/token.helpers'
 
 export function useMaximumInputs() {
   const { isConnected } = useUserAccount()
@@ -42,14 +42,7 @@ export function useMaximumInputs() {
   // from the balance so that if slippage does occur the transaction doesn't revert.
   const adjustedBalances = (balance: TokenAmount) => {
     if (isForcedProportionalAdd) {
-      const slippage = Slippage.fromPercentage(proportionalSlippage as HumanAmount)
-      const amount = slippage.applyTo(balance.amount, -1)
-
-      return {
-        ...balance,
-        amount,
-        formatted: formatUnits(amount, balance.decimals),
-      }
+      return tokenAmountMinusSlippage(balance, proportionalSlippage)
     }
 
     return balance

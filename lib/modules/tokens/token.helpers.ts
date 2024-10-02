@@ -6,9 +6,9 @@ import {
 import { SupportedChainId } from '@/lib/config/config.types'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { includesAddress, isSameAddress } from '@/lib/shared/utils/addresses'
-import { Address } from 'viem'
-import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
-import { InputAmount } from '@balancer/sdk'
+import { Address, formatUnits } from 'viem'
+import { HumanTokenAmountWithAddress, TokenBase, TokenAmount } from './token.types'
+import { HumanAmount, InputAmount, Slippage } from '@balancer/sdk'
 import { Pool } from '../pool/PoolProvider'
 import { getVaultConfig, isCowAmmPool, isV3Pool } from '../pool/pool.helpers'
 
@@ -143,4 +143,15 @@ export function getSpenderForAddLiquidity(pool: Pool): Address {
   }
   const { vaultAddress } = getVaultConfig(pool)
   return vaultAddress
+}
+
+export function tokenAmountMinusSlippage(tokenAmount: TokenAmount, slippage: HumanAmount | string) {
+  const _slippage = Slippage.fromPercentage(slippage as HumanAmount)
+  const amount = _slippage.applyTo(tokenAmount.amount, -1)
+
+  return {
+    ...tokenAmount,
+    amount,
+    formatted: formatUnits(amount, tokenAmount.decimals),
+  }
 }
