@@ -55,10 +55,10 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
-  const { validTokens } = useAddLiquidity()
+  const { validTokens, proportionalSlippage } = useAddLiquidity()
 
   return (
-    <TokenBalancesProvider extTokens={validTokens}>
+    <TokenBalancesProvider extTokens={validTokens} bufferPercentage={proportionalSlippage}>
       <AddLiquidityMainForm />
     </TokenBalancesProvider>
   )
@@ -149,18 +149,18 @@ function AddLiquidityMainForm() {
     })
   }
 
-  useEffect(() => {
-    if (addLiquidityTxHash) {
-      previewModalDisclosure.onOpen()
-    }
-  }, [addLiquidityTxHash])
-
   function onModalClose() {
     // restart polling for token prices when modal is closed again
     startTokenPricePolling()
 
     previewModalDisclosure.onClose()
   }
+
+  useEffect(() => {
+    if (addLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [addLiquidityTxHash])
 
   return (
     <Box w="full" maxW="lg" mx="auto" pb="2xl">

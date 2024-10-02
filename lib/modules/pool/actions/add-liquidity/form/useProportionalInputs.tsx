@@ -18,7 +18,7 @@ import {
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { HumanTokenAmountWithAddress, TokenAmount } from '@/lib/modules/tokens/token.types'
-import { swapWrappedWithNative, tokenAmountMinusSlippage } from '@/lib/modules/tokens/token.helpers'
+import { swapWrappedWithNative } from '@/lib/modules/tokens/token.helpers'
 
 type OptimalToken = {
   tokenAddress: Address
@@ -35,8 +35,6 @@ export function useProportionalInputs() {
     wethIsEth,
     nativeAsset,
     wNativeAsset,
-    proportionalSlippage,
-    isForcedProportionalAdd,
   } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balanceFor, balances, isBalancesLoading } = useTokenBalances()
@@ -51,20 +49,9 @@ export function useProportionalInputs() {
       ? wNativeAsset && balance.address !== wNativeAsset.address
       : nativeAsset && balance.address !== nativeAsset.address
 
-  // If forced proportional add, we need to adjust the balances to account for
-  // the slippage setting. If slippage is > 0, we need to subtract the slippage
-  // from the balance so that if slippage does occur the transaction doesn't revert.
-  const adjustedBalances = (balance: TokenAmount) => {
-    if (isForcedProportionalAdd) {
-      return tokenAmountMinusSlippage(balance, proportionalSlippage)
-    }
-
-    return balance
-  }
-
   const filteredBalances = useMemo(() => {
-    return balances.filter(nativeAssetFilter).map(adjustedBalances)
-  }, [wethIsEth, isBalancesLoading, proportionalSlippage])
+    return balances.filter(nativeAssetFilter)
+  }, [wethIsEth, isBalancesLoading, balances])
 
   function clearAmountsIn(changedAmount?: HumanTokenAmountWithAddress) {
     setHumanAmountsIn(
@@ -117,11 +104,7 @@ export function useProportionalInputs() {
     if (isLoadingTokenPrices || !shouldCalculateMaximizeAmounts || hasNoLiquidity(pool)) return
 
     const humanBalanceFor = (tokenAddress: string): HumanAmount => {
-      let balance = balanceFor(tokenAddress)
-      if (balance && isForcedProportionalAdd) {
-        balance = tokenAmountMinusSlippage(balance, proportionalSlippage)
-      }
-      return (balance?.formatted || '0') as HumanAmount
+      return (balanceFor(tokenAddress)?.formatted || '0') as HumanAmount
     }
 
     const optimalToken = filteredBalances.find(({ address }) => {

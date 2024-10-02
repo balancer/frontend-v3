@@ -11,19 +11,10 @@ import { usePool } from '../../../PoolProvider'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { useTotalUsdValue } from '@/lib/modules/tokens/useTotalUsdValue'
 import { TokenAmount } from '@/lib/modules/tokens/token.types'
-import { tokenAmountMinusSlippage } from '@/lib/modules/tokens/token.helpers'
 
 export function useMaximumInputs() {
   const { isConnected } = useUserAccount()
-  const {
-    validTokens,
-    setHumanAmountsIn,
-    wethIsEth,
-    nativeAsset,
-    wNativeAsset,
-    proportionalSlippage,
-    isForcedProportionalAdd,
-  } = useAddLiquidity()
+  const { validTokens, setHumanAmountsIn, wethIsEth, nativeAsset, wNativeAsset } = useAddLiquidity()
   const { usdValueFor } = useTotalUsdValue(validTokens)
   const { balances, isBalancesLoading } = useTokenBalances()
   const { isLoading: isPoolLoading } = usePool()
@@ -37,19 +28,8 @@ export function useMaximumInputs() {
       ? wNativeAsset && balance.address !== wNativeAsset.address
       : nativeAsset && balance.address !== nativeAsset.address
 
-  // If forced proportional add, we need to adjust the balances to account for
-  // the slippage setting. If slippage is > 0, we need to subtract the slippage
-  // from the balance so that if slippage does occur the transaction doesn't revert.
-  const adjustedBalances = (balance: TokenAmount) => {
-    if (isForcedProportionalAdd) {
-      return tokenAmountMinusSlippage(balance, proportionalSlippage)
-    }
-
-    return balance
-  }
-
   const filteredBalances = useMemo(() => {
-    return balances.filter(nativeAssetFilter).map(adjustedBalances)
+    return balances.filter(nativeAssetFilter)
   }, [wethIsEth, isBalancesLoading])
 
   function handleMaximizeUserAmounts() {
