@@ -1,5 +1,4 @@
 'use client'
-
 import {
   Button,
   HStack,
@@ -21,8 +20,6 @@ import { fNum } from '@/lib/shared/utils/numbers'
 import { Settings } from 'react-feather'
 import { CurrencySelect } from './CurrencySelect'
 import { SlippageInput } from './UserSettings'
-import { Counter } from '@/lib/shared/components/counter/Counter'
-import { useEffect, useState } from 'react'
 
 export function TransactionSettings(props: ButtonProps) {
   const { slippage, setSlippage } = useUserSettings()
@@ -74,33 +71,13 @@ export function ProportionalTransactionSettings({
 }: ProportionalTransactionSettingsProps) {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
-  const { slippage: userSlippage } = useUserSettings()
-  const [shouldAnimateSlippage, setShouldAnimateSlippage] = useState(true)
-
-  useEffect(() => {
-    onOpen()
-    setTimeout(() => {
-      setShouldAnimateSlippage(false)
-    }, 1500)
-  }, [onOpen])
-
   return (
     <Popover placement="bottom-end" isLazy isOpen={isOpen} onClose={onClose}>
       <PopoverTrigger>
         <Button onClick={onOpen} variant="tertiary" {...props}>
           <HStack textColor="grayText">
             <Text color="grayText" fontSize="xs">
-              {shouldAnimateSlippage ? (
-                <Counter
-                  color="grayText"
-                  fontSize="xs"
-                  direction="down"
-                  value={Number(userSlippage)}
-                  formatter={value => fNum('slippage', value, { preventSmallLabelShow: true })}
-                />
-              ) : (
-                fNum('slippage', slippage)
-              )}
+              {fNum('slippage', slippage)}
             </Text>
             <Settings size={16} />
           </HStack>
