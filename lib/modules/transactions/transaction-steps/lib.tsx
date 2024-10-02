@@ -69,9 +69,15 @@ type Executable = {
   setTxConfig?: any
 }
 
+export type SubSteps = {
+  tokens: string[]
+  gas: number
+}
+
 export type TransactionStep = {
   id: string
   stepType: StepType
+  subSteps?: SubSteps
   labels: TransactionLabels
   isComplete: () => boolean
   renderAction: () => ReactNode

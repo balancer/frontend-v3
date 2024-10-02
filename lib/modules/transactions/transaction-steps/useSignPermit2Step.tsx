@@ -10,17 +10,20 @@ import {
   useSignPermit2Transfer,
 } from '../../tokens/approvals/permit2/useSignPermit2Transfer'
 import { useChainSwitch } from '../../web3/useChainSwitch'
-import { TransactionStep } from './lib'
+import { SubSteps, TransactionStep } from './lib'
 import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
 import { getChainId } from '@/lib/config/app.config'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
+import { getTokenAddresses, getTokenSymbols } from '../../pool/actions/LiquidityActionHelpers'
+import { useTokens } from '../../tokens/TokensProvider'
 
 export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep {
   const { isConnected, userAddress } = useUserAccount()
+  const { getToken } = useTokens()
 
   const { isLoadingNonces, nonces } = usePermit2Nonces({
     chainId: getChainId(params.pool.chain),
-    tokenAddresses: params.queryOutput?.sdkQueryOutput.amountsIn.map(t => t.token.address),
+    tokenAddresses: getTokenAddresses(params.queryOutput),
     owner: userAddress,
     enabled: params.isPermit2,
   })
@@ -37,10 +40,12 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     getChainId(params.pool.chain)
   )
 
-  const isLoading = isLoadingTransfer || isLoadingNonces
+  const isLoading =
+    isLoadingTransfer || isLoadingNonces || signPermit2State === SignatureState.Confirming
 
   const SignPermitButton = () => (
     <VStack width="full">
+      <div>signPermit2State: {signPermit2State}</div>
       {error && <BalAlert status="error" content={error} />}
       {!isConnected && <ConnectWallet width="full" isLoading={isLoading} />}
       {shouldChangeNetwork && isConnected && <NetworkSwitchButton {...networkSwitchButtonProps} />}
@@ -63,13 +68,18 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const isComplete = () => signPermit2State === SignatureState.Completed
 
+  const subSteps: SubSteps = {
+    gas: 0,
+    tokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
+  }
+
   return useMemo(
     () => ({
       id: 'sign-permit2',
       stepType: 'signPermit2',
+      subSteps,
       labels: {
-        // TODO: display nested permit tokens in Step Tracker
-        title: `Permit on balancer`,
+        title: getTitle(subSteps),
         init: `Permit transfer`,
         tooltip: 'Sign permit2 transfer',
       },
@@ -79,4 +89,10 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [signPermit2State, isLoading, isConnected]
   )
+}
+
+function getTitle(subSteps?: SubSteps): string {
+  if (!subSteps) return `Permit on balancer`
+  if (subSteps.tokens.length === 1) return `${subSteps.tokens[0]}: Permit on balancer`
+  return 'Permit tokens on balancer'
 }
