@@ -18,7 +18,7 @@ import Image from 'next/image'
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
 import { useVebalLockInfo } from '@/lib/modules/vebal/useVebalLockInfo'
 
-import CrossChainSyncModal from '@/lib/modules/vebal/cross-chain/CrossChainSyncModal'
+import { CrossChainSyncModal } from '@/lib/modules/vebal/cross-chain/CrossChainSyncModal'
 import { useState } from 'react'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { InfoOutlineIcon } from '@chakra-ui/icons'

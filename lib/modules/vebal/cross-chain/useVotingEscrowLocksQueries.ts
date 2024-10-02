@@ -1,6 +1,5 @@
 import { useQueries } from '@tanstack/react-query'
 import { useMemo } from 'react'
-import { sleep } from '@/lib/shared/utils/sleep'
 
 export interface VotingEscrowLock {
   id: string
@@ -19,8 +18,6 @@ export function useVotingEscrowLocksQueries(addresses: string[]) {
   }, [addresses])
 
   const fetchVotingEscrowLocks = async (): Promise<VotingEscrowLockResponse> => {
-    // Mocked data
-    await sleep(500)
     return {
       votingEscrowLocks: [],
     }

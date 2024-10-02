@@ -1,5 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { sleep } from '@/lib/shared/utils/sleep'
+
+import { useUserAccount } from '../../web3/UserAccountProvider'
 
 export interface OmniEscrowLock {
   id: string
@@ -16,18 +17,17 @@ export interface OmniEscrowLockResponse {
   omniVotingEscrowLocks: OmniEscrowLock[]
 }
 
-export function useOmniEscrowLocksQuery(address: string) {
-  const queryKey = ['OmniEscrowLocks', address]
+export function useOmniEscrowLocksQuery() {
+  const { userAddress } = useUserAccount()
+  const queryKey = ['OmniEscrowLocks', userAddress]
 
-  const fetchOmniEscrowLocks = async (): Promise<OmniEscrowLockResponse> => {
-    // Mocked data
-    await sleep(500)
+  async function fetchOmniEscrowLocks(): Promise<OmniEscrowLockResponse> {
     return {
       omniVotingEscrowLocks: [],
     }
   }
 
-  const isEnabled = !!address
+  const isEnabled = !!userAddress
 
   return useQuery({
     queryKey,

@@ -94,7 +94,7 @@ function NetworkOptions({ networks, selectedNetworks, toggleNetwork }: NetworkOp
   )
 }
 
-export default function CrossChainSyncModal({ isOpen, onClose, networks }: Props) {
+export function CrossChainSyncModal({ isOpen, onClose, networks }: Props) {
   const { refetch } = useCrossChainSync()
   const [selectedNetworks, setSelectedNetworks] = useState<GqlChain[]>([])
   const [showTransactionSteps, setShowTransactionSteps] = useState(false)

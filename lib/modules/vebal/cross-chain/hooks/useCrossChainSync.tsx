@@ -57,7 +57,7 @@ export const _useCrossChainSync = () => {
     isLoading: isLoadingOmniEscrow,
     refetch: refetchOmniEscrow,
     isError: isOmniEscrowError,
-  } = useOmniEscrowLocksQuery(userAddress)
+  } = useOmniEscrowLocksQuery()
 
   const [tempSyncingNetworks, setTempSyncingNetworks] = useLocalStorage(
     LS_KEYS.CrossChainSync.TempSyncingNetworks,

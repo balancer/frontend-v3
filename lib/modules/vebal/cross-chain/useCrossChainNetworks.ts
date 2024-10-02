@@ -5,6 +5,7 @@ import { OmniEscrowLock } from './useOmniEscrowLocksQuery'
 import { useVotingEscrowLocksQueries, VotingEscrowLock } from './useVotingEscrowLocksQueries'
 import { bn } from '@/lib/shared/utils/numbers'
 import { useUserAccount } from '../../web3/UserAccountProvider'
+import { allEqual } from '@/lib/shared/utils/array'
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -13,16 +14,13 @@ export enum NetworkSyncState {
   Unknown = 'Unknown',
 }
 
-function allEqual(array: any[]) {
-  return array.every(value => value === array[0])
-}
-
 export function useCrossChainNetworks(
   chainIds: GqlChain[],
   omniEscrowMap: Record<number, OmniEscrowLock> | null
 ) {
   const { userAddress } = useUserAccount()
 
+  // Determine the user address to use for each chain, considering omniEscrowMap if the chain is not Mainnet
   const remoteUsers = useMemo(() => {
     return chainIds.map(chainId => {
       if (chainId === GqlChain.Mainnet) {
@@ -56,6 +54,7 @@ export function useCrossChainNetworks(
             return NetworkSyncState.Unsynced
           }
 
+          // Compare bias and slope across Omni, Mainnet, and the specific network to determine sync state
           const biasOmni = omniEscrowLock.bias
           const slopeOmni = omniEscrowLock.slope
 
@@ -90,6 +89,7 @@ export function useCrossChainNetworks(
           return NetworkSyncState.Unsynced
         }
 
+        // Calculate veBAL balance using bias, slope, and timestamp values
         const calculateVeBAlBalance = () => {
           const bias = votingEscrowLocks?.bias
           const slope = votingEscrowLocks?.slope
