@@ -21,7 +21,10 @@ import { Address } from 'viem'
 import { AddLiquidityModal } from '../modal/AddLiquidityModal'
 import { useAddLiquidity } from '../AddLiquidityProvider'
 import { bn, fNum } from '@/lib/shared/utils/numbers'
-import { TransactionSettings } from '@/lib/modules/user/settings/TransactionSettings'
+import {
+  ProportionalTransactionSettings,
+  TransactionSettings,
+} from '@/lib/modules/user/settings/TransactionSettings'
 import { TokenInputs } from './TokenInputs'
 import { TokenInputsWithAddable } from './TokenInputsWithAddable'
 import { usePool } from '../../../PoolProvider'
@@ -52,10 +55,10 @@ import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 
 // small wrapper to prevent out of context error
 export function AddLiquidityForm() {
-  const { validTokens } = useAddLiquidity()
+  const { validTokens, proportionalSlippage } = useAddLiquidity()
 
   return (
-    <TokenBalancesProvider extTokens={validTokens}>
+    <TokenBalancesProvider extTokens={validTokens} bufferPercentage={proportionalSlippage}>
       <AddLiquidityMainForm />
     </TokenBalancesProvider>
   )
@@ -78,6 +81,9 @@ function AddLiquidityMainForm() {
     nativeAsset,
     wNativeAsset,
     previewModalDisclosure,
+    proportionalSlippage,
+    slippage,
+    setProportionalSlippage,
   } = useAddLiquidity()
 
   const nextBtn = useRef(null)
@@ -144,12 +150,6 @@ function AddLiquidityMainForm() {
     })
   }
 
-  useEffect(() => {
-    if (addLiquidityTxHash) {
-      previewModalDisclosure.onOpen()
-    }
-  }, [addLiquidityTxHash])
-
   function onModalClose() {
     // restart polling for token prices when modal is closed again
     startTokenPricePolling()
@@ -157,13 +157,27 @@ function AddLiquidityMainForm() {
     previewModalDisclosure.onClose()
   }
 
+  useEffect(() => {
+    if (addLiquidityTxHash) {
+      previewModalDisclosure.onOpen()
+    }
+  }, [addLiquidityTxHash])
+
   return (
     <Box w="full" maxW="lg" mx="auto" pb="2xl">
       <Card>
         <CardHeader>
           <HStack w="full" justify="space-between">
             <span>Add liquidity</span>
-            <TransactionSettings size="sm" />
+            {requiresProportionalInput(pool.type) ? (
+              <ProportionalTransactionSettings
+                slippage={proportionalSlippage}
+                setSlippage={setProportionalSlippage}
+                size="sm"
+              />
+            ) : (
+              <TransactionSettings size="sm" />
+            )}
           </HStack>
         </CardHeader>
         <VStack spacing="md" align="start" w="full">
@@ -204,6 +218,7 @@ function AddLiquidityMainForm() {
                   <PoolActionsPriceImpactDetails
                     totalUSDValue={totalUSDValue}
                     bptAmount={simulationQuery.data?.bptOut.amount}
+                    slippage={slippage}
                     isAddLiquidity
                     isLoading={isFetching}
                   />

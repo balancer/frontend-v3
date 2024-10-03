@@ -104,16 +104,29 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const tokenOut =
     wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
 
+  const isSingleTokenBalanceMoreThat25Percent = useMemo(() => {
+    if (!pool.userBalance || !isSingleToken) {
+      return false
+    }
+
+    return bn(pool.userBalance.walletBalance)
+      .times(bn(humanBptInPercent).div(100))
+      .gt(bn(pool.dynamicData.totalShares).times(0.25))
+  }, [singleTokenOutAddress, humanBptInPercent, isSingleToken])
+
   /**
    * Queries
    */
+
+  const enabled = !urlTxHash && !!tokenOut && !isSingleTokenBalanceMoreThat25Percent
+
   const simulationQuery = useRemoveLiquiditySimulationQuery({
     handler,
     poolId: pool.id,
     chainId,
     humanBptIn,
     tokenOut,
-    enabled: !urlTxHash && !!tokenOut,
+    enabled,
   })
 
   const priceImpactQuery = useRemoveLiquidityPriceImpactQuery({
@@ -122,7 +135,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     chainId,
     humanBptIn,
     tokenOut,
-    enabled: !urlTxHash && !!tokenOut,
+    enabled,
   })
 
   /**
@@ -203,7 +216,13 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     })
   )
 
-  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
+  // while the single token balance is more than 25% of the pool, we use the wallet balance usd for the view
+  const totalUSDValue = isSingleTokenBalanceMoreThat25Percent
+    ? bn(pool.userBalance?.walletBalanceUsd || '0')
+        .times(bn(humanBptInPercent).div(100))
+        .toString()
+    : safeSum(Object.values(usdAmountOutMap))
+
   const totalAmountsOut: string = safeSum(quoteAmountsOut.map(a => a.amount))
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
@@ -260,6 +279,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     hasQuoteContext,
     amountsOut,
     removeLiquidityTxSuccess,
+    isSingleTokenBalanceMoreThat25Percent,
     setRemovalType,
     setHumanBptInPercent,
     setProportionalType,

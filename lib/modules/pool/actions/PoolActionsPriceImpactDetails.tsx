@@ -2,7 +2,6 @@ import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
 import { HStack, VStack, Text, Tooltip, Icon, Box, Skeleton } from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
-import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../PoolProvider'
 import { ArrowRight } from 'react-feather'
@@ -13,6 +12,7 @@ import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
   totalUSDValue: string
+  slippage: string
   isAddLiquidity?: boolean
   isLoading?: boolean
 }
@@ -20,10 +20,10 @@ interface PoolActionsPriceImpactDetailsProps {
 export function PoolActionsPriceImpactDetails({
   bptAmount,
   totalUSDValue,
+  slippage,
   isAddLiquidity = false,
   isLoading = false,
 }: PoolActionsPriceImpactDetailsProps) {
-  const { slippage } = useUserSettings()
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
 

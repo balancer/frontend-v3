@@ -62,6 +62,7 @@ export function useAddLiquiditySteps({
     handler,
     humanAmountsIn,
     simulationQuery,
+    slippage,
   })
 
   const addSteps = isPermit2 ? [signPermit2Step, addLiquidityStep] : [addLiquidityStep]

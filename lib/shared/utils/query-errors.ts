@@ -309,6 +309,18 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
   }
 
   /*
+    Extension related error which does not crash.
+    Examples: https://balancer-labs.sentry.io/issues/5622743248/
+  */
+  if (
+    message ===
+      "Cannot destructure property 'address' of '(intermediate value)' as it is undefined." &&
+    stackTrace.includes('extensionPageScript.js')
+  ) {
+    return true
+  }
+
+  /*
     Waller Connect bug
     More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
   */
