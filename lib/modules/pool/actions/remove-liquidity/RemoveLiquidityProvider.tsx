@@ -104,16 +104,29 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
   const tokenOut =
     wethIsEth && wNativeAsset ? (wNativeAsset.address as Address) : singleTokenOutAddress
 
+  const isSingleTokenBalanceMoreThat25Percent = useMemo(() => {
+    if (!pool.userBalance || !isSingleToken) {
+      return false
+    }
+
+    return bn(pool.userBalance.walletBalance)
+      .times(bn(humanBptInPercent).div(100))
+      .gt(bn(pool.dynamicData.totalShares).times(0.25))
+  }, [singleTokenOutAddress, humanBptInPercent, isSingleToken])
+
   /**
    * Queries
    */
+
+  const enabled = !urlTxHash && !!tokenOut && !isSingleTokenBalanceMoreThat25Percent
+
   const simulationQuery = useRemoveLiquiditySimulationQuery({
     handler,
     poolId: pool.id,
     chainId,
     humanBptIn,
     tokenOut,
-    enabled: !urlTxHash && !!tokenOut,
+    enabled,
   })
 
   const priceImpactQuery = useRemoveLiquidityPriceImpactQuery({
@@ -122,7 +135,7 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     chainId,
     humanBptIn,
     tokenOut,
-    enabled: !urlTxHash && !!tokenOut,
+    enabled,
   })
 
   /**
@@ -205,16 +218,6 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
 
   const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
   const totalAmountsOut: string = safeSum(quoteAmountsOut.map(a => a.amount))
-
-  const isSingleTokenBalanceMoreThat25Percent = useMemo(() => {
-    if (!pool.userBalance) {
-      return false
-    }
-
-    return bn(pool.userBalance.walletBalance)
-      .times(bn(humanBptInPercent).div(100))
-      .gt(bn(pool.dynamicData.totalShares).times(0.25))
-  }, [singleTokenOutAddress, humanBptInPercent])
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
     [!isConnected, LABELS.walletNotConnected],
