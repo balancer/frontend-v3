@@ -34,6 +34,7 @@ export function AddLiquiditySummary({
     tokens,
     addLiquidityTxHash,
     addLiquidityTxSuccess,
+    slippage,
   } = useAddLiquidity()
   const { pool } = usePool()
   const { isMobile } = useBreakpoints()
@@ -123,6 +124,7 @@ export function AddLiquiditySummary({
               <PoolActionsPriceImpactDetails
                 totalUSDValue={totalUSDValue}
                 bptAmount={simulationQuery.data?.bptOut.amount}
+                slippage={slippage}
                 isAddLiquidity
               />
             </VStack>

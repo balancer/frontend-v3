@@ -29,6 +29,7 @@ import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { isUnhandledAddPriceImpactError } from '@/lib/modules/price-impact/price-impact.utils'
 import { useModalWithPoolRedirect } from '../../useModalWithPoolRedirect'
 import { getPoolTokens } from '../../pool.helpers'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 
 export type UseAddLiquidityResponse = ReturnType<typeof _useAddLiquidity>
 export const AddLiquidityContext = createContext<UseAddLiquidityResponse | null>(null)
@@ -39,12 +40,14 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const [acceptPoolRisks, setAcceptPoolRisks] = useState(false)
   const [wethIsEth, setWethIsEth] = useState(false)
   const [totalUSDValue, setTotalUSDValue] = useState('0')
+  const [proportionalSlippage, setProportionalSlippage] = useState<string>('0')
 
   const { pool, refetch: refetchPool, isLoading } = usePool()
   const { getToken, getNativeAssetToken, getWrappedNativeAssetToken, isLoadingTokenPrices } =
     useTokens()
   const { isConnected } = useUserAccount()
   const { hasValidationErrors } = useTokenInputsValidation()
+  const { slippage: userSlippage } = useUserSettings()
 
   const handler = useMemo(() => selectAddLiquidityHandler(pool), [pool.id, isLoading])
 
@@ -56,7 +59,8 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const chain = pool.chain
   const nativeAsset = getNativeAssetToken(chain)
   const wNativeAsset = getWrappedNativeAssetToken(chain)
-
+  const isForcedProportionalAdd = requiresProportionalInput(pool.type)
+  const slippage = isForcedProportionalAdd ? proportionalSlippage : userSlippage
   const tokens = getPoolTokens(pool, getToken)
 
   function setInitialHumanAmountsIn() {
@@ -115,6 +119,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     handler,
     humanAmountsIn,
     simulationQuery,
+    slippage,
   })
   const transactionSteps = useTransactionSteps(steps, isLoadingSteps)
 
@@ -126,7 +131,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const hasQuoteContext = !!simulationQuery.data
 
   async function refetchQuote() {
-    if (requiresProportionalInput(pool.type)) {
+    if (isForcedProportionalAdd) {
       /*
       This is the only edge-case where the SDK needs pool onchain data from the frontend
       (calculateProportionalAmounts uses pool.dynamicData.totalShares in its parameters)
@@ -186,6 +191,10 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
     addLiquidityTxHash,
     hasQuoteContext,
     addLiquidityTxSuccess,
+    slippage,
+    proportionalSlippage,
+    isForcedProportionalAdd,
+    setProportionalSlippage,
     refetchQuote,
     setHumanAmountIn,
     setHumanAmountsIn,
