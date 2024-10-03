@@ -70,8 +70,8 @@ type Executable = {
 }
 
 export type SubSteps = {
-  tokens: string[]
-  gas: number
+  gasless: boolean
+  tokens?: string[]
 }
 
 export type TransactionStep = {

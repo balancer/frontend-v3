@@ -68,7 +68,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
   const isComplete = () => signPermit2State === SignatureState.Completed
 
   const subSteps: SubSteps = {
-    gas: 0,
+    gasless: true,
     tokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
   }
 
@@ -91,7 +91,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 }
 
 function getTitle(subSteps?: SubSteps): string {
-  if (!subSteps) return `Permit on balancer`
+  if (!subSteps?.tokens) return `Permit on balancer`
   if (subSteps.tokens.length === 1) return `${subSteps.tokens[0]}: Permit on balancer`
   return 'Permit tokens on balancer'
 }

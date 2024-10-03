@@ -53,6 +53,7 @@ export function useSignRelayerStep(chain: GqlChain): TransactionStep {
     () => ({
       id: 'sign-relayer',
       stepType: 'signBatchRelayer',
+      subSteps: { gasless: true },
       labels: {
         title: 'Sign relayer',
         init: 'Sign relayer',
