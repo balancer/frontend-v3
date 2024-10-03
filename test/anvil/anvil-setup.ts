@@ -93,7 +93,10 @@ export function getForkUrl(network: NetworkSetup, verbose = false): string {
       return dRpcUrl('ethereum')
     }
     if (network.networkName === 'Polygon') {
-      return dRpcUrl('polygon')
+      const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
+      // return dRpcUrl('polygon')
+      // return 'https://polygon-rpc.com'
+      return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
     }
     if (network.networkName === 'Sepolia') {
       return dRpcUrl('sepolia')
