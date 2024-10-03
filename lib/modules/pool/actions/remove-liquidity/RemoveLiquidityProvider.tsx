@@ -216,7 +216,13 @@ export function _useRemoveLiquidity(urlTxHash?: Hash) {
     })
   )
 
-  const totalUSDValue: string = safeSum(Object.values(usdAmountOutMap))
+  // while the single token balance is more than 25% of the pool, we use the wallet balance usd for the view
+  const totalUSDValue = isSingleTokenBalanceMoreThat25Percent
+    ? bn(pool.userBalance?.walletBalanceUsd || '0')
+        .times(bn(humanBptInPercent).div(100))
+        .toString()
+    : safeSum(Object.values(usdAmountOutMap))
+
   const totalAmountsOut: string = safeSum(quoteAmountsOut.map(a => a.amount))
 
   const { isDisabled, disabledReason } = isDisabledWithReason(
