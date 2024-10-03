@@ -34,25 +34,26 @@ function getRandomTransactionHash() {
 
 export function useMockedTxHash() {
   // simulate transaction success using existing transaction (dev only)
-  const [mockedTxHash, setMockedTxHash] = useState<Hash | undefined>(undefined)
+  const [mockedTxHash, _setMockedTxHash] = useState<Hash | undefined>(undefined)
 
-  function _setMockedTxHash(txHash?: Hash) {
-    if (txHash) {
-      setMockedTxHash(txHash)
-      return txHash
-    }
+  return {
+    mockedTxHash,
+    setMockedTxHash: (txHash?: Hash) => {
+      if (txHash) {
+        _setMockedTxHash(txHash)
+        return txHash
+      }
 
-    const transactionHash = prompt(
-      `Provide existing transaction hash to skip transaction? e.g. ${getRandomTransactionHash()}`
-    )
+      const transactionHash = prompt(
+        `Provide existing transaction hash to skip transaction? e.g. ${getRandomTransactionHash()}`
+      )
 
-    if (transactionHash) {
-      setMockedTxHash(transactionHash as Hash)
-      return transactionHash
-    }
+      if (transactionHash) {
+        _setMockedTxHash(transactionHash as Hash)
+        return transactionHash
+      }
 
-    return undefined
+      return undefined
+    },
   }
-
-  return { mockedTxHash, setMockedTxHash: _setMockedTxHash }
 }
