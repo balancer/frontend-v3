@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 'use client'
 
-import { allowSkipTransaction, getGqlChain } from '@/lib/config/app.config'
+import { getGqlChain } from '@/lib/config/app.config'
 import { SupportedChainId } from '@/lib/config/config.types'
 import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { ManagedResult, TransactionLabels } from '@/lib/modules/transactions/transaction-steps/lib'
@@ -18,7 +18,6 @@ import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-import { useMockedTxHash } from '@/lib/modules/web3/contracts/useMockedTxHash'
 
 type Erc20Abi = typeof erc20Abi
 
@@ -67,13 +66,11 @@ export function useManagedErc20Transaction({
     },
   })
 
-  const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
-
   const writeQuery = useWriteContract()
 
   const { txHash, isSafeTxLoading } = useTxHash({
     chainId,
-    wagmiTxHash: mockedTxHash ?? writeQuery.data,
+    wagmiTxHash: writeQuery.data,
   })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
@@ -116,11 +113,6 @@ export function useManagedErc20Transaction({
       setWriteArgs(args)
     }
     if (!simulateQuery.data) return
-
-    if (allowSkipTransaction) {
-      const txHash = setMockedTxHash()
-      if (txHash) return
-    }
 
     try {
       await writeQuery.writeContractAsync(simulateQuery.data.request)

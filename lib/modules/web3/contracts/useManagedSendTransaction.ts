@@ -7,7 +7,7 @@ import { useEstimateGas, useSendTransaction, useWaitForTransactionReceipt } from
 import { TransactionConfig, TransactionExecution, TransactionSimulation } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
-import { allowSkipTransaction, getGqlChain } from '@/lib/config/app.config'
+import { getGqlChain } from '@/lib/config/app.config'
 import { useChainSwitch } from '../useChainSwitch'
 import {
   captureWagmiExecutionError,
@@ -19,7 +19,6 @@ import { mainnet } from 'viem/chains'
 import { useTxHash } from '../safe.hooks'
 import { getWaitForReceiptTimeout } from './wagmi-helpers'
 import { onlyExplicitRefetch } from '@/lib/shared/utils/queries'
-import { useMockedTxHash } from '@/lib/modules/web3/contracts/useMockedTxHash'
 
 export type ManagedSendTransactionInput = {
   labels: TransactionLabels
@@ -48,8 +47,6 @@ export function useManagedSendTransaction({
     },
   })
 
-  const { mockedTxHash, setMockedTxHash } = useMockedTxHash()
-
   const writeMutation = useSendTransaction({
     mutation: {
       meta: sentryMetaForWagmiExecution('Error sending transaction', {
@@ -62,7 +59,7 @@ export function useManagedSendTransaction({
 
   const { txHash, isSafeTxLoading } = useTxHash({
     chainId,
-    wagmiTxHash: mockedTxHash ?? writeMutation.data,
+    wagmiTxHash: writeMutation.data,
   })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
@@ -136,11 +133,6 @@ export function useManagedSendTransaction({
   const managedSendAsync = async () => {
     if (!estimateGasQuery.data) return
     if (!txConfig?.to) return
-
-    if (allowSkipTransaction) {
-      const txHash = setMockedTxHash()
-      if (txHash) return
-    }
 
     try {
       return writeMutation.sendTransactionAsync({
