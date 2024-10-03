@@ -6,7 +6,7 @@ import {
   Exception as SentryException,
 } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError } from './error-filters'
+import { isPausedErrorMessage, isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -309,6 +309,18 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
   }
 
   /*
+    Extension related error which does not crash.
+    Examples: https://balancer-labs.sentry.io/issues/5622743248/
+  */
+  if (
+    message ===
+      "Cannot destructure property 'address' of '(intermediate value)' as it is undefined." &&
+    stackTrace.includes('extensionPageScript.js')
+  ) {
+    return true
+  }
+
+  /*
     Waller Connect bug
     More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
   */
@@ -331,6 +343,8 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
   if (message.startsWith('The source') && message.includes('has not been authorized yet')) {
     return true
   }
+
+  if (isPausedErrorMessage(message)) return true
 
   return false
 }

@@ -36,6 +36,8 @@ import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
 import { TooltipWithTouch } from '@/lib/shared/components/tooltips/TooltipWithTouch'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
+
 const TABS: ButtonGroupOption[] = [
   {
     value: 'proportional',
@@ -74,6 +76,7 @@ export function RemoveLiquidityForm() {
   const nextBtn = useRef(null)
   const [activeTab, setActiveTab] = useState(TABS[0])
   const { startTokenPricePolling } = useTokens()
+  const { slippage } = useUserSettings()
 
   useEffect(() => {
     setPriceImpact(priceImpactQuery.data)
@@ -188,6 +191,7 @@ export function RemoveLiquidityForm() {
                     <PoolActionsPriceImpactDetails
                       totalUSDValue={totalUSDValue}
                       bptAmount={BigInt(parseUnits(quoteBptIn, 18))}
+                      slippage={slippage}
                       isLoading={isFetching}
                     />
                   }
