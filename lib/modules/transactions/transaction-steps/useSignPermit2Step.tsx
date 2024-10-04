@@ -1,32 +1,39 @@
 'use client'
 
+import { getChainId } from '@/lib/config/app.config'
 import { ConnectWallet } from '@/lib/modules/web3/ConnectWallet'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { Button, VStack } from '@chakra-ui/react'
 import { useMemo } from 'react'
+import { getTokenAddresses, getTokenSymbols } from '../../pool/actions/LiquidityActionHelpers'
+import { useTokens } from '../../tokens/TokensProvider'
+import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
+import { usePermit2Allowance } from '../../tokens/approvals/permit2/usePermit2Allowance'
 import {
   AddLiquidityPermit2Params,
   useSignPermit2Transfer,
 } from '../../tokens/approvals/permit2/useSignPermit2Transfer'
+import { SignatureState } from '../../web3/signatures/signature.helpers'
 import { useChainSwitch } from '../../web3/useChainSwitch'
 import { SubSteps, TransactionStep } from './lib'
-import { usePermit2Nonces } from '../../tokens/approvals/permit2/usePermit2Nonces'
-import { getChainId } from '@/lib/config/app.config'
-import { SignatureState } from '../../web3/signatures/signature.helpers'
-import { getTokenAddresses, getTokenSymbols } from '../../pool/actions/LiquidityActionHelpers'
-import { useTokens } from '../../tokens/TokensProvider'
 
-export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep {
+/*
+  Returns a transaction step to sign a permit2 transfer for the given pool and token amounts
+  If the permit2 allowance is expired for one of the positive token amounts in: returns undefined
+ */
+export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep | undefined {
   const { isConnected, userAddress } = useUserAccount()
   const { getToken } = useTokens()
 
-  const { isLoadingNonces, nonces } = usePermit2Nonces({
+  const { isLoadingPermit2Allowances, nonces, expirations, allowedAmounts } = usePermit2Allowance({
     chainId: getChainId(params.pool.chain),
     tokenAddresses: getTokenAddresses(params.queryOutput),
     owner: userAddress,
     enabled: params.isPermit2,
   })
+
+  const isValidPermit2 = hasValidPermit2(params.queryOutput, expirations, allowedAmounts)
 
   const {
     signPermit2,
@@ -41,7 +48,9 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
   )
 
   const isLoading =
-    isLoadingTransfer || isLoadingNonces || signPermit2State === SignatureState.Confirming
+    isLoadingTransfer ||
+    isLoadingPermit2Allowances ||
+    signPermit2State === SignatureState.Confirming
 
   const SignPermitButton = () => (
     <VStack width="full">
@@ -65,7 +74,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     </VStack>
   )
 
-  const isComplete = () => signPermit2State === SignatureState.Completed
+  const isComplete = () => signPermit2State === SignatureState.Completed || isValidPermit2
 
   const subSteps: SubSteps = {
     gasless: true,
@@ -86,7 +95,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
       renderAction: () => <SignPermitButton />,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [signPermit2State, isLoading, isConnected]
+    [signPermit2State, isLoading, isConnected, isValidPermit2]
   )
 }
 
