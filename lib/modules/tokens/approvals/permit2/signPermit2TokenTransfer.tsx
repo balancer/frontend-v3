@@ -1,16 +1,19 @@
 import { Pool } from '@/lib/modules/pool/PoolProvider'
 import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/v3Helpers'
 import { ensureError } from '@/lib/shared/utils/errors'
+import { get24HoursFromNowInSecs } from '@/lib/shared/utils/time'
 import {
   AddLiquidityBaseQueryOutput,
   AddLiquidityQueryOutput,
   Address,
+  MaxAllowanceTransferAmount,
   Permit2,
   Permit2Helper,
   PublicWalletClient,
+  TokenAmount,
 } from '@balancer/sdk'
 import { HumanTokenAmountWithAddress } from '../../token.types'
-import { NoncesByTokenAddress } from './usePermit2Nonces'
+import { NoncesByTokenAddress } from './usePermit2Allowance'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -57,11 +60,26 @@ async function signPermit2({
     sdkQueryOutput: permit2Input.sdkQueryOutput as AddLiquidityBaseQueryOutput,
     pool,
   })
+
   const signature = await Permit2Helper.signAddLiquidityApproval({
     ...baseInput,
     client: sdkClient,
     owner: permit2Input.account,
     nonces: baseInput.amountsIn.map(a => nonces[a.token.address]),
+    amountsIn: maximizePositiveAmounts(baseInput.amountsIn),
+    // Permit2 allowance expires in 24H
+    expirations: baseInput.amountsIn.map(() => get24HoursFromNowInSecs()),
   })
   return signature
+}
+
+// Maximize amounts for permit2 approval for amounts > 0n
+function maximizePositiveAmounts(amountsIn: TokenAmount[]): TokenAmount[] {
+  return amountsIn.map(
+    item =>
+      ({
+        ...item,
+        amount: item.amount > 0n ? MaxAllowanceTransferAmount : item.amount,
+      } as TokenAmount)
+  )
 }

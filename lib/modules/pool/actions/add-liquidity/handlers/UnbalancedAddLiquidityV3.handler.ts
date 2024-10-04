@@ -29,11 +29,9 @@ export class UnbalancedAddLiquidityHandlerV3 extends BaseUnbalancedAddLiquidityH
       pool: this.helpers.pool,
     })
 
-    if (!permit2) {
-      throw new Error('Permit2 signature is required for V3 pools')
-    }
-
-    const { callData, to, value } = addLiquidity.buildCallWithPermit2(buildCallParams, permit2)
+    const { callData, to, value } = permit2
+      ? addLiquidity.buildCallWithPermit2(buildCallParams, permit2)
+      : addLiquidity.buildCall(buildCallParams)
 
     return {
       account,

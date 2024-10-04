@@ -16,7 +16,7 @@ import { useTokens } from '../../TokensProvider'
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { usePermit2Signature } from './Permit2SignatureProvider'
 import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
-import { NoncesByTokenAddress } from './usePermit2Nonces'
+import { NoncesByTokenAddress } from './usePermit2Allowance'
 
 export type AddLiquidityPermit2Params = {
   humanAmountsIn: HumanTokenAmountWithAddress[]

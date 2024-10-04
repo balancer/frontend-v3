@@ -1,14 +1,15 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 'use client'
 
+import { getGqlChain, getNetworkConfig } from '@/lib/config/app.config'
+import { BPT_DECIMALS } from '@/lib/modules/pool/pool.constants'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { permit2Abi } from '@balancer/sdk'
 import { Center, Input, Text, VStack } from '@chakra-ui/react'
 import { useState } from 'react'
-import { Address } from 'viem'
+import { Address, formatUnits } from 'viem'
 import { sepolia } from 'viem/chains'
 import { useReadContract } from 'wagmi'
-import { fNum } from '@/lib/shared/utils/numbers'
-import { getGqlChain, getNetworkConfig } from '@/lib/config/app.config'
-import { permit2Abi } from '@balancer/sdk'
 
 export default function Page() {
   const [tokenAddress, setTokenAddress] = useState<Address>('' as Address)
@@ -30,7 +31,7 @@ export default function Page() {
 
         {data && (
           <div>
-            <div>Amount: {fNum('integer', data[0])}</div>
+            <div>Amount: {formatUnits(data[0], BPT_DECIMALS).toString()}</div>
             <div>Expires: {data[1]}</div>
             <div>Nonce: {data[2]}</div>
           </div>
