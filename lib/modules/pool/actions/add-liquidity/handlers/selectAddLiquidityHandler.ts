@@ -8,10 +8,17 @@ import { requiresProportionalInput, supportsNestedActions } from '../../Liquidit
 import { ProportionalAddLiquidityHandler } from './ProportionalAddLiquidity.handler'
 import { isV3Pool } from '../../../pool.helpers'
 import { UnbalancedAddLiquidityHandlerV3 } from './UnbalancedAddLiquidityV3.handler'
+import { ProportionalAddLiquidityHandlerV3 } from './ProportionalAddLiquidityV3.handler'
 
 export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
   // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
   if (pool.id === 'TWAMM-example') return new TwammAddLiquidityHandler(getChainId(pool.chain))
+
+  // Only available in test api
+  if (pool.id === '0x8fc07bcf9b88ace84c7523248dc4a85f638c9536') {
+    console.log('ProportionalAddLiquidityHandlerV3')
+    return new ProportionalAddLiquidityHandlerV3(pool)
+  }
 
   if (requiresProportionalInput(pool.type)) {
     return new ProportionalAddLiquidityHandler(pool)
