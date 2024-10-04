@@ -91,7 +91,7 @@ export function PoolComposition() {
       >
         <VStack w="full" spacing="md" align="flex-start">
           <Heading fontWeight="bold" size={{ base: 'h4', md: 'h5' }}>
-            Pool composition
+            Pool composition hey
           </Heading>
           {isMobile ? (
             <CardContentBlock />

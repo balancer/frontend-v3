@@ -16,7 +16,6 @@ export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
 
   // Only available in test api
   if (pool.id === '0x8fc07bcf9b88ace84c7523248dc4a85f638c9536') {
-    console.log('ProportionalAddLiquidityHandlerV3')
     return new ProportionalAddLiquidityHandlerV3(pool)
   }
 
