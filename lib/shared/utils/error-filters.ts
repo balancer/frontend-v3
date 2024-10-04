@@ -26,6 +26,11 @@ export function isTooManyRequestsError(error?: Error | null): boolean {
   return error.message.startsWith('HTTP request failed.') && error.message.includes('Status: 429')
 }
 
+export function isNotEnoughGasError(error?: Error | null): boolean {
+  if (!error) return false
+  return error.message.startsWith('Execution reverted with reason: TRANSFER_FROM_FAILED.')
+}
+
 export function isPausedError(error?: Error | null): boolean {
   if (!error) return false
   return isPausedErrorMessage(error.message)
