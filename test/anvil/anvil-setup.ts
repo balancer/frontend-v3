@@ -89,7 +89,8 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
  *     const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
  *     return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
  */
-export function getForkUrl(network: NetworkSetup, verbose = false): string {
+export function getForkUrl(networkName: NetworksWithFork, verbose = false): string {
+  const network = ANVIL_NETWORKS[networkName]
   const privateKey = process.env['NEXT_PRIVATE_DRPC_KEY']
   const dRpcUrl = (chainName: string) =>
     `https://lb.drpc.org/ogrpc?network=${chainName}&dkey=${privateKey}`
