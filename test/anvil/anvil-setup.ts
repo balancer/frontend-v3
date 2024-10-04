@@ -83,6 +83,12 @@ export function getTestRpcSetup(networkName: NetworksWithFork) {
   return { port, rpcUrl }
 }
 
+/*
+ *  We currently use Drpc for all integration tests (Ethereum, Polygon and Sepolia networks)
+ *  In case you want to use a different RPC, you can set something like this (i.e. ALCHEMY)
+ *     const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
+ *     return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
+ */
 export function getForkUrl(network: NetworkSetup, verbose = false): string {
   const privateKey = process.env['NEXT_PRIVATE_DRPC_KEY']
   const dRpcUrl = (chainName: string) =>
@@ -94,9 +100,6 @@ export function getForkUrl(network: NetworkSetup, verbose = false): string {
     }
     if (network.networkName === 'Polygon') {
       return dRpcUrl('polygon')
-      // return 'https://polygon-rpc.com'
-      // const privateAlchemyKey = process.env['NEXT_PRIVATE_ALCHEMY_KEY']
-      // return `https://polygon-mainnet.g.alchemy.com/v2/${privateAlchemyKey}`
     }
     if (network.networkName === 'Sepolia') {
       return dRpcUrl('sepolia')
