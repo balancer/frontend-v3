@@ -26,7 +26,7 @@ const utils = await getSdkTestUtils({
   pool: aWjAuraWethPoolElementMock(), // Balancer Weighted wjAura and WETH,
 })
 
-const { getPoolTokens, getPoolTokenBalances } = utils
+const { getPoolTokens } = utils
 
 const poolTokens = getPoolTokens()
 
