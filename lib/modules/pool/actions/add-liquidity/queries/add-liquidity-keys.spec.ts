@@ -4,7 +4,7 @@ import { Pool } from '../../../PoolProvider'
 import { addLiquidityKeys } from './add-liquidity-keys'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { UnbalancedAddLiquidityHandler } from '../handlers/UnbalancedAddLiquidity.handler'
+import { UnbalancedAddLiquidityV2Handler } from '../handlers/UnbalancedAddLiquidityV2.handler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
 function testGenerateLiquidityKeys(pool: Pool) {
@@ -13,7 +13,7 @@ function testGenerateLiquidityKeys(pool: Pool) {
     { tokenAddress: '0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2', humanAmount: '0' },
   ]
   return addLiquidityKeys.priceImpact({
-    handler: new UnbalancedAddLiquidityHandler(aWjAuraWethPoolElementMock()),
+    handler: new UnbalancedAddLiquidityV2Handler(aWjAuraWethPoolElementMock()),
     userAddress: defaultTestUserAccount,
     poolId: pool.id,
     poolType: pool.type,

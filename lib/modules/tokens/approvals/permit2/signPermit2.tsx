@@ -1,5 +1,4 @@
 import { Pool } from '@/lib/modules/pool/PoolProvider'
-import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/v3Helpers'
 import { ensureError } from '@/lib/shared/utils/errors'
 import { get24HoursFromNowInSecs } from '@/lib/shared/utils/time'
 import {
@@ -14,6 +13,7 @@ import {
 } from '@balancer/sdk'
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
+import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/add-liquidity.utils'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -28,13 +28,9 @@ type SignPermit2Params = {
   permit2Input: Permit2AddLiquidityInput
   nonces: NoncesByTokenAddress
 }
-export async function signPermit2TokenTransfer(
-  params: SignPermit2Params
-): Promise<Permit2 | undefined> {
-  if (!params.sdkClient) return undefined
-
+export async function signPermit2Token(params: SignPermit2Params): Promise<Permit2 | undefined> {
   try {
-    const signature = await signPermit2(params)
+    const signature = await sign(params)
     return signature
   } catch (e: unknown) {
     const error = ensureError(e)
@@ -45,7 +41,7 @@ export async function signPermit2TokenTransfer(
   }
 }
 
-async function signPermit2({
+async function sign({
   sdkClient,
   pool,
   humanAmountsIn,

@@ -1,7 +1,7 @@
 import { getChainId } from '@/lib/config/app.config'
 import { Pool } from '../../../PoolProvider'
 import { TwammAddLiquidityHandler } from './TwammAddLiquidity.handler'
-import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
+import { UnbalancedAddLiquidityV2Handler } from './UnbalancedAddLiquidityV2.handler'
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
 import { requiresProportionalInput, supportsNestedActions } from '../../LiquidityActionHelpers'
@@ -25,5 +25,6 @@ export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
   }
 
   if (isV3Pool(pool)) return new UnbalancedAddLiquidityHandlerV3(pool)
-  return new UnbalancedAddLiquidityHandler(pool)
+
+  return new UnbalancedAddLiquidityV2Handler(pool)
 }

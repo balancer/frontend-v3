@@ -3,7 +3,7 @@ import networkConfig from '@/lib/config/networks/mainnet'
 import { balAddress, wETHAddress, wjAuraAddress } from '@/lib/debug-helpers'
 import { defaultTestUserAccount } from '@/test/anvil/anvil-setup'
 import { aWjAuraWethPoolElementMock } from '@/test/msw/builders/gqlPoolElement.builders'
-import { UnbalancedAddLiquidityHandler } from './UnbalancedAddLiquidity.handler'
+import { UnbalancedAddLiquidityV2Handler } from './UnbalancedAddLiquidityV2.handler'
 import { selectAddLiquidityHandler } from './selectAddLiquidityHandler'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 import { Pool } from '../../../PoolProvider'
@@ -11,7 +11,7 @@ import { getNetworkConfig } from '@/lib/config/app.config'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 
 function selectUnbalancedHandler() {
-  return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityHandler
+  return selectAddLiquidityHandler(aWjAuraWethPoolElementMock()) as UnbalancedAddLiquidityV2Handler
 }
 
 describe('When adding unbalanced liquidity for a weighted V2 pool', () => {
@@ -84,7 +84,7 @@ describe.skip('When adding unbalanced liquidity for a V3 pool', async () => {
   // const v3Pool = await getPoolMock(poolId, GqlChain.Sepolia)
   const v3Pool = {} as unknown as Pool
 
-  const handler = selectAddLiquidityHandler(v3Pool) as UnbalancedAddLiquidityHandler
+  const handler = selectAddLiquidityHandler(v3Pool) as UnbalancedAddLiquidityV2Handler
 
   const humanAmountsIn: HumanTokenAmountWithAddress[] = [
     { humanAmount: '0.1', tokenAddress: balAddress },

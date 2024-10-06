@@ -3,7 +3,7 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { AddLiquidity } from '@balancer/sdk'
 import { SdkBuildAddLiquidityInput } from '../add-liquidity.types'
 import { BaseUnbalancedAddLiquidityHandler } from './BaseUnbalancedAddLiquidity.handler'
-import { constructBaseBuildCallInput } from './v3Helpers'
+import { constructBaseBuildCallInput } from './add-liquidity.utils'
 
 /**
  * UnbalancedAddLiquidityHandlerV3 is a handler that implements the
