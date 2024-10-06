@@ -23,10 +23,11 @@ export function useMaximumInputs() {
 
   // Depending on if the user is using WETH or ETH, we need to filter out the
   // native asset or wrapped native asset.
-  const nativeAssetFilter = (balance: TokenAmount) =>
-    wethIsEth
-      ? wNativeAsset && balance.address !== wNativeAsset.address
-      : nativeAsset && balance.address !== nativeAsset.address
+  const nativeAssetFilter = (balance: TokenAmount) => {
+    return wethIsEth
+      ? balance.address !== wNativeAsset?.address
+      : balance.address !== nativeAsset?.address
+  }
 
   const filteredBalances = useMemo(() => {
     return balances.filter(nativeAssetFilter)
