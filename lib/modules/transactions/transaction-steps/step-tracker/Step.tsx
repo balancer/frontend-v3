@@ -21,7 +21,7 @@ export function Step(props: StepProps) {
     <HStack alignItems="flex-start">
       <StepIndicator transaction={transaction} {...props}></StepIndicator>
       <VStack spacing="0" alignItems="start">
-        <Text mt={isActive ? -0.3 : 0} color={color}>
+        <Text mt={isActive ? -0.3 : 0} color={color} fontWeight="bold">
           {title}
         </Text>
         <NestedInfo color={color} subSteps={props.step.subSteps} />
@@ -34,14 +34,17 @@ export function StepIndicator({
   transaction,
   ...props
 }: StepProps & { transaction?: ManagedResult }) {
-  const { color, isActiveLoading, status, stepNumber } = getStepSettings(props, transaction)
+  const { color, isActive, isActiveLoading, status, stepNumber } = getStepSettings(
+    props,
+    transaction
+  )
 
   if (status === 'complete') {
     return (
       <CircularProgress
         value={100}
         trackColor="border.base"
-        thickness="8"
+        thickness="6"
         size="7"
         color="font.highlight"
       >
@@ -57,7 +60,7 @@ export function StepIndicator({
       value={100}
       isIndeterminate={isActiveLoading}
       trackColor="border.base"
-      thickness="8"
+      thickness={isActive ? 8 : 6}
       size="7"
       color={color}
     >
@@ -70,15 +73,15 @@ export function StepIndicator({
 
 function NestedInfo({ color, subSteps }: { color: string; subSteps?: SubSteps }) {
   return (
-    <Box mt="1" pl="2" p="1">
-      <Text fontSize="sm" color={color} mb="1">
-        {subSteps?.gasless ? 'Signature: Free' : 'Gas transaction'}
+    <Box mt="0" p="1" pl="0" mb="0">
+      <Text fontSize="sm" color={color} lineHeight="1">
+        {subSteps?.gasless ? 'Free signature' : 'Gas transaction'}
       </Text>
 
       {subSteps?.tokens &&
         subSteps.tokens.length > 1 &&
         subSteps.tokens.map((subStep, index) => (
-          <HStack mt="1" key={subStep}>
+          <HStack mt={index === 0 ? '2' : '1'} key={subStep}>
             <SubStepIndicator color={color} label={indexToLetter(index)} />
             <Text fontSize="sm" color={color}>
               {subStep}
@@ -91,8 +94,8 @@ function NestedInfo({ color, subSteps }: { color: string; subSteps?: SubSteps })
 
 function SubStepIndicator({ color, label }: { color: string; label: string }) {
   return (
-    <CircularProgress value={100} trackColor="border.base" thickness="8" size="5" color={color}>
-      <CircularProgressLabel fontSize="sm" fontWeight="bold" color={color}>
+    <CircularProgress value={100} trackColor="border.base" thickness="2" size="6" color={color}>
+      <CircularProgressLabel fontSize="xs" fontWeight="bold" color={color}>
         {label}
       </CircularProgressLabel>
     </CircularProgress>

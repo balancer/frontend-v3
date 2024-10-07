@@ -12,7 +12,7 @@ export function Steps({ transactionSteps }: Props) {
   const colorMode = useThemeColorMode()
 
   return (
-    <VStack align="start" spacing="xs">
+    <VStack align="start" spacing="ms">
       {steps &&
         steps.map((step, index) => (
           <div key={step.id + index}>
