@@ -64,17 +64,28 @@ export function useTokenApprovalSteps({
   })
 
   const steps = useMemo(() => {
-    return tokenAmountsToApprove.map(tokenAmountToApprove => {
+    return tokenAmountsToApprove.map((tokenAmountToApprove, index) => {
       const { tokenAddress, requiredRawAmount, requestedRawAmount } = tokenAmountToApprove
+      // USDT edge-case: requires setting approval to 0n before adjusting the value up again
+      const isApprovingZeroForDoubleApproval =
+        requiresDoubleApproval(chain, tokenAddress) && requiredRawAmount === 0n
+      const id = isApprovingZeroForDoubleApproval ? `${tokenAddress}-0` : tokenAddress
       const token = getToken(tokenAddress, chain)
       const symbol = bptSymbol ?? (token && token?.symbol) ?? 'Unknown'
       const labels = buildTokenApprovalLabels({ actionType, symbol })
-      const id = tokenAddress
 
       const isComplete = () => {
         const isAllowed = tokenAllowances.allowanceFor(tokenAddress) >= requiredRawAmount
-        // USDT edge-case: requires setting approval to 0n before adjusting the value up again
-        if (requiresDoubleApproval(chain, tokenAddress)) return isAllowed
+        if (isApprovingZeroForDoubleApproval) {
+          // Edge case USDT case is completed if:
+          // - The allowance is 0n
+          // - The allowance is greater than the required amount (of the next step)
+          return (
+            tokenAllowances.allowanceFor(tokenAddress) === 0n ||
+            tokenAllowances.allowanceFor(tokenAddress) >=
+              tokenAmountsToApprove[index + 1].requiredRawAmount
+          )
+        }
         return requiredRawAmount > 0n && isAllowed
       }
 
