@@ -71,13 +71,11 @@ export function TooltipAprItem({
               </Text>
             </PopoverTrigger>
             <Portal>
-              <Box zIndex={100} position="relative">
-                <PopoverContent p="sm" w="auto" maxW="300px">
-                  <Text fontSize="sm" variant="secondary">
-                    {tooltipText}
-                  </Text>
-                </PopoverContent>
-              </Box>
+              <PopoverContent p="sm" w="auto" maxW="300px">
+                <Text fontSize="sm" variant="secondary">
+                  {tooltipText}
+                </Text>
+              </PopoverContent>
             </Portal>
           </Popover>
         ) : (
