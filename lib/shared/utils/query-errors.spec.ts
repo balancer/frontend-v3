@@ -111,7 +111,7 @@ describe('Captures sentry error', () => {
     expect(report.error?.message).toBe('test cause error')
     expect(report.extra).toMatchInlineSnapshot(`
       {
-        "handler": "UnbalancedAddLiquidityHandler",
+        "handler": "UnbalancedAddLiquidityV2Handler",
         "params": {
           "chainId": 1,
           "handler": {
