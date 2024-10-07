@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import { useTokens } from '../../TokensProvider'
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { usePermit2Signature } from './Permit2SignatureProvider'
-import { signPermit2TokenTransfer } from './signPermit2TokenTransfer'
+import { signPermit2Token } from './signPermit2'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
 
 export type AddLiquidityPermit2Params = {
@@ -26,7 +26,7 @@ export type AddLiquidityPermit2Params = {
   nonces?: NoncesByTokenAddress
   isPermit2: boolean
 }
-export function useSignPermit2Transfer({
+export function useSignPermit2({
   pool,
   humanAmountsIn,
   queryOutput,
@@ -37,9 +37,7 @@ export function useSignPermit2Transfer({
   const { userAddress } = useUserAccount()
   const { getToken } = useTokens()
 
-  const tokenSymbols = getTokenSymbols(getToken, pool.chain, queryOutput)
-  const { signPermit2State, setSignPermit2State, setPermit2TransferSignature } =
-    usePermit2Signature()
+  const { signPermit2State, setSignPermit2State, setPermit2Signature } = usePermit2Signature()
 
   const [error, setError] = useState<string | undefined>()
 
@@ -50,13 +48,13 @@ export function useSignPermit2Transfer({
   }, [sdkClient])
 
   //TODO: Generalize for Swaps and other potential signatures
-  const minimumBpt = queryOutput?.sdkQueryOutput.bptOut.amount
+  const hasBptOut = queryOutput?.sdkQueryOutput.bptOut.amount
   useEffect(() => {
-    if (minimumBpt) {
-      setPermit2TransferSignature(undefined)
+    if (hasBptOut) {
+      setPermit2Signature(undefined)
       setSignPermit2State(SignatureState.Ready)
     }
-  }, [minimumBpt])
+  }, [hasBptOut])
 
   async function signPermit2(pool: Pool) {
     if (!queryOutput) throw new Error('No input provided for permit2 signature')
@@ -65,7 +63,7 @@ export function useSignPermit2Transfer({
     setError(undefined)
 
     try {
-      const signature = await signPermit2TokenTransfer({
+      const signature = await signPermit2Token({
         pool,
         humanAmountsIn,
         sdkClient,
@@ -80,7 +78,7 @@ export function useSignPermit2Transfer({
       if (signature) {
         setSignPermit2State(SignatureState.Completed)
         toast({
-          title: 'Permit2 approval signed!',
+          title: 'Permit approval signed!',
           description: '',
           status: 'success',
           duration: 5000,
@@ -91,7 +89,7 @@ export function useSignPermit2Transfer({
         setSignPermit2State(SignatureState.Ready)
       }
 
-      setPermit2TransferSignature(signature)
+      setPermit2Signature(signature)
     } catch (error) {
       console.error(error)
       setError('Error in permit2 signature call')
@@ -102,7 +100,10 @@ export function useSignPermit2Transfer({
   return {
     signPermit2,
     signPermit2State,
-    buttonLabel: getButtonLabel(signPermit2State, tokenSymbols),
+    buttonLabel: getButtonLabel(
+      signPermit2State,
+      getTokenSymbols(getToken, pool.chain, queryOutput)
+    ),
     isLoading: isSignatureLoading(signPermit2State) || !queryOutput,
     isDisabled: isSignatureDisabled(signPermit2State),
     error,
@@ -111,9 +112,9 @@ export function useSignPermit2Transfer({
 
 function getButtonLabel(signPermit2State: SignatureState, tokenSymbols?: (string | undefined)[]) {
   if (signPermit2State === SignatureState.Ready) return getReadyLabel(tokenSymbols)
-  if (signPermit2State === SignatureState.Confirming) return 'Confirm permit2 signature in wallet'
+  if (signPermit2State === SignatureState.Confirming) return 'Confirm signature in wallet'
   if (signPermit2State === SignatureState.Preparing) return 'Preparing'
-  if (signPermit2State === SignatureState.Completed) return 'Permit2 Signed'
+  if (signPermit2State === SignatureState.Completed) return 'Permit Signed'
   return ''
 }
 

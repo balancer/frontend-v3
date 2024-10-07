@@ -12,14 +12,14 @@ import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
 import { usePermit2Allowance } from '../../tokens/approvals/permit2/usePermit2Allowance'
 import {
   AddLiquidityPermit2Params,
-  useSignPermit2Transfer,
-} from '../../tokens/approvals/permit2/useSignPermit2Transfer'
+  useSignPermit2,
+} from '../../tokens/approvals/permit2/useSignPermit2'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
 import { useChainSwitch } from '../../web3/useChainSwitch'
 import { SubSteps, TransactionStep } from './lib'
 
 /*
-  Returns a transaction step to sign a permit2 transfer for the given pool and token amounts
+  Returns a transaction step to sign a permit2 for the given pool and token amounts
   If the permit2 allowance is expired for one of the positive token amounts in: returns undefined
  */
 export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep | undefined {
@@ -38,17 +38,17 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
   const {
     signPermit2,
     signPermit2State,
-    isLoading: isLoadingTransfer,
+    isLoading: isLoadingSignature,
     isDisabled,
     buttonLabel,
     error,
-  } = useSignPermit2Transfer({ ...params, nonces })
+  } = useSignPermit2({ ...params, nonces })
   const { shouldChangeNetwork, NetworkSwitchButton, networkSwitchButtonProps } = useChainSwitch(
     getChainId(params.pool.chain)
   )
 
   const isLoading =
-    isLoadingTransfer ||
+    isLoadingSignature ||
     isLoadingPermit2Allowances ||
     signPermit2State === SignatureState.Confirming
 
@@ -88,8 +88,8 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
       subSteps,
       labels: {
         title: getTitle(subSteps),
-        init: `Permit transfer`,
-        tooltip: 'Sign permit2 transfer',
+        init: `Sign permit`,
+        tooltip: 'Sign permit',
       },
       isComplete,
       renderAction: () => <SignPermitButton />,
