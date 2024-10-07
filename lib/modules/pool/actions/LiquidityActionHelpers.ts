@@ -11,21 +11,15 @@ import {
   MinimalToken,
   NestedPoolState,
   PoolState,
+  PoolStateWithBalances,
+  Token,
   TokenAmount,
   mapPoolToNestedPoolState,
   mapPoolType,
-  PoolStateWithBalances,
-  Token,
 } from '@balancer/sdk'
-import { Hex, formatUnits, parseUnits, Address } from 'viem'
-import {
-  isAffectedByCspIssue,
-  isComposableStableV1,
-  isCowAmmPool,
-  isGyro,
-  isV3Pool,
-} from '../pool.helpers'
-import { Pool } from '../PoolProvider'
+import BigNumber from 'bignumber.js'
+import { Address, Hex, formatUnits, parseUnits } from 'viem'
+import { GetTokenFn } from '../../tokens/TokensProvider'
 import {
   isNativeAsset,
   isNativeOrWrappedNative,
@@ -33,7 +27,15 @@ import {
   swapNativeWithWrapped,
 } from '../../tokens/token.helpers'
 import { HumanTokenAmountWithAddress } from '../../tokens/token.types'
-import BigNumber from 'bignumber.js'
+import { Pool } from '../PoolProvider'
+import {
+  isAffectedByCspIssue,
+  isComposableStableV1,
+  isCowAmmPool,
+  isGyro,
+  isV3Pool,
+} from '../pool.helpers'
+import { SdkQueryAddLiquidityOutput } from './add-liquidity/add-liquidity.types'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -75,10 +77,12 @@ export class LiquidityActionHelpers {
   }
 
   public getAmountsToApprove(
-    humanAmountsIn: HumanTokenAmountWithAddress[]
+    humanAmountsIn: HumanTokenAmountWithAddress[],
+    isPermit2 = false
   ): TokenAmountToApprove[] {
     return this.toInputAmounts(humanAmountsIn).map(({ address, rawAmount }) => {
       return {
+        isPermit2,
         tokenAddress: address,
         requiredRawAmount: rawAmount,
         requestedRawAmount: rawAmount, //This amount will be probably replaced by MAX_BIGINT depending on the approval rules
@@ -232,7 +236,7 @@ export function toPoolStateWithBalances(pool: Pool): PoolStateWithBalances {
  * - is native and the wrapped native token is already in the array and
  * - is wrapped native and the native token is already in the array
  *
- * @param {HumanAmoHumanTokenAmountWithAddressuntIn[]} humanAmountsIn - The array of human amounts to filter.
+ * @param {HumanTokenAmountWithAddress[]} humanAmountsIn - The array of human amounts to filter.
  * @param {Address} tokenAddress - The token address to compare against.
  * @param {GqlChain} chain - The chain type for comparison.
  * @return {HumanTokenAmountWithAddress[]} The filtered array of human amounts.
@@ -308,4 +312,28 @@ export function injectNativeAsset(
 
 export function hasNoLiquidity(pool: Pool): boolean {
   return isZero(pool.dynamicData.totalShares)
+}
+
+// When the pool has version < v3, it adds extra buildCall params (sender and recipient) that must be present only in V1/V2
+export function formatBuildCallParams<T>(buildCallParams: T, account: Address) {
+  // sender and recipient must be defined only for v1 and v2 pools
+  return { ...buildCallParams, sender: account, recipient: account }
+}
+
+export function getTokenSymbols(
+  getToken: GetTokenFn,
+  chain: GqlChain,
+  queryOutput?: SdkQueryAddLiquidityOutput
+) {
+  if (!queryOutput?.sdkQueryOutput) return []
+  const amountsIn = queryOutput.sdkQueryOutput.amountsIn
+  const tokenSymbols = amountsIn
+    ?.filter(a => a.amount > 0n)
+    .map(a => getToken(a.token.address, chain)?.symbol ?? 'Unknown')
+  return tokenSymbols
+}
+
+export function getTokenAddresses(queryOutput?: SdkQueryAddLiquidityOutput): Address[] | undefined {
+  if (!queryOutput?.sdkQueryOutput) return undefined
+  return queryOutput.sdkQueryOutput.amountsIn.map(t => t.token.address)
 }

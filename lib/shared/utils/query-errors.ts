@@ -6,7 +6,7 @@ import {
   Exception as SentryException,
 } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isUserRejectedError } from './error-filters'
+import { isPausedErrorMessage, isUserRejectedError } from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -217,7 +217,6 @@ export function captureSentryError(
   e: unknown,
   { context, errorMessage, errorName }: SentryMetadata
 ) {
-  console.log('Context en captureSentryError', context)
   const causeError = ensureError(e)
   if (isUserRejectedError(causeError)) return
 
@@ -310,6 +309,18 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
   }
 
   /*
+    Extension related error which does not crash.
+    Examples: https://balancer-labs.sentry.io/issues/5622743248/
+  */
+  if (
+    message ===
+      "Cannot destructure property 'address' of '(intermediate value)' as it is undefined." &&
+    stackTrace.includes('extensionPageScript.js')
+  ) {
+    return true
+  }
+
+  /*
     Waller Connect bug
     More info: https://github.com/WalletConnect/walletconnect-monorepo/issues/4318
   */
@@ -333,6 +344,8 @@ export function shouldIgnore(message: string, stackTrace = ''): boolean {
     return true
   }
 
+  if (isPausedErrorMessage(message)) return true
+
   return false
 }
 
@@ -347,7 +360,7 @@ function sentryStackFramesToString(sentryStack?: SentryStack): string {
   )
 }
 
-export function getTenderlyUrl(sentryExtras?: Extras) {
-  if (!sentryExtras) return
-  return sentryExtras.tenderlyUrl as string | undefined
+export function getTenderlyUrl(sentryMetadata?: SentryMetadata) {
+  if (!sentryMetadata) return
+  return sentryMetadata?.context?.extra?.tenderlyUrl as string | undefined
 }

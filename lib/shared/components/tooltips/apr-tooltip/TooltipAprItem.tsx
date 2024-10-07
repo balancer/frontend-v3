@@ -9,6 +9,7 @@ import {
   PopoverContent,
 } from '@chakra-ui/react'
 import BigNumber from 'bignumber.js'
+import { ReactNode } from 'react'
 
 interface PopoverAprItemProps extends BoxProps {
   fontWeight?: number
@@ -24,7 +25,7 @@ interface PopoverAprItemProps extends BoxProps {
   textBackgroundClip?: string
   tooltipText?: string
   textVariant?: string
-  children?: React.ReactNode
+  children?: ReactNode
 }
 
 export function TooltipAprItem({

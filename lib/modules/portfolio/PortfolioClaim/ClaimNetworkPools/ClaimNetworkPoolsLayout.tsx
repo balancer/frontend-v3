@@ -4,7 +4,6 @@ import { ArrowLeft } from 'react-feather'
 
 interface Props extends CardProps {
   backLink: string
-  children: React.ReactNode
   title: string
 }
 

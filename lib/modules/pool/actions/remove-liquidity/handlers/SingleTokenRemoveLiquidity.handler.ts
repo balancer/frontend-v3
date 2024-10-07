@@ -1,4 +1,6 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
+import { SentryError } from '@/lib/shared/utils/errors'
 import {
   HumanAmount,
   InputAmount,
@@ -10,17 +12,19 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../PoolProvider'
-import { LiquidityActionHelpers, isEmptyHumanAmount } from '../../LiquidityActionHelpers'
+import { BPT_DECIMALS } from '../../../pool.constants'
 import {
+  LiquidityActionHelpers,
+  formatBuildCallParams,
+  isEmptyHumanAmount,
+} from '../../LiquidityActionHelpers'
+import {
+  QueryRemoveLiquidityInput,
   SdkBuildRemoveLiquidityInput,
   SdkQueryRemoveLiquidityOutput,
-  QueryRemoveLiquidityInput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { SentryError } from '@/lib/shared/utils/errors'
-import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -72,13 +76,15 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
-    const { callData, to, value } = removeLiquidity.buildCall({
+    const baseBuildCallParams = {
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
       wethIsEth,
-    })
+    }
+
+    const buildCallParams = formatBuildCallParams(baseBuildCallParams, account)
+
+    const { callData, to, value } = removeLiquidity.buildCall(buildCallParams)
 
     return {
       account,

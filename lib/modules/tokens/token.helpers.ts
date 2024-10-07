@@ -10,6 +10,7 @@ import { Address } from 'viem'
 import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
 import { InputAmount } from '@balancer/sdk'
 import { Pool } from '../pool/PoolProvider'
+import { getVaultConfig, isCowAmmPool, isV3Pool } from '../pool/pool.helpers'
 
 export function isNativeAsset(token: TokenBase | string, chain: GqlChain | SupportedChainId) {
   return nativeAssetFilter(chain)(token)
@@ -129,4 +130,17 @@ export function getLeafTokens(poolTokens: PoolToken[]) {
   })
 
   return leafTokens
+}
+
+export function getSpenderForAddLiquidity(pool: Pool): Address {
+  if (isCowAmmPool(pool.type)) return pool.address as Address
+  if (isV3Pool(pool)) {
+    const permit2Address = getNetworkConfig(pool.chain).contracts.permit2
+    if (!permit2Address) {
+      throw new Error(`Permit2 feature is not yet available for this chain (${pool.chain}) `)
+    }
+    return permit2Address
+  }
+  const { vaultAddress } = getVaultConfig(pool)
+  return vaultAddress
 }

@@ -8,7 +8,6 @@ import {
   AddLiquidityUnbalancedInput,
   PriceImpact,
   PriceImpactAmount,
-  Slippage,
 } from '@balancer/sdk'
 import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers, areEmptyAmounts } from '../../LiquidityActionHelpers'
@@ -16,14 +15,10 @@ import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-li
 import { AddLiquidityHandler } from './AddLiquidity.handler'
 
 /**
- * UnbalancedAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to implement it's
- * methods. It also handles the case where one of the input tokens is the native
- * asset instead of the wrapped native asset.
+ * Base abstract class that shares common logic shared by v3 and v2/v1 pool unbalanced handlers
  */
-export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
-  helpers: LiquidityActionHelpers
+export abstract class BaseUnbalancedAddLiquidityHandler implements AddLiquidityHandler {
+  protected helpers: LiquidityActionHelpers
 
   constructor(pool: Pool) {
     this.helpers = new LiquidityActionHelpers(pool)
@@ -56,35 +51,12 @@ export class UnbalancedAddLiquidityHandler implements AddLiquidityHandler {
     return priceImpactABA.decimal
   }
 
-  public async buildCallData({
-    humanAmountsIn,
-    account,
-    slippagePercent,
-    queryOutput,
-  }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
-    const addLiquidity = new AddLiquidity()
-
-    const { callData, to, value } = addLiquidity.buildCall({
-      ...queryOutput.sdkQueryOutput,
-      slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
-      sender: account,
-      recipient: account,
-      wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
-    })
-
-    return {
-      account,
-      chainId: this.helpers.chainId,
-      data: callData,
-      to,
-      value,
-    }
-  }
+  public abstract buildCallData(input: SdkBuildAddLiquidityInput): Promise<TransactionConfig>
 
   /**
    * PRIVATE METHODS
    */
-  private constructSdkInput(
+  protected constructSdkInput(
     humanAmountsIn: HumanTokenAmountWithAddress[]
   ): AddLiquidityUnbalancedInput {
     const amountsIn = this.helpers.toSdkInputAmounts(humanAmountsIn)

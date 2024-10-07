@@ -3,14 +3,16 @@ import { useShouldSignRelayerApproval } from '@/lib/modules/relayer/signRelayerA
 import { useApproveRelayerStep } from '@/lib/modules/relayer/useApproveRelayerStep'
 import { useRelayerMode } from '@/lib/modules/relayer/useRelayerMode'
 import { useTokenApprovalSteps } from '@/lib/modules/tokens/approvals/useTokenApprovalSteps'
-import { useContractAddress } from '@/lib/modules/web3/contracts/useContractAddress'
+import { getSpenderForAddLiquidity } from '@/lib/modules/tokens/token.helpers'
+import { useSignPermit2Step } from '@/lib/modules/transactions/transaction-steps/useSignPermit2Step'
+import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
+import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
 import { useMemo } from 'react'
 import { usePool } from '../../PoolProvider'
+import { requiresPermit2Approval } from '../../pool.helpers'
 import { LiquidityActionHelpers } from '../LiquidityActionHelpers'
+import { SdkQueryAddLiquidityOutput } from './add-liquidity.types'
 import { AddLiquidityStepParams, useAddLiquidityStep } from './useAddLiquidityStep'
-import { useSignRelayerStep } from '@/lib/modules/transactions/transaction-steps/useSignRelayerStep'
-import { Address } from 'viem'
-import { isCowAmmPool } from '../../pool.helpers'
 
 type AddLiquidityStepsParams = AddLiquidityStepParams & {
   helpers: LiquidityActionHelpers
@@ -21,10 +23,11 @@ export function useAddLiquiditySteps({
   humanAmountsIn,
   simulationQuery,
 }: AddLiquidityStepsParams) {
-  const vaultAddress = useContractAddress('balancer.vaultV2')
   const { pool, chainId, chain } = usePool()
+  const { slippage } = useUserSettings()
   const relayerMode = useRelayerMode(pool)
   const shouldSignRelayerApproval = useShouldSignRelayerApproval(chainId, relayerMode)
+
   const { step: approveRelayerStep, isLoading: isLoadingRelayerApproval } =
     useApproveRelayerStep(chainId)
   const signRelayerStep = useSignRelayerStep(chain)
@@ -34,28 +37,45 @@ export function useAddLiquiditySteps({
     [humanAmountsIn, helpers]
   )
 
+  const isPermit2 = requiresPermit2Approval(pool)
+
   const { isLoading: isLoadingTokenApprovalSteps, steps: tokenApprovalSteps } =
     useTokenApprovalSteps({
-      spenderAddress: isCowAmmPool(pool.type) ? (pool.address as Address) : vaultAddress,
+      spenderAddress: getSpenderForAddLiquidity(pool),
       chain: pool.chain,
       approvalAmounts: inputAmounts,
       actionType: 'AddLiquidity',
+      isPermit2,
     })
+
+  const signPermit2Step = useSignPermit2Step({
+    pool,
+    humanAmountsIn,
+    slippagePercent: slippage,
+    queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
+    isPermit2,
+  })
+
+  const isSignPermit2Loading = isPermit2 && !signPermit2Step
 
   const addLiquidityStep = useAddLiquidityStep({
     handler,
     humanAmountsIn,
     simulationQuery,
+    slippage,
   })
+
+  const addSteps =
+    isPermit2 && signPermit2Step ? [signPermit2Step, addLiquidityStep] : [addLiquidityStep]
 
   const steps = useMemo(() => {
     if (relayerMode === 'approveRelayer') {
-      return [approveRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
+      return [approveRelayerStep, ...tokenApprovalSteps, ...addSteps]
     } else if (shouldSignRelayerApproval) {
-      return [signRelayerStep, ...tokenApprovalSteps, addLiquidityStep]
+      return [signRelayerStep, ...tokenApprovalSteps, ...addSteps]
     }
 
-    return [...tokenApprovalSteps, addLiquidityStep]
+    return [...tokenApprovalSteps, ...addSteps]
   }, [
     relayerMode,
     shouldSignRelayerApproval,
@@ -63,11 +83,12 @@ export function useAddLiquiditySteps({
     addLiquidityStep,
     approveRelayerStep,
     signRelayerStep,
+    signPermit2Step,
     humanAmountsIn,
   ])
 
   return {
-    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval,
+    isLoadingSteps: isLoadingTokenApprovalSteps || isLoadingRelayerApproval || isSignPermit2Loading,
     steps,
   }
 }

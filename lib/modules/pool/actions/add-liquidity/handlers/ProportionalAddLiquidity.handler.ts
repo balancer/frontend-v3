@@ -16,9 +16,7 @@ import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for strictly proportional adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to calculate the BPT
- * out with the current pools state, then uses that bptOut for the query.
+ * AddLiquidityHandler interface for strictly proportional adds for V2 and CowAmm pools(v1).
  */
 export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -48,17 +46,13 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
     account,
     queryOutput,
     humanAmountsIn,
+    slippagePercent,
   }: SdkBuildAddLiquidityInput): Promise<TransactionConfig> {
     const addLiquidity = new AddLiquidity()
 
     const { callData, to, value } = addLiquidity.buildCall({
       ...queryOutput.sdkQueryOutput,
-      // Setting slippage to zero ensures the build call can't fail if the user
-      // maxes out their balance. It can result in a tx failure if the pool
-      // state changes significantly in the background. The assumption is that
-      // this should be rare. If not, we will have to re-introduce slippage here
-      // and limit the user input amounts to their balance - slippage.
-      slippage: Slippage.fromPercentage('0' as HumanAmount),
+      slippage: Slippage.fromPercentage(slippagePercent as HumanAmount),
       sender: account,
       recipient: account,
       wethIsEth: this.helpers.isNativeAssetIn(humanAmountsIn),
