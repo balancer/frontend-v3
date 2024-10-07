@@ -36,6 +36,9 @@ export default function Debug() {
         <Link as={NextLink} href="/debug/revoke-relayer-approval">
           Revoke relayer approval
         </Link>
+        <Link as={NextLink} href="/debug/permit2-allowance">
+          Permit2 allowance
+        </Link>
       </VStack>
     </FadeInOnView>
   )

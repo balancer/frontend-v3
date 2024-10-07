@@ -25,6 +25,8 @@ import { mins } from '@/lib/shared/utils/time'
 export type UseTokensResult = ReturnType<typeof _useTokens>
 export const TokensContext = createContext<UseTokensResult | null>(null)
 
+export type GetTokenFn = (address: string, chain: GqlChain) => GqlToken | undefined
+
 export function _useTokens(
   initTokenData: GetTokensQuery,
   initTokenPricesData: GetTokenPricesQuery,

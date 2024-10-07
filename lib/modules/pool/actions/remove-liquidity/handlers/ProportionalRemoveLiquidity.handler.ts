@@ -1,4 +1,5 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
+import { getRpcUrl } from '@/lib/modules/web3/transports'
 import {
   HumanAmount,
   InputAmount,
@@ -8,8 +9,8 @@ import {
   Slippage,
 } from '@balancer/sdk'
 import { Address, parseEther } from 'viem'
-import { BPT_DECIMALS } from '../../../pool.constants'
 import { Pool } from '../../../PoolProvider'
+import { BPT_DECIMALS } from '../../../pool.constants'
 import { LiquidityActionHelpers, formatBuildCallParams } from '../../LiquidityActionHelpers'
 import {
   QueryRemoveLiquidityInput,
@@ -17,7 +18,6 @@ import {
   SdkQueryRemoveLiquidityOutput,
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
-import { getRpcUrl } from '@/lib/modules/web3/transports'
 
 export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
@@ -56,11 +56,7 @@ export class ProportionalRemoveLiquidityHandler implements RemoveLiquidityHandle
       wethIsEth,
     }
 
-    const buildCallParams = formatBuildCallParams(
-      baseBuildCallParams,
-      this.helpers.isV3Pool(),
-      account
-    )
+    const buildCallParams = formatBuildCallParams(baseBuildCallParams, account)
 
     const { callData, to, value } = removeLiquidity.buildCall(buildCallParams)
 

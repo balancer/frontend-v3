@@ -41,6 +41,8 @@ export type StepType =
   | 'claim'
   | 'swap'
   | LockActionType
+  | 'signPermit'
+  | 'signPermit2'
 
 export type TxActionId =
   | 'SignBatchRelayer'
