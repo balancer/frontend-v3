@@ -16,7 +16,7 @@ import {
 } from '../../tokens/approvals/permit2/useSignPermit2'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
 import { useChainSwitch } from '../../web3/useChainSwitch'
-import { SubSteps, TransactionStep } from './lib'
+import { StepDetails as StepDetails, TransactionStep } from './lib'
 
 /*
   Returns a transaction step to sign a permit2 for the given pool and token amounts
@@ -76,7 +76,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const isComplete = () => signPermit2State === SignatureState.Completed || isValidPermit2
 
-  const subSteps: SubSteps = {
+  const details: StepDetails = {
     gasless: true,
     tokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
   }
@@ -85,9 +85,9 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     () => ({
       id: 'sign-permit2',
       stepType: 'signPermit2',
-      subSteps,
+      extras: details,
       labels: {
-        title: getTitle(subSteps),
+        title: getTitle(details),
         init: `Sign permit`,
         tooltip: 'Sign permit',
       },
@@ -99,8 +99,8 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
   )
 }
 
-function getTitle(subSteps?: SubSteps): string {
-  if (!subSteps?.tokens) return `Permit on balancer`
-  if (subSteps.tokens.length === 1) return `${subSteps.tokens[0]}: Permit on balancer`
+function getTitle(details?: StepDetails): string {
+  if (!details?.tokens) return `Permit on balancer`
+  if (details.tokens.length === 1) return `${details.tokens[0]}: Permit on balancer`
   return 'Permit tokens on balancer'
 }

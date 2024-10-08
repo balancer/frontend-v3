@@ -8,7 +8,7 @@ import {
 } from '@chakra-ui/react'
 import { StepProps, getStepSettings } from './getStepSettings'
 import { Check } from 'react-feather'
-import { ManagedResult, SubSteps } from '../lib'
+import { ManagedResult, StepDetails } from '../lib'
 import { useTransactionState } from '../TransactionStateProvider'
 import { indexToLetter } from '@/lib/shared/labels'
 
@@ -24,7 +24,7 @@ export function Step(props: StepProps) {
         <Text mt={isActive ? -0.3 : 0} color={color} fontWeight="bold">
           {title}
         </Text>
-        <NestedInfo color={color} subSteps={props.step.subSteps} />
+        <NestedInfo color={color} details={props.step.details} />
       </VStack>
     </HStack>
   )
@@ -71,20 +71,20 @@ export function StepIndicator({
   )
 }
 
-function NestedInfo({ color, subSteps }: { color: string; subSteps?: SubSteps }) {
+function NestedInfo({ color, details }: { color: string; details?: StepDetails }) {
   return (
     <Box mt="0" p="1" pl="0" mb="0">
       <Text fontSize="sm" color={color} lineHeight="1">
-        {subSteps?.gasless ? 'Free signature' : 'Gas transaction'}
+        {details?.gasless ? 'Free signature' : 'Gas transaction'}
       </Text>
 
-      {subSteps?.tokens &&
-        subSteps.tokens.length > 1 &&
-        subSteps.tokens.map((subStep, index) => (
-          <HStack mt={index === 0 ? '2' : '1'} key={subStep}>
+      {details?.tokens &&
+        details.tokens.length > 1 &&
+        details.tokens.map((token, index) => (
+          <HStack mt={index === 0 ? '2' : '1'} key={token}>
             <SubStepIndicator color={color} label={indexToLetter(index)} />
             <Text fontSize="sm" color={color}>
-              {subStep}
+              {token}
             </Text>
           </HStack>
         ))}
