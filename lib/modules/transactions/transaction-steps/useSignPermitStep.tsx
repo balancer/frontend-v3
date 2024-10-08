@@ -10,7 +10,7 @@ import {
   useSignPermit as useSignPermit,
 } from '../../tokens/approvals/permit/useSignPermit'
 import { useChainSwitch } from '../../web3/useChainSwitch'
-import { TransactionStep } from './lib'
+import { SubSteps, TransactionStep } from './lib'
 import { getChainId } from '@/lib/config/app.config'
 import { SignIcon } from '@/lib/shared/components/icons/SignIcon'
 import { primaryTextColor } from '@/lib/shared/services/chakra/themes/bal/colors'
@@ -56,10 +56,15 @@ export function useSignPermitStep(params: RemoveLiquidityPermitParams): Transact
 
   const isComplete = () => signPermitState === SignatureState.Completed
 
+  const subSteps: SubSteps = {
+    gasless: true,
+  }
+
   return useMemo(
     () => ({
       id: 'sign-permit',
       stepType: 'signPermit',
+      subSteps,
       labels: {
         title: `Permit pool token on Balancer`,
         init: `Sign permit`,
