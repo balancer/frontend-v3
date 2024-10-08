@@ -60,9 +60,9 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
     return (
       <ErrorAlert title={customErrorName} {...rest}>
         <Text variant="secondary" color="black">
-          It looks like you don&apos;t have enough gas for this transaction. You can report the
-          problem in <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> if
-          the issue persists.
+          It looks like you don&apos;t have enough gas to complete this transaction. If you believe
+          this is a mistake, please report it in{' '}
+          <BalAlertLink href="https://discord.balancer.fi/">our discord.</BalAlertLink>
         </Text>
       </ErrorAlert>
     )
