@@ -35,7 +35,9 @@ import { SimulationError } from '@/lib/shared/components/errors/SimulationError'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
 import { SafeAppAlert } from '@/lib/shared/components/alerts/SafeAppAlert'
 import { useTokens } from '@/lib/modules/tokens/TokensProvider'
+import { TooltipWithTouch } from '@/lib/shared/components/tooltips/TooltipWithTouch'
 import { useUserSettings } from '@/lib/modules/user/settings/UserSettingsProvider'
+
 const TABS: ButtonGroupOption[] = [
   {
     value: 'proportional',
@@ -61,6 +63,8 @@ export function RemoveLiquidityForm() {
     simulationQuery,
     quoteBptIn,
     removeLiquidityTxHash,
+    isSingleTokenBalanceMoreThat25Percent,
+    isSingleToken,
     setProportionalType,
     setSingleTokenType,
     setHumanBptInPercent,
@@ -113,6 +117,8 @@ export function RemoveLiquidityForm() {
     }
   }, [removeLiquidityTxHash])
 
+  const isWarning = isSingleToken && isSingleTokenBalanceMoreThat25Percent
+
   return (
     <TokenBalancesProvider extTokens={validTokens}>
       <Box h="full" w="full" maxW="lg" mx="auto" pb="2xl">
@@ -139,17 +145,23 @@ export function RemoveLiquidityForm() {
                 </Tooltip>
               </HStack>
             )}
-            <VStack w="full" spacing="md">
+            <VStack w="full" spacing="md" align="start">
               <InputWithSlider
                 value={totalUSDValue}
                 onPercentChanged={setHumanBptInPercent}
                 isNumberInputDisabled
+                isWarning={isWarning}
               >
                 <Text fontSize="sm">Amount</Text>
                 <Text fontSize="sm" variant="secondary">
                   {fNum('percentage', humanBptInPercent / 100)}
                 </Text>
               </InputWithSlider>
+              {isWarning && (
+                <Text fontSize="xs" color="font.warning">
+                  You can only remove up to 25% of a single asset from the pool in one transaction
+                </Text>
+              )}
               {activeTab === TABS[0] && (
                 <RemoveLiquidityProportional tokens={tokens} poolType={pool.type} />
               )}
@@ -188,19 +200,19 @@ export function RemoveLiquidityForm() {
               )}
             </VStack>
             <SimulationError simulationQuery={simulationQuery} />
-            <Tooltip label={isDisabled ? disabledReason : ''}>
+            <TooltipWithTouch label={isDisabled ? disabledReason : ''}>
               <Button
                 ref={nextBtn}
                 variant="secondary"
                 w="full"
                 size="lg"
-                isDisabled={isDisabled}
+                isDisabled={isDisabled || isWarning}
                 isLoading={simulationQuery.isLoading || priceImpactQuery.isLoading}
                 onClick={() => !isDisabled && previewModalDisclosure.onOpen()}
               >
                 Next
               </Button>
-            </Tooltip>
+            </TooltipWithTouch>
           </VStack>
         </Card>
         <RemoveLiquidityModal

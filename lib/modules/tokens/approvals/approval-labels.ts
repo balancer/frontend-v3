@@ -12,15 +12,17 @@ export type TokenApprovalLabelArgs = {
   actionType: ApprovalAction
   symbol: string
   requiredRawAmount: bigint
+  isPermit2?: boolean
 }
 
 export const buildTokenApprovalLabels: BuildTransactionLabels = ({
   actionType,
   symbol,
+  isPermit2 = false,
 }: TokenApprovalLabelArgs) => {
   return {
-    init: initApprovalLabelFor(actionType, symbol),
-    title: `Approve ${symbol}`,
+    init: initApprovalLabelFor(actionType, symbol, isPermit2),
+    title: isPermit2 ? `${symbol}: Approve Permit2` : `Approve ${symbol}`,
     description: descriptionFor(actionType, symbol),
     confirming: actionType === 'Unapprove' ? `Unapproving ${symbol}...` : `Approving ${symbol}...`,
     confirmed: `${symbol} ${actionType === 'Unapprove' ? 'unapproved' : 'approved!'}`,
@@ -29,7 +31,10 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = ({
   }
 }
 
-function initApprovalLabelFor(actionType: ApprovalAction, symbol: string) {
+function initApprovalLabelFor(actionType: ApprovalAction, symbol: string, isPermit2: boolean) {
+  if (isPermit2) {
+    return `Approve Permit2: ${symbol}`
+  }
   switch (actionType) {
     case 'Locking':
       return `Approve LP token to lock`

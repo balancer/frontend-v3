@@ -27,6 +27,7 @@ import { aGqlPoolElementMock } from '../msw/builders/gqlPoolElement.builders'
 import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { testQueryClient } from './react-query'
+import { Permit2SignatureProvider } from '@/lib/modules/tokens/approvals/permit2/Permit2SignatureProvider'
 
 export type Wrapper = ({ children }: PropsWithChildren) => ReactNode
 
@@ -106,9 +107,11 @@ export async function waitForLoadedUseQuery(hookResult: { current: { loading: bo
 
 export const DefaultAddLiquidityTestProvider = ({ children }: PropsWithChildren) => (
   <RelayerSignatureProvider>
-    <TokenInputsValidationProvider>
-      <AddLiquidityProvider>{children}</AddLiquidityProvider>
-    </TokenInputsValidationProvider>
+    <Permit2SignatureProvider>
+      <TokenInputsValidationProvider>
+        <AddLiquidityProvider>{children}</AddLiquidityProvider>
+      </TokenInputsValidationProvider>
+    </Permit2SignatureProvider>
   </RelayerSignatureProvider>
 )
 
