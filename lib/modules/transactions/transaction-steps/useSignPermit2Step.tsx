@@ -85,7 +85,7 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     () => ({
       id: 'sign-permit2',
       stepType: 'signPermit2',
-      extras: details,
+      details,
       labels: {
         title: getTitle(details),
         init: `Sign permit`,
