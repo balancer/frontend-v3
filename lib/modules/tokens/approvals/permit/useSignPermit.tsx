@@ -62,7 +62,7 @@ export function useSignPermit({
       if (signature) {
         setSignPermitState(SignatureState.Completed)
         toast({
-          title: 'Permit approval signed!',
+          title: 'Approval signed!',
           description: '',
           status: 'success',
           duration: 5000,
@@ -93,13 +93,13 @@ export function useSignPermit({
 
 function getButtonLabel(signPermitState: SignatureState, poolSymbol?: string) {
   if (signPermitState === SignatureState.Ready) return getReadyLabel(poolSymbol)
-  if (signPermitState === SignatureState.Confirming) return 'Confirm permit signature in wallet'
+  if (signPermitState === SignatureState.Confirming) return 'Confirm approval with signature'
   if (signPermitState === SignatureState.Preparing) return 'Preparing'
-  if (signPermitState === SignatureState.Completed) return 'Permit Signed'
+  if (signPermitState === SignatureState.Completed) return 'Approval signed'
   return ''
 }
 
 function getReadyLabel(poolSymbol?: string) {
-  if (!poolSymbol) return 'Sign permit'
-  return 'Sign permit: ' + poolSymbol
+  if (!poolSymbol) return 'Sign aproval'
+  return 'Sign approval: ' + poolSymbol
 }
