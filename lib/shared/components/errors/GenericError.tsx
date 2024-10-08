@@ -3,6 +3,7 @@
 import { AlertProps, Text } from '@chakra-ui/react'
 import { ErrorAlert } from './ErrorAlert'
 import {
+  isNotEnoughGasError,
   isPausedError,
   isTooManyRequestsError,
   isUserRejectedError,
@@ -51,6 +52,17 @@ export function GenericError({ error: _error, customErrorName, ...rest }: Props)
           Too many RPC requests. Please try again in some minutes. You can report the problem in{' '}
           <BalAlertLink href="https://discord.balancer.fi/">our discord</BalAlertLink> if the issue
           persists.
+        </Text>
+      </ErrorAlert>
+    )
+  }
+  if (isNotEnoughGasError(_error)) {
+    return (
+      <ErrorAlert title={customErrorName} {...rest}>
+        <Text variant="secondary" color="black">
+          It looks like you don&apos;t have enough gas to complete this transaction. If you believe
+          this is a mistake, please report it in{' '}
+          <BalAlertLink href="https://discord.balancer.fi/">our discord.</BalAlertLink>
         </Text>
       </ErrorAlert>
     )

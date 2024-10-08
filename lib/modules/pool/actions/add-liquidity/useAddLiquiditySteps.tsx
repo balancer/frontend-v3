@@ -65,7 +65,8 @@ export function useAddLiquiditySteps({
     slippage,
   })
 
-  const addSteps = isPermit2 ? [signPermit2Step, addLiquidityStep] : [addLiquidityStep]
+  const addSteps =
+    isPermit2 && signPermit2Step ? [signPermit2Step, addLiquidityStep] : [addLiquidityStep]
 
   const steps = useMemo(() => {
     if (relayerMode === 'approveRelayer') {

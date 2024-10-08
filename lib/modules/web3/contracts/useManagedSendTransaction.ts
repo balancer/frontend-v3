@@ -127,26 +127,28 @@ export function useManagedSendTransaction({
     hash: bundle.result.data?.transactionHash,
   })
 
-  const managedSendAsync = async () => {
-    if (!estimateGasQuery.data) return
-    if (!txConfig?.to) return
-    try {
-      return writeMutation.sendTransactionAsync({
-        chainId,
-        to: txConfig.to,
-        data: txConfig.data,
-        value: txConfig.value,
-        gas: estimateGasQuery.data,
-      })
-    } catch (e: unknown) {
-      captureWagmiExecutionError(e, 'Error in send transaction execution', {
-        chainId,
-        txConfig,
-        gas: estimateGasQuery.data,
-      })
-      throw e
-    }
-  }
+  const managedSendAsync = txConfig
+    ? async () => {
+        if (!estimateGasQuery.data) return
+        if (!txConfig?.to) return
+        try {
+          return writeMutation.sendTransactionAsync({
+            chainId,
+            to: txConfig.to,
+            data: txConfig.data,
+            value: txConfig.value,
+            gas: estimateGasQuery.data,
+          })
+        } catch (e: unknown) {
+          captureWagmiExecutionError(e, 'Error in send transaction execution', {
+            chainId,
+            txConfig,
+            gas: estimateGasQuery.data,
+          })
+          throw e
+        }
+      }
+    : undefined
 
   return {
     ...bundle,

@@ -5,9 +5,7 @@ import { BaseProportionalAddLiquidityHandler } from './BaseProportionalAddLiquid
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for strictly proportional adds, e.g. where the user
- * specifies the token amounts in. It uses the Balancer SDK to calculate the BPT
- * out with the current pools state, then uses that bptOut for the query.
+ * AddLiquidityHandler interface for strictly proportional adds for V2 and CowAmm pools(v1).
  */
 export class ProportionalAddLiquidityHandler extends BaseProportionalAddLiquidityHandler {
   public async buildCallData({

@@ -4,16 +4,16 @@ import { AddLiquidity } from '@balancer/sdk'
 import { formatBuildCallParams } from '../../LiquidityActionHelpers'
 import { SdkBuildAddLiquidityInput } from '../add-liquidity.types'
 import { BaseUnbalancedAddLiquidityHandler } from './BaseUnbalancedAddLiquidity.handler'
-import { constructBaseBuildCallInput } from './v3Helpers'
+import { constructBaseBuildCallInput } from './add-liquidity.utils'
 
 /**
  * UnbalancedAddLiquidityHandler is a handler that implements the
- * AddLiquidityHandler interface for unbalanced adds in v1(cowAMM) and v2 pools, e.g. where the user
+ * AddLiquidityHandler interface for unbalanced adds v2 pools, e.g. where the user
  * specifies the token amounts in. It uses the Balancer SDK to implement it's
  * methods. It also handles the case where one of the input tokens is the native
  * asset instead of the wrapped native asset.
  */
-export class UnbalancedAddLiquidityHandler extends BaseUnbalancedAddLiquidityHandler {
+export class UnbalancedAddLiquidityV2Handler extends BaseUnbalancedAddLiquidityHandler {
   public async buildCallData({
     humanAmountsIn,
     slippagePercent,

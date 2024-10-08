@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { getGqlChain, getNetworkConfig } from '@/lib/config/app.config'
 import { permit2Abi } from '@balancer/sdk'
 import { zipObject } from 'lodash'
@@ -5,6 +6,10 @@ import { Address } from 'viem'
 import { useReadContracts } from 'wagmi'
 
 export type NoncesByTokenAddress = Record<Address, number>
+export type ExpirationByTokenAddress = Record<Address, number>
+export type AllowedAmountsByTokenAddress = Record<Address, bigint>
+
+export type Permit2AllowanceResult = ReturnType<typeof usePermit2Allowance>
 
 type Params = {
   chainId: number
@@ -12,7 +17,7 @@ type Params = {
   owner?: Address
   enabled: boolean
 }
-export function usePermit2Nonces({ chainId, tokenAddresses, owner, enabled }: Params) {
+export function usePermit2Allowance({ chainId, tokenAddresses, owner, enabled }: Params) {
   const networkConfig = getNetworkConfig(getGqlChain(chainId))
   const permit2Address = networkConfig.contracts.permit2!
   const balancerRouter = networkConfig.contracts.balancer.router!
@@ -45,8 +50,26 @@ export function usePermit2Nonces({ chainId, tokenAddresses, owner, enabled }: Pa
         )
       : undefined
 
+  const expirations: ExpirationByTokenAddress | undefined =
+    tokenAddresses && data
+      ? zipObject(
+          tokenAddresses,
+          data.map(result => result[1])
+        )
+      : undefined
+
+  const allowedAmounts: AllowedAmountsByTokenAddress | undefined =
+    tokenAddresses && data
+      ? zipObject(
+          tokenAddresses,
+          data.map(result => result[0])
+        )
+      : undefined
+
   return {
-    isLoadingNonces: isLoading,
+    isLoadingPermit2Allowances: isLoading,
     nonces,
+    expirations,
+    allowedAmounts,
   }
 }
