@@ -69,7 +69,8 @@ type Executable = {
   setTxConfig?: any
 }
 
-export type SubSteps = {
+// Defines extra details to be nested in the step tracker
+export type StepDetails = {
   gasless: boolean
   tokens?: string[]
 }
@@ -77,7 +78,7 @@ export type SubSteps = {
 export type TransactionStep = {
   id: string
   stepType: StepType
-  subSteps?: SubSteps
+  details?: StepDetails
   labels: TransactionLabels
   isComplete: () => boolean
   renderAction: () => ReactNode
