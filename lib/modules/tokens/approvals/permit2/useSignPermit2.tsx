@@ -119,7 +119,7 @@ function getButtonLabel(signPermit2State: SignatureState, tokenSymbols?: (string
 }
 
 function getReadyLabel(tokenSymbols?: (string | undefined)[]) {
-  if (!tokenSymbols) return 'Permit transfer'
-  if (tokenSymbols.length === 1) return 'Permit transfer: ' + tokenSymbols[0]
-  return 'Permit transfers: ' + tokenSymbols.join(', ')
+  if (!tokenSymbols) return 'Sign token permit '
+  if (tokenSymbols.length === 1) return 'Sign permit: ' + tokenSymbols[0]
+  return 'Sign permits: ' + tokenSymbols.join(', ')
 }
