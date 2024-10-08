@@ -37,6 +37,8 @@ export interface ContractsConfig {
     vaultV2: Address
     // TODO: make it required when v3 is deployed in all networks
     vaultV3?: Address
+    // TODO: make it required when v3 is deployed in all networks
+    router?: Address
     relayerV6: Address
     minter: Address
   }

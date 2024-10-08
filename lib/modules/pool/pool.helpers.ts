@@ -26,6 +26,7 @@ import { balancerV2VaultAbi } from '../web3/contracts/abi/generated'
 import { balancerV3VaultAbi } from '../web3/contracts/abi/balancerV3VaultAbi'
 import { supportsNestedActions } from './actions/LiquidityActionHelpers'
 import { getLeafTokens } from '../tokens/token.helpers'
+import { GetTokenFn } from '../tokens/TokensProvider'
 
 /**
  * METHODS
@@ -325,14 +326,15 @@ export function requiresPermit2Approval(pool: Pool): boolean {
   return isV3Pool(pool)
 }
 
+export function isUnbalancedLiquidityDisabled(pool: Pool): boolean {
+  return !!pool.liquidityManagement?.disableUnbalancedLiquidity
+}
+
 export function getRateProviderWarnings(warnings: string[]) {
   return warnings.filter(warning => !isEmpty(warning))
 }
 
-export function getPoolTokens(
-  pool: Pool,
-  getToken: (address: string, chain: GqlChain) => GqlToken | undefined
-): GqlToken[] {
+export function getPoolTokens(pool: Pool, getToken: GetTokenFn): GqlToken[] {
   type PoolToken = Pool['poolTokens'][0]
   function toGqlTokens(tokens: PoolToken[]): GqlToken[] {
     return tokens

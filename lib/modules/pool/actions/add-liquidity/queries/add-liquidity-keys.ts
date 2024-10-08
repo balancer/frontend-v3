@@ -16,6 +16,7 @@ export type AddLiquidityParams = {
   poolType: GqlPoolType
   slippage: string
   humanAmountsIn: HumanTokenAmountWithAddress[]
+  hasPermit2?: boolean
 }
 
 function liquidityParams({
@@ -25,10 +26,13 @@ function liquidityParams({
   poolType,
   slippage,
   humanAmountsIn,
+  hasPermit2,
 }: AddLiquidityParams) {
   return `${getHandlerClassName(
     handler
-  )}:${userAddress}:${poolId}:${slippage}:${stringifyHumanAmountsIn(poolType, humanAmountsIn)}`
+  )}:${userAddress}:${poolId}:${slippage}:${stringifyHumanAmountsIn(poolType, humanAmountsIn)}${
+    hasPermit2 ? 'permit2' : 'no-permit2'
+  }`
 }
 
 export function stringifyHumanAmountsIn(

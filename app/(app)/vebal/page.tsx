@@ -1,8 +1,6 @@
-'use client'
-
-import { VebalInfo } from '@/lib/modules/vebal/VebalInfo'
 import { Stack } from '@chakra-ui/react'
 import { CrossChainBoost } from '@/lib/modules/vebal/cross-chain/CrossChainBoost'
+import { VebalInfo } from '@/lib/modules/vebal/VebalInfo'
 
 export default function VebalPage() {
   return (

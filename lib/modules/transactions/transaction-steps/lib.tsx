@@ -42,6 +42,8 @@ export type StepType =
   | 'swap'
   | 'crossChainSync'
   | LockActionType
+  | 'signPermit'
+  | 'signPermit2'
 
 export type TxActionId =
   | 'SignBatchRelayer'
