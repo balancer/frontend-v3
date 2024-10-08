@@ -13,6 +13,9 @@ export default function DebugPools() {
           <Link as={NextLink} href="/pools/sepolia/v3/0x7cf221fa36584f59a4f7fd7b946b8571c78e3692">
             Sepolia WEIGHTED (Balancer 50 BAL 50 WETH)
           </Link>
+          <Link as={NextLink} href="/pools/sepolia/v3/0x8fc07bcf9b88ace84c7523248dc4a85f638c9536">
+            Sepolia WEIGHTED with Proportional joins (Balancer 50 BAL 50 WETH -ExitFee Hook)
+          </Link>
           <Link as={NextLink} href="/pools/sepolia/v3/0x7cf221fa36584f59a4f7fd7b946b8571c78e3692">
             Sepolia STABLE (Balancer 50 BAL 50 WETH)
           </Link>
