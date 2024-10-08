@@ -14,6 +14,7 @@ import {
 import { Address, parseEther } from 'viem'
 import { Pool } from '../../../PoolProvider'
 import { BPT_DECIMALS } from '../../../pool.constants'
+import { isV3Pool } from '../../../pool.helpers'
 import {
   LiquidityActionHelpers,
   formatBuildCallParams,
@@ -26,7 +27,7 @@ import {
 } from '../remove-liquidity.types'
 import { RemoveLiquidityHandler } from './RemoveLiquidity.handler'
 
-export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler {
+export class SingleTokenRemoveLiquidityV2Handler implements RemoveLiquidityHandler {
   helpers: LiquidityActionHelpers
 
   constructor(pool: Pool) {
@@ -82,7 +83,9 @@ export class SingleTokenRemoveLiquidityHandler implements RemoveLiquidityHandler
       wethIsEth,
     }
 
-    const buildCallParams = formatBuildCallParams(baseBuildCallParams, account)
+    const buildCallParams = isV3Pool(this.helpers.pool)
+      ? baseBuildCallParams
+      : formatBuildCallParams(baseBuildCallParams, account)
 
     const { callData, to, value } = removeLiquidity.buildCall(buildCallParams)
 
