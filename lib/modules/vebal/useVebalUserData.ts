@@ -5,7 +5,7 @@ import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
 export function useVebalUserData() {
   const { userAddress, isConnected } = useUserAccount()
 
-  const { data, refetch } = useQuery(GetVeBalUserDocument, {
+  const { data, refetch, loading, error } = useQuery(GetVeBalUserDocument, {
     variables: {
       address: userAddress.toLowerCase(),
       chain: GqlChain.Mainnet,
@@ -16,5 +16,7 @@ export function useVebalUserData() {
     data,
     refetch,
     isConnected,
+    loading,
+    error,
   }
 }
