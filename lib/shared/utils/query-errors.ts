@@ -6,7 +6,11 @@ import {
   Exception as SentryException,
 } from '@sentry/types'
 import { SentryError, ensureError } from './errors'
-import { isPausedErrorMessage, isUserRejectedError } from './error-filters'
+import {
+  isNotEnoughGasErrorMessage,
+  isPausedErrorMessage,
+  isUserRejectedError,
+} from './error-filters'
 import {
   AddLiquidityParams,
   stringifyHumanAmountsIn,
@@ -244,6 +248,8 @@ export function shouldIgnoreException(sentryException: SentryException) {
 
 export function shouldIgnore(message: string, stackTrace = ''): boolean {
   if (isUserRejectedError(new Error(message))) return true
+
+  if (isNotEnoughGasErrorMessage(message)) return true
 
   /*
     Thrown from useWalletClient() when loading a pool page from scratch.

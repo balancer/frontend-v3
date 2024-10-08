@@ -21,9 +21,19 @@ export function isViemHttpFetchError(error?: Error | null): boolean {
   - others
 */
 export function isTooManyRequestsError(error?: Error | null): boolean {
-  console.log(error?.message)
   if (!error) return false
   return error.message.startsWith('HTTP request failed.') && error.message.includes('Status: 429')
+}
+
+export function isNotEnoughGasError(error?: Error | null): boolean {
+  if (!error) return false
+  return isNotEnoughGasErrorMessage(error.message)
+}
+
+export function isNotEnoughGasErrorMessage(errorMessage: string): boolean {
+  return errorMessage.startsWith(
+    'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.'
+  )
 }
 
 export function isPausedError(error?: Error | null): boolean {
