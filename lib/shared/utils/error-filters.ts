@@ -27,7 +27,11 @@ export function isTooManyRequestsError(error?: Error | null): boolean {
 
 export function isNotEnoughGasError(error?: Error | null): boolean {
   if (!error) return false
-  return error.message.startsWith(
+  return isNotEnoughGasErrorMessage(error.message)
+}
+
+export function isNotEnoughGasErrorMessage(errorMessage: string): boolean {
+  return errorMessage.startsWith(
     'The total cost (gas * gas fee + value) of executing this transaction exceeds the balance of the account.'
   )
 }
