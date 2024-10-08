@@ -8,7 +8,7 @@ import { format, differenceInDays } from 'date-fns'
 import BigNumber from 'bignumber.js'
 import { lockSnapshots } from './test-locks'
 import { useVebalLockInfo } from '../../vebal/useVebalLockInfo'
-import { bn } from '@/lib/shared/utils/numbers'
+import { bn, fNum } from '@/lib/shared/utils/numbers'
 import { useTheme as useNextTheme } from 'next-themes'
 
 type ChartValueAcc = [string, number][]
@@ -216,7 +216,7 @@ export function useVebalLocksChart() {
             show: false,
           },
         },
-        extraCssText: `border: none;${toolTipTheme.container};max-width: 215px`,
+        extraCssText: `border: none;${toolTipTheme.container};max-width: 215px; z-index: 5`,
         position: (point, params, dom, rect, size) => {
           if (!mouseoverRef.current) {
             return [point[0] - size.contentSize[0] / 2, 0]
@@ -263,7 +263,7 @@ export function useVebalLocksChart() {
                       <span style="display: inline-block; margin-right: 4px; border-radius: 10px;
                         width: 10px; height: 10px; background-color: #BCA25D;">
                       </span>
-                      <span>${secondPointValue[1]} veBAL</span>
+                      <span>${fNum('token', secondPointValue[1])} veBAL</span>
                     </span>
                   `
                   : ''
@@ -272,8 +272,8 @@ export function useVebalLocksChart() {
                 <span style="display: inline-block; margin-right: 4px; border-radius: 10px;
                   width: 10px; height: 10px; background-color: #BCA25D;">
                 </span>
-                <span>${firstPointValue[1]} veBAL</span>
-              </span>
+                <span>${fNum('token', firstPointValue[1])} veBAL</span>
+                </span>
             </div>
           </div>
         `
