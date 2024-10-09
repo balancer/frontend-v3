@@ -126,6 +126,7 @@ export function AddLiquiditySummary({
                 bptAmount={simulationQuery.data?.bptOut.amount}
                 slippage={slippage}
                 isAddLiquidity
+                isSummary
               />
             </VStack>
           </Card>

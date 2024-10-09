@@ -18,6 +18,8 @@ import { ArrowRight } from 'react-feather'
 import { calcShareOfPool, calcUserShareOfPool } from '../pool.helpers'
 import { isNumber } from 'lodash'
 import { InfoIcon } from '@/lib/shared/components/icons/InfoIcon'
+import { formatUnits } from 'viem'
+import { BPT_DECIMALS } from '../pool.constants'
 
 interface PoolActionsPriceImpactDetailsProps {
   bptAmount: bigint | undefined
@@ -25,6 +27,7 @@ interface PoolActionsPriceImpactDetailsProps {
   slippage: string
   isAddLiquidity?: boolean
   isLoading?: boolean
+  isSummary?: boolean
 }
 
 export function PoolActionsPriceImpactDetails({
@@ -33,6 +36,7 @@ export function PoolActionsPriceImpactDetails({
   slippage,
   isAddLiquidity = false,
   isLoading = false,
+  isSummary = false,
 }: PoolActionsPriceImpactDetailsProps) {
   const { toCurrency } = useCurrency()
   const { pool } = usePool()
@@ -122,6 +126,42 @@ export function PoolActionsPriceImpactDetails({
           </Popover>
         </HStack>
       </HStack>
+      {isAddLiquidity && !isSummary && (
+        <HStack justify="space-between" w="full">
+          <Text color="grayText">LP tokens (if no slippage)</Text>
+          <HStack>
+            <HStack gap="0.5">
+              {isLoading || !bptAmount ? (
+                <Skeleton w="40px" h="16px" />
+              ) : (
+                <>
+                  <NumberText color="grayText">
+                    {fNum('token', formatUnits(bptAmount, BPT_DECIMALS))}
+                  </NumberText>
+                </>
+              )}
+            </HStack>
+            <Popover trigger="hover">
+              <PopoverTrigger>
+                <Box
+                  opacity="0.5"
+                  transition="opacity 0.2s var(--ease-out-cubic)"
+                  _hover={{ opacity: 1 }}
+                >
+                  <InfoIcon />
+                </Box>
+              </PopoverTrigger>
+              <PopoverContent p="sm" w="auto" maxW="300px">
+                <Text fontSize="sm" variant="secondary">
+                  LP tokens are digital assets which are issued to Liquidity Providers to represent
+                  their share of the pool. LP tokens can be redeemed to reclaim the original tokens
+                  plus certain types of accumulated yield (like swap fees).
+                </Text>
+              </PopoverContent>
+            </Popover>
+          </HStack>
+        </HStack>
+      )}
       <HStack justify="space-between" w="full">
         <Text color="grayText">Share of pool</Text>
         <HStack>
