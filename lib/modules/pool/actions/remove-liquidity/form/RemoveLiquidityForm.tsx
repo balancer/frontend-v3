@@ -16,6 +16,9 @@ import {
   Skeleton,
   Text,
   Tooltip,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
   VStack,
 } from '@chakra-ui/react'
 import { useEffect, useRef, useState } from 'react'
@@ -140,9 +143,25 @@ export function RemoveLiquidityForm() {
                   size="xxs"
                   groupId="remove"
                 />
-                <Tooltip label="Remove liquidity type" fontSize="sm">
-                  <InfoIcon />
-                </Tooltip>
+                <Popover trigger="hover">
+                  <PopoverTrigger>
+                    <Box
+                      opacity="0.5"
+                      transition="opacity 0.2s var(--ease-out-cubic)"
+                      _hover={{ opacity: 1 }}
+                    >
+                      <InfoIcon />
+                    </Box>
+                  </PopoverTrigger>
+                  <PopoverContent p="sm" w="auto" maxW="300px">
+                    <Text fontSize="sm" variant="secondary">
+                      Proportional liquidity removal does not impact the prices of tokens on exit,
+                      which maximizes your returns. Alternatively, Single-token removal may be more
+                      convenient in certain situations but may reduce the value returned to you due
+                      to price impact.
+                    </Text>
+                  </PopoverContent>
+                </Popover>
               </HStack>
             )}
             <VStack w="full" spacing="md" align="start">
