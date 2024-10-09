@@ -326,6 +326,10 @@ export function requiresPermit2Approval(pool: Pool): boolean {
   return isV3Pool(pool)
 }
 
+export function isUnbalancedLiquidityDisabled(pool: Pool): boolean {
+  return !!pool.liquidityManagement?.disableUnbalancedLiquidity
+}
+
 export function getRateProviderWarnings(warnings: string[]) {
   return warnings.filter(warning => !isEmpty(warning))
 }
