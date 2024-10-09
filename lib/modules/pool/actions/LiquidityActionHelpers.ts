@@ -33,6 +33,7 @@ import {
   isComposableStableV1,
   isCowAmmPool,
   isGyro,
+  isUnbalancedLiquidityDisabled,
   isV3Pool,
 } from '../pool.helpers'
 import { SdkQueryAddLiquidityOutput } from './add-liquidity/add-liquidity.types'
@@ -197,8 +198,9 @@ export function shouldUseRecoveryRemoveLiquidity(pool: Pool): boolean {
   return false
 }
 
-export function requiresProportionalInput(poolType: GqlPoolType): boolean {
-  return isGyro(poolType) || isCowAmmPool(poolType)
+export function requiresProportionalInput(pool: Pool): boolean {
+  if (isV3Pool(pool) && isUnbalancedLiquidityDisabled(pool)) return true
+  return isGyro(pool.type) || isCowAmmPool(pool.type)
 }
 
 type ProtocolVersion = PoolState['protocolVersion']

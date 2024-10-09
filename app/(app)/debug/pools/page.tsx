@@ -10,7 +10,7 @@ export default function DebugPools() {
       <HStack spacing="24px" align="start" width="80%" mx="auto">
         <VStack padding="lg" margin="lg" align="start">
           <Heading size="md">Debug V3 pools</Heading>
-          <Link as={NextLink} href="/pools/sepolia/v3/0x7cf221fa36584f59a4f7fd7b946b8571c78e3692">
+          <Link as={NextLink} href="/pools/sepolia/v3/0xec1b5ca86c83c7a85392063399e7d2170d502e00">
             Sepolia WEIGHTED (Balancer 50 BAL 50 WETH)
           </Link>
           <Link as={NextLink} href="/pools/sepolia/v3/0x8fc07bcf9b88ace84c7523248dc4a85f638c9536">

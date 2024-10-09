@@ -92,8 +92,7 @@ describe('Captures sentry error', () => {
       handler: new UnbalancedAddLiquidityV2Handler(pool),
       userAddress: defaultTestUserAccount,
       slippage: '0.1',
-      poolId: pool.id,
-      poolType: pool.type,
+      pool,
       humanAmountsIn: [
         { humanAmount: '3', tokenAddress: wjAuraAddress },
         { humanAmount: '0.01', tokenAddress: wETHAddress },

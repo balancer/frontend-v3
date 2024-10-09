@@ -30,8 +30,7 @@ export function useAddLiquidityPriceImpactQuery({ handler, humanAmountsIn, enabl
     handler,
     userAddress,
     slippage,
-    poolId: pool.id,
-    poolType: pool.type,
+    pool,
     humanAmountsIn: debouncedHumanAmountsIn,
   }
 

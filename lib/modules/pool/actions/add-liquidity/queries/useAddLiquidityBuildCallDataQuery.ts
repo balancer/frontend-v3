@@ -46,8 +46,7 @@ export function useAddLiquidityBuildCallDataQuery({
     handler,
     userAddress,
     slippage,
-    poolId: pool.id,
-    poolType: pool.type,
+    pool,
     humanAmountsIn: debouncedHumanAmountsIn,
     hasPermit2,
   }
