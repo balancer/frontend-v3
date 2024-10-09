@@ -6,7 +6,9 @@ import { erc20Abi } from 'viem'
 import { ChainContractConfig, useMulticall } from './useMulticall'
 import { mainnet, polygon } from 'viem/chains'
 
-describe('Performs multicall in multiple chains', () => {
+// Skip until this vitest issue is fixed:
+// https://github.com/vitest-dev/vitest/issues/6589
+describe.skip('Performs multicall in multiple chains', () => {
   const mainnetRequest: ChainContractConfig = {
     id: 'ethBalance',
     chainId: mainnet.id,
