@@ -105,8 +105,8 @@ export default function DebugPools() {
 
         <VStack padding="lg" margin="lg" align="start">
           <Heading size="md">Debug CoW AMM (V1) pools</Heading>
-          <Link as={NextLink} href="/pools/sepolia/v2/0xd1bdc51decb61ee0c98e47fe17217c58be525180">
-            Sepolia CoW AMM
+          <Link as={NextLink} href="/pools/gnosis/cow/0x079d2094e16210c42457438195042898a3cff72d">
+            Gnosis CoW AMM
           </Link>
         </VStack>
       </HStack>
