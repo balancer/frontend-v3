@@ -65,7 +65,6 @@ const networkConfig: NetworkConfig = {
       ],
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Arbitrum],
     },
-    boostsEnabled: true,
   }),
   layerZeroChainId: 110,
   supportsVeBalSync: true,

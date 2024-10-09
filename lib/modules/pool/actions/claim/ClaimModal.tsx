@@ -24,7 +24,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
 import { useRouter } from 'next/navigation'
-import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
+import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 
 type Props = {
   isOpen: boolean
@@ -87,7 +87,7 @@ export function ClaimModal({
         <TransactionModalHeader label="Claim incentives" txHash={claimTxHash} chain={chain} />
         <ModalCloseButton />
         <ModalBody>
-          <AnimatedModalBody spacing="sm">
+          <AnimateHeightChange spacing="sm">
             {isMobile && <MobileStepTracker transactionSteps={transactionSteps} chain={chain} />}
             {isLoading ? (
               <Text>Loading data...</Text>
@@ -103,7 +103,7 @@ export function ClaimModal({
                 />
               </Card>
             )}
-          </AnimatedModalBody>
+          </AnimateHeightChange>
         </ModalBody>
 
         <ActionModalFooter

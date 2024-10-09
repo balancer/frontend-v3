@@ -15,9 +15,10 @@ import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { StakingOptions } from './StakingOptions'
 import { isVebalPool } from '../../../pool.helpers'
 import { VebalRedirectModal } from '@/lib/modules/vebal/VebalRedirectModal'
-import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
+
 import { CardPopAnim } from '@/lib/shared/components/animations/CardPopAnim'
 import { useMemo } from 'react'
+import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 
 export function AddLiquiditySummary({
   isLoading: isLoadingReceipt,
@@ -70,7 +71,7 @@ export function AddLiquiditySummary({
   }
 
   return (
-    <AnimatedModalBody spacing="sm">
+    <AnimateHeightChange spacing="sm">
       {isMobile && hasQuoteContext && (
         <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
       )}
@@ -131,6 +132,6 @@ export function AddLiquiditySummary({
           </Card>
         </CardPopAnim>
       ) : null}
-    </AnimatedModalBody>
+    </AnimateHeightChange>
   )
 }

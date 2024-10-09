@@ -57,7 +57,6 @@ const networkConfig: NetworkConfig = {
     issues: {
       [PoolIssue.CspPoolVulnWarning]: CSP_ISSUE_POOL_IDS[GqlChain.Optimism],
     },
-    boostsEnabled: true,
   }),
   layerZeroChainId: 111,
   supportsVeBalSync: true,

@@ -15,7 +15,7 @@ import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFoo
 import { TransactionModalHeader } from '@/lib/shared/components/modals/TransactionModalHeader'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
-import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
+import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 
 type Props = {
   isOpen: boolean
@@ -56,12 +56,12 @@ export function StakeModal({
         <TransactionModalHeader label="Stake LP tokens" txHash={stakeTxHash} chain={pool.chain} />
         <ModalCloseButton />
         <ModalBody>
-          <AnimatedModalBody spacing="sm">
+          <AnimateHeightChange spacing="sm">
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
             <StakePreview />
-          </AnimatedModalBody>
+          </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!stakeTxHash}

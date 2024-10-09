@@ -15,7 +15,7 @@ import { TransactionModalHeader } from '@/lib/shared/components/modals/Transacti
 import { ActionModalFooter } from '@/lib/shared/components/modals/ActionModalFooter'
 import { usePoolRedirect } from '../../pool.hooks'
 import { useResetStepIndexOnOpen } from '../useResetStepIndexOnOpen'
-import { AnimatedModalBody } from '@/lib/shared/components/modals/AnimatedModalBody'
+import { AnimateHeightChange } from '@/lib/shared/components/animations/AnimateHeightChange'
 
 type Props = {
   isOpen: boolean
@@ -60,12 +60,12 @@ export function MigrateStakeModal({
         />
         <ModalCloseButton />
         <ModalBody>
-          <AnimatedModalBody spacing="sm" w="full">
+          <AnimateHeightChange spacing="sm" w="full">
             {isMobile && (
               <MobileStepTracker chain={pool.chain} transactionSteps={transactionSteps} />
             )}
             <MigrateStakePreview />
-          </AnimatedModalBody>
+          </AnimateHeightChange>
         </ModalBody>
         <ActionModalFooter
           isSuccess={!!restakeTxHash}
