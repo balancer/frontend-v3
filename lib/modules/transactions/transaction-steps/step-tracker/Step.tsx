@@ -78,9 +78,9 @@ function NestedInfo({ color, details }: { color: string; details?: StepDetails }
         {details?.gasless ? 'Free signature' : 'Gas transaction'}
       </Text>
 
-      {details?.tokens &&
-        details.tokens.length > 1 &&
-        details.tokens.map((token, index) => (
+      {details?.batchApprovalTokens &&
+        details.batchApprovalTokens.length > 1 &&
+        details.batchApprovalTokens.map((token, index) => (
           <HStack mt={index === 0 ? '2' : '1'} key={token}>
             <SubStepIndicator color={color} label={indexToLetter(index)} />
             <Text fontSize="sm" color={color}>
