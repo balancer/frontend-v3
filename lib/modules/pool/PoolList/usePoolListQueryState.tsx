@@ -137,8 +137,6 @@ export function usePoolListQueryState() {
         return 'Points'
       case 'SUPERFEST':
         return 'Superfest'
-      case 'ARBITRUM_GRANTS':
-        return 'Arbitrum Grants'
       default:
         return (poolCategory as string).toLowerCase().replace('_', ' ')
     }

@@ -2,6 +2,7 @@ import { BuildTransactionLabels } from '../../web3/contracts/transactionLabels'
 
 export type ApprovalAction =
   | 'AddLiquidity'
+  | 'RemoveLiquidity'
   | 'Locking'
   | 'Staking'
   | 'Swapping'
@@ -22,7 +23,7 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = ({
 }: TokenApprovalLabelArgs) => {
   return {
     init: initApprovalLabelFor(actionType, symbol, isPermit2),
-    title: isPermit2 ? `${symbol}: Approve Permit2` : `Approve ${symbol}`,
+    title: titleFor(actionType, symbol, isPermit2),
     description: descriptionFor(actionType, symbol),
     confirming: actionType === 'Unapprove' ? `Unapproving ${symbol}...` : `Approving ${symbol}...`,
     confirmed: `${symbol} ${actionType === 'Unapprove' ? 'unapproved' : 'approved!'}`,
@@ -32,7 +33,7 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = ({
 }
 
 function initApprovalLabelFor(actionType: ApprovalAction, symbol: string, isPermit2: boolean) {
-  if (isPermit2) {
+  if (isPermit2 && actionType === 'AddLiquidity') {
     return `Approve Permit2: ${symbol}`
   }
   switch (actionType) {
@@ -48,11 +49,19 @@ function initApprovalLabelFor(actionType: ApprovalAction, symbol: string, isPerm
       return `Approve ${symbol} to unwrap`
     case 'AddLiquidity':
       return `Approve ${symbol} to add`
+    case 'RemoveLiquidity':
+      return `Approve ${symbol} to remove`
     default:
       return `Approve ${symbol}`
   }
 }
 
+function titleFor(actionType: ApprovalAction, symbol: string, isPermit2: boolean) {
+  if (actionType === 'RemoveLiquidity') {
+    return `Approve ${symbol}`
+  }
+  return isPermit2 ? `${symbol}: Approve Permit2` : `Approve ${symbol}`
+}
 function descriptionFor(actionType: ApprovalAction, symbol: string) {
   switch (actionType) {
     case 'Locking':
