@@ -6,7 +6,9 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { Button, VStack } from '@chakra-ui/react'
 import { useMemo } from 'react'
-import { getTokenAddresses } from '../../pool/actions/LiquidityActionHelpers'
+import { getTokenAddresses, getTokenSymbols } from '../../pool/actions/LiquidityActionHelpers'
+import { useTokens } from '../../tokens/TokensProvider'
+import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
 import { usePermit2Allowance } from '../../tokens/approvals/permit2/usePermit2Allowance'
 import {
   AddLiquidityPermit2Params,
@@ -14,8 +16,7 @@ import {
 } from '../../tokens/approvals/permit2/useSignPermit2'
 import { SignatureState } from '../../web3/signatures/signature.helpers'
 import { useChainSwitch } from '../../web3/useChainSwitch'
-import { TransactionStep } from './lib'
-import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
+import { StepDetails as StepDetails, TransactionStep } from './lib'
 
 /*
   Returns a transaction step to sign a permit2 for the given pool and token amounts
@@ -23,6 +24,7 @@ import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
  */
 export function useSignPermit2Step(params: AddLiquidityPermit2Params): TransactionStep | undefined {
   const { isConnected, userAddress } = useUserAccount()
+  const { getToken } = useTokens()
 
   const { isLoadingPermit2Allowances, nonces, expirations, allowedAmounts } = usePermit2Allowance({
     chainId: getChainId(params.pool.chain),
@@ -45,7 +47,10 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     getChainId(params.pool.chain)
   )
 
-  const isLoading = isLoadingSignature || isLoadingPermit2Allowances
+  const isLoading =
+    isLoadingSignature ||
+    isLoadingPermit2Allowances ||
+    signPermit2State === SignatureState.Confirming
 
   const SignPermitButton = () => (
     <VStack width="full">
@@ -71,12 +76,18 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const isComplete = () => signPermit2State === SignatureState.Completed || isValidPermit2
 
+  const details: StepDetails = {
+    gasless: true,
+    batchApprovalTokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
+  }
+
   return useMemo(
     () => ({
       id: 'sign-permit2',
       stepType: 'signPermit2',
+      extras: details,
       labels: {
-        title: `Permit on balancer`,
+        title: getTitle(details),
         init: `Sign permit`,
         tooltip: 'Sign permit',
       },
@@ -86,4 +97,12 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [signPermit2State, isLoading, isConnected, isValidPermit2]
   )
+}
+
+function getTitle(details?: StepDetails): string {
+  if (!details?.batchApprovalTokens) return `Permit on balancer`
+  if (details.batchApprovalTokens.length === 1) {
+    return `${details.batchApprovalTokens[0]}: Permit on balancer`
+  }
+  return 'Permit tokens on balancer'
 }
