@@ -8,6 +8,7 @@ import {
   CardHeader,
   Flex,
   GridItem,
+  HStack,
   SimpleGrid,
   Skeleton,
   Stack,
@@ -47,13 +48,15 @@ export function CrossChainBoost() {
 
   return (
     <Stack w="full" h="full" height="300px">
-      <Text fontWeight="bold" fontSize="lg">
-        Cross chain veBAL boosts
+      <HStack>
+        <Text fontWeight="bold" fontSize="lg">
+          Cross chain veBAL boosts
+        </Text>
+
         <Tooltip label={tooltipLabel}>
           <InfoOutlineIcon fontSize="sm" color="font.light" />
         </Tooltip>
-      </Text>
-
+      </HStack>
       {isConnected ? (
         <>
           {!hasExistingLock || (hasExistingLock && isExpired) ? (

@@ -1,12 +1,5 @@
 import { Stack } from '@chakra-ui/react'
-import { CrossChainBoost } from '@/lib/modules/vebal/cross-chain/CrossChainBoost'
-import { VebalInfo } from '@/lib/modules/vebal/VebalInfo'
 
 export default function VebalPage() {
-  return (
-    <Stack gap="lg">
-      <VebalInfo />
-      <CrossChainBoost />
-    </Stack>
-  )
+  return <Stack gap="lg"></Stack>
 }

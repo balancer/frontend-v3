@@ -15,7 +15,6 @@ import {
   HStack,
   Skeleton,
   Text,
-  Tooltip,
   Popover,
   PopoverTrigger,
   PopoverContent,
