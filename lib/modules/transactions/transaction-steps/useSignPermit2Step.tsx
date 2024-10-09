@@ -78,14 +78,14 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const details: StepDetails = {
     gasless: true,
-    tokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
+    batchApprovalTokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
   }
 
   return useMemo(
     () => ({
       id: 'sign-permit2',
       stepType: 'signPermit2',
-      extras: details,
+      details,
       labels: {
         title: getTitle(details),
         init: `Sign permit`,
@@ -100,7 +100,9 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 }
 
 function getTitle(details?: StepDetails): string {
-  if (!details?.tokens) return `Permit on balancer`
-  if (details.tokens.length === 1) return `${details.tokens[0]}: Permit on balancer`
+  if (!details?.batchApprovalTokens) return `Permit on balancer`
+  if (details.batchApprovalTokens.length === 1) {
+    return `${details.batchApprovalTokens[0]}: Permit on balancer`
+  }
   return 'Permit tokens on balancer'
 }

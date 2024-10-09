@@ -1,6 +1,16 @@
 import { NumberText } from '@/lib/shared/components/typography/NumberText'
 import { fNum, bn } from '@/lib/shared/utils/numbers'
-import { HStack, VStack, Text, Tooltip, Icon, Box, Skeleton } from '@chakra-ui/react'
+import {
+  HStack,
+  VStack,
+  Text,
+  Icon,
+  Box,
+  Skeleton,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
+} from '@chakra-ui/react'
 import { usePriceImpact } from '@/lib/modules/price-impact/PriceImpactProvider'
 import { useCurrency } from '@/lib/shared/hooks/useCurrency'
 import { usePool } from '../PoolProvider'
@@ -55,21 +65,31 @@ export function PoolActionsPriceImpactDetails({
               {toCurrency(priceImpactUsd, { abbreviated: false })} ({priceImpactLabel})
             </NumberText>
           )}
-          <Tooltip
-            label="In general, adding or removing liquidity in proportional amounts to the token weights
-                of the pool incur low price impact. Adding custom token amounts (non-proportionally)
-                causes the internal prices of the pool to change, as if you were swapping tokens, which 
-                incurs a higher price impact."
-            fontSize="sm"
-          >
-            {priceImpactLevel === 'low' ? (
-              <InfoIcon />
-            ) : (
-              <Box>
-                <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
-              </Box>
-            )}
-          </Tooltip>
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              {priceImpactLevel === 'low' ? (
+                <Box
+                  opacity="0.5"
+                  transition="opacity 0.2s var(--ease-out-cubic)"
+                  _hover={{ opacity: 1 }}
+                >
+                  <InfoIcon />
+                </Box>
+              ) : (
+                <Box>
+                  <PriceImpactIcon priceImpactLevel={priceImpactLevel} />
+                </Box>
+              )}
+            </PopoverTrigger>
+            <PopoverContent p="sm" w="auto" maxW="300px">
+              <Text fontSize="sm" variant="secondary">
+                In general, adding or removing liquidity in proportional amounts to the token
+                weights of the pool incur low price impact. Adding custom token amounts
+                (non-proportionally) causes the internal prices of the pool to change, as if you
+                were swapping tokens, which incurs a higher price impact.
+              </Text>
+            </PopoverContent>
+          </Popover>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -82,14 +102,24 @@ export function PoolActionsPriceImpactDetails({
               {toCurrency(maxSlippageUsd, { abbreviated: false })} ({fNum('slippage', slippage)})
             </NumberText>
           )}
-          <Tooltip
-            label="Slippage occurs when market conditions change between the time your order is
-                submitted and the time it gets executed on-chain. Slippage tolerance is the
-                maximum change in price you are willing to accept."
-            fontSize="sm"
-          >
-            <InfoIcon />
-          </Tooltip>
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              <Box
+                opacity="0.5"
+                transition="opacity 0.2s var(--ease-out-cubic)"
+                _hover={{ opacity: 1 }}
+              >
+                <InfoIcon />
+              </Box>
+            </PopoverTrigger>
+            <PopoverContent p="sm" w="auto" maxW="300px">
+              <Text fontSize="sm" variant="secondary">
+                Slippage occurs when market conditions change between the time your order is
+                submitted and the time it gets executed on-chain. Slippage tolerance is the maximum
+                change in price you are willing to accept.
+              </Text>
+            </PopoverContent>
+          </Popover>
         </HStack>
       </HStack>
       <HStack justify="space-between" w="full">
@@ -106,12 +136,22 @@ export function PoolActionsPriceImpactDetails({
               </>
             )}
           </HStack>
-          <Tooltip
-            label="The percentage of the pool that you will own after this transaction."
-            fontSize="sm"
-          >
-            <InfoIcon />
-          </Tooltip>
+          <Popover trigger="hover">
+            <PopoverTrigger>
+              <Box
+                opacity="0.5"
+                transition="opacity 0.2s var(--ease-out-cubic)"
+                _hover={{ opacity: 1 }}
+              >
+                <InfoIcon />
+              </Box>
+            </PopoverTrigger>
+            <PopoverContent p="sm" w="auto" maxW="300px">
+              <Text fontSize="sm" variant="secondary">
+                The percentage of the pool that you will own after this transaction.
+              </Text>
+            </PopoverContent>
+          </Popover>
         </HStack>
       </HStack>
     </VStack>

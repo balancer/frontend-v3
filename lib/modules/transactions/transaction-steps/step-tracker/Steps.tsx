@@ -23,9 +23,6 @@ export function Steps({ transactionSteps }: Props) {
               colorMode={colorMode}
               isLastStep={isLastStep(index)}
             />
-            {/* {!isLastStep(index) && (
-              <Box h="4" w="1" rounded="full" background="border.base" ml="3" mt="1" />
-            )} */}
           </div>
         ))}
     </VStack>
