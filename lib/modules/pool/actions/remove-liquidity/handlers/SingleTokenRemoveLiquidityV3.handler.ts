@@ -1,28 +1,27 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { RemoveLiquidity, Slippage } from '@balancer/sdk'
-import { formatBuildCallParams } from '../../LiquidityActionHelpers'
 import { SdkBuildRemoveLiquidityInput } from '../remove-liquidity.types'
-import { BaseProportionalRemoveLiquidityHandler } from './BaseProportionalRemoveLiquidity.handler'
+import { BaseSingleTokenRemoveLiquidityHandler } from './BaseSingleTokenRemoveLiquidity.handler'
 
-// Used by V2 and CowAMM (V1) pools
-export class ProportionalRemoveLiquidityHandler extends BaseProportionalRemoveLiquidityHandler {
+export class SingleTokenRemoveLiquidityV3Handler extends BaseSingleTokenRemoveLiquidityHandler {
   public async buildCallData({
     account,
     slippagePercent,
     queryOutput,
     wethIsEth,
+    permit,
   }: SdkBuildRemoveLiquidityInput): Promise<TransactionConfig> {
     const removeLiquidity = new RemoveLiquidity()
 
-    const baseBuildCallParams = {
+    const v3BuildCallParams = {
       ...queryOutput.sdkQueryOutput,
       slippage: Slippage.fromPercentage(`${Number(slippagePercent)}`),
       wethIsEth,
     }
 
-    const buildCallParams = formatBuildCallParams(baseBuildCallParams, account)
-
-    const { callData, to, value } = removeLiquidity.buildCall(buildCallParams)
+    const { callData, to, value } = permit
+      ? removeLiquidity.buildCallWithPermit(v3BuildCallParams, permit)
+      : removeLiquidity.buildCall(v3BuildCallParams)
 
     return {
       account,

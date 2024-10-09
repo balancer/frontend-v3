@@ -2,10 +2,9 @@ import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
 import { RemoveLiquidity, Slippage } from '@balancer/sdk'
 import { formatBuildCallParams } from '../../LiquidityActionHelpers'
 import { SdkBuildRemoveLiquidityInput } from '../remove-liquidity.types'
-import { BaseProportionalRemoveLiquidityHandler } from './BaseProportionalRemoveLiquidity.handler'
+import { BaseSingleTokenRemoveLiquidityHandler } from './BaseSingleTokenRemoveLiquidity.handler'
 
-// Used by V2 and CowAMM (V1) pools
-export class ProportionalRemoveLiquidityHandler extends BaseProportionalRemoveLiquidityHandler {
+export class SingleTokenRemoveLiquidityV2Handler extends BaseSingleTokenRemoveLiquidityHandler {
   public async buildCallData({
     account,
     slippagePercent,

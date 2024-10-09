@@ -28,6 +28,7 @@ import { apolloTestClient } from './apollo-test-client'
 import { AppRouterContextProviderMock } from './app-router-context-provider-mock'
 import { testQueryClient } from './react-query'
 import { Permit2SignatureProvider } from '@/lib/modules/tokens/approvals/permit2/Permit2SignatureProvider'
+import { PermitSignatureProvider } from '@/lib/modules/tokens/approvals/permit2/PermitSignatureProvider'
 
 export type Wrapper = ({ children }: PropsWithChildren) => ReactNode
 
@@ -129,17 +130,19 @@ export const buildDefaultPoolTestProvider =
     return (
       <TransactionStateProvider>
         <RelayerSignatureProvider>
-          <PoolProvider
-            id={pool.id}
-            chain={pool.chain}
-            variant={BaseVariant.v2}
-            data={{
-              __typename: 'Query',
-              pool,
-            }}
-          >
-            {children}
-          </PoolProvider>
+          <PermitSignatureProvider>
+            <PoolProvider
+              id={pool.id}
+              chain={pool.chain}
+              variant={BaseVariant.v2}
+              data={{
+                __typename: 'Query',
+                pool,
+              }}
+            >
+              {children}
+            </PoolProvider>
+          </PermitSignatureProvider>
         </RelayerSignatureProvider>
       </TransactionStateProvider>
     )
