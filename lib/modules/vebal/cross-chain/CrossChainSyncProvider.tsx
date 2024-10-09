@@ -1,8 +1,13 @@
 import networkConfigs from '@/lib/config/networks'
 import { useEffect, useMemo, useCallback, createContext, PropsWithChildren } from 'react'
-import { OmniEscrowLock, useOmniEscrowLocksQuery } from '../useOmniEscrowLocksQuery'
-import { useUserAccount } from '../../../web3/UserAccountProvider'
-import { NetworkSyncState, useCrossChainNetworks } from '../useCrossChainNetworks'
+import { OmniEscrowLock, useOmniEscrowLocksQuery } from './useOmniEscrowLocksQuery'
+import { useUserAccount } from '../../web3/UserAccountProvider'
+import {
+  NetworkSyncState,
+  calculateVeBAlBalance,
+  getNetworkSyncState,
+  useCrossChainNetworks,
+} from './useCrossChainNetworks'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { Address, Hash } from 'viem'
 import { useMandatoryContext } from '@/lib/shared/utils/contexts'
@@ -10,12 +15,13 @@ import { keyBy } from 'lodash'
 import { useLocalStorage } from 'usehooks-ts'
 import { LS_KEYS } from '@/lib/modules/local-storage/local-storage.constants'
 import { useLayerZeroTxLinks } from './useLayerZeroTxLinks'
+import { secs } from '@/lib/shared/utils/time'
 
 const veBalSyncSupportedNetworks: GqlChain[] = Object.keys(networkConfigs)
   .filter(key => networkConfigs[key as keyof typeof networkConfigs].supportsVeBalSync)
   .map(key => key) as GqlChain[]
 
-const REFETCH_INTERVAL = 1000 * 30
+const REFETCH_INTERVAL = secs(30).toMs()
 
 export type CrossChainSyncResult = ReturnType<typeof _useCrossChainSync>
 export const CrossChainSyncContext = createContext<CrossChainSyncResult | null>(null)
@@ -69,13 +75,11 @@ export const _useCrossChainSync = () => {
   )
   const { syncLayerZeroTxLinks } = useLayerZeroTxLinks(syncTxHashes)
 
-  const allNetworksUnsynced = useMemo(
-    () => omniEscrowResponse?.omniVotingEscrowLocks.length === 0,
-    [omniEscrowResponse]
-  )
+  const allNetworksUnsynced = omniEscrowResponse?.omniVotingEscrowLocks.length === 0
 
   const omniEscrowLocksMap = useMemo(() => {
     if (allNetworksUnsynced || !omniEscrowResponse) return null
+
     return omniEscrowResponse.omniVotingEscrowLocks.reduce<Record<string, OmniEscrowLock>>(
       (acc, item) => {
         acc[item.dstChainId] = item
@@ -87,10 +91,7 @@ export const _useCrossChainSync = () => {
 
   const [mainnetCrossChainNetwork] = useCrossChainNetworks([GqlChain.Mainnet], omniEscrowLocksMap)
 
-  const mainnetEscrowLocks = useMemo(
-    () => mainnetCrossChainNetwork.votingEscrowLocks,
-    [mainnetCrossChainNetwork]
-  )
+  const { votingEscrowLocks: mainnetEscrowLock } = mainnetCrossChainNetwork
 
   const crossChainNetworksResponses = useCrossChainNetworks(
     veBalSyncSupportedNetworks,
@@ -98,23 +99,20 @@ export const _useCrossChainSync = () => {
   )
   const crossChainNetworks = keyBy(crossChainNetworksResponses, 'chainId')
 
-  const isLoading = useMemo(
-    () => isLoadingOmniEscrow || mainnetCrossChainNetwork.isLoading,
-    [isLoadingOmniEscrow, mainnetCrossChainNetwork]
-  )
+  const isLoading = isLoadingOmniEscrow || mainnetCrossChainNetwork.isLoading
 
   const networksSyncState = useMemo(() => {
     return veBalSyncSupportedNetworks.reduce<Partial<Record<GqlChain, NetworkSyncState>>>(
       (acc, network) => {
-        acc[network] = crossChainNetworks[network].getNetworkSyncState(
-          omniEscrowLocksMap?.[networkConfigs[network].layerZeroChainId || ''],
-          mainnetEscrowLocks
-        )
+        acc[network] = getNetworkSyncState({
+          omniEscrowLock: omniEscrowLocksMap?.[networkConfigs[network].layerZeroChainId || ''],
+          mainnetEscrowLock,
+        })
         return acc
       },
       {}
     )
-  }, [crossChainNetworks, mainnetEscrowLocks, omniEscrowLocksMap])
+  }, [mainnetEscrowLock, omniEscrowLocksMap])
 
   const networksBySyncState = useMemo(() => {
     const networksWithValidSyncState = Object.keys(networksSyncState) as GqlChain[]
@@ -134,20 +132,22 @@ export const _useCrossChainSync = () => {
     }
   }, [networksSyncState, tempSyncingNetworks, userAddress])
 
-  const showingUnsyncedNetworks = useMemo(() => {
-    return [...networksBySyncState.unsynced, ...networksBySyncState.syncing]
-  }, [networksBySyncState])
+  const showingUnsyncedNetworks = [...networksBySyncState.unsynced, ...networksBySyncState.syncing]
 
-  const hasError = useMemo(
-    () =>
-      isOmniEscrowError ||
-      veBalSyncSupportedNetworks.some(network => crossChainNetworks[network].isError),
-    [isOmniEscrowError, crossChainNetworks]
-  )
+  const hasError =
+    isOmniEscrowError ||
+    veBalSyncSupportedNetworks.some(network => crossChainNetworks[network].isError)
 
   const l2VeBalBalances = useMemo(() => {
     return veBalSyncSupportedNetworks.reduce<Partial<Record<GqlChain, string>>>((acc, network) => {
-      acc[network] = crossChainNetworks[network].calculateVeBAlBalance()
+      const crossChainNetwork = crossChainNetworks[network]
+      const votingEscrowLocks = crossChainNetwork.votingEscrowLocks
+
+      if (!votingEscrowLocks) {
+        return acc
+      }
+
+      acc[network] = calculateVeBAlBalance(votingEscrowLocks)
       return acc
     }, {})
   }, [crossChainNetworks])

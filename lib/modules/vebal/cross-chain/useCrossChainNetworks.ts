@@ -14,6 +14,66 @@ export enum NetworkSyncState {
   Unknown = 'Unknown',
 }
 
+interface GetNetworkSyncStateArgs {
+  votingEscrowLocks?: VotingEscrowLock
+  omniEscrowLock?: OmniEscrowLock | null
+  mainnetEscrowLock?: VotingEscrowLock
+}
+
+export function getNetworkSyncState({
+  votingEscrowLocks,
+  omniEscrowLock,
+  mainnetEscrowLock,
+}: GetNetworkSyncStateArgs) {
+  if (!omniEscrowLock || !mainnetEscrowLock || !votingEscrowLocks) {
+    return NetworkSyncState.Unsynced
+  }
+
+  const { bias: biasOmni, slope: slopeOmni } = omniEscrowLock
+  const { bias: biasMainnet, slope: slopeMainnet } = mainnetEscrowLock
+  const { bias: biasNetwork, slope: slopeNetwork } = votingEscrowLocks
+
+  if (!slopeOmni || !slopeMainnet || !slopeNetwork) {
+    return NetworkSyncState.Unsynced
+  }
+
+  const isSynced =
+    allEqual([biasOmni, biasMainnet, biasNetwork]) &&
+    allEqual([slopeOmni, slopeMainnet, slopeNetwork])
+
+  const isSyncing =
+    allEqual([biasOmni, biasMainnet]) &&
+    allEqual([slopeOmni, slopeMainnet]) &&
+    slopeOmni !== slopeNetwork &&
+    biasOmni !== biasNetwork
+
+  if (isSynced) {
+    return NetworkSyncState.Synced
+  }
+
+  if (isSyncing) {
+    return NetworkSyncState.Syncing
+  }
+
+  return NetworkSyncState.Unsynced
+}
+
+// Calculate veBAL balance using bias, slope, and timestamp values
+export function calculateVeBAlBalance(votingEscrowLocks: VotingEscrowLock | null) {
+  const { bias, slope, timestamp } = votingEscrowLocks || {}
+
+  if (!bias || !slope || !timestamp) return bn(0).toFixed(4).toString()
+
+  const x = bn(slope).multipliedBy(Math.floor(Date.now() / 1000) - timestamp)
+
+  if (x.isLessThan(0)) return bn(bias).toFixed(4).toString()
+
+  const balance = bn(bias).minus(x)
+  if (balance.isLessThan(0)) return bn(0).toFixed(4).toString()
+
+  return balance.toFixed(4).toString()
+}
+
 export function useCrossChainNetworks(
   chainIds: GqlChain[],
   omniEscrowMap: Record<number, OmniEscrowLock> | null
@@ -26,6 +86,7 @@ export function useCrossChainNetworks(
       if (chainId === GqlChain.Mainnet) {
         return userAddress
       }
+
       const layerZeroChainId = networkConfigs[chainId]?.layerZeroChainId
       return layerZeroChainId
         ? omniEscrowMap?.[layerZeroChainId]?.remoteUser || userAddress
@@ -46,73 +107,10 @@ export function useCrossChainNetworks(
 
         const votingEscrowLocks = votingEscrowResponse?.votingEscrowLocks[0]
 
-        const getNetworkSyncState = (
-          omniEscrowLock?: OmniEscrowLock | null,
-          mainnetEscrowLock?: VotingEscrowLock
-        ) => {
-          if (!omniEscrowLock || !mainnetEscrowLock || !votingEscrowLocks) {
-            return NetworkSyncState.Unsynced
-          }
-
-          // Compare bias and slope across Omni, Mainnet, and the specific network to determine sync state
-          const biasOmni = omniEscrowLock.bias
-          const slopeOmni = omniEscrowLock.slope
-
-          const biasMainnet = mainnetEscrowLock.bias
-          const slopeMainnet = mainnetEscrowLock.slope
-
-          const biasNetwork = votingEscrowLocks.bias
-          const slopeNetwork = votingEscrowLocks.slope
-
-          if (!slopeOmni || !slopeMainnet || !slopeNetwork) {
-            return NetworkSyncState.Unsynced
-          }
-
-          const isSynced =
-            allEqual([biasOmni, biasMainnet, biasNetwork]) &&
-            allEqual([slopeOmni, slopeMainnet, slopeNetwork])
-
-          const isSyncing =
-            allEqual([biasOmni, biasMainnet]) &&
-            allEqual([slopeOmni, slopeMainnet]) &&
-            slopeOmni !== slopeNetwork &&
-            biasOmni !== biasNetwork
-
-          if (isSynced) {
-            return NetworkSyncState.Synced
-          }
-
-          if (isSyncing) {
-            return NetworkSyncState.Syncing
-          }
-
-          return NetworkSyncState.Unsynced
-        }
-
-        // Calculate veBAL balance using bias, slope, and timestamp values
-        const calculateVeBAlBalance = () => {
-          const bias = votingEscrowLocks?.bias
-          const slope = votingEscrowLocks?.slope
-          const timestamp = votingEscrowLocks?.timestamp
-
-          if (!bias || !slope || !timestamp) return bn(0).toFixed(4).toString()
-
-          const x = bn(slope).multipliedBy(Math.floor(Date.now() / 1000) - timestamp)
-
-          if (x.isLessThan(0)) return bn(bias).toFixed(4).toString()
-
-          const balance = bn(bias).minus(x)
-          if (balance.isLessThan(0)) return bn(0).toFixed(4).toString()
-
-          return balance.toFixed(4).toString()
-        }
-
         return {
           chainId,
-          getNetworkSyncState,
           votingEscrowLocks,
           refetch,
-          calculateVeBAlBalance,
           isLoading: isInitialLoading,
           isError,
         }

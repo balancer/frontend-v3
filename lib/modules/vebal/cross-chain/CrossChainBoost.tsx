@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@chakra-ui/react'
 
-import { useCrossChainSync } from './hooks/useCrossChainSync'
+import { useCrossChainSync } from './CrossChainSyncProvider'
 import Image from 'next/image'
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
 import { useVebalLockInfo } from '@/lib/modules/vebal/useVebalLockInfo'

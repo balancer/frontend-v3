@@ -84,7 +84,6 @@ export type TransactionStep = {
   labels: TransactionLabels
   isComplete: () => boolean
   renderAction: () => ReactNode
-  renderContent?: () => ReactNode
   // All callbacks should be idempotent
   onSuccess?: () => void
   onActivated?: () => void

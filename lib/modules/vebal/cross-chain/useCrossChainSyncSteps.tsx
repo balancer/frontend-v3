@@ -14,7 +14,6 @@ import { useNetworkConfig } from '@/lib/config/useNetworkConfig'
 import { useEstimateSendUserBalance } from '@/lib/modules/vebal/cross-chain/useEstimateSendUserBalance'
 import { Button } from '@chakra-ui/react'
 import { getChainShortName, getNetworkConfig } from '@/lib/config/app.config'
-import { CrossChainSyncModalContent } from '@/lib/modules/vebal/cross-chain/CrossChainSyncModalContent'
 
 export const crossChainSyncStepPrefix = 'cross-chain-sync'
 
@@ -77,7 +76,6 @@ function ChainSyncButton({
     txSimulationMeta,
     args: [userAddress, layerZeroChainId, userAddress],
     labels,
-    txConfig: { value: nativeFee },
   }
 
   return <ManagedTransactionButton id={stepId} {...props} />
@@ -142,13 +140,6 @@ export function useCrossChainSyncSteps({ networks }: CrossChainSyncStepsProps): 
             labels,
             isComplete,
             renderAction,
-            renderContent: () => (
-              <CrossChainSyncModalContent
-                key={stepId}
-                currentNetwork={network}
-                networks={networks}
-              />
-            ),
           }
         }),
     [networks, getTransaction, userAddress, contracts.omniVotingEscrow]

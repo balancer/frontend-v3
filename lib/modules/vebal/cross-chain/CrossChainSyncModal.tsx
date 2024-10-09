@@ -32,7 +32,7 @@ import { uniq } from 'lodash'
 import { getChainShortName } from '@/lib/config/app.config'
 
 import { useVebalUserData } from '@/lib/modules/vebal/useVebalUserData'
-import { useCrossChainSync } from './hooks/useCrossChainSync'
+import { useCrossChainSync } from './CrossChainSyncProvider'
 
 type Props = {
   isOpen: boolean
@@ -148,8 +148,6 @@ export function CrossChainSyncModal({ isOpen, onClose, networks }: Props) {
                 {isMobile && (
                   <MobileStepTracker transactionSteps={transactionSteps} chain={GqlChain.Mainnet} />
                 )}
-
-                {transactionSteps.currentStep?.renderContent?.()}
               </>
             ) : (
               <NetworksSelectionStep

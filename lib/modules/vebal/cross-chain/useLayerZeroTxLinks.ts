@@ -1,30 +1,33 @@
 import { useState, useEffect, useCallback } from 'react'
 import { getMessagesBySrcTxHash } from '@layerzerolabs/scan-client'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
-import { SyncTxHashes } from './useCrossChainSync'
+
 import { Address } from 'viem'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
+import { SyncTxHashes } from './CrossChainSyncProvider'
+import { secs } from '@/lib/shared/utils/time'
 
-const REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL = 1000 * 5
+const REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL = secs(5).toMs()
+
+export async function getLayerZeroTxLink(txHash: Address) {
+  const { messages } = await getMessagesBySrcTxHash(101, txHash)
+  const message = messages[0]
+  if (!message) {
+    console.error('No message found in Layer Zero')
+    return ''
+  }
+  return `https://layerzeroscan.com/tx/${message.srcTxHash}`
+}
 
 export function useLayerZeroTxLinks(syncTxHashes: Record<Address, SyncTxHashes>) {
   const [syncLayerZeroTxLinks, setSyncLayerZeroTxLinks] = useState({} as Record<GqlChain, string>)
   const { userAddress } = useUserAccount()
 
-  const getLayerZeroTxLink = useCallback(async (txHash: Address) => {
-    const { messages } = await getMessagesBySrcTxHash(101, txHash)
-    const message = messages[0]
-    if (!message) {
-      console.error('No message found in Layer Zero')
-      return ''
-    }
-    return `https://layerzeroscan.com/tx/${message.srcTxHash}`
-  }, [])
-
   const getLayerZeroTxLinkOnInterval = useCallback(
     (networks: GqlChain[]) => {
       let retryCount = 0
-      const intervalId = setInterval(async () => {
+
+      async function updateLinks() {
         for (const network of networks) {
           const hash = syncTxHashes[userAddress]?.[network]
           if (hash) {
@@ -32,15 +35,24 @@ export function useLayerZeroTxLinks(syncTxHashes: Record<Address, SyncTxHashes>)
             setSyncLayerZeroTxLinks(prev => ({ ...prev, [network]: link }))
           }
         }
+      }
+
+      function shouldStopRetrying() {
+        const allLinksFetched = networks.every(network => syncLayerZeroTxLinks[network])
+        return allLinksFetched || retryCount > 10
+      }
+
+      const intervalId = setInterval(async () => {
+        await updateLinks()
         retryCount++
-        if (networks.every(network => syncLayerZeroTxLinks[network]) || retryCount > 10) {
+        if (shouldStopRetrying()) {
           clearInterval(intervalId)
         }
       }, REFETCH_GET_LAYER_ZERO_TX_LINKS_INTERVAL)
 
       return intervalId
     },
-    [userAddress, syncTxHashes, getLayerZeroTxLink, syncLayerZeroTxLinks]
+    [userAddress, syncTxHashes, syncLayerZeroTxLinks]
   )
 
   useEffect(() => {

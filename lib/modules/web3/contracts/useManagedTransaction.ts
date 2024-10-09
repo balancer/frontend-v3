@@ -9,12 +9,7 @@ import { Abi, Address, ContractFunctionArgs, ContractFunctionName } from 'viem'
 import { useSimulateContract, useWaitForTransactionReceipt, useWriteContract } from 'wagmi'
 import { useChainSwitch } from '../useChainSwitch'
 import { AbiMap } from './AbiMap'
-import {
-  TransactionConfig,
-  TransactionExecution,
-  TransactionSimulation,
-  WriteAbiMutability,
-} from './contract.types'
+import { TransactionExecution, TransactionSimulation, WriteAbiMutability } from './contract.types'
 import { useOnTransactionConfirmation } from './useOnTransactionConfirmation'
 import { useOnTransactionSubmission } from './useOnTransactionSubmission'
 import { captureWagmiExecutionError } from '@/lib/shared/utils/query-errors'
@@ -35,7 +30,6 @@ export interface ManagedTransactionInput {
   args?: ContractFunctionArgs<IAbiMap[AbiMapKey], WriteAbiMutability> | null
   txSimulationMeta?: Record<string, unknown>
   enabled: boolean
-  txConfig?: Partial<TransactionConfig>
 }
 
 export function useManagedTransaction({

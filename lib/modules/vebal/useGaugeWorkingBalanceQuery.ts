@@ -3,7 +3,7 @@ import { GaugeWorkingBalanceHelperAbi } from '../web3/contracts/abi/GaugeWorking
 import { Address } from '@balancer/sdk'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 
-export function useGaugeWorkingBalanceHelper(
+export function useGaugeWorkingBalanceQuery(
   chainId: number,
   contractAddress: Address,
   gauge: string,

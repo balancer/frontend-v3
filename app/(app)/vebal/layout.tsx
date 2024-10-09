@@ -7,7 +7,7 @@ import mainnetNetworkConfig from '@/lib/config/networks/mainnet'
 
 import { TransactionStateProvider } from '@/lib/modules/transactions/transaction-steps/TransactionStateProvider'
 import { PropsWithChildren } from 'react'
-import { CrossChainSyncProvider } from '@/lib/modules/vebal/cross-chain/hooks/useCrossChainSync'
+import { CrossChainSyncProvider } from '@/lib/modules/vebal/cross-chain/CrossChainSyncProvider'
 
 export default function VebalLayout({ children }: PropsWithChildren) {
   const { getTokensByChain } = useTokens()
