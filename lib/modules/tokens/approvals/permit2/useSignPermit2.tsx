@@ -1,6 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Pool } from '@/lib/modules/pool/PoolProvider'
-import { getTokenSymbols } from '@/lib/modules/pool/actions/LiquidityActionHelpers'
 import { SdkQueryAddLiquidityOutput } from '@/lib/modules/pool/actions/add-liquidity/add-liquidity.types'
 import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import {
@@ -17,6 +16,7 @@ import { HumanTokenAmountWithAddress } from '../../token.types'
 import { usePermit2Signature } from './Permit2SignatureProvider'
 import { signPermit2Add } from './signPermit2Add'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
+import { getTokenSymbolsForPermit2 } from './permit2.helpers'
 
 export type AddLiquidityPermit2Params = {
   humanAmountsIn: HumanTokenAmountWithAddress[]
@@ -25,13 +25,14 @@ export type AddLiquidityPermit2Params = {
   slippagePercent: string
   nonces?: NoncesByTokenAddress
   isPermit2: boolean
+  wethIsEth: boolean
 }
 export function useSignPermit2({
-  pool,
   humanAmountsIn,
   queryOutput,
   slippagePercent,
   nonces,
+  wethIsEth,
 }: AddLiquidityPermit2Params) {
   const toast = useToast()
   const { userAddress } = useUserAccount()
@@ -66,6 +67,7 @@ export function useSignPermit2({
       const signature = await signPermit2Add({
         pool,
         humanAmountsIn,
+        wethIsEth,
         sdkClient,
         permit2Input: {
           account: userAddress,
@@ -102,7 +104,7 @@ export function useSignPermit2({
     signPermit2State,
     buttonLabel: getButtonLabel(
       signPermit2State,
-      getTokenSymbols(getToken, pool.chain, queryOutput)
+      getTokenSymbolsForPermit2({ getToken, queryOutput, wethIsEth })
     ),
     isLoading: isSignatureLoading(signPermit2State) || !queryOutput,
     isDisabled: isSignatureDisabled(signPermit2State),

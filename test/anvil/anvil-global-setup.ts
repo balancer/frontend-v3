@@ -2,6 +2,7 @@ import { startProxy } from '@viem/anvil'
 
 import { ANVIL_NETWORKS, getForkUrl } from './anvil-setup'
 import { testChains } from './testWagmiConfig'
+import { sleep } from '@/lib/shared/utils/sleep'
 
 export async function setup() {
   const promises = []
@@ -25,6 +26,8 @@ export async function setup() {
     )
   }
   const results = await Promise.all(promises)
+  // Wait for the proxy to start
+  await sleep(2000)
 
   return () => {
     for (const shutdown of results) {
