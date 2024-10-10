@@ -13,7 +13,6 @@ import {
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
 import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/add-liquidity.utils'
-import { isNativeAsset } from '@/lib/shared/utils/addresses'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -55,11 +54,6 @@ async function sign({
     sdkQueryOutput: permit2Input.sdkQueryOutput as AddLiquidityBaseQueryOutput,
     pool,
   })
-
-  // Exclude native asset from signature
-  baseInput.amountsIn = baseInput.amountsIn.filter(
-    a => !isNativeAsset(pool.chain, a.token.address)
-  ) as TokenAmount[]
 
   const signature = await Permit2Helper.signAddLiquidityApproval({
     ...baseInput,
