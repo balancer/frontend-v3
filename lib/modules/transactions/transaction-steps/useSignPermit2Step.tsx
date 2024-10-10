@@ -104,5 +104,5 @@ function getTitle(details?: StepDetails): string {
   if (details.batchApprovalTokens.length === 1) {
     return `${details.batchApprovalTokens[0]}: Permit on balancer`
   }
-  return 'Permit tokens on balancer'
+  return 'Sign token approvals'
 }

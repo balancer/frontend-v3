@@ -5,7 +5,6 @@ import {
   AddLiquidityBaseQueryOutput,
   AddLiquidityQueryOutput,
   Address,
-  MaxAllowanceTransferAmount,
   Permit2,
   Permit2Helper,
   PublicWalletClient,
@@ -14,6 +13,7 @@ import {
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
 import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/add-liquidity.utils'
+import { isNativeAsset } from '@/lib/shared/utils/addresses'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -28,7 +28,7 @@ type SignPermit2Params = {
   permit2Input: Permit2AddLiquidityInput
   nonces: NoncesByTokenAddress
 }
-export async function signPermit2Token(params: SignPermit2Params): Promise<Permit2 | undefined> {
+export async function signPermit2Add(params: SignPermit2Params): Promise<Permit2 | undefined> {
   try {
     const signature = await sign(params)
     return signature
@@ -52,10 +52,14 @@ async function sign({
   const baseInput = constructBaseBuildCallInput({
     humanAmountsIn,
     slippagePercent: permit2Input.slippagePercent,
-    // TODO: generalize for all v3 pool types
     sdkQueryOutput: permit2Input.sdkQueryOutput as AddLiquidityBaseQueryOutput,
     pool,
   })
+
+  // Exclude native asset from signature
+  baseInput.amountsIn = baseInput.amountsIn.filter(
+    a => !isNativeAsset(pool.chain, a.token.address)
+  ) as TokenAmount[]
 
   const signature = await Permit2Helper.signAddLiquidityApproval({
     ...baseInput,
@@ -66,8 +70,13 @@ async function sign({
     // Permit2 allowance expires in 24H
     expirations: baseInput.amountsIn.map(() => get24HoursFromNowInSecs()),
   })
+
   return signature
 }
+
+// Instead of MaxAllowanceTransferAmount(MaxUint160) we use MaxUint159 to avoid overflow issues
+const MaxUint159 = BigInt('0x7fffffffffffffffffffffffffffffffffffffff')
+const MaxAllowance = MaxUint159
 
 // Maximize amounts for permit2 approval for amounts > 0n
 function maximizePositiveAmounts(amountsIn: TokenAmount[]): TokenAmount[] {
@@ -75,7 +84,7 @@ function maximizePositiveAmounts(amountsIn: TokenAmount[]): TokenAmount[] {
     item =>
       ({
         ...item,
-        amount: item.amount > 0n ? MaxAllowanceTransferAmount : item.amount,
+        amount: item.amount > 0n ? MaxAllowance : item.amount,
       } as TokenAmount)
   )
 }

@@ -34,7 +34,7 @@ export const buildTokenApprovalLabels: BuildTransactionLabels = ({
 
 function initApprovalLabelFor(actionType: ApprovalAction, symbol: string, isPermit2: boolean) {
   if (isPermit2 && actionType === 'AddLiquidity') {
-    return `Approve Permit2: ${symbol}`
+    return `${symbol}: Approve Permit`
   }
   switch (actionType) {
     case 'Locking':
@@ -60,7 +60,7 @@ function titleFor(actionType: ApprovalAction, symbol: string, isPermit2: boolean
   if (actionType === 'RemoveLiquidity') {
     return `Approve ${symbol}`
   }
-  return isPermit2 ? `${symbol}: Approve Permit2` : `Approve ${symbol}`
+  return isPermit2 ? `${symbol}: Approve Permit` : `Approve ${symbol}`
 }
 function descriptionFor(actionType: ApprovalAction, symbol: string) {
   switch (actionType) {
