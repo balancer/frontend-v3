@@ -42,6 +42,7 @@ const networkConfig: NetworkConfig = {
   pools: convertHexToLowerCase({
     issues: {},
   }),
+  layerZeroChainId: 10161,
 }
 
 export default networkConfig

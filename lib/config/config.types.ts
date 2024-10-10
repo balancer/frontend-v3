@@ -46,6 +46,8 @@ export interface ContractsConfig {
   veDelegationProxy?: Address
   veBAL?: Address
   permit2?: Address
+  omniVotingEscrow?: Address
+  gaugeWorkingBalanceHelper?: Address
 }
 export interface PoolsConfig {
   issues: Partial<Record<PoolIssue, string[]>>
@@ -71,6 +73,8 @@ export interface NetworkConfig {
   contracts: ContractsConfig
   minConfirmations?: number
   pools: PoolsConfig
+  layerZeroChainId?: number
+  supportsVeBalSync?: boolean
 }
 
 export interface Config {

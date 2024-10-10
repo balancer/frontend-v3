@@ -40,6 +40,7 @@ export type StepType =
   | 'unstake'
   | 'claim'
   | 'swap'
+  | 'crossChainSync'
   | LockActionType
   | 'signPermit'
   | 'signPermit2'

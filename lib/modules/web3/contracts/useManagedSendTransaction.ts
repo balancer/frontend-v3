@@ -57,7 +57,10 @@ export function useManagedSendTransaction({
     },
   })
 
-  const { txHash, isSafeTxLoading } = useTxHash({ chainId, wagmiTxHash: writeMutation.data })
+  const { txHash, isSafeTxLoading } = useTxHash({
+    chainId,
+    wagmiTxHash: writeMutation.data,
+  })
 
   const transactionStatusQuery = useWaitForTransactionReceipt({
     chainId,

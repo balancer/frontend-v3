@@ -1,6 +1,6 @@
 import { GetVeBalUserDocument, GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { useUserAccount } from '../web3/UserAccountProvider'
-import { useQuery } from '@apollo/experimental-nextjs-app-support/ssr'
+import { useQuery } from '@apollo/client'
 
 export function useVebalUserData() {
   const { userAddress, isConnected } = useUserAccount()
