@@ -15,8 +15,7 @@ function testGenerateLiquidityKeys(pool: Pool) {
   return addLiquidityKeys.priceImpact({
     handler: new UnbalancedAddLiquidityV2Handler(aWjAuraWethPoolElementMock()),
     userAddress: defaultTestUserAccount,
-    poolId: pool.id,
-    poolType: pool.type,
+    pool,
     slippage: '0.2',
     humanAmountsIn,
   })

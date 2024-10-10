@@ -123,11 +123,14 @@ function createAddHandlerMetadata(
   errorMessage: string,
   params: AddLiquidityParams
 ) {
+  const { pool, ...restParams } = params
   const extra: Extras = {
     handler: params.handler.constructor.name,
     params: {
-      ...params,
-      humanAmountsIn: stringifyHumanAmountsIn(params.poolType, params.humanAmountsIn),
+      ...restParams,
+      poolId: pool.id,
+      poolType: pool.type,
+      humanAmountsIn: stringifyHumanAmountsIn(pool, params.humanAmountsIn),
     },
   }
   return createFatalMetadata(errorName, errorMessage, extra)

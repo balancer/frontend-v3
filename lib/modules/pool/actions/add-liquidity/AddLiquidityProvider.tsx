@@ -59,7 +59,7 @@ export function _useAddLiquidity(urlTxHash?: Hash) {
   const chain = pool.chain
   const nativeAsset = getNativeAssetToken(chain)
   const wNativeAsset = getWrappedNativeAssetToken(chain)
-  const isForcedProportionalAdd = requiresProportionalInput(pool.type)
+  const isForcedProportionalAdd = requiresProportionalInput(pool)
   const slippage = isForcedProportionalAdd ? proportionalSlippage : userSlippage
   const tokens = getPoolTokens(pool, getToken)
 

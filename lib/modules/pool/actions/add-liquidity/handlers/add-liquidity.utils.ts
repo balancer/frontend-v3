@@ -11,7 +11,7 @@ import { Pool } from '../../../PoolProvider'
 import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
 import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
 
-// For now only valid for unbalanced adds
+// For now only valid for unbalanced and proportional adds
 export function constructBaseBuildCallInput({
   humanAmountsIn,
   slippagePercent,

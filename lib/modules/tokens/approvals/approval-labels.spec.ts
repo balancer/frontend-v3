@@ -65,8 +65,8 @@ test('Token approval labels for permit2', () => {
       "confirming": "Approving WETH...",
       "description": "Approval of WETH for adding liquidity.",
       "error": "Error approving WETH",
-      "init": "Approve Permit2: WETH",
-      "title": "WETH: Approve Permit2",
+      "init": "WETH: Approve Permit",
+      "title": "WETH: Approve Permit",
       "tooltip": "You must approve WETH to add liquidity for this token on Balancer.
     Approvals are required once per token, per wallet.",
     }

@@ -7,13 +7,17 @@ import { NestedAddLiquidityHandler } from './NestedAddLiquidity.handler'
 import { requiresProportionalInput, supportsNestedActions } from '../../LiquidityActionHelpers'
 import { ProportionalAddLiquidityHandler } from './ProportionalAddLiquidity.handler'
 import { isV3Pool } from '../../../pool.helpers'
-import { UnbalancedAddLiquidityV3Handler as UnbalancedAddLiquidityV3Handler } from './UnbalancedAddLiquidityV3.handler'
+import { ProportionalAddLiquidityHandlerV3 } from './ProportionalAddLiquidityV3.handler'
+import { UnbalancedAddLiquidityV3Handler } from './UnbalancedAddLiquidityV3.handler'
 
 export function selectAddLiquidityHandler(pool: Pool): AddLiquidityHandler {
   // This is just an example to illustrate how edge-case handlers would receive different inputs but return a common contract
   if (pool.id === 'TWAMM-example') return new TwammAddLiquidityHandler(getChainId(pool.chain))
 
-  if (requiresProportionalInput(pool.type)) {
+  if (requiresProportionalInput(pool)) {
+    if (isV3Pool(pool)) {
+      return new ProportionalAddLiquidityHandlerV3(pool)
+    }
     return new ProportionalAddLiquidityHandler(pool)
   }
 

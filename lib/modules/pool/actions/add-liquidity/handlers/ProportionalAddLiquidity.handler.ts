@@ -1,47 +1,13 @@
 import { TransactionConfig } from '@/lib/modules/web3/contracts/contract.types'
-import {
-  AddLiquidity,
-  AddLiquidityKind,
-  AddLiquidityProportionalInput,
-  HumanAmount,
-  InputAmount,
-  Slippage,
-} from '@balancer/sdk'
-import { Pool } from '../../../PoolProvider'
-import { LiquidityActionHelpers } from '../../LiquidityActionHelpers'
-import { SdkBuildAddLiquidityInput, SdkQueryAddLiquidityOutput } from '../add-liquidity.types'
-import { AddLiquidityHandler } from './AddLiquidity.handler'
-import { HumanTokenAmountWithAddress } from '@/lib/modules/tokens/token.types'
-import { getRpcUrl } from '@/lib/modules/web3/transports'
+import { AddLiquidity, HumanAmount, Slippage } from '@balancer/sdk'
+import { SdkBuildAddLiquidityInput } from '../add-liquidity.types'
+import { BaseProportionalAddLiquidityHandler } from './BaseProportionalAddLiquidity.handler'
 
 /**
  * ProportionalAddLiquidityHandler is a handler that implements the
  * AddLiquidityHandler interface for strictly proportional adds for V2 and CowAmm pools(v1).
  */
-export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
-  helpers: LiquidityActionHelpers
-
-  constructor(pool: Pool) {
-    this.helpers = new LiquidityActionHelpers(pool)
-  }
-
-  public async getPriceImpact(): Promise<number> {
-    return 0 // Proportional joins don't have price impact
-  }
-
-  public async simulate(
-    humanAmountsIn: HumanTokenAmountWithAddress[]
-  ): Promise<SdkQueryAddLiquidityOutput> {
-    const referenceAmount = this.helpers.toSdkInputAmounts(humanAmountsIn)[0]
-
-    const addLiquidity = new AddLiquidity()
-
-    const addLiquidityInput = this.constructSdkInput(referenceAmount)
-    const sdkQueryOutput = await addLiquidity.query(addLiquidityInput, this.helpers.poolState)
-
-    return { bptOut: sdkQueryOutput.bptOut, sdkQueryOutput }
-  }
-
+export class ProportionalAddLiquidityHandler extends BaseProportionalAddLiquidityHandler {
   public async buildCallData({
     account,
     queryOutput,
@@ -64,18 +30,6 @@ export class ProportionalAddLiquidityHandler implements AddLiquidityHandler {
       data: callData,
       to,
       value,
-    }
-  }
-
-  /**
-   * PRIVATE METHODS
-   */
-  private constructSdkInput(referenceAmount: InputAmount): AddLiquidityProportionalInput {
-    return {
-      chainId: this.helpers.chainId,
-      rpcUrl: getRpcUrl(this.helpers.chainId),
-      referenceAmount,
-      kind: AddLiquidityKind.Proportional,
     }
   }
 }

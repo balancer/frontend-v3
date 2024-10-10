@@ -15,7 +15,6 @@ import {
   HStack,
   Skeleton,
   Text,
-  Tooltip,
   Popover,
   PopoverTrigger,
   PopoverContent,
@@ -134,7 +133,7 @@ export function RemoveLiquidityForm() {
           </CardHeader>
           <VStack spacing="md" align="start">
             <SafeAppAlert />
-            {!requiresProportionalInput(pool.type) && (
+            {!requiresProportionalInput(pool) && (
               <HStack>
                 <ButtonGroup
                   currentOption={activeTab}

@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react'
 import { useTokens } from '../../TokensProvider'
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { usePermit2Signature } from './Permit2SignatureProvider'
-import { signPermit2Token } from './signPermit2'
+import { signPermit2Add } from './signPermit2Add'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
 
 export type AddLiquidityPermit2Params = {
@@ -63,7 +63,7 @@ export function useSignPermit2({
     setError(undefined)
 
     try {
-      const signature = await signPermit2Token({
+      const signature = await signPermit2Add({
         pool,
         humanAmountsIn,
         sdkClient,
@@ -121,5 +121,5 @@ function getButtonLabel(signPermit2State: SignatureState, tokenSymbols?: (string
 function getReadyLabel(tokenSymbols?: (string | undefined)[]) {
   if (!tokenSymbols) return 'Sign token permit '
   if (tokenSymbols.length === 1) return 'Sign permit: ' + tokenSymbols[0]
-  return 'Sign permits: ' + tokenSymbols.join(', ')
+  return 'Sign approvals: ' + tokenSymbols.join(', ')
 }
