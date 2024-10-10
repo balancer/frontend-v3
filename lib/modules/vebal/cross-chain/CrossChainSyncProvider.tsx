@@ -204,18 +204,15 @@ export const _useCrossChainSync = () => {
     return () => clearInterval(intervalId)
   }, [networksBySyncState, refetch])
 
-  const setSyncTxHashes = useCallback(
-    (network: GqlChain, txHash: Hash) => {
-      _setSyncTxHashes(prev => ({
-        ...prev,
-        [userAddress]: {
-          ...prev[userAddress],
-          [network]: txHash,
-        },
-      }))
-    },
-    [userAddress, _setSyncTxHashes]
-  )
+  function setSyncTxHashes(network: GqlChain, txHash: Hash) {
+    _setSyncTxHashes(prev => ({
+      ...prev,
+      [userAddress]: {
+        ...prev[userAddress],
+        [network]: txHash,
+      },
+    }))
+  }
 
   const clearTempSyncingNetworksFromSynced = useCallback(() => {
     if (!tempSyncingNetworks[userAddress]) return
