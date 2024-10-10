@@ -19,7 +19,6 @@ import {
 } from '@balancer/sdk'
 import BigNumber from 'bignumber.js'
 import { Address, Hex, formatUnits, parseUnits } from 'viem'
-import { GetTokenFn } from '../../tokens/TokensProvider'
 import {
   isNativeAsset,
   isNativeOrWrappedNative,
@@ -36,7 +35,6 @@ import {
   isUnbalancedLiquidityDisabled,
   isV3Pool,
 } from '../pool.helpers'
-import { SdkQueryAddLiquidityOutput } from './add-liquidity/add-liquidity.types'
 
 // Null object used to avoid conditional checks during hook loading state
 const NullPool: Pool = {
@@ -320,22 +318,4 @@ export function hasNoLiquidity(pool: Pool): boolean {
 export function formatBuildCallParams<T>(buildCallParams: T, account: Address) {
   // sender and recipient must be defined only for v1 and v2 pools
   return { ...buildCallParams, sender: account, recipient: account }
-}
-
-export function getTokenSymbols(
-  getToken: GetTokenFn,
-  chain: GqlChain,
-  queryOutput?: SdkQueryAddLiquidityOutput
-) {
-  if (!queryOutput?.sdkQueryOutput) return []
-  const amountsIn = queryOutput.sdkQueryOutput.amountsIn
-  const tokenSymbols = amountsIn
-    ?.filter(a => a.amount > 0n)
-    .map(a => getToken(a.token.address, chain)?.symbol ?? 'Unknown')
-  return tokenSymbols
-}
-
-export function getTokenAddresses(queryOutput?: SdkQueryAddLiquidityOutput): Address[] | undefined {
-  if (!queryOutput?.sdkQueryOutput) return undefined
-  return queryOutput.sdkQueryOutput.amountsIn.map(t => t.token.address)
 }

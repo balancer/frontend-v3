@@ -8,7 +8,7 @@ import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import { includesAddress, isSameAddress } from '@/lib/shared/utils/addresses'
 import { Address } from 'viem'
 import { HumanTokenAmountWithAddress, TokenBase } from './token.types'
-import { InputAmount } from '@balancer/sdk'
+import { InputAmount, TokenAmount } from '@balancer/sdk'
 import { Pool } from '../pool/PoolProvider'
 import { getVaultConfig, isCowAmmPool, isV3Pool } from '../pool/pool.helpers'
 
@@ -143,4 +143,20 @@ export function getSpenderForAddLiquidity(pool: Pool): Address {
   }
   const { vaultAddress } = getVaultConfig(pool)
   return vaultAddress
+}
+
+// Excludes wrapped native asset from amountsIn when wethIsEth
+export function filterWrappedNativeAsset({
+  amountsIn,
+  wethIsEth,
+  chain,
+}: {
+  amountsIn: TokenAmount[]
+  wethIsEth: boolean
+  chain: GqlChain
+}): TokenAmount[] {
+  if (!wethIsEth) return amountsIn
+  return amountsIn.filter(a => {
+    return !isWrappedNativeAsset(a.token.address, chain)
+  })
 }

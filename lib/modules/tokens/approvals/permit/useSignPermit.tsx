@@ -100,6 +100,6 @@ function getButtonLabel(signPermitState: SignatureState, poolSymbol?: string) {
 }
 
 function getReadyLabel(poolSymbol?: string) {
-  if (!poolSymbol) return 'Sign aproval'
+  if (!poolSymbol) return 'Sign approval'
   return 'Sign approval: ' + poolSymbol
 }

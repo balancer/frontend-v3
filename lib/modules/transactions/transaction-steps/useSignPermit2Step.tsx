@@ -6,9 +6,13 @@ import { useUserAccount } from '@/lib/modules/web3/UserAccountProvider'
 import { BalAlert } from '@/lib/shared/components/alerts/BalAlert'
 import { Button, VStack } from '@chakra-ui/react'
 import { useMemo } from 'react'
-import { getTokenAddresses, getTokenSymbols } from '../../pool/actions/LiquidityActionHelpers'
+
 import { useTokens } from '../../tokens/TokensProvider'
-import { hasValidPermit2 } from '../../tokens/approvals/permit2/permit2.helpers'
+import {
+  getTokenAddressesForPermit2,
+  getTokenSymbolsForPermit2,
+  hasValidPermit2,
+} from '../../tokens/approvals/permit2/permit2.helpers'
 import { usePermit2Allowance } from '../../tokens/approvals/permit2/usePermit2Allowance'
 import {
   AddLiquidityPermit2Params,
@@ -28,7 +32,10 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const { isLoadingPermit2Allowances, nonces, expirations, allowedAmounts } = usePermit2Allowance({
     chainId: getChainId(params.pool.chain),
-    tokenAddresses: getTokenAddresses(params.queryOutput),
+    tokenAddresses: getTokenAddressesForPermit2({
+      queryOutput: params.queryOutput,
+      wethIsEth: params.wethIsEth,
+    }),
     owner: userAddress,
     enabled: params.isPermit2,
   })
@@ -78,7 +85,11 @@ export function useSignPermit2Step(params: AddLiquidityPermit2Params): Transacti
 
   const details: StepDetails = {
     gasless: true,
-    batchApprovalTokens: getTokenSymbols(getToken, params.pool.chain, params.queryOutput),
+    batchApprovalTokens: getTokenSymbolsForPermit2({
+      getToken,
+      queryOutput: params.queryOutput,
+      wethIsEth: params.wethIsEth,
+    }),
   }
 
   return useMemo(
