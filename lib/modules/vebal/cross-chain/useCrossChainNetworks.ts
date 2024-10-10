@@ -2,10 +2,15 @@ import { useMemo } from 'react'
 import { GqlChain } from '@/lib/shared/services/api/generated/graphql'
 import networkConfigs from '@/lib/config/networks'
 import { OmniEscrowLock } from './useOmniEscrowLocksQuery'
-import { useVotingEscrowLocksQueries, VotingEscrowLock } from './useVotingEscrowLocksQueries'
+import {
+  useVotingEscrowLocksQueries,
+  VotingEscrowLock,
+  VotingEscrowLockResponse,
+} from './useVotingEscrowLocksQueries'
 import { bn } from '@/lib/shared/utils/numbers'
 import { useUserAccount } from '../../web3/UserAccountProvider'
 import { allEqual } from '@/lib/shared/utils/array'
+import { UseQueryResult } from '@tanstack/react-query'
 
 export enum NetworkSyncState {
   Unsynced = 'Unsynced',
@@ -58,6 +63,31 @@ export function getNetworkSyncState({
   return NetworkSyncState.Unsynced
 }
 
+function formatVotingEscrowData(
+  votingEscrowResponses: UseQueryResult<VotingEscrowLockResponse, Error>[],
+  chainIds: GqlChain[]
+) {
+  return votingEscrowResponses.map(
+    ({ data: votingEscrowResponse, refetch, isError, isLoading: isInitialLoading }, index) => {
+      const chainId = chainIds[index]
+
+      if (!chainId) {
+        throw new Error(`formatVotingEscrowData - ${chainId} not found in ${chainIds}`)
+      }
+
+      const votingEscrowLocks = votingEscrowResponse?.votingEscrowLocks[0]
+
+      return {
+        chainId,
+        votingEscrowLocks,
+        refetch,
+        isLoading: isInitialLoading,
+        isError,
+      }
+    }
+  )
+}
+
 // Calculate veBAL balance using bias, slope, and timestamp values
 export function calculateVeBAlBalance(votingEscrowLocks: VotingEscrowLock | null) {
   const { bias, slope, timestamp } = votingEscrowLocks || {}
@@ -96,27 +126,5 @@ export function useCrossChainNetworks(
 
   const votingEscrowResponses = useVotingEscrowLocksQueries(remoteUsers)
 
-  const result = useMemo(() => {
-    return votingEscrowResponses.map(
-      ({ data: votingEscrowResponse, refetch, isError, isLoading: isInitialLoading }, index) => {
-        const chainId = chainIds[index]
-
-        if (!chainId) {
-          throw new Error(`useCrossChainNetworks - ${chainId} not found in ${chainIds}`)
-        }
-
-        const votingEscrowLocks = votingEscrowResponse?.votingEscrowLocks[0]
-
-        return {
-          chainId,
-          votingEscrowLocks,
-          refetch,
-          isLoading: isInitialLoading,
-          isError,
-        }
-      }
-    )
-  }, [votingEscrowResponses, chainIds])
-
-  return result
+  return formatVotingEscrowData(votingEscrowResponses, chainIds)
 }

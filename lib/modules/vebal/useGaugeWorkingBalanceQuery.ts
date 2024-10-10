@@ -11,7 +11,7 @@ export function useGaugeWorkingBalanceQuery(
 ) {
   const { isConnected } = useUserAccount()
 
-  const txQuery = useReadContract({
+  return useReadContract({
     chainId: chainId,
     address: contractAddress,
     abi: GaugeWorkingBalanceHelperAbi,
@@ -21,6 +21,4 @@ export function useGaugeWorkingBalanceQuery(
       enabled: isConnected,
     },
   })
-
-  return txQuery
 }
