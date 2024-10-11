@@ -13,6 +13,7 @@ import {
 import { HumanTokenAmountWithAddress } from '../../token.types'
 import { NoncesByTokenAddress } from './usePermit2Allowance'
 import { constructBaseBuildCallInput } from '@/lib/modules/pool/actions/add-liquidity/handlers/add-liquidity.utils'
+import { filterWrappedNativeAsset } from '../../token.helpers'
 
 export interface Permit2AddLiquidityInput {
   account: Address
@@ -26,6 +27,7 @@ type SignPermit2Params = {
   humanAmountsIn: HumanTokenAmountWithAddress[]
   permit2Input: Permit2AddLiquidityInput
   nonces: NoncesByTokenAddress
+  wethIsEth: boolean
 }
 export async function signPermit2Add(params: SignPermit2Params): Promise<Permit2 | undefined> {
   try {
@@ -44,6 +46,7 @@ async function sign({
   sdkClient,
   pool,
   humanAmountsIn,
+  wethIsEth,
   permit2Input,
   nonces,
 }: SignPermit2Params): Promise<Permit2> {
@@ -55,14 +58,20 @@ async function sign({
     pool,
   })
 
+  const filteredAmountsIn = filterWrappedNativeAsset({
+    wethIsEth,
+    chain: pool.chain,
+    amountsIn: baseInput.amountsIn,
+  })
+
   const signature = await Permit2Helper.signAddLiquidityApproval({
     ...baseInput,
     client: sdkClient,
     owner: permit2Input.account,
-    nonces: baseInput.amountsIn.map(a => nonces[a.token.address]),
-    amountsIn: maximizePositiveAmounts(baseInput.amountsIn),
+    nonces: filteredAmountsIn.map(a => nonces[a.token.address]),
+    amountsIn: maximizePositiveAmounts(filteredAmountsIn),
     // Permit2 allowance expires in 24H
-    expirations: baseInput.amountsIn.map(() => get24HoursFromNowInSecs()),
+    expirations: filteredAmountsIn.map(() => get24HoursFromNowInSecs()),
   })
 
   return signature

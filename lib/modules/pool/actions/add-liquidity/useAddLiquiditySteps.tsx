@@ -54,6 +54,7 @@ export function useAddLiquiditySteps({
     slippagePercent: slippage,
     queryOutput: simulationQuery.data as SdkQueryAddLiquidityOutput,
     isPermit2,
+    wethIsEth: helpers.isNativeAssetIn(humanAmountsIn),
   })
 
   const isSignPermit2Loading = isPermit2 && !signPermit2Step
