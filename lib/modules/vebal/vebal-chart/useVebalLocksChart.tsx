@@ -1,3 +1,5 @@
+'use client'
+
 import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 import { useTheme as useChakraTheme } from '@chakra-ui/react'
