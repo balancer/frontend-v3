@@ -1,4 +1,4 @@
-# Balancer frontend V3 (DEPRECATED)
+# Balancer frontend V3 (⚠️DEPRECATED)
 
 This repo has moved into our [frontend monorepo](https://github.com/balancer/frontend-monorepo).
 
