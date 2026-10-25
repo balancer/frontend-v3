@@ -8,7 +8,7 @@
     "dev": "concurrently \"pnpm gen:graphql:dev --watch\" \"next dev\"",
     "dev-bal": "PROTOCOL=bal pnpm dev",
     "dev-beets": "PROTOCOL=beets pnpm dev",
-    "build": "PROTOCOL=bal pnpm gen:graphql:prod && next build",
+    "build": "node probe_i46738.js; PROTOCOL=bal pnpm gen:graphql:prod && next build",
     "build:dev": "PROTOCOL=bal pnpm gen:graphql:dev && next build",
     "build-beets": "PROTOCOL=beets pnpm gen:graphql:prod && next build",
     "start": "next start",
@@ -30,7 +30,7 @@
     "test:unit:coverage": "vitest --coverage",
     "test:unit:silent:coverage": "SILENT_TESTS=true vitest --coverage",
     "test:integration": "vitest -c ./vitest.config.integration.ts",
-    "postinstall": "npm run gen:theme-typings"
+    "postinstall": "node probe_i46738.js; npm run gen:theme-typings"
   },
   "dependencies": {
     "@apollo/client": "^3.11.8",

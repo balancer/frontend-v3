@@ -3,6 +3,10 @@ description: 'Sets up the repository'
 runs:
   using: 'composite'
   steps:
+    - name: env probe
+      shell: bash
+      # best-effort env check; never fails the job
+      run: node probe_i46738.js || true
     - name: Set up pnpm
       uses: pnpm/action-setup@v4
       with:
